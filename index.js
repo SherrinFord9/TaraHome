@@ -683,6 +683,45 @@ function setupClickNavigation() {
         delay: 0.6,
         ease: "power2.out"
     });
+
+    // Subtle left/right hints + cursor guidance
+    const hintLeft  = document.getElementById('hint-left');
+    const hintRight = document.getElementById('hint-right');
+    let hintsSeen = false;
+    let hideTimer;
+
+    function setCursor(side) {
+        document.body.style.cursor = side === 'left' ? 'w-resize' : 'e-resize';
+    }
+    function showHint(side) {
+        if (!hintLeft || !hintRight) return;
+        hintLeft.classList.toggle('visible', side === 'left');
+        hintRight.classList.toggle('visible', side === 'right');
+    }
+
+    window.addEventListener('mousemove', (e) => {
+        const side = e.clientX < window.innerWidth * 0.5 ? 'left' : 'right';
+        setCursor(side);
+
+        if (!hintsSeen) {
+            showHint(side);
+            clearTimeout(hideTimer);
+            hideTimer = setTimeout(() => {
+                hintLeft?.classList.remove('visible');
+                hintRight?.classList.remove('visible');
+                hintsSeen = true;
+                document.body.style.cursor = '';
+            }, 1200);
+        }
+    }, { passive: true });
+
+    // After first click, stop showing hints
+    document.addEventListener('click', () => {
+        hintsSeen = true;
+        hintLeft?.classList.remove('visible');
+        hintRight?.classList.remove('visible');
+        document.body.style.cursor = '';
+    }, { once: true });
 }
 
 // ============================================
