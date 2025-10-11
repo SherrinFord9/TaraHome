@@ -809,111 +809,18 @@ async function initParticles() {
 
     const cfg = {
         "particles": {
-            "number": {
-                "value": 161,
-                "density": {
-                    "enable": true,
-                    "value_area": 1420.4657549380909
-                }
-            },
-            "color": {
-                "value": "#ffffff"
-            },
-            "shape": {
-                "type": "star",
-                "stroke": {
-                    "width": 0,
-                    "color": "#000000"
-                },
-                "polygon": {
-                    "nb_sides": 4
-                },
-                "image": {
-                    "src": "img/github.svg",
-                    "width": 100,
-                    "height": 100
-                }
-            },
-            "opacity": {
-                "value": 0.5,
-                "random": false,
-                "anim": {
-                    "enable": false,
-                    "speed": 1,
-                    "opacity_min": 0.1,
-                    "sync": false
-                }
-            },
-            "size": {
-                "value": 3,
-                "random": true,
-                "anim": {
-                    "enable": false,
-                    "speed": 40,
-                    "size_min": 0.1,
-                    "sync": false
-                }
-            },
-            "line_linked": {
-                "enable": true,
-                "distance": 150,
-                "color": "#ffffff",
-                "opacity": 0.4,
-                "width": 1
-            },
-            "move": {
-                "enable": true,
-                "speed": 6,
-                "direction": "none",
-                "random": false,
-                "straight": false,
-                "out_mode": "out",
-                "bounce": false,
-                "attract": {
-                    "enable": false,
-                    "rotateX": 600,
-                    "rotateY": 1200
-                }
-            }
+            "number": { "value": 100, "density": { "enable": true, "value_area": 1200 } },
+            "color": { "value": "#ffffff" },
+            "shape": { "type": "star", "stroke": { "width": 0, "color": "#000000" }, "polygon": { "nb_sides": 5 } },
+            "opacity": { "value": 0.8, "random": true, "anim": { "enable": true, "speed": 0.6, "opacity_min": 0.15, "sync": false } },
+            "size": { "value": 2.2, "random": true, "anim": { "enable": true, "speed": 4, "size_min": 0.4, "sync": false } },
+            "line_linked": { "enable": true, "distance": 180, "color": "#a8b6ff", "opacity": 0.25, "width": 0.7 },
+            "move": { "enable": true, "speed": 2, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false, "attract": { "enable": false, "rotateX": 600, "rotateY": 1200 } }
         },
         "interactivity": {
             "detect_on": "window",
-            "events": {
-                "onhover": {
-                    "enable": true,
-                    "mode": "repulse"
-                },
-                "onclick": {
-                    "enable": true,
-                    "mode": "push"
-                },
-                "resize": true
-            },
-            "modes": {
-                "grab": {
-                    "distance": 191.80819180819182,
-                    "line_linked": {
-                        "opacity": 1
-                    }
-                },
-                "bubble": {
-                    "distance": 299.7002997002997,
-                    "size": 40,
-                    "duration": 2,
-                    "opacity": 0.12787212787212787,
-                    "speed": 3
-                },
-                "repulse": {
-                    "distance": 151.84815184815184,
-                    "duration": 0.4
-                },
-                "push": {
-                    "particles_nb": 4
-                },
-                "remove": {
-                    "particles_nb": 2
-                }
-            }
+            "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+            "modes": { "grab": { "distance": 120, "line_linked": { "opacity": 0.75 } }, "bubble": { "distance": 200, "size": 4, "duration": 2, "opacity": 0.2, "speed": 3 }, "repulse": { "distance": 120, "duration": 0.45 }, "push": { "particles_nb": 6 }, "remove": { "particles_nb": 2 } }
         },
         "retina_detect": true
     };
@@ -937,6 +844,9 @@ async function initMainExperience() {
     setupWaitlistForm();
     setupSmoothScroll();
     setupCursorGlow();
+    
+    // Start shooting stars overlay
+    initShootingStars();
     
     console.log('🌌 TARA AI - Main Experience Initialized');
 }
@@ -963,3 +873,111 @@ window.addEventListener('DOMContentLoaded', () => {
     // Start main experience immediately (no intro)
     initMainExperience();
 });
+
+// ============================================
+// Shooting Stars Overlay (every ~10s)
+// ============================================
+
+function initShootingStars() {
+    const canvas = document.getElementById('shooting-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const stars = [];
+
+    function spawnStar() {
+        const margin = 60;
+        const speed = 6 + Math.random() * 4; // 6-10 px/frame
+
+        // Randomize origin edge
+        const edge = Math.floor(Math.random() * 4); // 0: left, 1: right, 2: top, 3: bottom
+        let x, y, destX, destY;
+
+        if (edge === 0) { // from left -> to right-ish
+            x = -margin;
+            y = Math.random() * canvas.height;
+            destX = canvas.width + margin;
+            destY = Math.random() * canvas.height;
+        } else if (edge === 1) { // from right -> to left-ish
+            x = canvas.width + margin;
+            y = Math.random() * canvas.height;
+            destX = -margin;
+            destY = Math.random() * canvas.height;
+        } else if (edge === 2) { // from top -> to bottom-ish
+            x = Math.random() * canvas.width;
+            y = -margin;
+            destX = Math.random() * canvas.width;
+            destY = canvas.height + margin;
+        } else { // from bottom -> to top-ish
+            x = Math.random() * canvas.width;
+            y = canvas.height + margin;
+            destX = Math.random() * canvas.width;
+            destY = -margin;
+        }
+
+        // Compute velocity vector towards destination
+        const dx = destX - x;
+        const dy = destY - y;
+        const len = Math.hypot(dx, dy) || 1;
+        const vx = (dx / len) * speed;
+        const vy = (dy / len) * speed;
+
+        // Life based on travel distance (clamped)
+        const travelFrames = Math.min(160, Math.max(80, len / speed * 0.06));
+        stars.push({ x, y, vx, vy, life: 0, maxLife: travelFrames });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = stars.length - 1; i >= 0; i--) {
+            const s = stars[i];
+            s.x += s.vx;
+            s.y += s.vy;
+            s.life++;
+
+            const t = s.life / s.maxLife; // 0..1
+            const opacity = 1 - t;
+
+            // star head
+            ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // tail
+            const tailLen = 80;
+            const tx = s.x - s.vx * 4;
+            const ty = s.y - s.vy * 4;
+            const grad = ctx.createLinearGradient(tx, ty, s.x, s.y);
+            grad.addColorStop(0, `rgba(168,182,255,0)`);
+            grad.addColorStop(1, `rgba(255,255,255,${opacity})`);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(s.x, s.y);
+            ctx.stroke();
+
+            if (s.life > s.maxLife || s.x > canvas.width + 50 || s.y > canvas.height + 50) {
+                stars.splice(i, 1);
+            }
+        }
+        requestAnimationFrame(draw);
+    }
+
+    function scheduleNext() {
+        spawnStar();
+        if (Math.random() < 0.25) setTimeout(spawnStar, 120); // small burst 25% of the time
+        const delay = 1800 + Math.random() * 2200; // 1.8–4.0s
+        setTimeout(scheduleNext, delay);
+      }
+      scheduleNext();
+      draw();
+}
