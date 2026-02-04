@@ -49,21 +49,50 @@ body.modal-open {
     z-index: 2; /* above particles, below content (content has z-index 10) */
 }
 
-/* Edge click hints */
+/* Edge click hints - always visible but subtle */
 .edge-hint {
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(200, 210, 255, 0.7);
-    opacity: 0;
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    color: rgba(200, 210, 255, 0.25);
+    opacity: 1;
+    transition: opacity 0.3s ease, color 0.3s ease, transform 0.3s ease;
     pointer-events: none; /* don't block clicks */
-    font-size: clamp(18px, 2.2vw, 28px);
+    font-size: clamp(24px, 3vw, 36px);
     z-index: 12; /* above particles, below content */
 }
-#hint-left  { left: 24px; }
-#hint-right { right: 24px; }
-.edge-hint.visible { opacity: .55; }
+#hint-left  { left: 20px; }
+#hint-right { right: 20px; }
+
+/* Brighter on hover (desktop) */
+.edge-hint.active {
+    color: rgba(200, 210, 255, 0.6);
+}
+
+/* Subtle pulse animation to draw attention */
+@keyframes edgePulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+.edge-hint.visible {
+    animation: edgePulse 2s ease-in-out infinite;
+}
+
+/* Hide when at CTA section or first section for left arrow */
+.edge-hint.hidden {
+    opacity: 0 !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .edge-hint {
+        font-size: 28px;
+        color: rgba(200, 210, 255, 0.35);
+    }
+    #hint-left { left: 12px; }
+    #hint-right { right: 12px; }
+}
 
 /* Ensure content stays above particles */
 .statement-section, footer, header {
@@ -547,3 +576,186 @@ body {
 .cta-headline { font-size: 1.25rem !important; line-height: 1.25; }
 @media (min-width: 768px) { .cta-headline { font-size: 1.5rem !important; } }
 @media (min-width: 1024px) { .cta-headline { font-size: 2rem !important; } }
+
+/* ===================================================== */
+/* ACCESSIBILITY                                          */
+/* ===================================================== */
+
+/* Reduced motion preference - disable animations */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    #particles-js,
+    #shooting-canvas {
+        display: none !important;
+    }
+
+    .hero-glow {
+        animation: none !important;
+    }
+}
+
+/* Focus visible styles for keyboard navigation */
+:focus-visible {
+    outline: 2px solid rgba(100, 150, 255, 0.8);
+    outline-offset: 2px;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline: 2px solid rgba(100, 150, 255, 0.8);
+    outline-offset: 2px;
+}
+
+/* Screen reader only class */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ===================================================== */
+/* MOBILE IMPROVEMENTS                                    */
+/* ===================================================== */
+
+@media (max-width: 768px) {
+    /* Larger tap targets for mobile */
+    .waitlist-button {
+        min-height: 52px !important;
+        width: 100% !important;
+        font-size: 0.8rem !important;
+    }
+
+    .waitlist-input {
+        min-height: 52px !important;
+        font-size: 16px !important; /* Prevents iOS zoom on focus */
+    }
+
+    /* Better spacing on mobile */
+    #cta-section {
+        padding: 1.5rem;
+    }
+
+    /* Modal adjustments for mobile */
+    #learn-more-modal > div {
+        max-height: 90vh;
+        overflow-y: auto;
+        margin: 1rem;
+    }
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+    .waitlist-button:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .waitlist-button:hover::before {
+        width: 0;
+        height: 0;
+    }
+}
+
+/* ===================================================== */
+/* FLOATING CTA BUTTON                                    */
+/* ===================================================== */
+
+.floating-cta {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 24px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 24px rgba(100, 120, 255, 0.3), 0 0 40px rgba(100, 120, 255, 0.15);
+    pointer-events: none;
+}
+
+.floating-cta.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.floating-cta:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(100, 120, 255, 0.4), 0 0 60px rgba(100, 120, 255, 0.2);
+    background: #fff;
+}
+
+.floating-cta:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.floating-cta-icon {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.floating-cta:hover .floating-cta-icon {
+    transform: translateX(4px);
+}
+
+/* Subtle pulsing glow animation */
+@keyframes floatingGlow {
+    0%, 100% {
+        box-shadow: 0 4px 24px rgba(100, 120, 255, 0.3), 0 0 40px rgba(100, 120, 255, 0.15);
+    }
+    50% {
+        box-shadow: 0 4px 32px rgba(100, 120, 255, 0.45), 0 0 50px rgba(100, 120, 255, 0.25);
+    }
+}
+
+.floating-cta.visible {
+    animation: floatingGlow 3s ease-in-out infinite;
+}
+
+.floating-cta:hover {
+    animation: none;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .floating-cta {
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Hide on very small screens or when keyboard is open */
+@media (max-height: 500px) {
+    .floating-cta {
+        display: none;
+    }
+}

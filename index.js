@@ -395,7 +395,9 @@ function setupEasterEgg() {
 function setupClickNavigation() {
     const statementSections = gsap.utils.toArray('.statement-section');
     let currentSection = 0;
-    
+    let isTransitioning = false;
+    const totalSections = statementSections.length;
+
     console.log('Found sections:', statementSections.length);
     
     // Position all sections in the same place (overlay)
@@ -439,14 +441,12 @@ function setupClickNavigation() {
     gsap.set('.cta-subtext', { opacity: 0, y: 30, scale: 0.6, filter: "blur(6px)" });
     gsap.set('#waitlist-form', { opacity: 0, y: 30, scale: 0.6, filter: "blur(4px)" });
 
-    let isTransitioning = false;
-    
     function showPreviousSection() {
         if (isTransitioning) return;
         if (currentSection <= 0) return; // Already at first section
-        
+
         isTransitioning = true;
-        
+
         // Handle going back from CTA section
         if (currentSection >= statementSections.length) {
             const ctaSection = document.querySelector('#cta-section');
@@ -459,6 +459,8 @@ function setupClickNavigation() {
                         gsap.set(ctaSection, { display: 'none', zIndex: 1 });
                         currentSection = statementSections.length - 1;
                         showCurrentSection();
+                        updateFloatingCTAVisibility(currentSection, totalSections);
+                        if (window.updateEdgeArrows) window.updateEdgeArrows();
                         isTransitioning = false;
                     }
                 });
@@ -493,11 +495,13 @@ function setupClickNavigation() {
                 gsap.set(currentEl, { display: 'none', zIndex: 1 });
                 currentSection--;
                 showCurrentSection();
+                updateFloatingCTAVisibility(currentSection, totalSections);
+                if (window.updateEdgeArrows) window.updateEdgeArrows();
                 isTransitioning = false;
             }
         });
     }
-    
+
     function showNextSection() {
         if (isTransitioning) return; // Prevent multiple clicks during transition
         
@@ -531,6 +535,8 @@ function setupClickNavigation() {
                     gsap.set(currentEl, { display: 'none', zIndex: 1 });
                     currentSection++;
                     showCurrentSection();
+                    updateFloatingCTAVisibility(currentSection, totalSections);
+                    if (window.updateEdgeArrows) window.updateEdgeArrows();
                     isTransitioning = false;
                 }
             });
@@ -592,6 +598,11 @@ function setupClickNavigation() {
                     });
                     
                     currentSection++; // Mark as completed
+
+                    // Hide floating CTA and edge arrows when at CTA section
+                    const floatingCTA = document.getElementById('floating-cta');
+                    if (floatingCTA) floatingCTA.classList.remove('visible');
+                    if (window.updateEdgeArrows) window.updateEdgeArrows();
                 }
             });
         }
@@ -646,8 +657,9 @@ function setupClickNavigation() {
 
     // Add click listener to document with left/right navigation
     document.addEventListener('click', (e) => {
-        // Don't advance if clicking on form elements
+        // Don't advance if clicking on interactive elements
         if (e.target.closest('#waitlist-form')) return;
+        if (e.target.closest('#floating-cta')) return;
         
         const clickX = e.clientX;
         const screenWidth = window.innerWidth;
@@ -684,85 +696,249 @@ function setupClickNavigation() {
         ease: "power2.out"
     });
 
-    // Subtle left/right hints + cursor guidance
-    const hintLeft  = document.getElementById('hint-left');
+    // Edge navigation arrows - always visible, context-aware
+    const hintLeft = document.getElementById('hint-left');
     const hintRight = document.getElementById('hint-right');
-    let hintsSeen = false;
-    let hideTimer;
 
-    function setCursor(side) {
-        document.body.style.cursor = side === 'left' ? 'w-resize' : 'e-resize';
-    }
-    function showHint(side) {
+    function updateEdgeArrows() {
         if (!hintLeft || !hintRight) return;
-        hintLeft.classList.toggle('visible', side === 'left');
-        hintRight.classList.toggle('visible', side === 'right');
+
+        // At CTA section - hide both arrows
+        if (currentSection >= statementSections.length) {
+            hintLeft.classList.add('hidden');
+            hintRight.classList.add('hidden');
+            return;
+        }
+
+        // At first section - hide left, show right
+        if (currentSection === 0) {
+            hintLeft.classList.add('hidden');
+            hintRight.classList.remove('hidden');
+        } else {
+            // Middle sections - show both
+            hintLeft.classList.remove('hidden');
+            hintRight.classList.remove('hidden');
+        }
     }
 
-    window.addEventListener('mousemove', (e) => {
-        const side = e.clientX < window.innerWidth * 0.5 ? 'left' : 'right';
-        setCursor(side);
+    // Initial arrow state
+    updateEdgeArrows();
 
-        if (!hintsSeen) {
-            showHint(side);
-            clearTimeout(hideTimer);
-            hideTimer = setTimeout(() => {
-                hintLeft?.classList.remove('visible');
-                hintRight?.classList.remove('visible');
-                hintsSeen = true;
-                document.body.style.cursor = '';
-            }, 1200);
-        }
+    // Update arrows after each navigation
+    window.updateEdgeArrows = updateEdgeArrows;
+
+    // Highlight arrow on hover (desktop only)
+    window.addEventListener('mousemove', (e) => {
+        if (!hintLeft || !hintRight) return;
+
+        const side = e.clientX < window.innerWidth * 0.5 ? 'left' : 'right';
+
+        // Update cursor
+        document.body.style.cursor = side === 'left' ? 'w-resize' : 'e-resize';
+
+        // Highlight the relevant arrow
+        hintLeft.classList.toggle('active', side === 'left');
+        hintRight.classList.toggle('active', side === 'right');
     }, { passive: true });
 
-    // After first click, stop showing hints
-    document.addEventListener('click', () => {
-        hintsSeen = true;
-        hintLeft?.classList.remove('visible');
-        hintRight?.classList.remove('visible');
+    // Reset cursor when mouse leaves
+    window.addEventListener('mouseout', () => {
         document.body.style.cursor = '';
-    }, { once: true });
+        hintLeft?.classList.remove('active');
+        hintRight?.classList.remove('active');
+    });
+
+    // Expose jumpToCTA globally for floating CTA button
+    window.jumpToCTA = function() {
+        if (isTransitioning) return;
+        if (currentSection >= statementSections.length) return; // Already at CTA
+
+        isTransitioning = true;
+
+        // Hide current statement section
+        const currentEl = statementSections[currentSection];
+        if (currentEl) {
+            gsap.to(currentEl, {
+                opacity: 0,
+                duration: 0.4,
+                ease: "power2.in",
+                onComplete: () => {
+                    gsap.set(currentEl, { display: 'none', zIndex: 1 });
+                }
+            });
+        }
+
+        // Hide all other statement sections too
+        statementSections.forEach(section => {
+            gsap.set(section, { opacity: 0, display: 'none', zIndex: 1 });
+        });
+
+        // Show CTA section
+        const ctaSection = document.querySelector('#cta-section');
+        if (ctaSection) {
+            gsap.set(ctaSection, { display: 'flex', zIndex: 20 });
+            gsap.to(ctaSection, { opacity: 1, duration: 0.6, ease: "power2.out" });
+        }
+
+        gsap.to('.cta-headline', {
+            opacity: 1, y: 0, scale: 1, filter: "blur(0px)", rotateX: 0,
+            duration: 0.7, ease: "power2.out", delay: 0.15
+        });
+        gsap.to('.cta-subtext', {
+            opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+            duration: 0.6, ease: "power2.out", delay: 0.3
+        });
+        gsap.to('#waitlist-form', {
+            opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+            duration: 0.5, ease: "power2.out", delay: 0.45,
+            onComplete: () => {
+                isTransitioning = false;
+            }
+        });
+
+        // Update current section to be at CTA (past all statement sections)
+        currentSection = statementSections.length;
+
+        // Hide floating CTA and edge arrows
+        const floatingCTA = document.getElementById('floating-cta');
+        if (floatingCTA) floatingCTA.classList.remove('visible');
+        if (window.updateEdgeArrows) window.updateEdgeArrows();
+
+        console.log('Jumped to CTA section, currentSection:', currentSection);
+    };
 }
 
 // ============================================
-// Waitlist Form Handler
+// Waitlist Form Handler (Formspree Integration)
 // ============================================
 
 function setupWaitlistForm() {
     const waitlistForm = document.getElementById('waitlist-form');
     const successMessage = document.getElementById('success-message');
+    const errorMessage = document.getElementById('form-error');
+
+    if (!waitlistForm) return;
 
     waitlistForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const email = waitlistForm.querySelector('input[name="email"]').value;
+
+        const emailInput = waitlistForm.querySelector('input[name="email"]');
+        const email = emailInput.value.trim();
         const button = waitlistForm.querySelector('button');
-        
+
+        // Hide any previous error
+        if (errorMessage) errorMessage.classList.add('tw-hidden');
+
+        // Client-side validation
+        if (!isValidEmail(email)) {
+            showFormError('Please enter a valid email address');
+            return;
+        }
+
         button.textContent = 'Awakening...';
         button.disabled = true;
-        
+
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            waitlistForm.style.display = 'none';
-            successMessage.classList.remove('tw-hidden');
-            
-            // Optional: Send to backend
-            // await fetch('/api/waitlist', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ email })
-            // });
-            
-            console.log('Email submitted:', email);
-            
+            const formData = new FormData(waitlistForm);
+
+            const response = await fetch(waitlistForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                waitlistForm.style.display = 'none';
+                successMessage.classList.remove('tw-hidden');
+
+                // Track conversion in Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'waitlist_signup', {
+                        'event_category': 'engagement',
+                        'event_label': 'TARA Waitlist'
+                    });
+                }
+
+                console.log('Waitlist signup successful:', email);
+            } else {
+                const data = await response.json();
+                throw new Error(data.error || 'Submission failed');
+            }
+
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Submission error:', error);
+            showFormError('Something went wrong. Please try again.');
             button.textContent = 'Be Notified When She Awakens';
             button.disabled = false;
         }
     });
+}
+
+function isValidEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+}
+
+function showFormError(message) {
+    let errorEl = document.getElementById('form-error');
+    if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('tw-hidden');
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            errorEl.classList.add('tw-hidden');
+        }, 5000);
+    }
+}
+
+// ============================================
+// Floating CTA Button
+// ============================================
+
+function setupFloatingCTA() {
+    const floatingCTA = document.getElementById('floating-cta');
+
+    if (!floatingCTA) return;
+
+    // Click handler - jump to CTA section using global function
+    floatingCTA.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent click navigation
+
+        // Use the global jumpToCTA function exposed by setupClickNavigation
+        if (typeof window.jumpToCTA === 'function') {
+            window.jumpToCTA();
+
+            // Focus the email input after animation
+            setTimeout(() => {
+                const emailInput = document.getElementById('waitlist-email');
+                if (emailInput) emailInput.focus();
+            }, 600);
+
+            // Track in analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'floating_cta_click', {
+                    'event_category': 'engagement',
+                    'event_label': 'Floating CTA'
+                });
+            }
+        }
+    });
+}
+
+// Show/hide floating CTA based on current section
+function updateFloatingCTAVisibility(currentSection, totalSections) {
+    const floatingCTA = document.getElementById('floating-cta');
+    if (!floatingCTA) return;
+
+    // Show after first section (index > 0), hide when at CTA (last section)
+    if (currentSection > 0 && currentSection < totalSections) {
+        floatingCTA.classList.add('visible');
+    } else {
+        floatingCTA.classList.remove('visible');
+    }
 }
 
 // ============================================
@@ -875,18 +1051,19 @@ async function initParticles() {
 async function initMainExperience() {
     // Initialize Particles.js (with inline fallback when needed)
     await initParticles();
-    
+
     // Setup all interactive features
     // setupEnhancedGlow(); // Removed: no glow element
     setupEasterEgg();
     setupClickNavigation(); // Changed from setupScrollAnimations
     setupWaitlistForm();
+    setupFloatingCTA();
     setupSmoothScroll();
     setupCursorGlow();
-    
+
     // Start shooting stars overlay
     initShootingStars();
-    
+
     console.log('🌌 TARA AI - Main Experience Initialized');
 }
 
@@ -931,34 +1108,44 @@ function initShootingStars() {
 
     const stars = [];
 
+    // Color palette for shooting stars
+    const starColors = [
+        { head: [255, 255, 255], tail: [168, 182, 255] },  // White/blue
+        { head: [255, 240, 255], tail: [200, 160, 255] },  // White/purple
+        { head: [255, 255, 240], tail: [255, 200, 180] },  // White/warm
+        { head: [240, 255, 255], tail: [150, 200, 255] },  // White/cyan
+    ];
+
     function spawnStar() {
         const margin = 60;
-        const speed = 6 + Math.random() * 4; // 6-10 px/frame
+        const speed = 8 + Math.random() * 6; // 8-14 px/frame (faster)
+        const size = 2 + Math.random() * 1.5; // 2-3.5 size variation
+        const color = starColors[Math.floor(Math.random() * starColors.length)];
 
-        // Randomize origin edge
-        const edge = Math.floor(Math.random() * 4); // 0: left, 1: right, 2: top, 3: bottom
+        // Randomize origin edge (favor diagonal movement)
+        const edge = Math.floor(Math.random() * 4);
         let x, y, destX, destY;
 
         if (edge === 0) { // from left -> to right-ish
             x = -margin;
-            y = Math.random() * canvas.height;
+            y = Math.random() * canvas.height * 0.6;
             destX = canvas.width + margin;
-            destY = Math.random() * canvas.height;
+            destY = y + canvas.height * 0.4 + Math.random() * canvas.height * 0.3;
         } else if (edge === 1) { // from right -> to left-ish
             x = canvas.width + margin;
-            y = Math.random() * canvas.height;
+            y = Math.random() * canvas.height * 0.6;
             destX = -margin;
-            destY = Math.random() * canvas.height;
+            destY = y + canvas.height * 0.4 + Math.random() * canvas.height * 0.3;
         } else if (edge === 2) { // from top -> to bottom-ish
             x = Math.random() * canvas.width;
             y = -margin;
-            destX = Math.random() * canvas.width;
+            destX = x + (Math.random() - 0.3) * canvas.width * 0.5;
             destY = canvas.height + margin;
-        } else { // from bottom -> to top-ish
-            x = Math.random() * canvas.width;
-            y = canvas.height + margin;
-            destX = Math.random() * canvas.width;
-            destY = -margin;
+        } else { // from top-right corner -> diagonal
+            x = canvas.width * 0.7 + Math.random() * canvas.width * 0.3;
+            y = -margin;
+            destX = -margin;
+            destY = canvas.height * 0.5 + Math.random() * canvas.height * 0.5;
         }
 
         // Compute velocity vector towards destination
@@ -968,13 +1155,14 @@ function initShootingStars() {
         const vx = (dx / len) * speed;
         const vy = (dy / len) * speed;
 
-        // Life based on travel distance (clamped)
-        const travelFrames = Math.min(160, Math.max(80, len / speed * 0.06));
-        stars.push({ x, y, vx, vy, life: 0, maxLife: travelFrames });
+        // Life based on travel distance
+        const travelFrames = Math.min(180, Math.max(100, len / speed * 0.08));
+        stars.push({ x, y, vx, vy, life: 0, maxLife: travelFrames, size, color });
     }
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         for (let i = stars.length - 1; i >= 0; i--) {
             const s = stars[i];
             s.x += s.vx;
@@ -982,29 +1170,36 @@ function initShootingStars() {
             s.life++;
 
             const t = s.life / s.maxLife; // 0..1
-            const opacity = 1 - t;
+            const opacity = Math.pow(1 - t, 0.7); // Slower fade
+            const [hr, hg, hb] = s.color.head;
+            const [tr, tg, tb] = s.color.tail;
 
-            // star head
-            ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+            // Glowing star head
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = `rgba(${hr},${hg},${hb},${opacity * 0.5})`;
+            ctx.fillStyle = `rgba(${hr},${hg},${hb},${opacity})`;
             ctx.beginPath();
-            ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
+            ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
             ctx.fill();
+            ctx.shadowBlur = 0;
 
-            // tail
-            const tailLen = 80;
-            const tx = s.x - s.vx * 4;
-            const ty = s.y - s.vy * 4;
+            // Longer, brighter tail
+            const tailMultiplier = 6; // Longer tail
+            const tx = s.x - s.vx * tailMultiplier;
+            const ty = s.y - s.vy * tailMultiplier;
             const grad = ctx.createLinearGradient(tx, ty, s.x, s.y);
-            grad.addColorStop(0, `rgba(168,182,255,0)`);
-            grad.addColorStop(1, `rgba(255,255,255,${opacity})`);
+            grad.addColorStop(0, `rgba(${tr},${tg},${tb},0)`);
+            grad.addColorStop(0.5, `rgba(${tr},${tg},${tb},${opacity * 0.3})`);
+            grad.addColorStop(1, `rgba(${hr},${hg},${hb},${opacity * 0.9})`);
             ctx.strokeStyle = grad;
-            ctx.lineWidth = 2;
+            ctx.lineWidth = s.size * 0.8;
+            ctx.lineCap = 'round';
             ctx.beginPath();
             ctx.moveTo(tx, ty);
             ctx.lineTo(s.x, s.y);
             ctx.stroke();
 
-            if (s.life > s.maxLife || s.x > canvas.width + 50 || s.y > canvas.height + 50) {
+            if (s.life > s.maxLife || s.x < -100 || s.x > canvas.width + 100 || s.y < -100 || s.y > canvas.height + 100) {
                 stars.splice(i, 1);
             }
         }
@@ -1013,10 +1208,14 @@ function initShootingStars() {
 
     function scheduleNext() {
         spawnStar();
-        if (Math.random() < 0.25) setTimeout(spawnStar, 120); // small burst 25% of the time
-        const delay = 1800 + Math.random() * 2200; // 1.8–4.0s
+        // 40% chance of burst (2-3 stars)
+        if (Math.random() < 0.4) {
+            setTimeout(spawnStar, 80 + Math.random() * 100);
+            if (Math.random() < 0.3) setTimeout(spawnStar, 150 + Math.random() * 100);
+        }
+        const delay = 800 + Math.random() * 1500; // 0.8–2.3s (more frequent)
         setTimeout(scheduleNext, delay);
-      }
-      scheduleNext();
-      draw();
+    }
+    scheduleNext();
+    draw();
 }
