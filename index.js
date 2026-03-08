@@ -42,15 +42,25 @@ function setupEasterEgg() {
 // Section Progress Dots
 // ============================================
 
+// Tracks whether the pill has been placed yet (skip animation on first call)
+let dotPillReady = false;
+
 function setupDotNav(totalDots) {
     const nav = document.getElementById('section-dots');
     if (!nav) return;
+
     for (let i = 0; i < totalDots; i++) {
         const dot = document.createElement('span');
         dot.className = 'section-dot';
         dot.setAttribute('aria-label', `Section ${i + 1} of ${totalDots}`);
         nav.appendChild(dot);
     }
+
+    // Pill appended AFTER dots so it renders on top of them
+    const pill = document.createElement('div');
+    pill.id = 'dot-pill';
+    nav.appendChild(pill);
+
     updateDotNav(0);
 }
 
@@ -58,6 +68,19 @@ function updateDotNav(index) {
     document.querySelectorAll('.section-dot').forEach((dot, i) => {
         dot.classList.toggle('active', i === index);
     });
+
+    const pill = document.getElementById('dot-pill');
+    if (!pill) return;
+
+    // Each slot = 5px dot + 6px gap = 11px
+    const targetX = index * 11;
+
+    if (!dotPillReady) {
+        gsap.set(pill, { x: targetX });
+        dotPillReady = true;
+    } else {
+        gsap.to(pill, { x: targetX, duration: 0.45, ease: 'power2.inOut' });
+    }
 }
 
 function showDots() {
