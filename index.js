@@ -127,6 +127,9 @@ function setupClickNavigation() {
         isTransitioning = true;
 
         if (currentSection >= statementSections.length) {
+            // Coming back from CTA — show dots immediately at the right position
+            updateDotNav(statementSections.length - 1);
+            showDots();
             const cta = document.querySelector('#cta-section');
             if (cta) {
                 gsap.to(cta, {
@@ -145,6 +148,9 @@ function setupClickNavigation() {
             }
             return;
         }
+
+        // Move dot back immediately on click
+        updateDotNav(currentSection - 1);
 
         const currentEl = statementSections[currentSection];
         const currentText = currentEl.querySelector('.statement-text');
@@ -182,6 +188,8 @@ function setupClickNavigation() {
 
         if (currentSection < statementSections.length - 1) {
             isTransitioning = true;
+            // Move dot forward immediately on click
+            updateDotNav(currentSection + 1);
 
             const currentEl = statementSections[currentSection];
             const currentText = currentEl.querySelector('.statement-text');
@@ -214,6 +222,8 @@ function setupClickNavigation() {
             });
         } else if (currentSection === statementSections.length - 1) {
             isTransitioning = true;
+            // Hide dots immediately when advancing to CTA
+            hideDots();
 
             const lastSection = statementSections[currentSection];
             gsap.to(lastSection, {
