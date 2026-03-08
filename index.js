@@ -694,16 +694,18 @@ function updateFloatingCTAVisibility(currentSection, totalSections) {
     const floatingCTA = document.getElementById('floating-cta');
     if (!floatingCTA) return;
 
-    if (currentSection > 0 && currentSection < totalSections) {
-        const progress = currentSection / (totalSections - 1);
-        const opacity  = Math.pow(progress, 0.8);
-        floatingCTA.classList.add('visible');
-        floatingCTA.style.opacity = opacity;
-        floatingCTA.classList.toggle('glow-active', currentSection === totalSections - 1);
-    } else {
-        floatingCTA.classList.remove('visible', 'glow-active');
+    // Hide on first slide, last statement slide (redundant before CTA), and CTA page
+    if (currentSection <= 0 || currentSection >= totalSections - 1) {
+        floatingCTA.classList.remove('visible');
         floatingCTA.style.opacity = '';
+        return;
     }
+
+    // Sections 1–5: subtle ramp so the button earns attention gradually
+    const opacities = [0.02, 0.07, 0.12, 0.17, 0.22];
+    const opacity = opacities[Math.min(currentSection - 1, opacities.length - 1)];
+    floatingCTA.classList.add('visible');
+    floatingCTA.style.opacity = opacity;
 }
 
 // ============================================
