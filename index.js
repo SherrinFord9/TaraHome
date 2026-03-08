@@ -695,9 +695,14 @@ function updateFloatingCTAVisibility(currentSection, totalSections) {
     if (!floatingCTA) return;
 
     if (currentSection > 0 && currentSection < totalSections) {
+        const progress = currentSection / (totalSections - 1);
+        const opacity  = Math.pow(progress, 0.8);
         floatingCTA.classList.add('visible');
+        floatingCTA.style.opacity = opacity;
+        floatingCTA.classList.toggle('glow-active', currentSection === totalSections - 1);
     } else {
-        floatingCTA.classList.remove('visible');
+        floatingCTA.classList.remove('visible', 'glow-active');
+        floatingCTA.style.opacity = '';
     }
 }
 
