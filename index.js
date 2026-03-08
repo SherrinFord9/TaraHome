@@ -39,6 +39,38 @@ function setupEasterEgg() {
 }
 
 // ============================================
+// Section Progress Dots
+// ============================================
+
+function setupDotNav(totalDots) {
+    const nav = document.getElementById('section-dots');
+    if (!nav) return;
+    for (let i = 0; i < totalDots; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'section-dot';
+        dot.setAttribute('aria-label', `Section ${i + 1} of ${totalDots}`);
+        nav.appendChild(dot);
+    }
+    updateDotNav(0);
+}
+
+function updateDotNav(index) {
+    document.querySelectorAll('.section-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+}
+
+function showDots() {
+    const nav = document.getElementById('section-dots');
+    if (nav) nav.classList.remove('dots-hidden');
+}
+
+function hideDots() {
+    const nav = document.getElementById('section-dots');
+    if (nav) nav.classList.add('dots-hidden');
+}
+
+// ============================================
 // Click-to-Advance Navigation
 // ============================================
 
@@ -237,6 +269,8 @@ function setupClickNavigation() {
                     });
 
                     currentSection++;
+                    updateDotNav(currentSection);
+                    hideDots();
 
                     const floatingCTA = document.getElementById('floating-cta');
                     if (floatingCTA) floatingCTA.classList.remove('visible');
@@ -283,6 +317,9 @@ function setupClickNavigation() {
                 delay: 0.3
             });
         }
+
+        updateDotNav(currentSection);
+        showDots();
     }
 
     // Any click advances forward; left hint handles going back
@@ -303,6 +340,22 @@ function setupClickNavigation() {
             showPreviousSection();
         }
     });
+
+    // Swipe navigation for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    document.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+            if (dx < 0) showNextSection();
+            else showPreviousSection();
+        }
+    }, { passive: true });
 
     // Show scroll indicator initially
     gsap.from('.scroll-indicator', {
@@ -337,6 +390,13 @@ function setupClickNavigation() {
 
     updateEdgeArrows();
     window.updateEdgeArrows = updateEdgeArrows;
+
+    // First-visit: pulse the right arrow to teach the interaction
+    if (!localStorage.getItem('tara_visited') && hintRight) {
+        localStorage.setItem('tara_visited', '1');
+        hintRight.classList.add('teaching');
+        setTimeout(() => hintRight.classList.remove('teaching'), 4000);
+    }
 
     // Make left hint clickable for going back
     if (hintLeft) {
@@ -409,6 +469,8 @@ function setupClickNavigation() {
         });
 
         currentSection = statementSections.length;
+        updateDotNav(currentSection);
+        hideDots();
 
         const floatingCTA = document.getElementById('floating-cta');
         if (floatingCTA) floatingCTA.classList.remove('visible');
@@ -649,6 +711,7 @@ async function initParticles() {
 async function initMainExperience() {
     await initParticles();
 
+    setupDotNav(document.querySelectorAll('.statement-section').length + 1);
     setupEasterEgg();
     setupClickNavigation();
     setupWaitlistForm();

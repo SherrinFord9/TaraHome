@@ -194,6 +194,9 @@ body {
 }
 
 .waitlist-button {
+    font-size: 0.875rem;
+    width: 280px;
+    height: 48px;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -731,5 +734,88 @@ a:focus-visible {
 @media (max-height: 500px) {
     .floating-cta {
         display: none;
+    }
+}
+
+/* ===================================================== */
+/* SECTION PROGRESS DOTS                                 */
+/* ===================================================== */
+
+#section-dots {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    z-index: 50;
+    transition: opacity 0.4s ease;
+}
+
+#section-dots.dots-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.section-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: background 0.35s ease, transform 0.35s ease;
+    flex-shrink: 0;
+}
+
+.section-dot.active {
+    background: rgba(255, 255, 255, 0.9);
+    transform: scale(1.5);
+}
+
+/* ===================================================== */
+/* CLICK HINT CHEVRON                                    */
+/* ===================================================== */
+
+.click-hint-icon {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.4);
+    animation: chevronPulse 1.8s ease-in-out infinite;
+    display: block;
+}
+
+@keyframes chevronPulse {
+    0%, 100% { transform: translateY(0);   opacity: 0.35; }
+    50%       { transform: translateY(7px); opacity: 0.75; }
+}
+
+/* Hide on mobile — right edge arrow serves the same purpose */
+@media (max-width: 768px) {
+    .scroll-indicator { display: none; }
+}
+
+/* ===================================================== */
+/* EDGE ARROW FIRST-VISIT TEACHING                       */
+/* ===================================================== */
+
+.edge-hint.teaching {
+    color: rgba(200, 210, 255, 0.85) !important;
+    animation: edgeTeach 0.9s ease-in-out 4 !important;
+}
+
+@keyframes edgeTeach {
+    0%, 100% { transform: translateY(-50%) scale(1);   opacity: 0.85; }
+    50%       { transform: translateY(-50%) scale(1.4); opacity: 1; }
+}
+
+/* ===================================================== */
+/* MOBILE VIEWPORT HEIGHT FIX (dynamic vh)               */
+/* ===================================================== */
+
+@supports (height: 100dvh) {
+    .statement-section {
+        min-height: 100dvh !important;
+    }
+    #cta-section {
+        height: 100dvh !important;
     }
 }
