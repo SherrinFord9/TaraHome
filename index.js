@@ -75,10 +75,11 @@ function updateDotNav(index) {
     if (!pill) return;
 
     // Each slot = 5px dot + 6px gap = 11px
-    const toX = index * 11;
+    // Offset by 1.5px to center the 8px pill on the 5px dot
+    const toX = index * 11 - 1.5;
 
     if (!dotPillReady) {
-        gsap.set(pill, { x: toX, width: 28 });
+        gsap.set(pill, { x: toX, width: 8 });
         dotPillReady = true;
         lastDotIndex = index;
         return;
@@ -89,7 +90,7 @@ function updateDotNav(index) {
     lastDotIndex    = index;
 
     // Stretch scales with distance, capped so big jumps aren't absurd
-    const stretchW = Math.min(28 + steps * 9, 54);
+    const stretchW = Math.min(8 + steps * 9, 36);
 
     gsap.killTweensOf(pill);
     const tl = gsap.timeline();
@@ -101,7 +102,7 @@ function updateDotNav(index) {
         // Width snaps back with a single overshoot → "liquid settle".
         tl.to(pill, { width: stretchW, duration: 0.16, ease: 'power2.out'  }, 0.00)
           .to(pill, { x: toX,         duration: 0.30, ease: 'power3.out'   }, 0.05)
-          .to(pill, { width: 28,       duration: 0.48, ease: 'back.out(2)'  }, 0.21);
+          .to(pill, { width: 8,        duration: 0.48, ease: 'back.out(2)'  }, 0.21);
     } else {
         // ── Moving LEFT ───────────────────────────────────────────────────────
         // Left edge (leading) jumps back immediately (x moves).
@@ -109,7 +110,7 @@ function updateDotNav(index) {
         // where the pill came from, then snaps closed.
         tl.to(pill, { x: toX,         duration: 0.30, ease: 'power3.out'   }, 0.00)
           .to(pill, { width: stretchW, duration: 0.16, ease: 'power2.out'   }, 0.00)
-          .to(pill, { width: 28,       duration: 0.48, ease: 'back.out(2)'  }, 0.14);
+          .to(pill, { width: 8,        duration: 0.48, ease: 'back.out(2)'  }, 0.14);
     }
 }
 

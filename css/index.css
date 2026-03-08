@@ -781,6 +781,12 @@ a:focus-visible {
     background: rgba(255, 255, 255, 0.32);
     flex-shrink: 0;
     transition: background 0.5s ease;
+    z-index: 1; /* float above pill so future dots stay visible */
+}
+
+/* Active dot — sink below pill so the pill covers it */
+.section-dot.active {
+    z-index: 0;
 }
 
 /* Past dots — already consumed, fade away */
@@ -793,7 +799,7 @@ a:focus-visible {
     position: absolute;
     left: 0;
     top: 0;
-    width: 28px;
+    width: 8px;
     height: 5px;
     border-radius: 3px;
     background: linear-gradient(90deg, rgba(168, 182, 255, 0.9), rgba(200, 180, 255, 0.9));
