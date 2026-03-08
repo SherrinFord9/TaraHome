@@ -209,6 +209,7 @@ function setupClickNavigation() {
                     showCurrentSection();
                     updateFloatingCTAVisibility(currentSection, totalSections);
                     if (window.updateEdgeArrows) window.updateEdgeArrows();
+                    maybeTeachLeft();
                     isTransitioning = false;
                 }
             });
@@ -396,11 +397,25 @@ function setupClickNavigation() {
     updateEdgeArrows();
     window.updateEdgeArrows = updateEdgeArrows;
 
-    // First-visit: pulse the right arrow to teach the interaction
-    if (!localStorage.getItem('tara_visited') && hintRight) {
+    // First-visit: pulse right arrow immediately, then left arrow when section 2 is reached
+    const isFirstVisit = !localStorage.getItem('tara_visited');
+    if (isFirstVisit) {
         localStorage.setItem('tara_visited', '1');
-        hintRight.classList.add('teaching');
-        setTimeout(() => hintRight.classList.remove('teaching'), 4000);
+        if (hintRight) {
+            hintRight.classList.add('teaching');
+            setTimeout(() => hintRight.classList.remove('teaching'), 4000);
+        }
+    }
+
+    // Teach left arrow the first time the user reaches section 2
+    let leftTaught = false;
+    function maybeTeachLeft() {
+        if (leftTaught || currentSection !== 1) return;
+        leftTaught = true;
+        if (hintLeft) {
+            hintLeft.classList.add('teaching');
+            setTimeout(() => hintLeft.classList.remove('teaching'), 4000);
+        }
     }
 
     // Make left hint clickable for going back

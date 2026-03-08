@@ -57,13 +57,29 @@ body {
     pointer-events: none; /* don't block clicks */
     font-size: clamp(24px, 3vw, 36px);
     z-index: 12; /* above particles, below content */
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 #hint-left  { left: 20px; }
 #hint-right { right: 20px; }
 
+.hint-label {
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    white-space: nowrap;
+}
+
 /* Brighter on hover (desktop) */
 .edge-hint.active {
     color: rgba(200, 210, 255, 0.6);
+}
+.edge-hint.active .hint-label {
+    opacity: 1;
 }
 
 /* Subtle pulse animation to draw attention */
@@ -800,6 +816,9 @@ a:focus-visible {
 .edge-hint.teaching {
     color: rgba(200, 210, 255, 0.85) !important;
     animation: edgeTeach 0.9s ease-in-out 4 !important;
+}
+.edge-hint.teaching .hint-label {
+    opacity: 1;
 }
 
 @keyframes edgeTeach {
