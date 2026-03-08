@@ -322,12 +322,17 @@ function setupClickNavigation() {
         showDots();
     }
 
-    // Any click advances forward; left hint handles going back
+    // Left 15% of screen goes back, rest goes forward
     document.addEventListener('click', (e) => {
         if (e.target.closest('#waitlist-form')) return;
         if (e.target.closest('#floating-cta')) return;
         if (e.target.closest('#hint-left')) return;
-        showNextSection();
+        if (e.target.closest('#hint-right')) return;
+        if (e.clientX < window.innerWidth * 0.15 && currentSection > 0) {
+            showPreviousSection();
+        } else {
+            showNextSection();
+        }
     });
 
     // Keyboard support
