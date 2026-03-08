@@ -42,8 +42,9 @@ function setupEasterEgg() {
 // Section Progress Dots
 // ============================================
 
-// Tracks whether the pill has been placed yet (skip animation on first call)
+// Pill animation state
 let dotPillReady = false;
+let lastDotIndex = 0;
 
 function setupDotNav(totalDots) {
     const nav = document.getElementById('section-dots');
@@ -73,13 +74,41 @@ function updateDotNav(index) {
     if (!pill) return;
 
     // Each slot = 5px dot + 6px gap = 11px
-    const targetX = index * 11;
+    const toX = index * 11;
 
     if (!dotPillReady) {
-        gsap.set(pill, { x: targetX });
+        gsap.set(pill, { x: toX, width: 28 });
         dotPillReady = true;
+        lastDotIndex = index;
+        return;
+    }
+
+    const steps     = Math.abs(index - lastDotIndex);
+    const direction = index > lastDotIndex ? 1 : -1;
+    lastDotIndex    = index;
+
+    // Stretch scales with distance, capped so big jumps aren't absurd
+    const stretchW = Math.min(28 + steps * 9, 54);
+
+    gsap.killTweensOf(pill);
+    const tl = gsap.timeline();
+
+    if (direction === 1) {
+        // ── Moving RIGHT ──────────────────────────────────────────────────────
+        // Right edge (leading) shoots forward first via width grow.
+        // Left edge (trailing) then slides to catch up.
+        // Width snaps back with a single overshoot → "liquid settle".
+        tl.to(pill, { width: stretchW, duration: 0.16, ease: 'power2.out'  }, 0.00)
+          .to(pill, { x: toX,         duration: 0.30, ease: 'power3.out'   }, 0.05)
+          .to(pill, { width: 28,       duration: 0.48, ease: 'back.out(2)'  }, 0.21);
     } else {
-        gsap.to(pill, { x: targetX, duration: 0.45, ease: 'power2.inOut' });
+        // ── Moving LEFT ───────────────────────────────────────────────────────
+        // Left edge (leading) jumps back immediately (x moves).
+        // Width simultaneously grows rightward, keeping a visual bridge to
+        // where the pill came from, then snaps closed.
+        tl.to(pill, { x: toX,         duration: 0.30, ease: 'power3.out'   }, 0.00)
+          .to(pill, { width: stretchW, duration: 0.16, ease: 'power2.out'   }, 0.00)
+          .to(pill, { width: 28,       duration: 0.48, ease: 'back.out(2)'  }, 0.14);
     }
 }
 
