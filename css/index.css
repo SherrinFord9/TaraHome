@@ -659,92 +659,6 @@ a:focus-visible {
 }
 
 /* ===================================================== */
-/* FLOATING CTA BUTTON                                    */
-/* ===================================================== */
-
-.floating-cta {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 24px;
-    background: rgba(255, 255, 255, 0.95);
-    color: #000;
-    border: none;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 24px rgba(100, 120, 255, 0.3), 0 0 40px rgba(100, 120, 255, 0.15);
-    pointer-events: none;
-}
-
-.floating-cta.visible {
-    transform: translateY(0);
-    pointer-events: auto;
-}
-
-.floating-cta:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 32px rgba(100, 120, 255, 0.4), 0 0 60px rgba(100, 120, 255, 0.2);
-    background: #fff;
-}
-
-.floating-cta:active {
-    transform: translateY(-1px) scale(0.98);
-}
-
-.floating-cta-icon {
-    display: flex;
-    align-items: center;
-    font-size: 1.1rem;
-    transition: transform 0.3s ease;
-}
-
-.floating-cta:hover .floating-cta-icon {
-    transform: translateX(4px);
-}
-
-/* Subtle pulsing glow animation */
-@keyframes floatingGlow {
-    0%, 100% {
-        box-shadow: 0 4px 24px rgba(100, 120, 255, 0.3), 0 0 40px rgba(100, 120, 255, 0.15);
-    }
-    50% {
-        box-shadow: 0 4px 32px rgba(100, 120, 255, 0.45), 0 0 50px rgba(100, 120, 255, 0.25);
-    }
-}
-
-
-.floating-cta:hover {
-    animation: none;
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-    .floating-cta {
-        bottom: 20px;
-        right: 20px;
-        padding: 12px 20px;
-        font-size: 0.8rem;
-    }
-}
-
-/* Hide on very small screens or when keyboard is open */
-@media (max-height: 500px) {
-    .floating-cta {
-        display: none;
-    }
-}
-
-/* ===================================================== */
 /* SECTION PROGRESS DOTS                                 */
 /* ===================================================== */
 
@@ -801,6 +715,44 @@ a:focus-visible {
     background: rgba(255, 252, 245, 0.92);
     box-shadow: 0 0 10px rgba(255, 252, 245, 0.35), 0 0 20px rgba(255, 252, 245, 0.12);
     pointer-events: none;
+}
+
+/* ===================================================== */
+/* SKIP LINK                                             */
+/* ===================================================== */
+
+.skip-cta {
+    position: fixed;
+    bottom: 36px;
+    right: 32px;
+    z-index: 100;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.6s ease, color 0.3s ease;
+    pointer-events: none;
+    padding: 4px 0;
+}
+
+.skip-cta.idle-revealed {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.skip-cta:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 768px) {
+    .skip-cta {
+        bottom: 20px;
+        right: 20px;
+    }
 }
 
 /* ===================================================== */

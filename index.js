@@ -194,7 +194,6 @@ function setupClickNavigation() {
                         gsap.set(cta, { display: 'none', zIndex: 1 });
                         currentSection = statementSections.length - 1;
                         showCurrentSection();
-                        updateFloatingCTAVisibility(currentSection, totalSections);
                         if (window.updateEdgeArrows) window.updateEdgeArrows();
                         isTransitioning = false;
                     }
@@ -230,7 +229,6 @@ function setupClickNavigation() {
                 gsap.set(currentEl, { display: 'none', zIndex: 1 });
                 currentSection--;
                 showCurrentSection();
-                updateFloatingCTAVisibility(currentSection, totalSections);
                 if (window.updateEdgeArrows) window.updateEdgeArrows();
                 isTransitioning = false;
             }
@@ -269,7 +267,6 @@ function setupClickNavigation() {
                     gsap.set(currentEl, { display: 'none', zIndex: 1 });
                     currentSection++;
                     showCurrentSection();
-                    updateFloatingCTAVisibility(currentSection, totalSections);
                     if (window.updateEdgeArrows) window.updateEdgeArrows();
                     isTransitioning = false;
                 }
@@ -336,8 +333,6 @@ function setupClickNavigation() {
                     updateDotNav(currentSection);
                     hideDots();
 
-                    const floatingCTA = document.getElementById('floating-cta');
-                    if (floatingCTA) floatingCTA.classList.remove('visible');
                     if (window.updateEdgeArrows) window.updateEdgeArrows();
                 }
             });
@@ -389,7 +384,7 @@ function setupClickNavigation() {
     // Left 15% of screen goes back, rest goes forward
     document.addEventListener('click', (e) => {
         if (e.target.closest('#waitlist-form')) return;
-        if (e.target.closest('#floating-cta')) return;
+        if (e.target.closest('#skip-cta')) return;
         if (e.target.closest('#hint-left')) return;
         if (e.clientX < window.innerWidth * 0.15 && currentSection > 0) {
             showPreviousSection();
@@ -496,6 +491,7 @@ function setupClickNavigation() {
     const IDLE_DELAY = isFirstVisit ? 2000 : 3500;
 
     const clickLabel = document.querySelector('.click-anywhere');
+    const skipCta = document.getElementById('skip-cta');
     let idleTimer = null;
 
     function revealIdleHints() {
@@ -508,12 +504,16 @@ function setupClickNavigation() {
         if (clickLabel && currentSection < statementSections.length) {
             clickLabel.classList.add('idle-revealed');
         }
+        if (skipCta && currentSection > 0 && currentSection < statementSections.length) {
+            skipCta.classList.add('idle-revealed');
+        }
     }
 
     function hideIdleHints() {
         hintLeft?.classList.remove('idle-revealed');
         hintRight?.classList.remove('idle-revealed');
         clickLabel?.classList.remove('idle-revealed');
+        skipCta?.classList.remove('idle-revealed');
     }
 
     function resetIdleTimer() {
@@ -528,7 +528,17 @@ function setupClickNavigation() {
     resetIdleTimer();
     // ─────────────────────────────────────────────────────────────────────────
 
-    // Expose jumpToCTA for floating CTA button
+    // Skip link — shown on idle, jumps straight to waitlist
+    if (skipCta) {
+        skipCta.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (typeof window.jumpToCTA === 'function') {
+                window.jumpToCTA();
+            }
+        });
+    }
+
+    // Expose jumpToCTA for skip link
     window.jumpToCTA = function () {
         if (isTransitioning) return;
         if (currentSection >= statementSections.length) return;
@@ -577,8 +587,6 @@ function setupClickNavigation() {
         updateDotNav(currentSection);
         hideDots();
 
-        const floatingCTA = document.getElementById('floating-cta');
-        if (floatingCTA) floatingCTA.classList.remove('visible');
         if (window.updateEdgeArrows) window.updateEdgeArrows();
     };
 }
@@ -659,53 +667,6 @@ function showFormError(message) {
             errorEl.classList.add('tw-hidden');
         }, 5000);
     }
-}
-
-// ============================================
-// Floating CTA Button
-// ============================================
-
-function setupFloatingCTA() {
-    const floatingCTA = document.getElementById('floating-cta');
-    if (!floatingCTA) return;
-
-    floatingCTA.addEventListener('click', (e) => {
-        e.stopPropagation();
-
-        if (typeof window.jumpToCTA === 'function') {
-            window.jumpToCTA();
-
-            setTimeout(() => {
-                const emailInput = document.getElementById('waitlist-email');
-                if (emailInput) emailInput.focus();
-            }, 600);
-
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'floating_cta_click', {
-                    'event_category': 'engagement',
-                    'event_label': 'Floating CTA'
-                });
-            }
-        }
-    });
-}
-
-function updateFloatingCTAVisibility(currentSection, totalSections) {
-    const floatingCTA = document.getElementById('floating-cta');
-    if (!floatingCTA) return;
-
-    // Hide on first slide, last statement slide (redundant before CTA), and CTA page
-    if (currentSection <= 0 || currentSection >= totalSections - 1) {
-        floatingCTA.classList.remove('visible');
-        floatingCTA.style.opacity = '';
-        return;
-    }
-
-    // Sections 1–5: subtle ramp so the button earns attention gradually
-    const opacities = [0.02, 0.07, 0.12, 0.17, 0.22];
-    const opacity = opacities[Math.min(currentSection - 1, opacities.length - 1)];
-    floatingCTA.classList.add('visible');
-    floatingCTA.style.opacity = opacity;
 }
 
 // ============================================
@@ -827,7 +788,6 @@ async function initMainExperience() {
     setupEasterEgg();
     setupClickNavigation();
     setupWaitlistForm();
-    setupFloatingCTA();
     setupSmoothScroll();
     setupCursorGlow();
 
