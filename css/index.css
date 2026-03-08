@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
 
 :root {
     --primary-text-color: #fff;
@@ -7,7 +7,7 @@
 
 html {
     scroll-behavior: smooth;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Syne', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 body {
@@ -124,16 +124,9 @@ body {
     left: 50%;
     transform: translateX(-50%);
     z-index: 20;
-    animation: bounce 2s ease-in-out infinite;
-}
-
-@keyframes bounce {
-    0%, 100% { 
-        transform: translate(-50%, 0); 
-    }
-    50% { 
-        transform: translate(-50%, -10px); 
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Glow Effects */
@@ -759,11 +752,11 @@ a:focus-visible {
 
 #section-dots {
     position: fixed;
-    bottom: 28px;
+    bottom: 32px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     z-index: 50;
     transition: opacity 0.4s ease;
@@ -775,38 +768,48 @@ a:focus-visible {
 }
 
 .section-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transition: background 0.35s ease, transform 0.35s ease;
+    background: rgba(255, 255, 255, 0.12);
+    transition: all 0.6s ease-out;
     flex-shrink: 0;
 }
 
 .section-dot.active {
-    background: rgba(255, 255, 255, 0.9);
-    transform: scale(1.5);
+    width: 28px;
+    height: 5px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, rgba(168, 182, 255, 0.9), rgba(200, 180, 255, 0.9));
+    box-shadow: 0 0 12px rgba(168, 182, 255, 0.4), 0 0 24px rgba(168, 182, 255, 0.15);
+    transform: none;
 }
 
 /* ===================================================== */
 /* CLICK HINT CHEVRON                                    */
 /* ===================================================== */
 
-.click-hint-icon {
-    font-size: 1.4rem;
-    color: rgba(255, 255, 255, 0.4);
-    animation: chevronPulse 1.8s ease-in-out infinite;
-    display: block;
+/* Tap to continue indicator */
+.tap-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    white-space: nowrap;
 }
 
-@keyframes chevronPulse {
-    0%, 100% { transform: translateY(0);   opacity: 0.35; }
-    50%       { transform: translateY(7px); opacity: 0.75; }
+.tap-line {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(200, 212, 255, 0.5), rgba(200, 212, 255, 0));
+    animation: tapLinePulse 2s ease-in-out infinite;
 }
 
-/* Hide on mobile — right edge arrow serves the same purpose */
-@media (max-width: 768px) {
-    .scroll-indicator { display: none; }
+@keyframes tapLinePulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
 }
 
 /* ===================================================== */
@@ -837,4 +840,23 @@ a:focus-visible {
     #cta-section {
         height: 100dvh !important;
     }
+}
+
+/* ===================================================== */
+/* STATEMENT TEXT — GRADIENT + GLOW                      */
+/* ===================================================== */
+
+h2.statement-text {
+    background: linear-gradient(135deg, #ffffff 0%, #c8d4ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 40px rgba(200, 212, 255, 0.25), 0 0 80px rgba(200, 212, 255, 0.1);
+}
+
+/* Secondary lines — Inter font, lighter gray */
+h2.statement-text span {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-text-fill-color: rgba(107, 114, 128, 0.6);
+    background: none;
 }

@@ -406,16 +406,15 @@ function setupClickNavigation() {
         }
     }
 
-    // Teach both arrows the first time the user reaches section 2
+    // Teach the NEXT arrow the first time the user reaches section 2
     let leftTaught = false;
     function maybeTeachLeft() {
         if (leftTaught || currentSection !== 1) return;
         leftTaught = true;
-        [hintLeft, hintRight].forEach((hint) => {
-            if (!hint) return;
-            hint.classList.add('teaching');
-            setTimeout(() => hint.classList.remove('teaching'), 4000);
-        });
+        if (hintRight) {
+            hintRight.classList.add('teaching');
+            setTimeout(() => hintRight.classList.remove('teaching'), 4000);
+        }
     }
 
     // Make left hint clickable for going back
