@@ -68,6 +68,7 @@ function setupDotNav(totalDots) {
 function updateDotNav(index) {
     document.querySelectorAll('.section-dot').forEach((dot, i) => {
         dot.classList.toggle('active', i === index);
+        dot.classList.toggle('past', i < index);
     });
 
     const pill = document.getElementById('dot-pill');
