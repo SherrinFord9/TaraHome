@@ -504,7 +504,7 @@ function setupClickNavigation() {
         if (clickLabel && currentSection < statementSections.length) {
             clickLabel.classList.add('idle-revealed');
         }
-        if (skipCta && currentSection > 0 && currentSection < statementSections.length) {
+        if (skipCta && currentSection < statementSections.length) {
             skipCta.classList.add('idle-revealed');
         }
     }
@@ -828,9 +828,10 @@ function initShootingStars() {
     ];
 
     function spawnStar() {
+        if (stars.length >= 2) return;
         const margin = 60;
-        const speed = 8 + Math.random() * 6;
-        const size = 2 + Math.random() * 1.5;
+        const speed = 10 + Math.random() * 7;
+        const size = 2 + Math.random() * 2.5;
         const color = starColors[Math.floor(Math.random() * starColors.length)];
 
         const edge = Math.floor(Math.random() * 4);
@@ -864,7 +865,7 @@ function initShootingStars() {
         const vx = (dx / len) * speed;
         const vy = (dy / len) * speed;
 
-        const travelFrames = Math.min(180, Math.max(100, len / speed * 0.08));
+        const travelFrames = Math.ceil(len / speed);
         stars.push({ x, y, vx, vy, life: 0, maxLife: travelFrames, size, color });
     }
 
@@ -878,7 +879,10 @@ function initShootingStars() {
             s.life++;
 
             const t = s.life / s.maxLife;
-            const opacity = Math.pow(1 - t, 0.7);
+            const fadeInEnd = 0.12;
+            const opacity = t < fadeInEnd
+                ? t / fadeInEnd
+                : Math.pow(1 - (t - fadeInEnd) / (1 - fadeInEnd), 2.0);
             const [hr, hg, hb] = s.color.head;
             const [tr, tg, tb] = s.color.tail;
 
@@ -914,11 +918,11 @@ function initShootingStars() {
 
     function scheduleNext() {
         spawnStar();
-        if (Math.random() < 0.4) {
-            setTimeout(spawnStar, 80 + Math.random() * 100);
-            if (Math.random() < 0.3) setTimeout(spawnStar, 150 + Math.random() * 100);
+        if (Math.random() < 0.25) {
+            setTimeout(spawnStar, 300 + Math.random() * 300);
+            if (Math.random() < 0.2) setTimeout(spawnStar, 650 + Math.random() * 350);
         }
-        const delay = 800 + Math.random() * 1500;
+        const delay = 4000 + Math.random() * 4000;
         setTimeout(scheduleNext, delay);
     }
     scheduleNext();
