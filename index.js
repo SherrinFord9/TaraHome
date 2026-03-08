@@ -209,7 +209,6 @@ function setupClickNavigation() {
                     showCurrentSection();
                     updateFloatingCTAVisibility(currentSection, totalSections);
                     if (window.updateEdgeArrows) window.updateEdgeArrows();
-                    maybeTeachLeft();
                     isTransitioning = false;
                 }
             });
@@ -380,12 +379,15 @@ function setupClickNavigation() {
 
         if (currentSection >= statementSections.length) {
             hintLeft.classList.add('hidden');
+            hintLeft.classList.remove('idle-revealed');
             hintRight.classList.add('hidden');
+            hintRight.classList.remove('idle-revealed');
             return;
         }
 
         if (currentSection === 0) {
             hintLeft.classList.add('hidden');
+            hintLeft.classList.remove('idle-revealed');
             hintRight.classList.remove('hidden');
         } else {
             hintLeft.classList.remove('hidden');
@@ -395,27 +397,6 @@ function setupClickNavigation() {
 
     updateEdgeArrows();
     window.updateEdgeArrows = updateEdgeArrows;
-
-    // First-visit: pulse right arrow immediately, then left arrow when section 2 is reached
-    const isFirstVisit = !localStorage.getItem('tara_visited');
-    if (isFirstVisit) {
-        localStorage.setItem('tara_visited', '1');
-        if (hintRight) {
-            hintRight.classList.add('teaching');
-            setTimeout(() => hintRight.classList.remove('teaching'), 4000);
-        }
-    }
-
-    // Teach the NEXT arrow the first time the user reaches section 2
-    let leftTaught = false;
-    function maybeTeachLeft() {
-        if (leftTaught || currentSection !== 1) return;
-        leftTaught = true;
-        if (hintRight) {
-            hintRight.classList.add('teaching');
-            setTimeout(() => hintRight.classList.remove('teaching'), 4000);
-        }
-    }
 
     // Make left hint clickable for going back
     if (hintLeft) {
@@ -427,13 +408,14 @@ function setupClickNavigation() {
         });
     }
 
-    // Cursor feedback: w-resize near left edge, e-resize everywhere else
+    // Cursor feedback: w-resize near left edge, e-resize near right edge
     window.addEventListener('mousemove', (e) => {
         if (!hintLeft || !hintRight) return;
         const nearLeft = e.clientX < 80;
+        const nearRight = e.clientX > window.innerWidth - 80;
         document.body.style.cursor = nearLeft ? 'w-resize' : 'e-resize';
         hintLeft.classList.toggle('active', nearLeft);
-        hintRight.classList.toggle('active', !nearLeft);
+        hintRight.classList.toggle('active', nearRight);
     }, { passive: true });
 
     window.addEventListener('mouseout', () => {
@@ -441,6 +423,46 @@ function setupClickNavigation() {
         hintLeft?.classList.remove('active');
         hintRight?.classList.remove('active');
     });
+
+    // ── Idle-reveal system ────────────────────────────────────────────────────
+    // Hints are invisible by default. After the user has been still for a few
+    // seconds they fade in at low opacity — revealed only when attention is free.
+    const isFirstVisit = !localStorage.getItem('tara_visited');
+    if (isFirstVisit) localStorage.setItem('tara_visited', '1');
+    const IDLE_DELAY = isFirstVisit ? 2000 : 3500;
+
+    const clickLabel = document.querySelector('.click-anywhere');
+    let idleTimer = null;
+
+    function revealIdleHints() {
+        if (hintLeft && !hintLeft.classList.contains('hidden')) {
+            hintLeft.classList.add('idle-revealed');
+        }
+        if (hintRight && !hintRight.classList.contains('hidden')) {
+            hintRight.classList.add('idle-revealed');
+        }
+        if (clickLabel && currentSection < statementSections.length) {
+            clickLabel.classList.add('idle-revealed');
+        }
+    }
+
+    function hideIdleHints() {
+        hintLeft?.classList.remove('idle-revealed');
+        hintRight?.classList.remove('idle-revealed');
+        clickLabel?.classList.remove('idle-revealed');
+    }
+
+    function resetIdleTimer() {
+        hideIdleHints();
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(revealIdleHints, IDLE_DELAY);
+    }
+
+    ['mousemove', 'click', 'touchstart', 'keydown'].forEach(evt =>
+        document.addEventListener(evt, resetIdleTimer, { passive: true })
+    );
+    resetIdleTimer();
+    // ─────────────────────────────────────────────────────────────────────────
 
     // Expose jumpToCTA for floating CTA button
     window.jumpToCTA = function () {

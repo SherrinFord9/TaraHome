@@ -46,17 +46,17 @@ body {
     z-index: 2; /* above particles, below content (content has z-index 10) */
 }
 
-/* Edge click hints - always visible but subtle */
+/* Edge click hints — invisible by default, revealed only when idle */
 .edge-hint {
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(200, 210, 255, 0.25);
-    opacity: 1;
-    transition: opacity 0.3s ease, color 0.3s ease, transform 0.3s ease;
-    pointer-events: none; /* don't block clicks */
+    color: rgba(200, 210, 255, 0.55);
+    opacity: 0;
+    transition: opacity 600ms ease-out;
+    pointer-events: none;
     font-size: clamp(24px, 3vw, 36px);
-    z-index: 12; /* above particles, below content */
+    z-index: 12;
     display: flex;
     align-items: center;
     gap: 6px;
@@ -74,34 +74,36 @@ body {
     white-space: nowrap;
 }
 
-/* Brighter on hover (desktop) */
+/* Revealed after idle period — opacity only, no movement */
+.edge-hint.idle-revealed {
+    opacity: 0.28;
+}
+
+/* Cursor very near the edge on desktop */
 .edge-hint.active {
-    color: rgba(200, 210, 255, 0.6);
+    opacity: 0.2;
+    color: rgba(200, 210, 255, 0.7);
 }
 .edge-hint.active .hint-label {
     opacity: 1;
 }
 
-/* Subtle pulse animation to draw attention */
-@keyframes edgePulse {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+/* Idle-revealed + cursor near edge — slightly brighter */
+.edge-hint.idle-revealed.active {
+    opacity: 0.45;
+    color: rgba(200, 210, 255, 0.9);
 }
 
-.edge-hint.visible {
-    animation: edgePulse 2s ease-in-out infinite;
-}
-
-/* Hide when at CTA section or first section for left arrow */
+/* Completely hidden (CTA screen, or left arrow on slide 1) */
 .edge-hint.hidden {
     opacity: 0 !important;
+    pointer-events: none;
 }
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
     .edge-hint {
         font-size: 28px;
-        color: rgba(200, 210, 255, 0.35);
     }
     #hint-left { left: 12px; }
     #hint-right { right: 12px; }
@@ -759,11 +761,16 @@ a:focus-visible {
     gap: 6px;
     align-items: center;
     z-index: 50;
+    opacity: 0.18;
     transition: opacity 0.4s ease;
 }
 
+#section-dots:hover {
+    opacity: 0.55;
+}
+
 #section-dots.dots-hidden {
-    opacity: 0;
+    opacity: 0 !important;
     pointer-events: none;
 }
 
@@ -813,20 +820,37 @@ a:focus-visible {
 }
 
 /* ===================================================== */
-/* EDGE ARROW FIRST-VISIT TEACHING                       */
+/* CLICK-ANYWHERE AMBIENT LABEL                          */
 /* ===================================================== */
 
-.edge-hint.teaching {
-    color: rgba(200, 210, 255, 0.85) !important;
-    animation: edgeTeach 0.9s ease-in-out 4 !important;
+.click-anywhere {
+    position: fixed;
+    bottom: 24px;
+    right: 32px;
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+    opacity: 0;
+    transition: opacity 600ms ease-out;
+    pointer-events: none;
+    z-index: 50;
+    font-weight: 400;
+    white-space: nowrap;
 }
-.edge-hint.teaching .hint-label {
+
+.click-anywhere.idle-revealed {
     opacity: 1;
 }
 
-@keyframes edgeTeach {
-    0%, 100% { transform: translateY(-50%) scale(1);   opacity: 0.85; }
-    50%       { transform: translateY(-50%) scale(1.4); opacity: 1; }
+@media (max-width: 768px) {
+    .click-anywhere {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 20px;
+    }
 }
 
 /* ===================================================== */
