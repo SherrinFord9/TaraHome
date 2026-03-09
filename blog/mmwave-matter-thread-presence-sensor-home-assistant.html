@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" class="tw-dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battery mmWave Presence Sensors via Matter & Thread in Home Assistant - TARA</title>
+    <meta name="description" content="Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <meta name="theme-color" content="#000000" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html" />
+    <meta property="og:title" content="Battery mmWave Presence Sensors via Matter & Thread in Home Assistant - TARA" />
+    <meta property="og:description" content="Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step." />
+    <meta property="og:image" content="https://tarahome.ai/assets/images/og-image.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Battery mmWave Presence Sensors via Matter & Thread in Home Assistant - TARA" />
+    <meta name="twitter:description" content="Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/images/og-image.png" />
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1R4JEF4T4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Q1R4JEF4T4');
+    </script>
+
+    <link rel="stylesheet" href="/css/tailwind-build.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/blog.css" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+    />
+    <script defer src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "How to Add Battery-Powered mmWave Presence Sensors to Home Assistant via Matter & Thread (No Cloud)",
+        "description": "Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step.",
+        "datePublished": "2026-03-08",
+        "author": { "@type": "Organization", "name": "TARA", "url": "https://tarahome.ai" },
+        "publisher": { "@type": "Organization", "name": "TARA", "url": "https://tarahome.ai" },
+        "url": "https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html",
+        "image": "https://tarahome.ai/assets/images/og-image.png",
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html" }
+    }
+    </script>
+</head>
+<body class="tw-flex tw-min-h-[100vh] tw-flex-col tw-bg-black tw-text-white tw-overflow-x-hidden">
+
+    <div id="particles-js" class="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-h-full tw-z-0"></div>
+
+    <nav class="blog-nav">
+        <div class="blog-nav-inner">
+            <a href="/" class="blog-nav-logo">TARA</a>
+            <div class="blog-nav-links">
+                <a href="/blog/" class="blog-nav-link active">Blog</a>
+                <a href="/" class="blog-nav-link">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <article class="article-container">
+        <a href="/blog/" class="article-back">← All articles</a>
+
+        <div class="article-meta">
+            <span class="article-meta-item">How-To</span>
+            <span class="article-meta-dot">·</span>
+            <span class="article-meta-item">6 min read</span>
+            <span class="article-meta-dot">·</span>
+            <span class="article-meta-item">Mar 8, 2026</span>
+        </div>
+
+        <h1 class="article-title">How to Add Battery-Powered mmWave Presence Sensors to Home Assistant via Matter &amp; Thread (No Cloud)</h1>
+
+        <div class="article-content">
+            <h2>Why This Is a Big Deal</h2>
+            <p>For years, mmWave presence detection meant one of two trade-offs: either you ran wired sensors (ESPHome, Aqara FP2) that needed a power outlet, or you settled for PIR motion sensors that miss anyone sitting still. The core problem is physics—60 GHz radar chips draw more power than a coin cell can sustain if the radio runs continuously.</p>
+            <p>That changed in late 2025. The <strong>Aqara FP300</strong> and <strong>Meross MS605</strong> are among the first production battery-powered mmWave presence sensors that also speak <strong>Matter over Thread</strong>. Thread's mesh networking and ultra-low-power radio profile make the battery math work. The FP300 manages up to two years on two CR2450 coins; the MS605 stretches to three years on a single CR123A. Neither sensor requires a proprietary hub, a cloud account, or a vendor app after initial pairing.</p>
+            <p>If your goal is a fully local Home Assistant setup that knows when a room is occupied without cameras or mains wiring, this is the path.</p>
+
+            <h2>What You Need Before You Start</h2>
+            <p>Matter over Thread requires a Thread border router on your network. Unlike Wi-Fi Matter devices that connect directly to your router, Thread devices form their own low-power mesh and only reach your LAN through a border router that bridges the two networks. Home Assistant has first-class support for this via the <strong>OpenThread Border Router (OTBR)</strong> add-on.</p>
+
+            <h3>Compatible Border Router Hardware</h3>
+            <ul>
+                <li><strong>Home Assistant Connect ZBT-2</strong> — the current recommended USB dongle (Silicon Labs MG24 chip, better sensitivity than its predecessor). Plug it in, go to Settings &gt; Devices &amp; Services, select the discovered ZBT-2 card, choose "Thread," and Home Assistant automatically flashes RCP firmware and installs the OTBR add-on.</li>
+                <li><strong>Home Assistant Connect ZBT-1 / SkyConnect</strong> — the previous generation. Still works. Select Configure &gt; "Use as a Thread border router" to trigger the same automatic setup. Note: ZBT-1 can only run one protocol at a time, so switching to Thread means giving up Zigbee on that dongle.</li>
+                <li><strong>Home Assistant Yellow</strong> — has a built-in Silicon Labs module. Enable Thread through Settings &gt; Hardware.</li>
+                <li><strong>Third-party Thread border routers</strong> (Apple HomePod mini, Google Nest Hub 2nd Gen, Nest Wi-Fi Pro) also work, but for a fully local, no-cloud setup you want the OTBR running inside Home Assistant itself.</li>
+            </ul>
+
+            <h3>Software Requirements</h3>
+            <ul>
+                <li>Home Assistant OS or Supervised (add-ons required)</li>
+                <li>Home Assistant 2023.3 or later (OTBR auto-configuration)</li>
+                <li>Matter integration enabled (Settings &gt; Devices &amp; Services &gt; Add Integration &gt; Matter)</li>
+                <li>Home Assistant Companion app on Android 8.1+ or iOS 16+ with Bluetooth enabled — needed only during the commissioning step</li>
+            </ul>
+
+            <h2>Sensor Specs at a Glance</h2>
+            <p>Both sensors combine radar with a passive infrared (PIR) layer. PIR is cheap and filters non-heat sources (drafts, pets below a certain size), while the mmWave radar catches micro-movements — slow breathing, tiny shifts while someone is reading. Together they nearly eliminate false absences.</p>
+
+            <h3>Aqara Presence Multi-Sensor FP300</h3>
+            <ul>
+                <li><strong>Radar:</strong> 60 GHz mmWave</li>
+                <li><strong>Additional sensors:</strong> PIR, ambient light, temperature, humidity (five-in-one)</li>
+                <li><strong>Coverage:</strong> 120° field of view, up to 6 m (20 ft)</li>
+                <li><strong>Protocol:</strong> Matter over Thread (default firmware) or Zigbee (switchable via Aqara app)</li>
+                <li><strong>Battery:</strong> 2× CR2450, up to 2 years</li>
+                <li><strong>Price:</strong> ~$50 (Amazon, as of late 2025)</li>
+                <li><strong>Mount:</strong> Fully rotatable magnetic base — corner mounting maximizes coverage</li>
+            </ul>
+            <p>Important note: the FP300 ships with Thread/Matter firmware. You can optionally cross-flash to Zigbee mode through the Aqara app if you want deeper configuration options (sensitivity zones, detection thresholds) that are currently more limited in the Matter firmware. For this guide we use Thread/Matter as shipped.</p>
+
+            <h3>Meross Smart Presence Sensor MS605</h3>
+            <ul>
+                <li><strong>Radar:</strong> 24 GHz mmWave</li>
+                <li><strong>Additional sensors:</strong> PIR, ambient light (four-in-one)</li>
+                <li><strong>Coverage:</strong> AI-assisted zone detection, up to 3 customizable zones</li>
+                <li><strong>Protocol:</strong> Matter over Thread exclusively</li>
+                <li><strong>Battery:</strong> 1× CR123A, up to 3 years</li>
+                <li><strong>Waterproofing:</strong> IP67 — suitable for covered outdoor areas or bathrooms</li>
+                <li><strong>Operating temperature:</strong> −20 °C to +60 °C</li>
+                <li><strong>Mount:</strong> 90° fold + 360° rotate</li>
+            </ul>
+            <p>The MS605's three detection zones appear as separate sensors inside Home Assistant, enabling fine-grained automations — for example, triggering different lighting scenes depending on which zone in a large room is occupied.</p>
+
+            <h2>Step-by-Step: Pairing a Thread Sensor in Home Assistant</h2>
+            <p>The commissioning flow is the same regardless of whether you use the FP300 or MS605. Matter's design goal is exactly this: one pairing process, any compliant controller.</p>
+
+            <ol>
+                <li><strong>Confirm your border router is active.</strong> Go to Settings &gt; Devices &amp; Services. You should see both an "OpenThread Border Router" card and a "Thread" card. If they are missing, revisit the hardware setup above.</li>
+                <li><strong>Put the sensor in pairing mode.</strong> For the FP300: pull the battery tab (or hold the reset button for 5 seconds on a used unit) until the LED flashes slowly. For the MS605: press and hold the button on the bottom for 5 seconds until the indicator blinks.</li>
+                <li><strong>Open the Home Assistant Companion app</strong> on your phone. Enable Bluetooth. Stay within a few metres of the sensor — Bluetooth is used only during the initial handshake; Thread takes over afterward.</li>
+                <li><strong>Navigate to Settings &gt; Matter &gt; Add Device.</strong> Select "No, it's new."</li>
+                <li><strong>Scan the QR code.</strong> The QR code is printed on the sensor itself and on the included manual. Alternatively, select "Setup without QR code" and enter the 11-digit numeric code manually.</li>
+                <li><strong>Select "Add to Home Assistant."</strong> The commissioning process takes 30–90 seconds. Home Assistant negotiates Thread credentials through your border router, and the sensor joins the Thread mesh.</li>
+                <li><strong>Done.</strong> Navigate to Settings &gt; Devices &amp; Services &gt; Matter &gt; Devices to confirm the sensor appears. Open the device page to see all exposed entities: occupancy, illuminance, temperature (FP300), humidity (FP300), and battery level.</li>
+            </ol>
+
+            <p>From this point forward, all communication is local. The sensor talks to your Thread border router over the 802.15.4 radio; the border router bridges to your LAN; Home Assistant polls and receives pushes entirely on your network. No cloud relay, no Aqara account, no Meross account.</p>
+
+            <h2>Troubleshooting Common Issues</h2>
+            <p>Thread and Matter are mature but still have rough edges. Here is what actually goes wrong and how to fix it.</p>
+
+            <h3>"Device requires a border router" during commissioning</h3>
+            <p>This means Home Assistant's OTBR is not advertising Thread credentials to your phone. Check that the OpenThread Border Router add-on is running (Settings &gt; Add-ons). If you are using an Apple or Google border router alongside HA's OTBR, they may have conflicting Thread networks. The fix is to ensure all border routers share the same Thread network credentials — HA can export its credentials, or you can import credentials from another ecosystem under Settings &gt; System &gt; Thread.</p>
+
+            <h3>Commissioning hangs at "Checking network connectivity"</h3>
+            <p>Bring the sensor physically closer to the border router for initial pairing — Thread range can be reduced in dense walls. Also verify IPv6 multicast is not blocked on your router or managed switch. Thread uses IPv6 link-local and mesh-local addresses; if your router's multicast "optimization" (sometimes called multicast flooding control) is enabled, disable it or whitelist the Thread multicast groups.</p>
+
+            <h3>Sensor shows as unavailable after successful pairing</h3>
+            <p>Battery-powered Thread sensors use Sleepy End Devices (SED) mode: the radio sleeps most of the time to extend battery life. Home Assistant should handle this gracefully, but if the entity shows unavailable, restart the Matter integration under Settings &gt; Devices &amp; Services &gt; Matter &gt; three-dot menu &gt; Reload. If the problem persists, check that no other Thread nodes (especially Apple border routers) have a stale copy of the device's credentials.</p>
+
+            <h3>FP300 shows limited entities compared to Zigbee mode</h3>
+            <p>This is expected. As of early 2026, the FP300's Matter firmware exposes occupancy, illuminance, temperature, humidity, and battery — a solid set, but fewer tuning knobs than the Zigbee firmware (which exposes zone sensitivity, approach/leave distance thresholds, and micro-motion sensitivity). Aqara has indicated firmware updates will expand Matter-exposed attributes over time. If granular control matters to you today, cross-flash to Zigbee via the Aqara app and use Zigbee2MQTT or ZHA instead.</p>
+
+            <h3>False absences — room marked empty while someone is present</h3>
+            <p>Mount height and angle matter. Both sensors work best at 1.5–2.5 m height angled slightly downward. Avoid mounting directly overhead. For the FP300, the rotatable base lets you sweep 360° to find the dead-zone-free angle. For the MS605, use the zone configuration in the Meross app to tune detection boundaries before you remove the app from your workflow — zone settings persist on the device itself.</p>
+        </div>
+
+        <div class="article-cta">
+            <h3>Ready for a home that just works?</h3>
+            <p>Join the waitlist for early access.</p>
+            <form class="article-cta-form" action="https://formspree.io/f/mqelrgbl" method="POST">
+                <input type="hidden" name="_subject" value="New TARA Waitlist Signup!" />
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+                <input type="email" name="email" placeholder="Enter your email" required class="article-cta-input" />
+                <button type="submit" class="article-cta-button">Join the Waitlist</button>
+            </form>
+            <p class="article-cta-success" style="display:none">&#10003; You're on the list. We'll be in touch soon.</p>
+        </div>
+
+        <div class="article-related">
+            <p class="article-related-title">Related Articles</p>
+            <div class="article-related-links">
+                <a href="/blog/presence-detection-smart-home.html" class="article-related-link">→ Presence Detection: The Missing Piece of Smart Homes</a>
+                <a href="/blog/matter-protocol-explained.html" class="article-related-link">→ Matter Protocol Explained: The Future of Smart Homes</a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="blog-footer">
+        <p>&copy; <span id="copyright-year"></span> TARA. All rights reserved.
+            <a href="/privacy.html">Privacy Policy</a>
+        </p>
+    </footer>
+
+    <script defer src="/js/blog.js"></script>
+    <script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
