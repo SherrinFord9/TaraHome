@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Battery mmWave Presence Sensors via Matter & Thread in Home Assistant - TARA</title>
+    <title>Matter over Thread mmWave Presence Sensor: Home Assistant Setup - TARA</title>
     <meta name="description" content="Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html" />
@@ -12,12 +12,12 @@
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html" />
-    <meta property="og:title" content="Battery mmWave Presence Sensors via Matter & Thread in Home Assistant - TARA" />
+    <meta property="og:title" content="Matter over Thread mmWave Presence Sensor: Home Assistant Setup - TARA" />
     <meta property="og:description" content="Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step." />
     <meta property="og:image" content="https://tarahome.ai/assets/images/og-image.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Battery mmWave Presence Sensors via Matter & Thread in Home Assistant - TARA" />
+    <meta name="twitter:title" content="Matter over Thread mmWave Presence Sensor: Home Assistant Setup - TARA" />
     <meta name="twitter:description" content="Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step." />
     <meta name="twitter:image" content="https://tarahome.ai/assets/images/og-image.png" />
 
@@ -53,11 +53,47 @@
         "headline": "How to Add Battery-Powered mmWave Presence Sensors to Home Assistant via Matter & Thread (No Cloud)",
         "description": "Set up Aqara FP300 or Meross MS605 mmWave sensors over Thread in Home Assistant—fully local, zero cloud, step-by-step.",
         "datePublished": "2026-03-08",
+        "dateModified": "2026-03-08",
+        "wordCount": 1600,
         "author": { "@type": "Organization", "name": "TARA", "url": "https://tarahome.ai" },
         "publisher": { "@type": "Organization", "name": "TARA", "url": "https://tarahome.ai" },
         "url": "https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html",
         "image": "https://tarahome.ai/assets/images/og-image.png",
         "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant.html" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Do I need a cloud account to use the Aqara FP300 with Home Assistant?",
+                "acceptedAnswer": { "@type": "Answer", "text": "No. Once paired via Matter, the FP300 communicates entirely over your local Thread mesh network. No Aqara account, no cloud relay, and no internet connection is required for automations to run." }
+            },
+            {
+                "@type": "Question",
+                "name": "What is a Thread border router and do I need one?",
+                "acceptedAnswer": { "@type": "Answer", "text": "A Thread border router bridges your Thread mesh network to your regular Wi-Fi/Ethernet LAN. Battery-powered Matter-over-Thread sensors require one to communicate with Home Assistant. The Home Assistant Connect ZBT-2 dongle or a Home Assistant Yellow both work as border routers out of the box." }
+            },
+            {
+                "@type": "Question",
+                "name": "Can the Aqara FP300 use both Thread and Zigbee?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Not simultaneously. The FP300 ships with Matter-over-Thread firmware. You can cross-flash it to Zigbee mode using the Aqara app, but you must choose one protocol — Thread/Matter or Zigbee — and stick with it." }
+            },
+            {
+                "@type": "Question",
+                "name": "How long do the batteries last in these mmWave sensors?",
+                "acceptedAnswer": { "@type": "Answer", "text": "The Aqara FP300 lasts up to two years on two CR2450 coin cells. The Meross MS605 lasts up to three years on a single CR123A battery. Thread's Sleepy End Device (SED) mode keeps the radio off most of the time, which is what makes these battery lives possible for a 60 GHz radar chip." }
+            },
+            {
+                "@type": "Question",
+                "name": "Why does my Thread sensor show as unavailable in Home Assistant?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Battery-powered Thread sensors use Sleepy End Device mode, so they are not always reachable. If the entity shows unavailable after successful pairing, try reloading the Matter integration under Settings > Devices & Services > Matter > Reload. Also check for conflicting Thread networks if you have multiple border routers (Apple, Google, and HA OTBR on the same network)." }
+            }
+        ]
     }
     </script>
 </head>
@@ -173,6 +209,22 @@
 
             <h3>False absences — room marked empty while someone is present</h3>
             <p>Mount height and angle matter. Both sensors work best at 1.5–2.5 m height angled slightly downward. Avoid mounting directly overhead. For the FP300, the rotatable base lets you sweep 360° to find the dead-zone-free angle. For the MS605, use the zone configuration in the Meross app to tune detection boundaries before you remove the app from your workflow — zone settings persist on the device itself.</p>
+            <h2>Frequently Asked Questions</h2>
+
+            <h3>Do I need a cloud account to use the Aqara FP300 with Home Assistant?</h3>
+            <p>No. Once paired via Matter, the FP300 communicates entirely over your local Thread mesh network. No Aqara account, no cloud relay, and no internet connection is required for automations to run.</p>
+
+            <h3>What is a Thread border router and do I need one?</h3>
+            <p>A Thread border router bridges your Thread mesh network to your regular Wi-Fi/Ethernet LAN. Battery-powered Matter-over-Thread sensors require one to communicate with Home Assistant. The Home Assistant Connect ZBT-2 dongle or a Home Assistant Yellow both work as border routers out of the box.</p>
+
+            <h3>Can the Aqara FP300 use both Thread and Zigbee?</h3>
+            <p>Not simultaneously. The FP300 ships with Matter-over-Thread firmware. You can cross-flash it to Zigbee mode using the Aqara app, but you must choose one protocol — Thread/Matter or Zigbee — and stick with it.</p>
+
+            <h3>How long do the batteries last in these mmWave sensors?</h3>
+            <p>The Aqara FP300 lasts up to two years on two CR2450 coin cells. The Meross MS605 lasts up to three years on a single CR123A battery. Thread's Sleepy End Device (SED) mode keeps the radio off most of the time, which is what makes these battery lives possible for a 60 GHz radar chip.</p>
+
+            <h3>Why does my Thread sensor show as unavailable in Home Assistant?</h3>
+            <p>Battery-powered Thread sensors use Sleepy End Device mode, so they are not always reachable. If the entity shows unavailable after successful pairing, try reloading the Matter integration under Settings &gt; Devices &amp; Services &gt; Matter &gt; Reload. Also check for conflicting Thread networks if you have multiple border routers on the same network.</p>
         </div>
 
         <div class="article-cta">
