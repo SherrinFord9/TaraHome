@@ -488,7 +488,7 @@ function setupClickNavigation() {
     // seconds they fade in at low opacity — revealed only when attention is free.
     const isFirstVisit = !localStorage.getItem('tara_visited');
     if (isFirstVisit) localStorage.setItem('tara_visited', '1');
-    const IDLE_DELAY = isFirstVisit ? 2000 : 3500;
+    const IDLE_DELAY = 2500;
 
     const clickLabel = document.querySelector('.click-anywhere');
     const skipCta = document.getElementById('skip-cta');

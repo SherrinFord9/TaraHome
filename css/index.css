@@ -53,7 +53,7 @@ body {
     transform: translateY(-50%);
     color: rgba(200, 210, 255, 0.55);
     opacity: 0;
-    transition: opacity 600ms ease-out;
+    transition: opacity 1200ms ease-out;
     pointer-events: none;
     font-size: clamp(24px, 3vw, 36px);
     z-index: 12;
@@ -74,9 +74,23 @@ body {
     white-space: nowrap;
 }
 
-/* Revealed after idle period — opacity only, no movement */
-.edge-hint.idle-revealed {
-    opacity: 0.28;
+@keyframes nudgeRight {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    60%       { transform: translateY(-50%) translateX(6px); }
+}
+@keyframes nudgeLeft {
+    0%, 100% { transform: translateY(-50%) translateX(0); }
+    60%       { transform: translateY(-50%) translateX(-6px); }
+}
+
+/* Revealed after idle period — nudge animation */
+#hint-right.idle-revealed {
+    opacity: 0.5;
+    animation: nudgeRight 2.2s ease-in-out infinite;
+}
+#hint-left.idle-revealed {
+    opacity: 0.5;
+    animation: nudgeLeft 2.2s ease-in-out infinite;
 }
 
 /* Cursor very near the edge on desktop */
@@ -88,10 +102,12 @@ body {
     opacity: 1;
 }
 
-/* Idle-revealed + cursor near edge — slightly brighter */
+/* Idle-revealed + cursor near edge — slightly brighter, pause animation */
 .edge-hint.idle-revealed.active {
     opacity: 0.45;
     color: rgba(200, 210, 255, 0.9);
+    animation: none;
+    transform: translateY(-50%);
 }
 
 /* Completely hidden (CTA screen, or left arrow on slide 1) */
