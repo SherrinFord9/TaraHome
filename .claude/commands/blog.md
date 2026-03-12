@@ -59,7 +59,14 @@ Spawn a sub-agent with these exact instructions, passing it the topic brief from
 >    - Common questions people ask (check Reddit, forums, Google autocomplete suggestions)
 >    - Best practices and how-to steps
 >
-> 3. Write the complete blog post HTML file to `/Users/Sherrinford/Personal/website/TaraHome/blog/{slug}.html`. Match the EXACT structure of `what-is-smart-home-hub.html` with these SEO requirements:
+> 3. Find 4–5 images from Unsplash — one hero + one per major H2 section:
+>    - Search the web for relevant Unsplash photos using specific search terms per image slot
+>    - For each image collect: direct URL (`https://images.unsplash.com/photo-PHOTO_ID?w=900&q=80&auto=format&fit=crop`), photographer name, photographer Unsplash profile URL
+>    - Images must be techy, modern, dark-friendly — no cheesy stock photos, no fake AI hands, no generic lightbulbs
+>    - Each image must be contextually relevant to its specific section (not the same subject repeated 4 times)
+>    - Vary the subjects: e.g. hero=device shot, section 2=setup/wiring, section 3=software screenshot-style, section 4=real home environment
+>
+> 4. Write the complete blog post HTML file to `/Users/Sherrinford/Personal/website/TaraHome/blog/{slug}.html`. Match the EXACT structure of `what-is-smart-home-hub.html` with these SEO requirements:
 >
 >    **Head / meta:**
 >    - `<title>`: Start with the primary keyword, end with "- TARA". Under 60 chars total.
@@ -69,7 +76,15 @@ Spawn a sub-agent with these exact instructions, passing it the topic brief from
 >
 >    **Body structure:**
 >    - Same nav, particles.js background div, footer
->    - `article-container` > `article-back` > `article-meta` > `article-title` > `article-content`
+>    - `article-container` > `article-back` > `article-meta` > `article-title` > **hero image** > `article-content`
+>    - Between the `<h1>` and `<div class="article-content">`, insert:
+>      ```html
+>      <figure class="article-image">
+>          <img src="UNSPLASH_URL" alt="ALT TEXT WITH PRIMARY KEYWORD" loading="lazy" width="900" height="500" />
+>          <figcaption>Photo by <a href="PHOTOGRAPHER_UNSPLASH_PROFILE_URL" target="_blank" rel="noopener">PHOTOGRAPHER NAME</a> on Unsplash</figcaption>
+>      </figure>
+>      ```
+>    - Use the hero Unsplash image URL as the `"image"` field in the Article JSON-LD
 >    - Same waitlist CTA form (Formspree: `https://formspree.io/f/mqelrgbl`)
 >    - 2 related posts (most relevant from existing posts)
 >    - Same `blog.js` and GA tag (`G-Q1R4JEF4T4`)
@@ -78,8 +93,16 @@ Spawn a sub-agent with these exact instructions, passing it the topic brief from
 >    - **First paragraph**: Must contain the primary keyword naturally within the first 2 sentences
 >    - **H2 headings**: At least one H2 must contain the primary keyword or a close variant
 >    - **Length**: Minimum 1,500 words of article content — thorough coverage beats thin content
->    - **Structure**: 4–6 `<h2>` sections, use `<h3>`, `<p>`, `<ul>`, `<ol>`, `<li>`, `<strong>` only
+>    - **Structure**: 4–6 `<h2>` sections, use `<h3>`, `<p>`, `<ul>`, `<ol>`, `<li>`, `<strong>`, `<figure>`, `<img>`, `<figcaption>` only
 >    - **NO** div, span, class, style, or id attributes inside `article-content`
+>    - **Inline images**: After each major `<h2>` section (except the FAQ), insert a contextually relevant Unsplash image using this exact pattern:
+>      ```html
+>      <figure>
+>          <img src="UNSPLASH_URL" alt="DESCRIPTIVE ALT TEXT WITH RELEVANT KEYWORD" loading="lazy" width="900" height="500" />
+>          <figcaption>Photo by <a href="PHOTOGRAPHER_PROFILE_URL" target="_blank" rel="noopener">PHOTOGRAPHER NAME</a> on Unsplash</figcaption>
+>      </figure>
+>      ```
+>    - Alt text must describe what's in the image AND include a relevant keyword — this is important for Google Image search
 >    - **Final section**: Always end with an `<h2>Frequently Asked Questions</h2>` section containing 4–5 real questions people search for, each as `<h3>Question?</h3><p>Answer...</p>`. Answers should be 2–4 sentences — concise enough for Google to pull as a featured snippet.
 >
 >    **Schema.org JSON-LD (two blocks required):**
