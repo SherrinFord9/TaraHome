@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en" class="tw-dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Local Voice Assistant No Cloud Setup - TARA</title>
+    <meta name="description" content="Set up a fully local, cloud-free voice assistant in Home Assistant using Voice PE, Wyoming protocol, Piper TTS, and openWakeWord—step-by-step." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-local-voice-assistant-no-cloud.html" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <meta name="theme-color" content="#000000" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-local-voice-assistant-no-cloud.html" />
+    <meta property="og:title" content="Home Assistant Local Voice Assistant No Cloud Setup - TARA" />
+    <meta property="og:description" content="Set up a fully local, cloud-free voice assistant in Home Assistant using Voice PE, Wyoming protocol, Piper TTS, and openWakeWord—step-by-step." />
+    <meta property="og:image" content="https://tarahome.ai/assets/images/og-image.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Local Voice Assistant No Cloud Setup - TARA" />
+    <meta name="twitter:description" content="Set up a fully local, cloud-free voice assistant in Home Assistant using Voice PE, Wyoming protocol, Piper TTS, and openWakeWord—step-by-step." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/images/og-image.png" />
+
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1R4JEF4T4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Q1R4JEF4T4');
+    </script>
+
+    <link rel="stylesheet" href="/css/tailwind-build.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/blog.css" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+        integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+    />
+    <script defer src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "How to Set Up a Fully Local Voice Assistant in Home Assistant (No Cloud, No Alexa)",
+        "description": "Set up a fully local, cloud-free voice assistant in Home Assistant using Voice PE, Wyoming protocol, Piper TTS, and openWakeWord—step-by-step.",
+        "datePublished": "2026-03-12",
+        "dateModified": "2026-03-12",
+        "wordCount": 1700,
+        "author": { "@type": "Organization", "name": "TARA", "url": "https://tarahome.ai" },
+        "publisher": { "@type": "Organization", "name": "TARA", "url": "https://tarahome.ai" },
+        "url": "https://tarahome.ai/blog/home-assistant-local-voice-assistant-no-cloud.html",
+        "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=80&auto=format&fit=crop",
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-local-voice-assistant-no-cloud.html" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Do I need a Nabu Casa subscription for a local voice assistant in Home Assistant?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. A Nabu Casa subscription is completely optional. The entire stack — openWakeWord for wake word detection, Whisper or Speech-to-Phrase for speech-to-text, and Piper for text-to-speech — runs locally on your Home Assistant hardware. Every spoken command stays on your LAN, and no audio is ever sent to Nabu Casa servers unless you choose to enable that option."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I run the Wyoming add-ons on a Raspberry Pi 4?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, but performance depends on which speech-to-text engine you choose. Speech-to-Phrase is extremely fast on a Raspberry Pi 4 because it only recognizes a limited set of smart-home commands rather than open-ended dictation. Whisper can also run on a Pi 4, but transcription takes roughly 8 seconds per command. If speed matters, use Speech-to-Phrase on a Pi 4, or run Whisper on an x86 host such as an Intel NUC or HA Yellow."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What is the difference between Whisper and Speech-to-Phrase?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Whisper is OpenAI's open-source general-purpose speech recognition model — it can transcribe arbitrary sentences but requires significant CPU or GPU resources. Speech-to-Phrase is a Home Assistant–designed alternative that only transcribes commands it already knows your assistant supports, making it dramatically faster and lighter on hardware. For smart home control (turn on lights, set temperature, lock doors), Speech-to-Phrase is usually the better choice."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What hardware do I need for the microphone satellite?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The Home Assistant Voice Preview Edition (Voice PE) is the easiest option — it is an ESP32-S3 device with an XMOS audio processor, dual-microphone array, physical mute switch, and LED ring, all for $69. If you prefer DIY, a Raspberry Pi Zero 2 W or Pi 4 paired with a ReSpeaker 2-mic HAT or Seeed ReSpeaker Lite board works well using the Wyoming satellite software. An M5Stack ATOM Echo is the lowest-cost option at around $13."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Which wake words are available for local use in Home Assistant?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Home Assistant ships with several built-in wake words powered by openWakeWord, including 'Hey Jarvis', 'OK Nabu', and 'Hey Mycroft'. You can also train a custom wake word using the openWakeWord model trainer, which uses Piper TTS to generate synthetic training audio — no real voice recordings required. Custom wake word models are loaded directly onto your Home Assistant instance with no cloud upload."
+                }
+            }
+        ]
+    }
+    </script>
+</head>
+<body class="tw-flex tw-min-h-[100vh] tw-flex-col tw-bg-black tw-text-white tw-overflow-x-hidden">
+
+    <div id="particles-js" class="tw-fixed tw-top-0 tw-left-0 tw-w-full tw-h-full tw-z-0"></div>
+
+    <nav class="blog-nav">
+        <div class="blog-nav-inner">
+            <a href="/" class="blog-nav-logo">TARA</a>
+            <div class="blog-nav-links">
+                <a href="/blog/" class="blog-nav-link active">Blog</a>
+                <a href="/" class="blog-nav-link">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <article class="article-container">
+        <a href="/blog/" class="article-back">← All articles</a>
+
+        <div class="article-meta">
+            <span class="article-meta-item">How-To</span>
+            <span class="article-meta-dot">·</span>
+            <span class="article-meta-item">7 min read</span>
+            <span class="article-meta-dot">·</span>
+            <span class="article-meta-item">Mar 12, 2026</span>
+        </div>
+
+        <h1 class="article-title">How to Set Up a Fully Local Voice Assistant in Home Assistant (No Cloud, No Alexa)</h1>
+
+        <figure class="article-image">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=900&q=80&auto=format&fit=crop" alt="Raspberry Pi circuit board — the hardware behind a home assistant local voice assistant no cloud setup" loading="lazy" width="900" height="500" />
+            <figcaption>Photo by <a href="https://unsplash.com/@praveentcom" target="_blank" rel="noopener">Praveen Thirumurugan</a> on Unsplash</figcaption>
+        </figure>
+
+        <div class="article-content">
+            <h2>Why Run a Home Assistant Local Voice Assistant With No Cloud?</h2>
+            <p>A fully local voice assistant in Home Assistant — one that uses no cloud, no Alexa, and no Google — is no longer a weekend project reserved for serious Linux tinkerers. With the Home Assistant Voice Preview Edition (Voice PE) now shipping and the Wyoming protocol stack maturing rapidly, you can have every spoken command processed entirely on your LAN in an afternoon. The appeal is straightforward: your audio never leaves your home, there is no subscription to cancel, the assistant keeps working when your internet is down, and response latency drops to under a second on capable hardware.</p>
+            <p>This guide walks through the complete stack — from choosing your microphone hardware to installing openWakeWord, Whisper or Speech-to-Phrase, and Piper TTS — and shows you how to wire everything together through the Wyoming protocol into Home Assistant's Assist pipeline. No cloud required at any step.</p>
+
+            <h2>Understanding the Wyoming Protocol Stack</h2>
+            <p>The Wyoming protocol is the glue that holds the local voice pipeline together. It is a lightweight, peer-to-peer protocol developed by the Rhasspy project (now part of the Open Home Foundation) that standardizes how speech-to-text, text-to-speech, and wake-word engines communicate with Home Assistant's Assist pipeline. Each service exposes a small TCP socket, and Home Assistant discovers them automatically via Zeroconf — the same technology that makes AirPlay and Chromecast device discovery seamless.</p>
+
+            <h3>The Four Layers of the Pipeline</h3>
+            <p>Every spoken command travels through four layers before your light turns on:</p>
+            <ol>
+                <li><strong>Wake word detection (openWakeWord)</strong> — listens continuously for a trigger phrase such as "Hey Jarvis" or "OK Nabu." CPU usage is minimal because it only runs a small audio embedding model.</li>
+                <li><strong>Speech-to-text (Whisper or Speech-to-Phrase)</strong> — once the wake word fires, the audio stream is captured and transcribed into text. This is the most resource-intensive step.</li>
+                <li><strong>Intent recognition (Home Assistant Assist)</strong> — the transcribed text is parsed against your entities and configured intents. This runs natively inside Home Assistant with zero external calls.</li>
+                <li><strong>Text-to-speech (Piper)</strong> — the assistant's response is synthesized into natural-sounding speech and played back through the satellite speaker.</li>
+            </ol>
+            <p>Each layer communicates with the next via the Wyoming protocol, which means you can run all four services on the same machine or distribute them across your network — for example, running Whisper on a more powerful NUC while the satellite microphone is a tiny ESP32 device in the kitchen.</p>
+
+            <h3>Whisper vs. Speech-to-Phrase</h3>
+            <p>There are currently two supported speech-to-text engines for local use. <strong>Whisper</strong> is OpenAI's open-source general-purpose model — it transcribes arbitrary sentences but needs real compute. On a Raspberry Pi 4 it takes roughly 8 seconds per command; on an Intel NUC with an N100 chip it finishes in under a second. <strong>Speech-to-Phrase</strong>, introduced by the Home Assistant team, takes a fundamentally different approach: instead of open-ended transcription, it only recognizes commands that match the entities and capabilities your Assist pipeline actually supports. The result is dramatically faster and lighter — useful on a Pi 4 — but it will not transcribe a shopping list or answer general questions. For smart home control, Speech-to-Phrase is almost always the right choice.</p>
+
+            <h2>Choosing Your Microphone Hardware</h2>
+            <p>The microphone is the most important physical component of the system. Distant speech recognition is hard — background noise, echo, and poor microphone placement are responsible for the vast majority of failed commands. You have three main hardware paths:</p>
+
+            <h3>Option 1: Home Assistant Voice Preview Edition (Recommended)</h3>
+            <p>The Voice PE is Home Assistant's first official voice hardware, shipping at $69 USD. It is powered by an ESP32-S3 with 16 MB flash and an XMOS XU316 dedicated audio processor that handles echo cancellation, noise suppression, and beam-forming in hardware before the audio ever reaches the microphone array. Key specs:</p>
+            <ul>
+                <li><strong>Dual-microphone array</strong> with hardware-level XMOS DSP processing</li>
+                <li><strong>Physical mute switch</strong> that cuts power to the microphones — not just a software flag</li>
+                <li><strong>Multicolor LED ring</strong> for visual feedback during listening and processing states</li>
+                <li><strong>3.5 mm stereo output</strong> with a dedicated AIC3204 DAC for speaker playback</li>
+                <li><strong>Wi-Fi 2.4 GHz + Bluetooth 5.0</strong>, USB-C powered</li>
+                <li><strong>Open hardware</strong> — KiCad schematics and PCB files are on GitHub</li>
+            </ul>
+            <p>Setup is a USB-C cable and a guided wizard. ESPHome handles the firmware, and the device is discovered by Home Assistant automatically. The XMOS processor dramatically improves far-field recognition compared to raw MEMS microphones on a bare ESP32.</p>
+
+            <h3>Option 2: Raspberry Pi with ReSpeaker HAT (DIY Satellite)</h3>
+            <p>If you want a room-specific satellite that runs on your LAN but is physically separate from your HA server, a Raspberry Pi Zero 2 W or Pi 4 paired with a Seeed ReSpeaker 2-mic HAT is a well-documented combination. You install the <strong>wyoming-satellite</strong> software (or the newer Linux Voice Assistant add-on for HA OS), point it at your HA instance, and it registers as a satellite device. The ReSpeaker provides dedicated microphone hardware and a small speaker driver; a Pi Zero 2 W can handle wake word detection locally while offloading STT to the main HA server. For better far-field pickup, the Seeed ReSpeaker Lite (ESP32 + XMOS XU316) brings professional DSP to a development board form factor at a fraction of the cost of Voice PE.</p>
+
+            <h3>Option 3: M5Stack ATOM Echo (Budget)</h3>
+            <p>At around $13, the ATOM Echo is an ESP32-based smart speaker with a built-in MEMS microphone. It lacks dedicated DSP, so far-field recognition is mediocre — but for a desk or nightstand where you are consistently within a metre or so of the device, it works reliably. The HA community maintains an ESPHome firmware for it that integrates with the Wyoming pipeline out of the box. It is a good way to prove out the stack before investing in better hardware.</p>
+
+            <h2>Step-by-Step Setup: Wyoming Protocol, Piper, and openWakeWord</h2>
+            <p>The following steps assume you are running Home Assistant OS or Home Assistant Supervised (the add-on store is required). If you are on a container or Core install, run the services as Docker containers and point Home Assistant at their IP and port numbers manually.</p>
+
+            <h3>Step 1: Install the Speech-to-Text Add-on</h3>
+            <p>Go to <strong>Settings &rarr; Add-ons &rarr; Add-on Store</strong> and search for either <strong>Whisper</strong> or <strong>Speech-to-Phrase</strong>. Install your chosen add-on, then open its configuration tab. For Whisper, select the model size — "tiny" or "base" on a Pi 4, "small" or "medium" on an x86 host. Start the add-on and wait for it to finish downloading the model weights. The add-on listens on port <strong>10300</strong> by default.</p>
+
+            <h3>Step 2: Install the Piper Text-to-Speech Add-on</h3>
+            <p>In the same add-on store, install <strong>Piper</strong>. Choose a voice in the configuration — Piper ships with over 35 languages and multiple voices per language. A good starting point for English is the <em>en_US-lessac-medium</em> voice, which sounds natural without requiring excessive CPU. Start the add-on; it listens on port <strong>10200</strong>.</p>
+
+            <h3>Step 3: Install the openWakeWord Add-on</h3>
+            <p>Install the <strong>openWakeWord</strong> add-on from the add-on store. The default configuration includes several built-in wake word models. Open the add-on options and select your preferred wake word — "Hey Jarvis" has high real-world accuracy and low false-positive rates. Start the add-on; it listens on port <strong>10400</strong>.</p>
+
+            <h3>Step 4: Configure the Wyoming Integration</h3>
+            <p>Navigate to <strong>Settings &rarr; Devices &amp; Services</strong>. If your add-ons are running on the same machine as Home Assistant, they will appear under <strong>Discovered</strong> automatically via Zeroconf. Click <strong>Add</strong> for each Wyoming service — Piper, Whisper (or Speech-to-Phrase), and openWakeWord. If you are connecting to services running on a separate machine, click <strong>Add Integration</strong>, search for <strong>Wyoming Protocol</strong>, and enter the host IP and port manually for each service.</p>
+
+            <h3>Step 5: Create Your Voice Assistant Pipeline</h3>
+            <p>Go to <strong>Settings &rarr; Voice Assistants</strong> and click <strong>Add Assistant</strong>. Give it a name, then configure each stage:</p>
+            <ul>
+                <li><strong>Conversation agent:</strong> Home Assistant (local intent recognition)</li>
+                <li><strong>Speech-to-text:</strong> select Whisper or Speech-to-Phrase from the dropdown</li>
+                <li><strong>Text-to-speech:</strong> select Piper and choose your voice</li>
+                <li><strong>Wake word:</strong> select openWakeWord and choose your wake word model</li>
+            </ul>
+            <p>Save the pipeline. Every component in this pipeline runs on your LAN. No audio leaves your home network.</p>
+
+            <h3>Step 6: Pair Your Satellite Device</h3>
+            <p>For the Voice PE, power it on near your Home Assistant instance. It broadcasts via Zeroconf and should appear in <strong>Settings &rarr; Devices &amp; Services</strong> within a minute. Add it and assign it to your newly created pipeline. For ESPHome-based satellites (ATOM Echo, custom builds), flash the firmware via the ESPHome add-on, then assign the pipeline in the device settings. For wyoming-satellite on a Raspberry Pi, run the service and it will register automatically via Zeroconf.</p>
+
+            <h2>Common Setup Problems and How to Fix Them</h2>
+            <p>Even with a well-supported stack, a few problems come up repeatedly in the Home Assistant community. Here is what to check when things do not work as expected.</p>
+
+            <h3>Wake Word Not Triggering</h3>
+            <p>The most common cause is microphone gain set too low or a microphone placed too far from the speaker. Check the openWakeWord add-on log for confidence scores — if the score never exceeds 0.5 for a clear utterance, the microphone signal is too quiet. Increase the capture gain in the ESPHome firmware or Wyoming satellite configuration. Also make sure your mute switch is not engaged — the Voice PE mute switch is hardware-level and completely cuts the microphone signal regardless of software state.</p>
+
+            <h3>Whisper Transcription Taking Too Long</h3>
+            <p>On a Raspberry Pi 4, Whisper base takes 8–12 seconds per command. Switch to Speech-to-Phrase if you are on ARM hardware — it processes in under a second on a Pi 4. If you need open-ended Whisper on a Pi 4, downgrade to the "tiny" model, which trades accuracy for speed. On x86 hardware, make sure the add-on has access to sufficient RAM — budget at least 4 GB for the base model.</p>
+
+            <h3>Wyoming Integration Not Discovering Services</h3>
+            <p>Zeroconf discovery requires the Home Assistant host and the satellite/add-on to be on the same subnet with multicast traffic allowed. If you have VLANs, either place all voice devices on the same VLAN or configure your router to forward mDNS packets between VLANs. Alternatively, skip discovery entirely by adding the Wyoming integration manually with the explicit IP and port of each service.</p>
+
+            <h3>Piper TTS Voice Sounds Robotic</h3>
+            <p>Piper has multiple quality tiers per language — "low", "medium", and "high". The high-quality voices use larger neural network models and produce noticeably more natural output. If you are hearing robotic artifacts, switch to the medium or high model in the Piper add-on configuration. On a Pi 4, medium models still synthesize fast enough to feel responsive.</p>
+
+            <h2>Privacy Architecture: What Stays Local</h2>
+            <p>The combination of Voice PE hardware and the Wyoming protocol stack delivers a genuinely private voice assistant. Here is the full data flow with zero cloud involvement:</p>
+            <ul>
+                <li><strong>Audio capture:</strong> The XMOS chip on Voice PE processes raw microphone audio in hardware — noise cancellation and echo removal happen on the device before any data leaves the speaker unit.</li>
+                <li><strong>Wake word detection:</strong> openWakeWord runs on the HA server (or on the satellite itself for edge models). The raw audio stream is never stored; only the confidence score is checked against a threshold.</li>
+                <li><strong>Speech-to-text:</strong> Whisper or Speech-to-Phrase receives only the audio clip after the wake word fires — a few seconds at most. The model runs locally, the transcription result is text, and neither the audio nor the text is forwarded externally.</li>
+                <li><strong>Intent and action:</strong> Home Assistant's Assist pipeline matches the text to your entities and fires the appropriate automation or action. This is pure local Python code — no API calls, no cloud lookup.</li>
+                <li><strong>Response speech:</strong> Piper synthesizes the response on your server and streams it back to the satellite speaker. No TTS cloud service is involved.</li>
+            </ul>
+            <p>Compare this to Alexa or Google Home, where every utterance — including the seconds before and after the command — is streamed to cloud servers, retained according to each company's privacy policy, and potentially used to improve voice models. With TARA's approach to local intelligence, your voice data is yours. It never leaves the LAN, it is not retained, and it does not depend on any company's servers staying operational.</p>
+            <p>The Voice PE's physical mute switch takes this one step further. Unlike a software mute that can be overridden by a firmware update or a bug, cutting power to the microphone hardware is absolute. When the switch is engaged, the device cannot listen — full stop.</p>
+
+            <h2>Frequently Asked Questions</h2>
+
+            <h3>Do I need a Nabu Casa subscription for a local voice assistant in Home Assistant?</h3>
+            <p>No. A Nabu Casa subscription is completely optional. The entire stack — openWakeWord for wake word detection, Whisper or Speech-to-Phrase for speech-to-text, and Piper for text-to-speech — runs locally on your Home Assistant hardware. Every spoken command stays on your LAN, and no audio is ever sent to Nabu Casa servers unless you choose to enable that option.</p>
+
+            <h3>Can I run the Wyoming add-ons on a Raspberry Pi 4?</h3>
+            <p>Yes, but performance depends on which speech-to-text engine you choose. Speech-to-Phrase is extremely fast on a Raspberry Pi 4 because it only recognizes a limited set of smart-home commands rather than open-ended dictation. Whisper can also run on a Pi 4, but transcription takes roughly 8 seconds per command. If speed matters, use Speech-to-Phrase on a Pi 4, or run Whisper on an x86 host such as an Intel NUC or HA Yellow.</p>
+
+            <h3>What is the difference between Whisper and Speech-to-Phrase?</h3>
+            <p>Whisper is OpenAI's open-source general-purpose speech recognition model — it can transcribe arbitrary sentences but requires significant CPU or GPU resources. Speech-to-Phrase is a Home Assistant–designed alternative that only transcribes commands it already knows your assistant supports, making it dramatically faster and lighter on hardware. For smart home control (turn on lights, set temperature, lock doors), Speech-to-Phrase is usually the better choice.</p>
+
+            <h3>What hardware do I need for the microphone satellite?</h3>
+            <p>The Home Assistant Voice Preview Edition (Voice PE) is the easiest option — it is an ESP32-S3 device with an XMOS audio processor, dual-microphone array, physical mute switch, and LED ring, all for $69. If you prefer DIY, a Raspberry Pi Zero 2 W or Pi 4 paired with a ReSpeaker 2-mic HAT or Seeed ReSpeaker Lite board works well using the Wyoming satellite software. An M5Stack ATOM Echo is the lowest-cost option at around $13.</p>
+
+            <h3>Which wake words are available for local use in Home Assistant?</h3>
+            <p>Home Assistant ships with several built-in wake words powered by openWakeWord, including "Hey Jarvis", "OK Nabu", and "Hey Mycroft". You can also train a custom wake word using the openWakeWord model trainer, which uses Piper TTS to generate synthetic training audio — no real voice recordings required. Custom wake word models are loaded directly onto your Home Assistant instance with no cloud upload.</p>
+        </div>
+
+        <div class="article-cta">
+            <h3>Ready for a home that just works?</h3>
+            <p>Join the waitlist for early access.</p>
+            <form class="article-cta-form" action="https://formspree.io/f/mqelrgbl" method="POST">
+                <input type="hidden" name="_subject" value="New TARA Waitlist Signup!" />
+                <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+                <input type="email" name="email" placeholder="Enter your email" required class="article-cta-input" />
+                <button type="submit" class="article-cta-button">Join the Waitlist</button>
+            </form>
+            <p class="article-cta-success" style="display:none">&#10003; You're on the list. We'll be in touch soon.</p>
+        </div>
+
+        <div class="article-related">
+            <p class="article-related-title">Related Articles</p>
+            <div class="article-related-links">
+                <a href="/blog/home-automation-without-cloud.html" class="article-related-link">→ How to Run Your Smart Home Without the Cloud</a>
+                <a href="/blog/mmwave-matter-thread-presence-sensor-home-assistant.html" class="article-related-link">→ How to Add Battery-Powered mmWave Presence Sensors to Home Assistant via Matter &amp; Thread</a>
+                <a href="/blog/what-is-smart-home-hub.html" class="article-related-link">→ What Is a Smart Home Hub &amp; Why You Need One</a>
+            </div>
+        </div>
+    </article>
+
+    <footer class="blog-footer">
+        <p>&copy; <span id="copyright-year"></span> TARA. All rights reserved.
+            <a href="/privacy.html">Privacy Policy</a>
+        </p>
+    </footer>
+
+    <script defer src="/js/blog.js"></script>
+    <script>document.getElementById('copyright-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
