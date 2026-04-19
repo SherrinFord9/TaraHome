@@ -1,43 +1,74 @@
-# Astro Starter Kit: Minimal
+# TARA Website — tarahome.ai
 
-```sh
-npm create astro@latest -- --template minimal
+Astro 6 + Tailwind CSS v4 marketing site for TARA, a privacy-first smart home intelligence system.
+
+## Quick Start
+
+```bash
+npm install
+npm run dev       # localhost:4321
+npm run build     # static output → ./dist/
+npm run preview   # preview built site
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Structure
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```
+src/
+├── layouts/        BaseLayout, BlogLayout
+├── components/     Nav, Hero, SocialProofBar, ProblemSection,
+│                   SolutionSection, HowItWorks, FeaturesBento,
+│                   DeveloperSection, Testimonials, FAQ,
+│                   FinalCTA, WaitlistForm, Footer
+├── pages/          index, privacy, 404, blog/
+├── content/blog/   9 markdown articles (content collection)
+├── styles/         global.css
+└── scripts/        scroll-animations.js (Intersection Observer)
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Brand Colors
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+### Core
 
-Any static assets, like images, can be placed in the `public/` directory.
+| Name | Hex | Role |
+|------|-----|------|
+| Midnight Black | `#0A0A0B` | Background |
+| Graphite | `#1F1F23` | Surface |
+| Soft Charcoal | `#2D2D2D` | Cards |
+| Electric Purple | `#A100FF` | Primary accent |
+| Prosperity Gold | `#C9A227` | Premium accent |
 
-## 🧞 Commands
+### Supporting Neutrals
 
-All commands are run from the root of the project, from a terminal:
+| Name | Hex |
+|------|-----|
+| Cloud White | `#F5F5F7` |
+| Soft Gold Highlight | `#E0C36E` |
+| Cool Gray | `#C9CBD1` |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+### Functional UI
 
-## 👀 Want to learn more?
+| Name | Hex |
+|------|-----|
+| Primary CTA | `#A100FF` |
+| CTA Hover | `#8A00DB` |
+| Success / Online | `#6BBF59` |
+| Warning | `#FFB800` |
+| Error | `#FF4D6D` |
+| Info / Connected | `#4DA3FF` |
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Usage Ratio
+
+- **60–70%** neutrals: `#F5F5F7`, `#1F1F23`, `#2D2D2D`
+- **15–20%** purple: `#A100FF`
+- **10–15%** gold: `#C9A227`, `#E0C36E`
+- **5–10%** green: `#6BBF59`
+
+## Tech Stack
+
+- **Framework:** Astro 6.1.5 (static, zero client JS)
+- **Styling:** Tailwind CSS v4 via `@tailwindcss/vite`
+- **Typography:** Inter (all weights)
+- **Animations:** Intersection Observer scroll reveals
+- **Forms:** Formspree (waitlist)
+- **Analytics:** GA4
