@@ -1,0 +1,388 @@
+/* ── Fonts ──────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ── Custom Theme ───────────────────────────────────────────── */
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Inter', -apple-system, sans-serif;
+
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.05);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-hover: rgba(255, 215, 0, 0.12);
+  --color-accent-amber: #FFD700;
+  --color-accent-gold: #FFC107;
+  --color-glow-amber: rgba(255, 215, 0, 0.2);
+  --color-glow-gold: rgba(255, 193, 7, 0.12);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ── Base ───────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #050505;
+  color: #fff;
+  letter-spacing: -0.01em;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(255, 215, 0, 0.25);
+  color: #fff;
+}
+
+/* ── Aurora Background ──────────────────────────────────────── */
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.aurora-bg::before,
+.aurora-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.3;
+}
+
+.aurora-bg::before {
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, #2e1a08, transparent 70%);
+  top: -300px;
+  left: -200px;
+  animation: aurora-drift-1 25s ease-in-out infinite alternate;
+}
+
+.aurora-bg::after {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #1a0e05, transparent 70%);
+  bottom: -200px;
+  right: -150px;
+  animation: aurora-drift-2 20s ease-in-out infinite alternate;
+}
+
+.aurora-blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1a1005, transparent 70%);
+  filter: blur(120px);
+  opacity: 0.2;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: aurora-drift-3 30s ease-in-out infinite alternate;
+}
+
+@keyframes aurora-drift-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(80px, 60px) scale(1.1); }
+  100% { transform: translate(-40px, 100px) scale(0.95); }
+}
+
+@keyframes aurora-drift-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, -50px) scale(1.15); }
+  100% { transform: translate(50px, -80px) scale(0.9); }
+}
+
+@keyframes aurora-drift-3 {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-40%, -60%) scale(1.2); }
+  100% { transform: translate(-60%, -40%) scale(0.85); }
+}
+
+/* ── Glassmorphism Card — Overlay-level polish ────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.25rem;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition:
+    transform 0.5s var(--ease-out-expo),
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    background 0.4s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 215, 0, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 40px rgba(255, 215, 0, 0.04),
+    0 0 0 1px rgba(255, 215, 0, 0.03);
+}
+
+/* ── Display Typography — clean, crisp headings ────────────── */
+.heading-glow {
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+
+.heading-gradient {
+  color: #ffffff;
+}
+
+.heading-gradient-hero {
+  color: #ffffff;
+}
+
+/* ── Glassmorphism Card text spacing ───────────────────────── */
+.glass-card p,
+.glass-card li {
+  letter-spacing: 0;
+  line-height: 1.75;
+}
+
+/* ── Shiny Gold Text — clean metallic gradient ─────────────── */
+.gold-shine {
+  background: linear-gradient(
+    135deg,
+    #BF953F 0%,
+    #FCF6BA 22%,
+    #B38728 45%,
+    #FBF5B7 67%,
+    #AA771C 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gold-glow {
+  color: #FFD700;
+}
+
+/* ── Section Label — clean uppercase with gold accent ─────── */
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #D4A017;
+  margin-bottom: 1rem;
+}
+
+/* ── Nav Link Hover — Overlay-style underline sweep ──────────── */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, #BF953F, #FCF6BA, #B38728);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ── Primary CTA Button — with gold hover glow ──────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #000;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition:
+    transform 0.4s var(--ease-out-expo),
+    box-shadow 0.4s ease,
+    background 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 30px rgba(255, 215, 0, 0.15),
+    0 2px 12px rgba(255, 255, 255, 0.1);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ── Secondary Button ─────────────────────────────────────── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 9999px;
+  font-weight: 500;
+  transition:
+    transform 0.4s var(--ease-out-expo),
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 215, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ── FAQ Accordion — smooth height animation ─────────────────── */
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease-out-expo);
+}
+
+.faq-answer > div {
+  overflow: hidden;
+}
+
+.faq-answer.is-open {
+  grid-template-rows: 1fr;
+}
+
+.faq-trigger {
+  transition: color 0.3s ease;
+}
+
+.faq-trigger:hover span {
+  color: rgba(255, 215, 0, 0.8);
+}
+
+/* ── Footer link hover — subtle gold shift ────────────────── */
+.footer-link {
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: rgba(255, 215, 0, 0.7);
+}
+
+/* ── Scroll Animations — directional slide system ────────────── */
+
+/* Default: slide up (backwards compat) */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(8px);
+}
+
+/* Slide from left */
+.slide-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  filter: blur(6px);
+}
+
+/* Slide from right */
+.slide-right {
+  opacity: 0;
+  transform: translateX(60px);
+  filter: blur(6px);
+}
+
+/* Slide down from above */
+.slide-down {
+  opacity: 0;
+  transform: translateY(-40px);
+  filter: blur(6px);
+}
+
+/* Scale up from center */
+.slide-scale {
+  opacity: 0;
+  transform: scale(0.92);
+  filter: blur(10px);
+}
+
+/* Fade only — no movement */
+.slide-fade {
+  opacity: 0;
+  filter: blur(4px);
+}
+
+/* Slide up + rotate subtle (cards) */
+.slide-rotate {
+  opacity: 0;
+  transform: translateY(30px) rotate(1.5deg);
+  filter: blur(4px);
+}
+
+/* Draw-in line (for decorative connectors) */
+.draw-in {
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+/* ── Visible state for ALL slide classes ──────────────────────── */
+.reveal.is-visible,
+.slide-left.is-visible,
+.slide-right.is-visible,
+.slide-down.is-visible,
+.slide-scale.is-visible,
+.slide-fade.is-visible,
+.slide-rotate.is-visible,
+.draw-in.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+}
+
+/* ── Form input polish ──────────────────────────────────────── */
+input[type="email"]::placeholder {
+  transition: color 0.3s ease;
+}
+
+input[type="email"]:focus::placeholder {
+  color: rgba(255, 215, 0, 0.3);
+}
+
+/* ── Reduced Motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .aurora-bg::before,
+  .aurora-bg::after,
+  .aurora-blob {
+    animation: none !important;
+  }
+  .reveal, .slide-left, .slide-right, .slide-down,
+  .slide-scale, .slide-fade, .slide-rotate, .draw-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .section-label {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,93 @@
+---
+// FAQ — two-column layout with accordion
+const faqs = [
+  {
+    q: 'What exactly is TARA?',
+    a: 'TARA is a complete home intelligence system — hardware and software — that processes everything locally in your home. It includes a central hub, presence sensors, voice satellites, and an on-device AI that learns your habits. Think of it as a private, local alternative to Alexa + Ring + SmartThings — but everything runs in your home, not the cloud.',
+  },
+  {
+    q: 'Do I need technical knowledge to set it up?',
+    a: "No. TARA is designed to be plug-and-play. Connect the hub to your network, and she discovers your devices automatically. Voice setup guides you through the rest. If you can set up a Wi-Fi router, you can set up TARA.",
+  },
+  {
+    q: 'What devices does TARA work with?',
+    a: 'TARA supports Zigbee, Z-Wave, Matter, Thread, Wi-Fi, and Bluetooth devices — that\'s over 2,000 compatible products including lights, locks, thermostats, blinds, sensors, cameras, and speakers from brands like IKEA, Aqara, Ecobee, Philips Hue, and hundreds more.',
+  },
+  {
+    q: 'Is my data really private?',
+    a: 'Yes, completely. TARA processes everything — voice commands, automations, camera feeds, habit learning — on a device physically inside your home. No data is sent to any cloud server. No data is sold. No data leaves your network. Period.',
+  },
+  {
+    q: 'Does TARA work without internet?',
+    a: 'Yes. Core functionality — voice control, automations, presence detection, device control — works fully offline. Internet is only needed for optional features like weather forecasts, music streaming, and software updates.',
+  },
+  {
+    q: 'How does presence detection work without cameras?',
+    a: 'TARA uses mmWave radar sensors that detect movement and even breathing through walls. Unlike cameras or motion sensors, mmWave produces no images or video — just a simple "someone is here" or "room is empty" signal. It works through blankets, in the dark, and never records anything visual.',
+  },
+  {
+    q: 'When will TARA be available?',
+    a: "We're currently in early access. Join the waitlist to be among the first to receive TARA. We'll notify you as soon as units are ready to ship.",
+  },
+];
+---
+
+<section class="relative z-10 py-24 md:py-32">
+  <div class="mx-auto max-w-7xl px-6">
+    <div class="grid lg:grid-cols-5 gap-12 lg:gap-16">
+
+      <!-- Left Column (sticky) -->
+      <div class="lg:col-span-2 slide-left">
+        <div class="lg:sticky lg:top-24">
+          <p class="section-label">FAQ</p>
+          <h2 class="font-[var(--font-display)] text-3xl md:text-4xl font-extrabold tracking-tight mb-4 heading-glow">
+            <span class="heading-gradient">Questions? Answered.</span>
+          </h2>
+          <p class="text-base text-gray-500 leading-relaxed">
+            Can't find what you're looking for?<br />
+            Reach out at <a href="mailto:hello@tarahome.ai" class="text-gray-400 hover:text-white transition-colors underline underline-offset-4">hello@tarahome.ai</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Column (accordion) -->
+      <div class="lg:col-span-3 space-y-0 slide-right" data-delay="150">
+        {faqs.map((faq, i) => (
+          <div class="faq-item border-b border-white/[0.06]">
+            <button
+              class="faq-trigger w-full flex items-center justify-between py-6 text-left"
+              aria-expanded="false"
+            >
+              <span class="font-[var(--font-display)] text-lg font-medium text-white pr-8 transition-colors duration-300">
+                {faq.q}
+              </span>
+              <svg class="faq-chevron w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-400" style="transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="faq-answer">
+              <div>
+                <p class="text-base text-gray-400 leading-relaxed pb-6">
+                  {faq.a}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.faq-trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const answer = item?.querySelector('.faq-answer');
+      const chevron = item?.querySelector('.faq-chevron');
+      const isOpen = answer?.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(!!isOpen));
+      chevron?.classList.toggle('rotate-180', !!isOpen);
+    });
+  });
+</script>
