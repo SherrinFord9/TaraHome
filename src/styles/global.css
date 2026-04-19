@@ -1,4 +1,12 @@
 /* ── Fonts ──────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'Avenir';
+  src: url('/fonts/Avenir_Book.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @import "tailwindcss";
@@ -6,18 +14,39 @@
 
 /* ── Custom Theme ───────────────────────────────────────────── */
 @theme {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-display: 'Inter', -apple-system, sans-serif;
+  --font-sans: 'Avenir', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Avenir', 'Inter', -apple-system, sans-serif;
 
-  --color-surface: rgba(255, 255, 255, 0.03);
-  --color-surface-hover: rgba(255, 255, 255, 0.05);
-  --color-border-subtle: rgba(255, 255, 255, 0.06);
-  --color-border-hover: rgba(255, 215, 0, 0.12);
-  --color-accent-amber: #FFD700;
-  --color-accent-gold: #FFC107;
-  --color-glow-amber: rgba(255, 215, 0, 0.2);
-  --color-glow-gold: rgba(255, 193, 7, 0.12);
+  /* Core brand */
+  --color-midnight: #0A0A0B;
+  --color-graphite: #1F1F23;
+  --color-charcoal: #2D2D2D;
+  --color-purple: #A100FF;
+  --color-purple-hover: #8A00DB;
+  --color-gold: #C9A227;
+  --color-gold-soft: #E0C36E;
 
+  /* Supporting neutrals */
+  --color-cloud: #F5F5F7;
+  --color-cool-gray: #C9CBD1;
+
+  /* Functional */
+  --color-success: #6BBF59;
+  --color-warning: #FFB800;
+  --color-error: #FF4D6D;
+  --color-info: #4DA3FF;
+
+  /* Surfaces & borders */
+  --color-surface: var(--color-graphite);
+  --color-surface-hover: #26262B;
+  --color-border-subtle: rgba(245, 245, 247, 0.08);
+  --color-border-hover: rgba(161, 0, 255, 0.4);
+
+  /* Glows */
+  --color-glow-purple: rgba(161, 0, 255, 0.35);
+  --color-glow-gold: rgba(201, 162, 39, 0.25);
+
+  /* Easing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
@@ -29,8 +58,8 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background: #050505;
-  color: #fff;
+  background: var(--color-midnight);
+  color: var(--color-cloud);
   letter-spacing: -0.01em;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -39,7 +68,7 @@ body {
 }
 
 ::selection {
-  background: rgba(255, 215, 0, 0.25);
+  background: rgba(161, 0, 255, 0.25);
   color: #fff;
 }
 
@@ -111,10 +140,10 @@ body {
   100% { transform: translate(-60%, -40%) scale(0.85); }
 }
 
-/* ── Glassmorphism Card — Overlay-level polish ────────────────── */
+/* ── Glass Card ────────────────────────────────────────────── */
 .glass-card {
   background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(245, 245, 247, 0.08);
   border-radius: 1.25rem;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -126,36 +155,36 @@ body {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 215, 0, 0.1);
+  border-color: rgba(161, 0, 255, 0.25);
   background: rgba(255, 255, 255, 0.035);
   transform: translateY(-4px);
   box-shadow:
-    0 8px 40px rgba(255, 215, 0, 0.04),
-    0 0 0 1px rgba(255, 215, 0, 0.03);
+    0 8px 40px rgba(161, 0, 255, 0.06),
+    0 0 0 1px rgba(161, 0, 255, 0.04);
 }
 
-/* ── Display Typography — clean, crisp headings ────────────── */
+/* ── Display Typography ────────────────────────────────────── */
 .heading-glow {
   letter-spacing: -0.02em;
   line-height: 1.12;
 }
 
 .heading-gradient {
-  color: #ffffff;
+  color: var(--color-cloud);
 }
 
 .heading-gradient-hero {
-  color: #ffffff;
+  color: var(--color-cloud);
 }
 
-/* ── Glassmorphism Card text spacing ───────────────────────── */
+/* ── Glass Card text spacing ───────────────────────────────── */
 .glass-card p,
 .glass-card li {
   letter-spacing: 0;
   line-height: 1.75;
 }
 
-/* ── Shiny Gold Text — clean metallic gradient ─────────────── */
+/* ── Gold Text — metallic gradient (premium accent) ────────── */
 .gold-shine {
   background: linear-gradient(
     135deg,
@@ -171,20 +200,20 @@ body {
 }
 
 .gold-glow {
-  color: #FFD700;
+  color: var(--color-gold);
 }
 
-/* ── Section Label — clean uppercase with gold accent ─────── */
+/* ── Section Label — uppercase with gold accent ──────────── */
 .section-label {
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #D4A017;
+  color: var(--color-gold);
   margin-bottom: 1rem;
 }
 
-/* ── Nav Link Hover — Overlay-style underline sweep ──────────── */
+/* ── Nav Link Hover — gold underline sweep ─────────────────── */
 .nav-link {
   position: relative;
 }
@@ -207,13 +236,13 @@ body {
   transform-origin: left;
 }
 
-/* ── Primary CTA Button — with gold hover glow ──────────────── */
+/* ── Primary CTA Button — Electric Purple ──────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  color: #000;
+  background: var(--color-purple);
+  color: #fff;
   border-radius: 9999px;
   font-weight: 500;
   transition:
@@ -223,10 +252,11 @@ body {
 }
 
 .btn-primary:hover {
+  background: var(--color-purple-hover);
   transform: translateY(-3px);
   box-shadow:
-    0 8px 30px rgba(255, 215, 0, 0.15),
-    0 2px 12px rgba(255, 255, 255, 0.1);
+    0 8px 30px rgba(161, 0, 255, 0.25),
+    0 2px 12px rgba(161, 0, 255, 0.15);
 }
 
 .btn-primary:active {
@@ -238,8 +268,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
+  border: 1px solid rgba(245, 245, 247, 0.15);
+  color: var(--color-cloud);
   border-radius: 9999px;
   font-weight: 500;
   transition:
@@ -249,12 +279,12 @@ body {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 215, 0, 0.2);
+  background: rgba(161, 0, 255, 0.08);
+  border-color: rgba(161, 0, 255, 0.3);
   transform: translateY(-2px);
 }
 
-/* ── FAQ Accordion — smooth height animation ─────────────────── */
+/* ── FAQ Accordion ─────────────────────────────────────────── */
 .faq-answer {
   display: grid;
   grid-template-rows: 0fr;
@@ -274,76 +304,68 @@ body {
 }
 
 .faq-trigger:hover span {
-  color: rgba(255, 215, 0, 0.8);
+  color: rgba(161, 0, 255, 0.8);
 }
 
-/* ── Footer link hover — subtle gold shift ────────────────── */
+/* ── Footer link hover ────────────────────────────────────── */
 .footer-link {
   transition: color 0.3s ease;
 }
 
 .footer-link:hover {
-  color: rgba(255, 215, 0, 0.7);
+  color: rgba(161, 0, 255, 0.7);
 }
 
 /* ── Scroll Animations — directional slide system ────────────── */
 
-/* Default: slide up (backwards compat) */
 .reveal {
   opacity: 0;
   transform: translateY(40px);
   filter: blur(8px);
 }
 
-/* Slide from left */
 .slide-left {
   opacity: 0;
   transform: translateX(-60px);
   filter: blur(6px);
 }
 
-/* Slide from right */
 .slide-right {
   opacity: 0;
   transform: translateX(60px);
   filter: blur(6px);
 }
 
-/* Slide down from above */
 .slide-down {
   opacity: 0;
   transform: translateY(-40px);
   filter: blur(6px);
 }
 
-/* Scale up from center */
 .slide-scale {
   opacity: 0;
   transform: scale(0.92);
   filter: blur(10px);
 }
 
-/* Fade only — no movement */
 .slide-fade {
   opacity: 0;
   filter: blur(4px);
 }
 
-/* Slide up + rotate subtle (cards) */
 .slide-rotate {
   opacity: 0;
   transform: translateY(30px) rotate(1.5deg);
   filter: blur(4px);
 }
 
-/* Draw-in line (for decorative connectors) */
 .draw-in {
   opacity: 0;
   transform: scaleX(0);
   transform-origin: left;
 }
 
-/* ── Visible state for ALL slide classes ──────────────────────── */
+/* ── Visible state ──────────────────────────────────────────── */
 .reveal.is-visible,
 .slide-left.is-visible,
 .slide-right.is-visible,
@@ -363,7 +385,7 @@ input[type="email"]::placeholder {
 }
 
 input[type="email"]:focus::placeholder {
-  color: rgba(255, 215, 0, 0.3);
+  color: rgba(161, 0, 255, 0.3);
 }
 
 /* ── Reduced Motion ─────────────────────────────────────────── */
@@ -378,9 +400,6 @@ input[type="email"]:focus::placeholder {
     opacity: 1;
     transform: none;
     filter: none;
-  }
-  .section-label {
-    animation: none;
   }
   html {
     scroll-behavior: auto;
