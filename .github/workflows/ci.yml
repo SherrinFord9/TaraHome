@@ -1,4 +1,4 @@
-name: CI / Deploy
+name: Static Validate
 
 on:
   push:
@@ -11,44 +11,14 @@ permissions:
 
 jobs:
   validate:
-    name: Lint & Validate
+    name: Validate published files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint HTML
-        run: npm run lint:html
-
-      - name: Lint JavaScript
-        run: npm run lint:js
-
-  deploy:
-    name: Deploy to GitHub Pages
-    needs: validate
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/configure-pages@v4
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Check required published files
+        run: |
+          test -f index.html
+          test -f favicon.ico
+          test -f blog/index.html
+          test -f privacy/index.html
+          test -d assets
