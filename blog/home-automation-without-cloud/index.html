@@ -57,12 +57,21 @@
       .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
       .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
       .blog-card p { font-size: 0.98rem; line-height: 1.35; }
-      .article { max-width: 860px; }
-      .article .hero { display: block; min-height: 0; padding-bottom: clamp(30px, 5vw, 64px); }
-      .article h1 { max-width: 12ch; }
-      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.92rem; font-weight: 900; margin: 0 0 18px; text-transform: uppercase; }
-      .article-body { border-top: 1px solid var(--line); padding-top: clamp(28px, 4vw, 48px); }
-      .article-body p { color: var(--ink); font-size: clamp(1.12rem, 1.5vw, 1.35rem); font-weight: 720; line-height: 1.42; margin: 0 0 22px; max-width: 72ch; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { display: block; min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
       .article-cta { margin-top: clamp(34px, 5vw, 64px); }
       .legal { max-width: 860px; }
       .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
@@ -142,7 +151,49 @@
           <h1>How to Run Your Smart Home Without the Cloud</h1>
           <p class="lede">Keep your smart home private and fast by processing everything locally. A practical guide to going cloud-free.</p>
         </header>
-        <div class="article-body"><p>Cloud-connected smart homes have three fundamental problems: latency (every command takes a round trip to a server), privacy (your usage data is collected and analyzed), and reliability (when the cloud goes down, your home stops working).</p><p>A local-first smart home processes everything on-device. Voice commands are transcribed locally, automations run on your hub, and sensor data stays on your network. The result is faster response times, complete privacy, and a system that works even when your internet is out.</p><p>You don&#39;t have to go 100% offline. The ideal setup runs everything locally with optional secure remote access when you choose to enable it. Some devices are inherently cloud-dependent and can&#39;t work locally — the key is choosing devices that support local protocols like Zigbee, Z-Wave, Thread, and Matter.</p></div>
+        <div class="article-body"><h2 id="why-go-cloud-free">Why Go Cloud-Free?</h2>
+<p>Cloud-connected smart homes have three fundamental problems:</p>
+<ol>
+<li><strong>They’re slow</strong>: Every command travels to a data center and back</li>
+<li><strong>They’re fragile</strong>: Internet goes down = smart home goes dumb</li>
+<li><strong>They’re watching</strong>: Your habits, voice recordings, and patterns are stored on corporate servers</li>
+</ol>
+<h3 id="the-local-first-approach">The Local-First Approach</h3>
+<p>A local-first smart home processes everything on-device:</p>
+<ul>
+<li>Voice commands: processed locally</li>
+<li>Automations: run on local hardware</li>
+<li>Presence detection: computed on-device</li>
+<li>Device communication: local network only</li>
+</ul>
+<h3 id="what-you-need">What You Need</h3>
+<ol>
+<li><strong>A local hub</strong>: Something like Home Assistant, Hubitat, or a dedicated local hub</li>
+<li><strong>Local-first devices</strong>: Prefer Zigbee/Z-Wave/Thread over cloud-only Wi-Fi devices</li>
+<li><strong>A good router</strong>: Your local network is now critical infrastructure</li>
+<li><strong>UPS backup</strong>: Keep your hub running during power outages</li>
+</ol>
+<h3 id="devices-to-avoid">Devices to Avoid</h3>
+<p>Some devices are cloud-only and can’t work locally:</p>
+<ul>
+<li>Most cheap Wi-Fi plugs and bulbs</li>
+<li>Ring cameras (require cloud)</li>
+<li>Nest devices (Google cloud dependent)</li>
+</ul>
+<h3 id="devices-that-work-great-locally">Devices That Work Great Locally</h3>
+<ul>
+<li><strong>Zigbee</strong>: IKEA TRADFRI, Aqara sensors, Philips Hue</li>
+<li><strong>Z-Wave</strong>: Zooz, Inovelli switches</li>
+<li><strong>Thread/Matter</strong>: Eve devices, Nanoleaf</li>
+</ul>
+<h3 id="the-best-of-both-worlds">The Best of Both Worlds</h3>
+<p>You don’t have to go 100% offline. The ideal setup:</p>
+<ul>
+<li><strong>Local processing</strong> for speed and privacy</li>
+<li><strong>Optional cloud</strong> for remote access when you choose</li>
+<li><strong>Encrypted tunnel</strong> (VPN) for accessing your home remotely</li>
+</ul>
+<p>The best local hubs support this hybrid approach - everything runs locally, with optional secure remote access when you choose to enable it.</p></div>
         <section class="block article-cta">
           <p class="kicker">Turn the guide into a home plan</p>
           <h2>Tara confirms the devices, protocols, and scope before anything ships.</h2>

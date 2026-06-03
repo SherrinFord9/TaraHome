@@ -57,12 +57,21 @@
       .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
       .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
       .blog-card p { font-size: 0.98rem; line-height: 1.35; }
-      .article { max-width: 860px; }
-      .article .hero { display: block; min-height: 0; padding-bottom: clamp(30px, 5vw, 64px); }
-      .article h1 { max-width: 12ch; }
-      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.92rem; font-weight: 900; margin: 0 0 18px; text-transform: uppercase; }
-      .article-body { border-top: 1px solid var(--line); padding-top: clamp(28px, 4vw, 48px); }
-      .article-body p { color: var(--ink); font-size: clamp(1.12rem, 1.5vw, 1.35rem); font-weight: 720; line-height: 1.42; margin: 0 0 22px; max-width: 72ch; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { display: block; min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
       .article-cta { margin-top: clamp(34px, 5vw, 64px); }
       .legal { max-width: 860px; }
       .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
@@ -142,7 +151,44 @@
           <h1>Smart Home Security: Protect Your Connected Home</h1>
           <p class="lede">Your smart home is only as secure as its weakest device. Here&#39;s how to lock down your network and devices properly.</p>
         </header>
-        <div class="article-body"><p>Every smart device is a potential entry point for hackers. A compromised smart bulb might not steal your data directly, but it can be a stepping stone into your network.</p><p>The ideal smart home network uses VLANs to segment IoT devices from your main network. Your IoT network should be able to talk to the internet (for updates) and your hub, but NOT to your main network devices like laptops and phones.</p><p>Cloud-dependent devices are attack vectors because they maintain persistent connections to external servers, creating more surface area for interception. Local-first hubs minimize your attack surface. If data never leaves your network, it can&#39;t be intercepted in transit.</p><p>Matter devices use end-to-end encryption and device attestation — every device proves it&#39;s genuine before joining your network. This is a massive security improvement over older protocols like early Zigbee implementations.</p></div>
+        <div class="article-body"><h2 id="why-smart-home-security-matters">Why Smart Home Security Matters</h2>
+<p>Every smart device is a potential entry point for hackers. A compromised smart bulb might not steal your data directly, but it can be a stepping stone into your network.</p>
+<h3 id="the-basics">The Basics</h3>
+<ol>
+<li><strong>Separate network</strong>: Put IoT devices on a separate VLAN or guest network</li>
+<li><strong>Strong passwords</strong>: Never use default credentials on any device</li>
+<li><strong>Firmware updates</strong>: Keep every device updated</li>
+<li><strong>Buy reputable brands</strong>: Cheap no-name devices often have poor security</li>
+</ol>
+<h3 id="network-architecture">Network Architecture</h3>
+<p>The ideal smart home network looks like this:</p>
+<ul>
+<li><strong>Main network</strong>: Computers, phones, tablets</li>
+<li><strong>IoT network</strong>: Smart devices, sensors, cameras</li>
+<li><strong>Guest network</strong>: Visitors</li>
+</ul>
+<p>Your IoT network should be able to talk to the internet (for updates) and your hub, but NOT to your main network devices.</p>
+<h3 id="why-local-processing-helps-security">Why Local Processing Helps Security</h3>
+<p>Cloud-dependent devices are attack vectors because:</p>
+<ul>
+<li>They maintain persistent connections to external servers</li>
+<li>A compromised cloud service affects all users simultaneously</li>
+<li>Data in transit can be intercepted</li>
+</ul>
+<p>Local-first hubs minimize your attack surface. If data never leaves your network, it can’t be intercepted in transit.</p>
+<h3 id="practical-security-checklist">Practical Security Checklist</h3>
+<ul>
+<li>Router firmware is up to date</li>
+<li>IoT devices on separate VLAN</li>
+<li>No default passwords on any device</li>
+<li>UPnP disabled on router</li>
+<li>Remote access via VPN only (not port forwarding)</li>
+<li>Regular audit of connected devices</li>
+<li>Two-factor authentication on hub/app</li>
+</ul>
+<h3 id="the-future-matter-and-thread-security">The Future: Matter and Thread Security</h3>
+<p>Matter devices use <strong>end-to-end encryption</strong> and <strong>device attestation</strong> - every device proves it’s genuine before joining your network. This is a massive security improvement over older protocols.</p>
+<p>Combined with local processing and network segmentation, a modern smart home can be remarkably secure.</p></div>
         <section class="block article-cta">
           <p class="kicker">Turn the guide into a home plan</p>
           <h2>Tara confirms the devices, protocols, and scope before anything ships.</h2>
