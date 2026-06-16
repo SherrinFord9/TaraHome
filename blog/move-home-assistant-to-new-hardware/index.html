@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Move Home Assistant to New Hardware | Tara Guides</title>
+    <meta name="description" content="Use a full backup, save the encryption key, move USB radios carefully, and restore Home Assistant on new hardware without rebuilding everything." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/move-home-assistant-to-new-hardware/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/move-home-assistant-to-new-hardware/" />
+    <meta property="og:title" content="How to Move Home Assistant to New Hardware | Tara Guides" />
+    <meta property="og:description" content="Use a full backup, save the encryption key, move USB radios carefully, and restore Home Assistant on new hardware without rebuilding everything." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Move Home Assistant to New Hardware | Tara Guides" />
+    <meta name="twitter:description" content="Use a full backup, save the encryption key, move USB radios carefully, and restore Home Assistant on new hardware without rebuilding everything." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/move-home-assistant-to-new-hardware/#blogposting",
+      "headline": "How to Move Home Assistant to New Hardware",
+      "description": "Use a full backup, save the encryption key, move USB radios carefully, and restore Home Assistant on new hardware without rebuilding everything.",
+      "image": "https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png",
+      "datePublished": "2026-06-15",
+      "dateModified": "2026-06-15",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/move-home-assistant-to-new-hardware/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/common-tasks/general/",
+        "https://www.home-assistant.io/integrations/backup/",
+        "https://www.home-assistant.io/blog/2025/01/03/release-20251/",
+        "https://www.home-assistant.io/blog/2025/01/03/3-2-1-backup/",
+        "https://www.home-assistant.io/blog/2025/02/05/release-20252/",
+        "https://www.home-assistant.io/blog/2026/03/26/modernizing-encryption-of-home-assistant-backups/",
+        "https://www.home-assistant.io/blog/2026/06/03/release-20266/",
+        "https://www.home-assistant.io/more-info/backup-emergency-kit/",
+        "https://www.home-assistant.io/common-tasks/os/",
+        "https://green.home-assistant.io/guides/restore-backup",
+        "https://www.home-assistant.io/integrations/zha/",
+        "https://community.home-assistant.io/t/is-is-possible-to-move-existing-ha-installation-to-a-new-machine/734877",
+        "https://www.reddit.com/r/homeassistant/comments/1lvhrfb/moving_ha_to_new_machine/",
+        "https://www.reddit.com/r/homeassistant/comments/1md9xdt/me_when_migration_from_arm_to_x86_is_flawless_and/",
+        "https://github.com/home-assistant/operating-system/discussions/3212",
+        "https://github.com/home-assistant/supervisor/issues/5637"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/move-home-assistant-to-new-hardware/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Move Home Assistant to New Hardware",
+          "item": "https://tarahome.ai/blog/move-home-assistant-to-new-hardware/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/move-home-assistant-to-new-hardware/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I just move my Home Assistant SSD or microSD card into another machine?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually no. The safer migration path is a fresh install on the new target followed by backup restore. In a Home Assistant operating-system discussion, a maintainer said OS images installed on one machine are not meant to be transplanted to a different machine."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use a full backup or a partial backup for a hardware migration?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use a full backup when the goal is to move your whole home to new hardware. Partial backups are useful for selective recovery, but a Home Assistant Supervisor issue in February 2025 showed partial restores on a new machine can create confusing follow-up restore failures."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if I lost the Home Assistant backup encryption key?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If you still have access to your current Home Assistant instance, you can download the emergency kit or copy the key again from backup settings. If you changed keys and lost the matching older key, the official backup emergency kit documentation says there is no way to restore that encrypted backup."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I migrate from Raspberry Pi to Home Assistant Green, Docker, or a mini PC?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Since Home Assistant 2025.1, restoring backups is supported across all installation methods, and the official common-tasks documentation says migration can also go to a different device type. The simplest path for most homeowners is still fresh install first, then restore."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does a Home Assistant restore usually take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The official documentation estimates about 45 minutes for a larger installation, and Home Assistant Green support documentation says larger restores can take about 45 minutes to one hour."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Migration &amp; Backups</span><span>June 15, 2026</span><span>10 min read</span></p>
+            <h1>How to Move Home Assistant to New Hardware</h1>
+            <p class="lede">The clean migration path in 2026 is not cloning disks or rebuilding from memory. It is a full backup, a saved emergency kit, a fresh install on the new box, and a short post-restore checklist.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local smart home hub server prepared for a Home Assistant hardware migration" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Fresh Install, Full Backup, Safe Restore</h2>
+<p>If you want to move Home Assistant from one machine to another, the safest path for most homes is simple: <strong>create a full backup on the old system, save the backup emergency kit, install Home Assistant cleanly on the new target, move your radios deliberately, and restore during onboarding</strong>.</p>
+<p>That path now works much better than it used to. Home Assistant's January 3, 2025 release expanded restore support across all installation methods, and the current backup system is built to help with hardware moves instead of only disaster recovery. The goal is not to make migration clever. The goal is to make it boring enough that the lights, sensors, dashboards, and routines come back cleanly.</p>
+
+<div class="callout">
+  <p><strong>Tara's migration rule:</strong> treat backup keys, USB radios, storage size, and IP reservations as part of the home, not just part of the old box.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>The community keeps asking the same question in slightly different forms: moving from Raspberry Pi to mini PC, moving from an old VM to official hardware, moving from a Pi to Home Assistant Green, or moving after a hardware failure. Reddit threads and Home Assistant Community topics keep landing on the same pain points: people do not want to rebuild automations, lose radio pairings, or break remote access just because the hub changed.</p>
+<p>The good news is that Home Assistant's official docs now explicitly frame backup restore as a migration tool, not only as a recovery tool. The bad news is that people still trip on practical details like storage size, USB device paths, network shares, encryption keys, and the temptation to "just move the SSD."</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/docs/tara-doc-home-assistant-ai-map.png" alt="Home Assistant dashboard with rooms, devices, climate, and automation controls" loading="lazy" />
+  <figcaption>A mature Home Assistant setup is no longer just a config folder. It usually includes radios, apps, dashboards, backups, history, media, and off-device storage choices.</figcaption>
+</figure>
+
+<h2 id="what-changed-recently">What Changed in Home Assistant Backups</h2>
+<p>If your mental model of Home Assistant backups is old, refresh it before migrating.</p>
+<ul>
+  <li><strong>January 3, 2025:</strong> Home Assistant 2025.1 overhauled backups with automated backups, encrypted backups by default, backup retention, backup locations, and restore support across all installation methods.</li>
+  <li><strong>February 5, 2025:</strong> Home Assistant 2025.2 added more backup controls, including Google Drive, Microsoft OneDrive, and Synology DSM locations, advanced schedules, and per-location encryption controls.</li>
+  <li><strong>March 26, 2026:</strong> Home Assistant announced that encrypted backups created after upgrading to 2026.4 use SecureTar v3.</li>
+  <li><strong>June 3, 2026:</strong> Home Assistant 2026.6 made the backup encryption key harder to miss and reiterated that backups are already created before updates, which only helps if you can still decrypt them.</li>
+</ul>
+<p>The net effect is positive: migration is easier than it was in early Home Assistant days, but it is easier only if you have actually configured backups and kept the matching key.</p>
+
+<h2 id="pre-migration-checklist">Pre-Migration Checklist</h2>
+<p>Do these checks before you unplug anything.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Check</th>
+        <th>Why it matters</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Measure disk use and recorder size</td>
+        <td>Home Assistant's docs say the new device should have more storage capacity than the existing one. Oversized databases and media folders are common migration friction.</td>
+      </tr>
+      <tr>
+        <td>Download the backup emergency kit</td>
+        <td>The key is required to restore encrypted backups. If you rotated keys before, keep the old key paired with the old backup set.</td>
+      </tr>
+      <tr>
+        <td>Keep an off-device backup copy</td>
+        <td>A backup stored only on the dying box is not a migration plan. Home Assistant recommends another system and ideally an off-site copy.</td>
+      </tr>
+      <tr>
+        <td>Record USB radio paths</td>
+        <td>ZHA docs recommend stable <code>/dev/serial/by-id</code> paths rather than temporary <code>/dev/ttyUSB0</code>-style paths.</td>
+      </tr>
+      <tr>
+        <td>Note network assumptions</td>
+        <td>If mobile apps, remote access, or DNS point to the old host, keeping the same IP reservation can make the move much less disruptive.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="step-by-step">Step-by-Step Migration Path</h2>
+
+<h3 id="step-1-check-size">1. Check the size of what you are moving</h3>
+<p>Home Assistant's common-tasks documentation says to check both the estimated recorder database size and total disk use before creating a migration backup. This matters most if you are moving onto smaller or fixed-storage hardware. The official Home Assistant Green migration guide, for example, reminds users that Green has <strong>32 GB</strong> of storage, so your current installation needs to be smaller than that.</p>
+<p>If the backup is bloated by old history, media, or unused apps, fix that before migration day. The docs also note that disabling media and the <code>share</code> folder can reduce backup size, but only exclude those if you know you do not need them as part of the move.</p>
+
+<h3 id="step-2-set-backups-up">2. Make sure backups are actually configured well</h3>
+<p>Set up automatic backups if you have not already. Since 2025.1, Home Assistant can schedule encrypted backups and sync them to available locations. Since 2025.2, it can also use Google Drive, OneDrive, and Synology DSM in addition to local storage, network shares, and Home Assistant Cloud.</p>
+<p>Two practical reminders matter here:</p>
+<ul>
+  <li>Home Assistant Cloud stores <strong>one</strong> backup and that backup must be under <strong>5 GB</strong>.</li>
+  <li>When you download a backup through the Home Assistant UI, it is decrypted on the fly, so store that file like any other sensitive archive.</li>
+</ul>
+
+<h3 id="step-3-create-full-backup">3. Create a full backup and save the matching key</h3>
+<p>For a whole-home hardware move, use a <strong>full backup</strong>. That keeps the migration intent clear and avoids selective-restore surprises. The official backup docs describe full backups as including your system configuration, apps, automations, scripts, SSL data, media, and other stored Home Assistant data depending on what you include.</p>
+<p>Right after you create the backup, download the backup emergency kit and store it outside the Home Assistant machine. The official emergency-kit page is blunt: if you changed the encryption key and later lose the matching older key, there is no way to restore that encrypted backup.</p>
+
+<h3 id="step-4-prepare-new-box">4. Prepare the new hardware with a fresh install</h3>
+<p>Install Home Assistant on the new machine first and get to the welcome screen. That is the point where the restore workflow expects you to be.</p>
+<p>Do not assume you can transplant the old operating-system disk into unrelated hardware. In a Home Assistant OS discussion about moving from Pi 4 to Pi 5, a maintainer said the installed OS build is for a single machine and that backup and restore is the intended approach when the hardware changes.</p>
+
+<h3 id="step-5-move-radios-carefully">5. Move radios and serial devices carefully</h3>
+<p>Home Assistant's migration docs say that if you had controllers or radios connected, such as Z-Wave sticks or a Connect ZBT-2, plug them into the new device before restoring. This is where "the backup restored fine" often splits from "the home is actually working again."</p>
+<p>If you use ZHA or any integration that expects a serial device path, prefer the stable <code>/dev/serial/by-id</code> path exposed in <strong>Settings &gt; System &gt; Hardware &gt; All Hardware</strong>. That is the path Home Assistant's own ZHA docs recommend. If your setup still points to a temporary device name, a move or reboot can be enough to break it.</p>
+
+<h3 id="step-6-restore">6. Restore during onboarding and wait</h3>
+<p>On the new system's welcome screen, choose to upload or retrieve the backup and restore it. Home Assistant's official docs estimate about <strong>45 minutes</strong> for a larger restore, and the Green migration guide says larger restores can take about <strong>45 minutes to one hour</strong>. This is not the phase to assume it is hung after a few impatient minutes.</p>
+<p>If your goal is a full hardware move, avoid making the migration depend on partial backups. A February 2025 Supervisor issue showed that after a partial backup was restored on a new machine during onboarding, later partial restores could fail in confusing ways. That is not a reason to fear the backup system. It is a reason to keep the migration path uncomplicated.</p>
+
+<h3 id="step-7-post-flight">7. Do a short post-flight checklist before calling it done</h3>
+<p>Once the restore completes, reboot once, then check the boring things that break real homes:</p>
+<ul>
+  <li>Confirm the new machine has the IP reservation or DNS behavior you want.</li>
+  <li>Check external storage and network-share backup locations.</li>
+  <li>Verify Zigbee, Thread, Z-Wave, and Bluetooth integrations came back on the expected paths.</li>
+  <li>Open the mobile app, dashboards, and key automations.</li>
+  <li>Run a fresh backup on the new machine so the backup chain starts from the new host.</li>
+</ul>
+<p>A Home Assistant Community migration thread specifically called out two touch-up items after restore: moving the old static IP to the new host and fixing the storage path for a Synology share. That is the right mindset. Expect a few environment-specific cleanup steps, not a heroic rebuild.</p>
+
+<h2 id="what-not-to-do">What Not to Do</h2>
+<ul>
+  <li><strong>Do not rely only on backups stored inside the old hub.</strong> If the old disk dies, your migration plan dies with it.</li>
+  <li><strong>Do not throw away old encryption keys after rotating to a new one.</strong> Older encrypted backups still need the old key.</li>
+  <li><strong>Do not treat a temporary serial path as stable infrastructure.</strong> Use the by-id path when the integration supports it.</li>
+  <li><strong>Do not assume a whole-home migration is the right moment to get clever with partial restores.</strong> Use a full backup unless you have a specific, tested reason not to.</li>
+  <li><strong>Do not move the operating-system disk and expect it to boot cleanly on unrelated hardware.</strong> Fresh install plus restore is the safer lane.</li>
+</ul>
+
+<h2 id="edge-cases">Edge Cases That Matter</h2>
+
+<h3 id="edge-green">Moving to Home Assistant Green</h3>
+<p>Green is a clean migration target for many homes, but its storage is fixed at 32 GB. If your current installation has a huge recorder database, Frigate media, or oversized add-on data, trim or relocate that first. Otherwise the migration becomes a storage problem, not a restore problem.</p>
+
+<h3 id="edge-external-disk">If you already use an external data disk</h3>
+<p>Home Assistant OS has a separate workflow for migrating an external data disk to another system. That can be a better choice when the external disk is already carrying a large amount of data or far more storage than the new internal boot media. Even then, the official OS docs still recommend taking backups of both systems first.</p>
+
+<h3 id="edge-version-mismatch">If restore finishes but add-ons look broken</h3>
+<p>One GitHub migration discussion around Pi 4 to Pi 5 showed add-ons failing until the target machine was updated because the target image was older than the source environment. If a restore looks strange, check Home Assistant OS and Supervisor versions, then reboot and update before panicking.</p>
+
+<h3 id="edge-container-vm">If you are moving to a container or VM</h3>
+<p>Since Home Assistant 2025.1, restore is officially supported across all installation methods, including containers. That is useful, but it does not remove the operational chores around USB pass-through, stable device paths, and whether the new host will be as reliable as a dedicated home-automation box.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>The best migration is the one your household barely notices. That usually means backups already exist, the key is already stored somewhere sane, the new hardware was chosen with some headroom, and the radios were treated like infrastructure instead of afterthoughts.</p>
+<p>For Tara-style installs, a dedicated local hub with clean storage, external radio placement, and tested restore procedures beats a clever one-off setup every time. The point of the migration is not that Home Assistant boots on new hardware. The point is that the home works again quickly and predictably.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If you are moving Home Assistant because the system is growing up, these guides help with the next decisions after the migration is over.</p>
+<ul>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/blog/home-assistant-remote-access-without-port-forwarding/">How to Access Home Assistant Remotely Without Port Forwarding</a></li>
+  <li><a href="/blog/home-assistant-local-voice-assistant-no-cloud/">How to Set Up a Fully Local Voice Assistant in Home Assistant</a></li>
+  <li><a href="/blog/how-to-use-ai-with-home-assistant/">How to Use AI with Home Assistant</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="can-i-just-move-the-drive">Can I just move my Home Assistant SSD or microSD card into another machine?</h3>
+<p>Usually no. The safer path is a fresh install on the new target and then a restore. In a Home Assistant operating-system discussion, a maintainer said installed OS builds are not meant to be transplanted to different hardware.</p>
+
+<h3 id="full-or-partial-backup">Should I use a full backup or a partial backup for a hardware migration?</h3>
+<p>Use a full backup if you are moving the whole home. Partial backups are fine for selective recovery, but a February 2025 Supervisor issue showed they can create confusing follow-up restore failures during new-machine onboarding.</p>
+
+<h3 id="lost-encryption-key">What if I lost the Home Assistant backup encryption key?</h3>
+<p>If you still have access to the current Home Assistant instance, you can download the emergency kit or copy the key again from backup settings. If you changed keys and lost the matching old one, the official documentation says there is no way to restore that encrypted backup.</p>
+
+<h3 id="can-i-migrate-between-install-methods">Can I migrate from Raspberry Pi to Home Assistant Green, Docker, or a mini PC?</h3>
+<p>Yes. Since Home Assistant 2025.1, restore is supported across all installation methods, and the official docs say the target can be a different device type. The simplest homeowner path is still fresh install first, restore second.</p>
+
+<h3 id="how-long-does-restore-take">How long does a restore usually take?</h3>
+<p>Home Assistant's docs estimate about 45 minutes for a larger installation, and Green support docs say larger restores can take about 45 minutes to one hour.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/common-tasks/general/" target="_blank" rel="noopener noreferrer">Home Assistant common tasks: backups and restore</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/backup/" target="_blank" rel="noopener noreferrer">Home Assistant Backup integration</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/01/03/release-20251/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.1 backup overhaul</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/01/03/3-2-1-backup/" target="_blank" rel="noopener noreferrer">Home Assistant 3-2-1 backup guide</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/02/05/release-20252/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.2 backup improvements</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/03/26/modernizing-encryption-of-home-assistant-backups/" target="_blank" rel="noopener noreferrer">Home Assistant backup encryption update in 2026.4</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/03/release-20266/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.6 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/more-info/backup-emergency-kit/" target="_blank" rel="noopener noreferrer">Backup emergency kit documentation</a></li>
+                <li><a href="https://www.home-assistant.io/common-tasks/os/" target="_blank" rel="noopener noreferrer">Home Assistant OS common tasks, including external data disk migration</a></li>
+                <li><a href="https://green.home-assistant.io/guides/restore-backup" target="_blank" rel="noopener noreferrer">Restoring or migrating Home Assistant Green from a backup</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zha/" target="_blank" rel="noopener noreferrer">ZHA serial device path guidance</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/is-is-possible-to-move-existing-ha-installation-to-a-new-machine/734877" target="_blank" rel="noopener noreferrer">Home Assistant Community: moving an existing installation to a new machine</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1lvhrfb/moving_ha_to_new_machine/" target="_blank" rel="noopener noreferrer">Reddit: moving Home Assistant to a new machine</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1md9xdt/me_when_migration_from_arm_to_x86_is_flawless_and/" target="_blank" rel="noopener noreferrer">Reddit: ARM to x86 migration notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub references</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/operating-system/discussions/3212" target="_blank" rel="noopener noreferrer">GitHub discussion: migrating from Pi 4 to Pi 5</a></li>
+                <li><a href="https://github.com/home-assistant/supervisor/issues/5637" target="_blank" rel="noopener noreferrer">GitHub issue: partial backups during new-machine restore</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want the local hub without becoming the disaster-recovery team?</h2>
+          <p>Tara packages the hub, automations, radios, local defaults, and handoff so the system is easier to support before and after the house grows.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/smart-home-kit/">Smart home kit</a><a href="/home-automation-kit/">Home automation kit</a><a href="/no-subscription-smart-home/">No subscription smart home</a><a href="/presence-detection-smart-home/">Presence detection</a><a href="/camera-kit/">Camera kit</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
