@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant? | Tara Guides</title>
+    <meta name="description" content="Pick ZHA for simpler built-in Home Assistant Zigbee, or Zigbee2MQTT for wider device support, MQTT decoupling, and deeper device-level control." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/" />
+    <meta property="og:title" content="ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Pick ZHA for simpler built-in Home Assistant Zigbee, or Zigbee2MQTT for wider device support, MQTT decoupling, and deeper device-level control." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant? | Tara Guides" />
+    <meta name="twitter:description" content="Pick ZHA for simpler built-in Home Assistant Zigbee, or Zigbee2MQTT for wider device support, MQTT decoupling, and deeper device-level control." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/#blogposting",
+      "headline": "ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant?",
+      "description": "Pick ZHA for simpler built-in Home Assistant Zigbee, or Zigbee2MQTT for wider device support, MQTT decoupling, and deeper device-level control.",
+      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "datePublished": "2026-06-16",
+      "dateModified": "2026-06-16",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/zha/",
+        "https://www.home-assistant.io/blog/2026/01/07/release-20261/",
+        "https://www.home-assistant.io/blog/2022/09/07/release-20229/",
+        "https://www.zigbee2mqtt.io/guide/getting-started/",
+        "https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html",
+        "https://www.zigbee2mqtt.io/supported-devices/",
+        "https://www.zigbee2mqtt.io/guide/adapters/",
+        "https://www.zigbee2mqtt.io/advanced/support-new-devices/01_support_new_devices.html",
+        "https://community.home-assistant.io/t/zha-vs-zigbee2mqtt-pros-n-cons-for-conversion/798594",
+        "https://www.reddit.com/r/homeassistant/comments/1iilqpy/zigbee2mqtt_vs_zha_is_z2m_still_the_clear_winner/",
+        "https://github.com/Koenkk/zigbee2mqtt/discussions/24478"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant?",
+          "item": "https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Which is better for a first Home Assistant Zigbee network: ZHA or Zigbee2MQTT?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For most homeowners starting fresh with mainstream devices, ZHA is the simpler default because it is built into Home Assistant, can be auto-discovered, and now sits more visibly inside Home Assistant's protocol dashboard. Choose Zigbee2MQTT first if you already want MQTT, need broader device support, or care about deeper device-level tuning."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need MQTT to use Zigbee2MQTT?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Zigbee2MQTT's getting-started documentation says the host should have an MQTT broker installed, and its Home Assistant integration uses MQTT discovery to add devices into Home Assistant."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I run ZHA and Zigbee2MQTT at the same time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, but only with separate coordinators and separate Zigbee meshes. Each network still gets one coordinator, its own channel planning, and its own repair and troubleshooting work."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I switch from ZHA to Zigbee2MQTT later without re-pairing everything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Advanced community migrations do exist, but they are manual enough that most homeowners should not assume the switch will be trivial. If you expect to hide in-wall devices, battery sensors, and many automations behind the first Zigbee network you build, choose the stack you actually want to keep."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does ZHA support OTA updates, groups, binding, and coordinator migration?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Home Assistant's ZHA documentation includes OTA updates, Zigbee groups, binding, backups, and migrating to a new Zigbee adapter inside ZHA."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Zigbee</span><span>June 16, 2026</span><span>11 min read</span></p>
+            <h1>ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant?</h1>
+            <p class="lede">Use ZHA if you want the cleanest built-in Home Assistant path. Use Zigbee2MQTT if you already want MQTT, buy oddball devices, or care enough about device-level tuning to accept another moving part.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Protocol network view showing a local Home Assistant setup with Zigbee and other smart home protocols" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Start With ZHA Unless You Already Know Why You Need Zigbee2MQTT</h2>
+<p>For most homeowners building a reliable local Zigbee network in Home Assistant, <strong>ZHA is the safer default</strong>. It is built into Home Assistant, can auto-discover supported coordinators, exposes a native Zigbee dashboard, and now sits more clearly inside Home Assistant's protocol settings.</p>
+<p><strong>Zigbee2MQTT becomes the better first choice when you want a separate Zigbee layer, already run MQTT, need the broadest possible device catalog, or expect to lean on device-specific exposes and troubleshooting tools.</strong> In other words: ZHA wins on simplicity, Zigbee2MQTT wins on flexibility.</p>
+
+<div class="callout">
+  <p><strong>Tara's default:</strong> if the goal is a boring, spouse-safe house with fewer moving parts, start with ZHA. Reach for Zigbee2MQTT only when you can name the exact advantage before you install it.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>This is one of the recurring Home Assistant questions because both answers are defensible. A November 23, 2024 Home Assistant Community thread about converting from ZHA to Zigbee2MQTT framed the real tension well: people start on ZHA because it is built in and works, then later see feature-rich Zigbee2MQTT setups and wonder if they chose the wrong foundation.</p>
+<p>A recent Reddit thread asked whether Zigbee2MQTT is still the clear winner or whether ZHA has caught up. The replies split along the same lines: ZHA is easy, native, and good enough for many homes; Zigbee2MQTT is often chosen for broader device support, looser coupling to Home Assistant, and more power-user controls.</p>
+<p>That is why this choice matters early. Once your Zigbee network is full of in-wall modules, battery sensors, and automations, changing stacks later stops being a fun experiment and starts becoming labor.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Diagram-style view of smart home protocols managed by a local hub" loading="lazy" />
+  <figcaption>The real decision is not just “which integration works.” It is which operational model you want to own after the house fills up with devices.</figcaption>
+</figure>
+
+<h2 id="what-changed-recently">What Changed Recently</h2>
+<p>If your mental model is still “ZHA is basic and Zigbee2MQTT is for real users,” update it.</p>
+<ul>
+  <li><strong>January 7, 2026:</strong> Home Assistant 2026.1 made protocol dashboards easier to find, including Zigbee. That matters because ZHA is now surfaced more like core infrastructure and less like a hidden integration.</li>
+  <li><strong>ZHA today:</strong> the official docs include OTA firmware updates, groups, binding, network topology visualization, coordinator backups, and migration to a new Zigbee adapter inside ZHA.</li>
+  <li><strong>Zigbee2MQTT today:</strong> the current getting-started guide includes a first-run onboarding flow instead of assuming hand-edited YAML from minute one, and its Home Assistant integration still uses MQTT discovery to drop devices cleanly into Home Assistant's registry.</li>
+</ul>
+<p>So the old caricatures are out of date. The real gap in 2026 is not that one is modern and the other is primitive. The gap is that one is simpler and more native, while the other is broader and more modular.</p>
+
+<h2 id="side-by-side">ZHA vs Zigbee2MQTT Side by Side</h2>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>ZHA</th>
+        <th>Zigbee2MQTT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Setup overhead</td>
+        <td>Built into Home Assistant, can be auto-discovered, and configured from <strong>Settings &gt; Devices &amp; Services</strong>.</td>
+        <td>Needs Zigbee2MQTT itself plus an MQTT broker. The docs now include onboarding, but it is still another service to run.</td>
+      </tr>
+      <tr>
+        <td>Home Assistant feel</td>
+        <td>Native protocol dashboard, native device presentation, native repair flow.</td>
+        <td>Integrates back into Home Assistant through MQTT discovery and the device registry, but you still maintain the Zigbee2MQTT frontend and MQTT path.</td>
+      </tr>
+      <tr>
+        <td>Device support edge cases</td>
+        <td>Supports many off-the-shelf devices directly, but unusual devices may need a new ZHA quirk or a device-support request.</td>
+        <td>Currently documents support for <strong>5,473 devices from 577 vendors</strong> and has a documented path for temporary external converters when a device is not yet fully supported.</td>
+      </tr>
+      <tr>
+        <td>Backups and adapter changes</td>
+        <td>Home Assistant added ZHA network backups and migration between coordinators back in 2022.9, and the current ZHA docs still document that path.</td>
+        <td>Coordinator backups depend on adapter family, and the docs warn that some adapter migrations may require repairing devices.</td>
+      </tr>
+      <tr>
+        <td>Power-user controls</td>
+        <td>Supports OTA, groups, binding, topology view, and troubleshooting inside Home Assistant.</td>
+        <td>Provides a dedicated frontend plus documented areas for groups, binding, OTA, exposes, health, network maps, and device-specific configuration overrides.</td>
+      </tr>
+      <tr>
+        <td>Architecture</td>
+        <td>Best when Home Assistant is the one place you want to manage the home.</td>
+        <td>Best when you want Zigbee to stay more independent from Home Assistant and are comfortable with MQTT as the integration layer.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="when-zha-is-the-right-answer">When ZHA Is the Right Answer</h2>
+<p>ZHA is usually the correct answer if you are optimizing for reliability per hour of effort.</p>
+<ul>
+  <li><strong>You want fewer moving parts.</strong> No separate Zigbee frontend is required, and you do not need MQTT just to get Zigbee devices into Home Assistant.</li>
+  <li><strong>You value the native Home Assistant experience.</strong> ZHA lives in the same place as the rest of Home Assistant's protocol and hardware settings.</li>
+  <li><strong>You want the cleanest backup and coordinator-migration story.</strong> Home Assistant has published and maintained that path inside ZHA for years.</li>
+  <li><strong>Your device mix is boring in the best way.</strong> If you mostly buy mainstream Zigbee devices and prefer fewer compatibility experiments, ZHA is hard to beat.</li>
+</ul>
+<p>That does not make ZHA “basic.” It makes it opinionated in the direction most houses benefit from.</p>
+
+<h2 id="when-zigbee2mqtt-is-worth-it">When Zigbee2MQTT Is Worth It</h2>
+<p>Zigbee2MQTT is the better first choice when your priorities are broader than “keep Zigbee simple.”</p>
+<ul>
+  <li><strong>You already want MQTT anyway.</strong> If your Home Assistant setup already uses MQTT for other infrastructure, the extra dependency stops being a special cost.</li>
+  <li><strong>You buy uncommon or vendor-weird devices.</strong> Zigbee2MQTT's supported-device catalog is enormous, and its external-converter path makes unsupported devices less final.</li>
+  <li><strong>You want a dedicated Zigbee control plane.</strong> Its frontend, exposes model, and configuration overrides are attractive if you enjoy seeing and tuning more of what a device can actually do.</li>
+  <li><strong>You care about decoupling.</strong> Some advanced users prefer that Home Assistant can restart without also being the thing that directly owns the Zigbee network stack.</li>
+</ul>
+<p>This is where Zigbee2MQTT earns its reputation. It is not just “more devices.” It is a different operating style.</p>
+
+<h2 id="the-expensive-part-is-switching-later">The Expensive Part Is Switching Later</h2>
+<p>The biggest mistake is not choosing ZHA or Zigbee2MQTT. The biggest mistake is choosing one casually while assuming the other can be adopted later without pain.</p>
+<p>The Home Assistant forum thread that drove this article includes a user staring at a 90-plus-device Zigbee network and hesitating to move because rebuilding it would be miserable. The newer GitHub discussion showing a successful ZHA-to-Zigbee2MQTT migration without re-pairing proves that advanced migration work is possible, but it also proves the point: this is not the sort of clean homeowner workflow you should bank on.</p>
+<ul>
+  <li><strong>If you are still in the first 10 to 20 devices, test early.</strong> It is the cheapest moment to decide.</li>
+  <li><strong>If you already have many hidden or physically awkward devices, treat migration as a project.</strong></li>
+  <li><strong>If you want to run both, use separate coordinators and separate meshes.</strong> A Zigbee network still gets one coordinator, and two stacks mean two networks to manage.</li>
+</ul>
+
+<h2 id="practical-recommendation">A Practical Recommendation for Real Houses</h2>
+<p>If you are helping a technically curious homeowner and want an answer that will still look sane six months later, use this rule:</p>
+<ul>
+  <li><strong>Start with ZHA</strong> when the home values low maintenance over lab-grade flexibility.</li>
+  <li><strong>Start with Zigbee2MQTT</strong> when you already know you care about MQTT, oddball device support, or deeper device tuning more than you care about native simplicity.</li>
+</ul>
+<p>There is nothing prestigious about extra moving parts. There is also nothing wrong with choosing the more flexible tool when you actually need its flexibility. The failure mode is picking the more complex stack because internet culture makes it sound mandatory.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>Tara-style installs try to keep the home local, recoverable, and understandable by somebody other than the person who first built it. That pushes us toward <strong>ZHA as the default</strong> for many installations, especially when the device plan is already curated and boring on purpose.</p>
+<p>Zigbee2MQTT is still a strong choice when the home deliberately needs its strengths. But if your real goal is “I want the lights, sensors, remotes, and locks to keep working without becoming my second job,” simpler infrastructure usually wins.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this decision is part of a bigger Home Assistant build, these pages cover the next choices that usually follow it.</p>
+<ul>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/blog/move-home-assistant-to-new-hardware/">How to Move Home Assistant to New Hardware</a></li>
+  <li><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">How to Pair IKEA Matter-over-Thread Devices in Home Assistant Without Cloud</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="which-is-better-for-beginners">Which is better for a first Home Assistant Zigbee network?</h3>
+<p>For most homeowners, ZHA. It is built in, easier to explain, easier to hand off, and now easier to find in Home Assistant's settings. Choose Zigbee2MQTT first only when its advantages are already part of the plan.</p>
+
+<h3 id="do-i-need-mqtt">Do I need MQTT to use Zigbee2MQTT?</h3>
+<p>Yes. Zigbee2MQTT's docs say the host should have an MQTT broker installed, and its Home Assistant integration uses MQTT discovery to add devices into Home Assistant.</p>
+
+<h3 id="can-i-run-both">Can I run ZHA and Zigbee2MQTT at the same time?</h3>
+<p>Yes, but only on separate coordinators and separate Zigbee meshes. That can be useful for testing, but it also means two networks, two channels, and two troubleshooting surfaces.</p>
+
+<h3 id="can-i-switch-later">Can I switch from ZHA to Zigbee2MQTT later without re-pairing everything?</h3>
+<p>Maybe, but do not plan your house around that “maybe.” Advanced community migrations exist, yet they are manual enough that most homeowners should assume real migration work, testing, and cleanup.</p>
+
+<h3 id="does-zha-support-advanced-features">Does ZHA support OTA updates, groups, binding, and coordinator migration?</h3>
+<p>Yes. The official ZHA documentation includes OTA updates, Zigbee groups, binding, topology mapping, backups, and adapter migration inside ZHA.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/zha/" target="_blank" rel="noopener noreferrer">Home Assistant ZHA documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/01/07/release-20261/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.1 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2022/09/07/release-20229/" target="_blank" rel="noopener noreferrer">Home Assistant 2022.9 release notes for ZHA coordinator backups and migration</a></li>
+                <li><a href="https://www.zigbee2mqtt.io/guide/getting-started/" target="_blank" rel="noopener noreferrer">Zigbee2MQTT getting started guide</a></li>
+                <li><a href="https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html" target="_blank" rel="noopener noreferrer">Zigbee2MQTT Home Assistant integration guide</a></li>
+                <li><a href="https://www.zigbee2mqtt.io/supported-devices/" target="_blank" rel="noopener noreferrer">Zigbee2MQTT supported devices catalog</a></li>
+                <li><a href="https://www.zigbee2mqtt.io/guide/adapters/" target="_blank" rel="noopener noreferrer">Zigbee2MQTT supported adapters and coordinator backup notes</a></li>
+                <li><a href="https://www.zigbee2mqtt.io/advanced/support-new-devices/01_support_new_devices.html" target="_blank" rel="noopener noreferrer">Zigbee2MQTT support-new-devices guide</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/zha-vs-zigbee2mqtt-pros-n-cons-for-conversion/798594" target="_blank" rel="noopener noreferrer">Home Assistant Community: ZHA vs Zigbee2MQTT conversion pros and cons</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1iilqpy/zigbee2mqtt_vs_zha_is_z2m_still_the_clear_winner/" target="_blank" rel="noopener noreferrer">Reddit: is Zigbee2MQTT still the clear winner, or has ZHA caught up?</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub reference</h3>
+              <ul>
+                <li><a href="https://github.com/Koenkk/zigbee2mqtt/discussions/24478" target="_blank" rel="noopener noreferrer">GitHub discussion: advanced ZHA to Zigbee2MQTT migration without re-pairing</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want the Zigbee choices made before the walls fill up with devices?</h2>
+          <p>Tara packages the hub, radios, device plan, and handoff so the local smart home stays understandable after install day, not just on it.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/smart-home-kit/">Smart home kit</a><a href="/home-automation-kit/">Home automation kit</a><a href="/no-subscription-smart-home/">No subscription smart home</a><a href="/presence-detection-smart-home/">Presence detection</a><a href="/camera-kit/">Camera kit</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
