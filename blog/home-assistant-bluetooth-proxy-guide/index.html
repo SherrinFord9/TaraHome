@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Bluetooth Proxy: When You Need One and How to Add It | Tara Guides</title>
+    <meta name="description" content="Use an ESP32 Bluetooth proxy when your Home Assistant box is far from BLE devices, virtualized, or struggling with USB Bluetooth. Learn setup, placement, and limits." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/" />
+    <meta property="og:title" content="Home Assistant Bluetooth Proxy: When You Need One and How to Add It | Tara Guides" />
+    <meta property="og:description" content="Use an ESP32 Bluetooth proxy when your Home Assistant box is far from BLE devices, virtualized, or struggling with USB Bluetooth. Learn setup, placement, and limits." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Bluetooth Proxy: When You Need One and How to Add It | Tara Guides" />
+    <meta name="twitter:description" content="Use an ESP32 Bluetooth proxy when your Home Assistant box is far from BLE devices, virtualized, or struggling with USB Bluetooth. Learn setup, placement, and limits." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/#blogposting",
+      "headline": "Home Assistant Bluetooth Proxy: When You Need One and How to Add It",
+      "description": "Use an ESP32 Bluetooth proxy when your Home Assistant box is far from BLE devices, virtualized, or struggling with USB Bluetooth. Learn setup, placement, and limits.",
+      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "datePublished": "2026-06-17",
+      "dateModified": "2026-06-17",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/bluetooth/",
+        "https://esphome.io/components/bluetooth_proxy/",
+        "https://esphome.io/projects/",
+        "https://www.home-assistant.io/blog/2025/06/11/release-20256/",
+        "https://www.home-assistant.io/blog/2026/06/03/release-20266/",
+        "https://www.reddit.com/r/homeassistant/comments/1lv8dyo/which_devices_can_act_as_bluetooth_proxies/",
+        "https://www.reddit.com/r/homeassistant/comments/1n8i7en/retail_bluetooth_proxy/",
+        "https://community.home-assistant.io/t/bluetooth-proxy-max-connections/909876",
+        "https://community.home-assistant.io/t/bluetooth-proxy-devices-not-showing/880423",
+        "https://community.home-assistant.io/t/configuring-a-bluetooth-proxy-on-esp32-c3/950475",
+        "https://github.com/home-assistant/core/issues/148065",
+        "https://github.com/home-assistant/core/issues/148270"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Bluetooth Proxy: When You Need One and How to Add It",
+          "item": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need a Bluetooth proxy if my Home Assistant box already has Bluetooth?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not always. If your Home Assistant box is physically close to your BLE devices and the adapter is stable, you may not need a proxy. Add a proxy when range is poor, the hub is virtualized or tucked in a rack, or specific Bluetooth devices keep falling off."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Shelly devices act as full Home Assistant Bluetooth proxies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant's Bluetooth documentation says Shelly Gen2+ devices support advertisement listening and bundling, but not single or multiple active Bluetooth connections. Use an ESPHome ESP32 proxy if your devices need active control."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many Bluetooth proxies can Home Assistant handle?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Home Assistant's Bluetooth docs say the number of remote scanners is limited only by host performance. The more practical limit is interference and active connection capacity, so separate scanners physically and add more only where coverage or slot pressure actually exists."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why can I see advertisements in Bluetooth but still not add the device?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Seeing advertisements only proves the radio path works. The target device still needs a supported Home Assistant BLE integration, may require active onboarding, and must actually be a BLE device rather than classic Bluetooth. The ESPHome docs explicitly say unsupported devices will not become usable just because a proxy hears them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need one Bluetooth proxy in every room?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually no. Start with the rooms or floors where BLE devices actually live or where active connection slots are being exhausted. One well-placed proxy can cover multiple nearby devices if interference is low and the radios are not trapped next to networking gear."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Bluetooth</span><span>June 17, 2026</span><span>10 min read</span></p>
+            <h1>Home Assistant Bluetooth Proxy: When You Need One and How to Add It</h1>
+            <p class="lede">A Bluetooth proxy is usually the cleanest way to reach BLE sensors, thermostats, and locks when the Home Assistant hub is not in the same room, especially on virtualized or rack-mounted installs.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Bluetooth proxy network extending Home Assistant coverage across a home" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Use a Proxy When the Radio Needs to Move, Not the Hub</h2>
+<p>If your Bluetooth devices already work reliably from the Home Assistant box, you may not need a proxy. <strong>If they are too far away, if Home Assistant is running in a VM or tucked into a rack, or if a direct USB adapter has become fussy, an ESP32 Bluetooth proxy is usually the better answer.</strong> It lets the Bluetooth radio live near the devices while the hub stays where Ethernet, storage, backups, and clean power make sense.</p>
+<p>That is not just community folklore. Home Assistant's own Bluetooth documentation says that, in many cases, a Bluetooth proxy is a better approach than a directly connected adapter because Linux kernel updates and USB pass-through can create Bluetooth problems. The docs specifically call proxies out as especially interesting for virtualized Home Assistant installs. Also, despite the name, a Bluetooth proxy in this context is for <strong>BLE</strong>, not classic Bluetooth audio or keyboards.</p>
+
+<div class="callout">
+  <p><strong>Tara's Bluetooth rule:</strong> keep the main hub where it is operationally boring, then distribute cheap radios to the rooms that actually need Bluetooth reach.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is strong and current. Reddit threads over the last year asked which devices can act as Home Assistant Bluetooth proxies and whether there are retail or pre-flashed options that avoid a lot of DIY friction. Home Assistant Community threads in <strong>July 2025</strong>, <strong>November 2025</strong>, and <strong>May 2026</strong> asked why proxies cap out around a few active devices, why an ESP32-C3 build can stop seeing broadcasts after customization, and why a proxy can show advertisements without giving you an obvious device to add.</p>
+<p>Official product changes made the topic more relevant too. Home Assistant <strong>2025.6</strong> added a Bluetooth connection visualization to make proxy troubleshooting easier, and Home Assistant <strong>2026.6</strong> changed default Bluetooth scanning behavior to a new Auto mode that is much friendlier to battery devices. So the community is asking not only <em>whether</em> to use proxies, but <em>how</em> to set them up without wasting slots, batteries, or time.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local smart home hub staying near the router while radios extend into the home" loading="lazy" />
+  <figcaption>A Bluetooth proxy separates hub placement from radio placement. The server can stay near power, Ethernet, and backups while the Bluetooth coverage moves toward the actual devices.</figcaption>
+</figure>
+
+<h2 id="what-a-bluetooth-proxy-actually-does">What a Bluetooth Proxy Actually Does</h2>
+<p>Home Assistant aggregates Bluetooth data from local adapters and networked proxies into one Bluetooth integration. That means a proxy does not create a second smart-home stack. It extends the same Home Assistant Bluetooth system over your network.</p>
+<p>In practice, a proxy does three useful things:</p>
+<ul>
+  <li>It puts a BLE radio physically closer to devices that are too far from the hub.</li>
+  <li>It forwards passive advertisements from sensors and tags back to Home Assistant.</li>
+  <li>It can also proxy <strong>active GATT connections</strong> for devices that need a real session rather than just broadcasting data.</li>
+</ul>
+<p>That third point matters because not all "Bluetooth support" is equal. A temperature beacon that merely advertises data is lightweight. A thermostat, lock, or light controller that wants an active session is a different workload and will consume connection capacity differently.</p>
+
+<h2 id="proxy-vs-direct-adapter">When to Use a Proxy Instead of a Direct Adapter</h2>
+<p>The cleanest answer is to decide based on physical layout and device behavior, not ideology.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Situation</th>
+        <th>Better starting point</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small install with the hub already close to BLE devices</td>
+        <td>Direct adapter or no change</td>
+        <td>If coverage and stability are already fine, a proxy may add complexity without solving a real problem.</td>
+      </tr>
+      <tr>
+        <td>Home Assistant in a rack, closet, basement, mini-PC shelf, or VM host</td>
+        <td>ESPHome Bluetooth proxy</td>
+        <td>Home Assistant's docs explicitly favor proxies in many cases, especially for virtualized installs where USB pass-through can become annoying.</td>
+      </tr>
+      <tr>
+        <td>Battery BLE sensors spread across rooms or floors</td>
+        <td>One or more well-placed proxies</td>
+        <td>You get radios nearer the devices instead of trying to stretch one adapter through walls, cabinets, and networking gear.</td>
+      </tr>
+      <tr>
+        <td>Devices that need active Bluetooth control, not just advertisements</td>
+        <td>ESPHome ESP32 proxy</td>
+        <td>Active connections require real connection slots. Not every remote adapter class supports that.</td>
+      </tr>
+      <tr>
+        <td>You do not want a proxy</td>
+        <td>Home Assistant OS with a local adapter</td>
+        <td>The Bluetooth docs say Home Assistant OS includes Bluetooth patches for issues unsolved in other operating systems.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="which-hardware-path-to-pick">Which Hardware Path to Pick</h2>
+<p>For most people, an ESPHome-based ESP32 proxy is the default answer. Home Assistant and ESPHome both document and support that path directly.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Best for</th>
+        <th>Watch-outs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Generic ESP32 over Wi-Fi</td>
+        <td>Cheapest way to add BLE coverage to a room or floor</td>
+        <td>The ESPHome ready-made projects page says the generic option is only for plain ESP32, not ESP32-C3 or other variants.</td>
+      </tr>
+      <tr>
+        <td>Ethernet or PoE ESP32 board</td>
+        <td>Harder RF environments, steadier active connections, cleaner installs</td>
+        <td>Some ready-made Ethernet paths disable Wi-Fi and expect wired network. You need the exact board match.</td>
+      </tr>
+      <tr>
+        <td>Olimex ESP32-POE-ISO-EA</td>
+        <td>Officially favored development/test board for Home Assistant Bluetooth proxies</td>
+        <td>More expensive than a bare ESP32, but the Home Assistant docs say the <code>-EA</code> variant has better RF performance than the standard model.</td>
+      </tr>
+      <tr>
+        <td>Shelly Gen2+ remote adapter</td>
+        <td>Advertisement listening and bundling</td>
+        <td>Home Assistant docs say Shelly supports neither single nor multiple active Bluetooth connections, so it is not the right answer for devices that need active control.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>If you want the fastest no-YAML starting point, the official <a href="https://esphome.io/projects/" target="_blank" rel="noopener noreferrer">ESPHome ready-made projects</a> page is the current clean path. It explicitly supports Bluetooth proxy installs and says it works in a desktop browser with WebSerial support such as Chrome or Edge.</p>
+
+<h2 id="how-to-add-one">How to Add a Bluetooth Proxy in Home Assistant</h2>
+<p>This is the practical path that best fits the official docs and the recurring community questions.</p>
+
+<h3 id="step-1-confirm-the-device-type">1. Confirm the device is a supported BLE integration</h3>
+<p>ESPHome does not decode or maintain a list of BLE devices for you. Its docs explicitly say to search the Home Assistant integrations list to confirm your target is supported. A proxy hearing advertisements does not magically make an unsupported gadget useful.</p>
+
+<h3 id="step-2-flash-the-right-board-the-right-way">2. Flash the right board the right way</h3>
+<p>For a plain ESP32, the easiest route is the official ready-made Bluetooth proxy project. Pick the exact board class shown there and do not assume the generic project fits a C3 or another variant. If you later want to customize the build, use the ESPHome recommended configuration as your baseline rather than inventing a proxy YAML from memory.</p>
+
+<h3 id="step-3-add-it-to-home-assistant">3. Add it to Home Assistant</h3>
+<p>Once it joins Wi-Fi or Ethernet, Home Assistant should discover it through the ESPHome integration. If you adopt it into your own ESPHome dashboard, keep the recommended Bluetooth pieces intact: <code>esp32_ble_tracker:</code> and <code>bluetooth_proxy:</code>. Community threads from late 2025 show how easy it is to "take control" of a working proxy and accidentally lose the behavior that made the ready-made firmware work.</p>
+
+<h3 id="step-4-place-it-like-a-radio-not-a-usb-stick">4. Place it like a radio, not a USB stick</h3>
+<p>ESPHome's Bluetooth proxy docs say not to place the node in racks or close to routers, switches, or other network gear, and recommend at least <strong>3 meters</strong> of separation because EMI hurts Bluetooth reception. Put the proxy close to the Bluetooth devices you care about, not just close to the main hub.</p>
+
+<h3 id="step-5-test-in-the-bluetooth-ui">5. Test it in Home Assistant's Bluetooth UI</h3>
+<p>Home Assistant <strong>2025.6</strong> added a Bluetooth visualization that shows devices connected directly and through proxies. Community troubleshooting advice also points people to the <strong>Advertisement Monitor</strong> for each proxy so you can see what MAC addresses it is actually hearing. Home Assistant <strong>2026.6</strong> also added a Raw advertisement field in the Bluetooth device info dialog for deeper debugging.</p>
+
+<h3 id="step-6-add-more-only-where-needed">6. Add more only where needed</h3>
+<p>If range is still spotty, move the proxy first. If specific actively connected devices keep dropping, then add another proxy closer to those devices. Home Assistant's docs say the number of remote scanners is limited only by host performance, but they also say to separate scanners enough to avoid interference with each other.</p>
+
+<h2 id="the-two-limits-that-matter">The Two Limits That Matter Most</h2>
+
+<h3 id="active-connection-slots">1. Active connection slots</h3>
+<p>ESPHome's Bluetooth proxy docs say active GATT connections are enabled by default and are separate from active scanning. The default proxy has <strong>3 connection slots</strong>. Ethernet-based proxies can generally handle <strong>4</strong> reliably, and the docs recommend not pushing connection slots too high because each slot costs RAM and can hurt stability.</p>
+<p>Continuously connected devices such as some locks or thermostats can occupy a slot all the time. Passively broadcasting sensors do not. This is why a single proxy can hear a lot of BTHome-style sensors but still struggle with a smaller number of devices that need constant active sessions.</p>
+
+<h3 id="placement-and-interference">2. Placement and interference</h3>
+<p>Bad placement wastes otherwise good hardware. ESPHome says Ethernet boards offload Wi-Fi traffic from the ESP32 radio and usually give better Bluetooth performance, especially with an external antenna. The same docs also say aggressive scan intervals are usually not worth it and can create overheating or Wi-Fi instability instead of better results.</p>
+
+<div class="callout">
+  <p><strong>Do not solve a radio-placement problem with YAML first.</strong> In Bluetooth, moving the proxy a few meters away from a rack or switch often matters more than tweaking scan numbers.</p>
+</div>
+
+<h2 id="june-2026-change">The June 3, 2026 Change Worth Knowing: Auto Scanning</h2>
+<p>Home Assistant <strong>2026.6</strong> changed the default scanning behavior for the Bluetooth integration and ESPHome Bluetooth proxies to a new <strong>Auto</strong> mode. According to the release notes, Auto switches to active scanning only when an integration actually needs it, and only on one scanner at a time. The release notes say this cuts Bluetooth scanning battery use by roughly <strong>95-96%</strong> while preserving behavior.</p>
+<p>This is important because people often mix up three separate ideas: <strong>passive advertisements</strong>, <strong>active scanning</strong>, and <strong>active connections</strong>. They are not the same. ESPHome's docs say passive scanning is enough for most BLE devices during normal operation, while active scanning is mainly needed when initially adding new devices. Active connection slots are the separate limit that matters for devices that need a live session.</p>
+
+<h2 id="common-troubleshooting">Common Troubleshooting Patterns</h2>
+<p>Community threads and issue reports show the same failure patterns repeating. The useful lesson is to debug the right layer first.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Symptom</th>
+        <th>Likely cause</th>
+        <th>Check first</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>You can see MAC addresses in Advertisement Monitor, but no new device appears to add</td>
+        <td>The device may not have a supported Home Assistant BLE integration, may require active onboarding, or may not be BLE at all</td>
+        <td>Search the Home Assistant integrations list and confirm the device is supported through proxy-based BLE</td>
+      </tr>
+      <tr>
+        <td>Thermostats, locks, or Bluetooth lights keep dropping</td>
+        <td>Active slot exhaustion or a proxy too far from the device</td>
+        <td>Look at the Bluetooth visualization, count continuously connected devices, and consider a second nearby proxy</td>
+      </tr>
+      <tr>
+        <td>The proxy works on a desk but not in the network closet</td>
+        <td>EMI and bad placement</td>
+        <td>Move it away from the rack, switch, or router before touching scan parameters</td>
+      </tr>
+      <tr>
+        <td>A ready-made proxy worked, but the custom YAML build stopped hearing devices</td>
+        <td>Board mismatch or missing recommended BLE components</td>
+        <td>Compare against ESPHome's recommended proxy config and verify the board variant is correct</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>GitHub issue reports from <strong>July 2025</strong> reinforce the same point. One report described advertisements showing up while device onboarding did not; another described large numbers of Bluetooth thermostats disconnecting after the Home Assistant <strong>2025.7</strong> release family. Those issue tracker examples are not official setup instructions, but they are useful reminders that Bluetooth troubleshooting is usually about supported integration paths, slot pressure, placement, or version-specific regressions, not just "is the proxy online."</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>A good Home Assistant install does not force the main hub to sit in the worst possible place just because a few BLE devices live somewhere else. The better architecture is to keep the hub near Ethernet, backups, and clean power, then push cheap Bluetooth radios out to the rooms that actually need them.</p>
+<p>That is the real advantage of proxies: they let compute, storage, and radio placement become separate decisions. For Tara-style local installs, that is usually a healthier design than building the whole home around one heroic USB dongle.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this Bluetooth question is really a hardware, protocol, or hub-placement question in disguise, these guides help with the next step.</p>
+<ul>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+  <li><a href="/blog/mmwave-matter-thread-presence-sensor-home-assistant/">How to Add mmWave Presence Sensors to Home Assistant via Matter &amp; Thread</a></li>
+  <li><a href="/blog/move-home-assistant-to-new-hardware/">How to Move Home Assistant to New Hardware</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="need-proxy-if-box-has-bluetooth">Do I need a Bluetooth proxy if my Home Assistant box already has Bluetooth?</h3>
+<p>Not always. If the box is close to your BLE devices and the adapter is stable, you may not need one. Add a proxy when coverage is poor, the hub is virtualized or rack-mounted, or Bluetooth devices keep dropping off.</p>
+
+<h3 id="can-shelly-act-full-proxy">Can Shelly devices act as full Home Assistant Bluetooth proxies?</h3>
+<p>No. Home Assistant's Bluetooth documentation says Shelly Gen2+ devices support advertisement listening and bundling, but not active Bluetooth connections. Use an ESPHome ESP32 proxy if you need actual device control over Bluetooth.</p>
+
+<h3 id="how-many-proxies">How many Bluetooth proxies can Home Assistant handle?</h3>
+<p>Home Assistant's docs say the number of remote scanners is limited only by host performance. The practical limits are interference, network quality, and how many actively connected devices are competing for slots on each proxy.</p>
+
+<h3 id="see-advertisements-but-cannot-add">Why can I see advertisements but still cannot add the device?</h3>
+<p>Because radio visibility is only step one. The device still needs a supported Home Assistant BLE integration, may need active onboarding instead of passive listening, and may fail entirely if it is not really a supported BLE device.</p>
+
+<h3 id="need-one-per-room">Do I need one Bluetooth proxy in every room?</h3>
+<p>Usually no. Start with the rooms or floors where BLE devices actually live or where active slot pressure exists. Expand only when coverage or device behavior proves you need another proxy.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/bluetooth/" target="_blank" rel="noopener noreferrer">Home Assistant Bluetooth integration documentation</a></li>
+                <li><a href="https://esphome.io/components/bluetooth_proxy/" target="_blank" rel="noopener noreferrer">ESPHome Bluetooth proxy documentation</a></li>
+                <li><a href="https://esphome.io/projects/" target="_blank" rel="noopener noreferrer">ESPHome ready-made projects</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/06/11/release-20256/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.6 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/03/release-20266/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.6 release notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1lv8dyo/which_devices_can_act_as_bluetooth_proxies/" target="_blank" rel="noopener noreferrer">Reddit: which devices can act as Bluetooth proxies?</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1n8i7en/retail_bluetooth_proxy/" target="_blank" rel="noopener noreferrer">Reddit: retail Bluetooth proxy options</a></li>
+                <li><a href="https://community.home-assistant.io/t/bluetooth-proxy-max-connections/909876" target="_blank" rel="noopener noreferrer">Home Assistant Community: Bluetooth proxy max connections</a></li>
+                <li><a href="https://community.home-assistant.io/t/bluetooth-proxy-devices-not-showing/880423" target="_blank" rel="noopener noreferrer">Home Assistant Community: Bluetooth proxy devices not showing</a></li>
+                <li><a href="https://community.home-assistant.io/t/configuring-a-bluetooth-proxy-on-esp32-c3/950475" target="_blank" rel="noopener noreferrer">Home Assistant Community: configuring a Bluetooth proxy on ESP32-C3</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub issue references</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/148065" target="_blank" rel="noopener noreferrer">GitHub issue: advertisements visible but devices not showing in Home Assistant</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/148270" target="_blank" rel="noopener noreferrer">GitHub issue: Bluetooth thermostat connection issues since Home Assistant 2025.7</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want local Bluetooth coverage without rebuilding the hub around one dongle?</h2>
+          <p>Tara packages the local hub, radio placement, protocol choices, and handoff so the house can stay practical while the automations stay local.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant hardware</a><a href="/blog/mmwave-matter-thread-presence-sensor-home-assistant/">mmWave presence sensors</a><a href="/blog/home-automation-without-cloud/">No-cloud smart home</a><a href="/blog/what-is-smart-home-hub/">Smart home hub guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
