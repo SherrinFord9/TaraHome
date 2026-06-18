@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Should Home Assistant Live on Your Main Network or IoT VLAN? | Tara Guides</title>
+    <meta name="description" content="Should Home Assistant live on your main LAN or IoT VLAN? Learn the discovery tradeoffs, mDNS and SSDP limits, and the network layouts that actually work." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/" />
+    <meta property="og:title" content="Should Home Assistant Live on Your Main Network or IoT VLAN? | Tara Guides" />
+    <meta property="og:description" content="Should Home Assistant live on your main LAN or IoT VLAN? Learn the discovery tradeoffs, mDNS and SSDP limits, and the network layouts that actually work." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Should Home Assistant Live on Your Main Network or IoT VLAN? | Tara Guides" />
+    <meta name="twitter:description" content="Should Home Assistant live on your main LAN or IoT VLAN? Learn the discovery tradeoffs, mDNS and SSDP limits, and the network layouts that actually work." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/#blogposting",
+      "headline": "Should Home Assistant Live on Your Main Network or IoT VLAN?",
+      "description": "Should Home Assistant live on your main LAN or IoT VLAN? Learn the discovery tradeoffs, mDNS and SSDP limits, and the network layouts that actually work.",
+      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "datePublished": "2026-06-17",
+      "dateModified": "2026-06-17",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/network/",
+        "https://www.home-assistant.io/integrations/zeroconf/",
+        "https://www.home-assistant.io/integrations/ssdp/",
+        "https://www.home-assistant.io/integrations/homekit_controller/",
+        "https://www.home-assistant.io/integrations/cast/",
+        "https://www.home-assistant.io/installation/linux/",
+        "https://www.home-assistant.io/blog/2025/05/07/release-20255/",
+        "https://community.home-assistant.io/t/auto-discovery-for-tp-link-kasa-devices-on-separate-iot-network/772646",
+        "https://community.home-assistant.io/t/migrating-to-a-new-home-network/824739?page=2",
+        "https://www.reddit.com/r/homeassistant/comments/1revfnu/how_can_my_homeassistant_server_communicate_with/",
+        "https://www.reddit.com/r/homeassistant/comments/1n3zll6/are_you_putting_your_devices_on_your_iot_network/",
+        "https://github.com/home-assistant/core/issues/132654",
+        "https://github.com/home-assistant/core/issues/144516"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Should Home Assistant Live on Your Main Network or IoT VLAN?",
+          "item": "https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant stay on the main LAN while my devices sit on an IoT VLAN?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, but discovery becomes the real project. You will usually need mDNS forwarding for Zeroconf-based devices, careful firewall rules, and manual IP or known-host setup for some integrations. It is workable, but it is rarely the least-maintenance option."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is an mDNS reflector enough to fix discovery across VLANs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. mDNS reflection helps Zeroconf and Bonjour traffic, but Home Assistant also uses SSDP, DHCP, and integration-specific discovery methods. Some devices can be manually added by IP address, while others are much happier on the same local segment as Home Assistant."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need a second network interface for Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not always. A second interface or a clean bridged network path is useful when you want Home Assistant to see both trusted and IoT networks directly without forcing every protocol through a reflector. For many installs, however, simply placing Home Assistant on the automation-heavy segment is easier."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Docker bridge mode matter for Home Assistant discovery?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Home Assistant's official container installation docs use host networking, and the Google Cast docs say running without host networking is not supported for discovery. If your container is behind a bridge or NAT, local discovery gets harder immediately."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I manually add devices if auto-discovery fails?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sometimes. Many local integrations can be added by IP address or known host when discovery does not cross subnets cleanly, but not every integration supports that fallback. Reserve DHCP leases for anything you add manually so it does not move later."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Networking</span><span>June 17, 2026</span><span>11 min read</span></p>
+            <h1>Should Home Assistant Live on Your Main Network or IoT VLAN?</h1>
+            <p class="lede">If you want the fewest surprises, keep Home Assistant on the same local segment as the discovery-heavy devices it controls, or give it a clean path into that segment. If you isolate it too aggressively, the house starts turning into a multicast debugging exercise.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Diagram-style smart home network showing Home Assistant and device segments" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Separate People Devices First, Not Home Assistant from Every Local Protocol</h2>
+<p><strong>The least painful layout is usually one of these two:</strong> either put Home Assistant on the same VLAN as the local devices that depend on discovery, or give Home Assistant a direct interface into both the trusted network and the automation-heavy IoT network.</p>
+<p>You <em>can</em> keep Home Assistant only on the main LAN while Wi-Fi plugs, TVs, speakers, and other gear sit on an isolated IoT VLAN, but then the work shifts to discovery plumbing. That means mDNS reflection, SSDP edge cases, host networking for container installs, static reservations, and some manual IP-based integrations. For many homes, the security win is real, but the maintenance cost is real too.</p>
+
+<div class="callout">
+  <p><strong>Tara's network rule:</strong> isolate laptops, phones, and finance-grade devices from cheap IoT gear, but do not isolate Home Assistant from every discovery-heavy device unless you are ready to own the multicast consequences.</p>
+</div>
+
+<h2 id="why-this-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is broad and current. A <strong>September 19, 2024</strong> Home Assistant Community thread asked how to restore Kasa auto-discovery when Home Assistant lived on the main network and the devices moved to a separate IoT range. A <strong>January 27, 2025</strong> forum reply in a migration thread explained that once Home Assistant and ESPHome-style devices live on different subnets, you need a discovery proxy or you fall back to manual IP entry where the integration allows it.</p>
+<p>Reddit threads kept circling the same tradeoff from the homeowner side: people want separate IoT networks for security, but they also keep discovering that mDNS, SSDP, and local pairing do not magically survive routing boundaries. Home Assistant's own <strong>May 7, 2025</strong> release notes acknowledged this troubleshooting burden by adding discovery browsers for DHCP, mDNS/Zeroconf, and SSDP/UPnP so users could see what the system is actually seeing on the network.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local smart home server near wired networking gear" loading="lazy" />
+  <figcaption>Good smart-home networking is less about ideological purity and more about placing the controller where local protocols can still reach it cleanly.</figcaption>
+</figure>
+
+<h2 id="what-actually-breaks">What Actually Breaks When You Cross VLANs</h2>
+<p>Home Assistant's developer docs say integrations may discover devices through <strong>mDNS/Zeroconf</strong>, <strong>SSDP</strong>, or other methods when they need to find devices with changing IPs or dynamically appearing services. That matters because routed VLANs are not the same thing as a shared local broadcast domain.</p>
+<p>The official Network integration docs also say Home Assistant auto-detects discovery interfaces based on the routing next hop for the mDNS broadcast address <code>224.0.0.251</code>. In plain English: interface choice matters. If the wrong interface wins, discovery may look "random" even when IP routing itself is fine.</p>
+<p>Home Assistant now gives you better visibility into this than it used to:</p>
+<ul>
+  <li>The <strong>Zeroconf Browser</strong> shows what Home Assistant sees via mDNS or Bonjour.</li>
+  <li>The <strong>SSDP Browser</strong> shows what it sees through UPnP discovery.</li>
+  <li>The <strong>2025.5</strong> release notes explicitly describe these tools as a way to see what is going on in your network when a device is not being discovered.</li>
+</ul>
+<p>So when somebody says "the firewall rules are open and I can ping it," that does not prove Home Assistant can discover it. Discovery traffic and reachability are related, but they are not the same problem.</p>
+
+<h2 id="layouts-that-work">The Three Layouts That Actually Work</h2>
+<p>There are dozens of network diagrams floating around, but in practice most Home Assistant homes end up in one of these buckets.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Layout</th>
+        <th>Best for</th>
+        <th>Tradeoffs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Home Assistant on the same VLAN as discovery-heavy devices</td>
+        <td>Maximum local reliability with the least protocol drama</td>
+        <td>You still need sensible firewall rules so the rest of the home reaches the UI cleanly, but discovery generally stays boring.</td>
+      </tr>
+      <tr>
+        <td>Home Assistant with direct presence on both trusted and IoT networks</td>
+        <td>A balanced setup when you want separation without forcing every protocol through a reflector</td>
+        <td>More advanced to configure, and interface selection can still surprise you if you do not verify it in Settings &gt; System &gt; Network.</td>
+      </tr>
+      <tr>
+        <td>Home Assistant only on the main LAN, devices isolated on a separate IoT VLAN</td>
+        <td>Strictest segmentation and smallest attack path from cheap devices toward user devices</td>
+        <td>Discovery becomes the work: mDNS reflection, SSDP limitations, manual IP entries, and a few integrations that simply behave worse.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>If your goal is "make the house dependable," the first or second layout usually wins. If your goal is "treat every smart plug like hostile infrastructure," the third layout is valid, but it is no longer the beginner path.</p>
+
+<h2 id="protocol-specific-gotchas">Protocol-Specific Gotchas That Matter More Than General Advice</h2>
+
+<h3 id="homekit-needs-mdns">1. HomeKit devices across VLANs need mDNS reflection</h3>
+<p>The HomeKit Device integration docs are unusually direct: <strong>if your devices are on a different VLAN to Home Assistant, you must have an mDNS reflector for discovery and pairing to work.</strong> That is not a vague recommendation. It is a hard requirement for that pairing path.</p>
+
+<h3 id="cast-hates-subnets">2. Google Cast auto-discovery does not really want different subnets</h3>
+<p>The Google Cast integration docs say Cast devices can only be automatically discovered when they are on the same subnet because mDNS packets are not routed across subnets. The same page says cross-subnet automatic discovery is not recommended or supported, and if you insist on it you need mDNS forwarding or a list of known hosts.</p>
+
+<h3 id="container-host-networking">3. Container installs need host networking</h3>
+<p>Home Assistant's official Linux container installation guide uses <code>--network=host</code> and <code>network_mode: host</code>. The Cast docs add the operational warning: running Home Assistant Container without host networking is not supported for discovery. Home Assistant <strong>2025.5</strong> even added a repair warning when it detects a container install that is not using host networking.</p>
+
+<h3 id="manual-ip-fallback">4. Manual IP entry can save some integrations, but not all of them</h3>
+<p>The September 19, 2024 Kasa forum thread and a related GitHub issue describe a very common pattern: the device works when added explicitly by IP, but automatic discovery fails once it moves onto a separate IoT subnet. This is why DHCP reservations matter so much in segmented homes. If you have to add a device manually, keep its address stable.</p>
+
+<h3 id="multi-interface-edge-cases">5. Multi-interface setups are cleaner, but still advanced territory</h3>
+<p>Giving Home Assistant direct access to more than one network often works better than trying to proxy every discovery protocol. But it is not magic. A <strong>May 8, 2025</strong> GitHub issue reported DHCP discovery browsing only on the first interface in a multi-VLAN Home Assistant OS install. That does not mean the architecture is wrong. It means you should expect edge cases and verify behavior instead of assuming the extra interface solved everything.</p>
+
+<h2 id="practical-setup-path">A Practical Setup Path That Avoids the Worst Surprises</h2>
+<p>This is the path that best matches the official docs and the recurring failure patterns in the community.</p>
+
+<h3 id="step-1-decide-what-you-are-optimizing-for">1. Decide what you are optimizing for</h3>
+<p>If you want the most reliable Home Assistant experience, keep the controller close to the discovery-heavy segment. If you want stricter separation, accept upfront that some time will go into discovery forwarding and manual integration cleanup.</p>
+
+<h3 id="step-2-give-home-assistant-a-clean-network-path">2. Give Home Assistant a clean network path</h3>
+<p>For Home Assistant OS or a VM, that usually means a bridged network adapter instead of a NAT-style virtual network. For Home Assistant Container, the official docs say to use host networking. If you start with the wrong network mode, you create a discovery problem before you even touch VLANs.</p>
+
+<h3 id="step-3-add-mdns-forwarding-only-where-needed">3. Add mDNS forwarding only where it is actually needed</h3>
+<p>Use an mDNS reflector or forwarder between the Home Assistant segment and the device segment that needs cross-subnet discovery. Do not spray multicast between every network "just in case." Keep the rule set intentional and minimal.</p>
+
+<h3 id="step-4-use-the-built-in-browsers">4. Use Home Assistant's built-in discovery browsers after every change</h3>
+<p>Go to <strong>Settings &gt; System &gt; Network</strong> and check the Zeroconf and SSDP browsers. If the device is absent there, the problem is still your discovery path, not your dashboard or automation configuration.</p>
+
+<h3 id="step-5-switch-to-manual-hosts-when-the-integration-allows-it">5. Switch to manual hosts when the integration allows it</h3>
+<p>When an integration supports manual IP entry or known hosts, use it. The Cast docs explicitly mention known hosts as a workaround. The Kasa reports show manual IP entry can keep a segmented setup usable even when auto-discovery is gone.</p>
+
+<h3 id="step-6-test-the-stuff-that-will-annoy-you-later">6. Test the things that will annoy you later</h3>
+<p>Reboot Home Assistant. Renew a device DHCP lease. Power-cycle a TV or media speaker. Re-pair one HomeKit or Matter-adjacent device if that protocol matters to you. A VLAN diagram that works only on the first day is not done.</p>
+
+<div class="callout">
+  <p><strong>Do not make locks, cameras, or alarm-related automations depend on a network pattern you have not tested after reboot and IP churn.</strong> Segmentation is only a security improvement if the home still behaves predictably afterward.</p>
+</div>
+
+<h2 id="when-not-to-over-segment">When Not to Over-Segment</h2>
+<p>If you are early in your Home Assistant journey and most of your important devices are already Zigbee, Thread, or USB-attached radios rather than cheap Wi-Fi gadgets, you may not need a complex VLAN strategy yet. A well-maintained local hub, a separate guest Wi-Fi for truly untrusted gear, and strong remote-access hygiene often gets you most of the practical benefit without creating a network science project.</p>
+<p>VLANs make the most sense when you have a lot of chatty Wi-Fi devices, cameras, speakers, TVs, and vendor apps that you do not fully trust. They make less sense when the architecture becomes so strict that every new integration turns into a protocol exception request.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>For a Tara-style local install, the best answer is rarely "flat everything" and rarely "enterprise zero-trust everything." The durable middle ground is to keep user devices and generic IoT gear separated, but give Home Assistant a clean and boring path to the devices it is expected to discover and control locally.</p>
+<p>That usually means one of two things: Home Assistant lives on the automation-heavy segment, or it has direct presence on both the trusted side and the IoT side. What we try to avoid is a design where Home Assistant can technically route to devices but only after you re-create half of local discovery by hand.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this question is really about hub placement, no-cloud control, or overall smart-home architecture, these guides connect the dots.</p>
+<ul>
+  <li><a href="/blog/home-assistant-remote-access-without-port-forwarding/">How to Access Home Assistant Remotely Without Port Forwarding</a></li>
+  <li><a href="/blog/smart-home-security-basics/">Smart Home Security: Protect Your Connected Home</a></li>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/guides/what-local-smart-home-hub-does/">What a Local Smart Home Hub Does</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="can-ha-stay-on-main-lan">Can Home Assistant stay on the main LAN while my devices sit on an IoT VLAN?</h3>
+<p>Yes, but discovery becomes the real project. Expect mDNS forwarding, careful firewall work, and a few manual IP or known-host entries. It can be worth it, but it is not the least-maintenance option.</p>
+
+<h3 id="is-mdns-reflector-enough">Is an mDNS reflector enough to fix discovery across VLANs?</h3>
+<p>No. mDNS helps Zeroconf and Bonjour traffic, but Home Assistant also uses SSDP, DHCP, and integration-specific discovery paths. Some devices can be rescued with manual setup, and some are simply happier on the same local segment.</p>
+
+<h3 id="do-i-need-second-interface">Do I need a second network interface for Home Assistant?</h3>
+<p>Not always. It is a good option when you want balance between separation and usability, but many homes are simpler and more stable when Home Assistant just lives on the automation-heavy network and the UI is exposed inward through firewall rules.</p>
+
+<h3 id="does-docker-bridge-mode-matter">Does Docker bridge mode matter for Home Assistant discovery?</h3>
+<p>Yes. The official installation docs use host networking, and Home Assistant's Cast docs say running without host networking is not supported for discovery. If your container is hidden behind bridge networking, local discovery gets harder immediately.</p>
+
+<h3 id="can-i-manually-add-devices">Can I manually add devices if auto-discovery fails?</h3>
+<p>Sometimes. Many integrations allow manual IP or host entry, but not all of them do. If you go that route, reserve DHCP leases so the devices do not quietly move later.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/network/" target="_blank" rel="noopener noreferrer">Home Assistant Network integration documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zeroconf/" target="_blank" rel="noopener noreferrer">Home Assistant Zeroconf documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/ssdp/" target="_blank" rel="noopener noreferrer">Home Assistant SSDP documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Device documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/cast/" target="_blank" rel="noopener noreferrer">Home Assistant Google Cast documentation</a></li>
+                <li><a href="https://www.home-assistant.io/installation/linux/" target="_blank" rel="noopener noreferrer">Home Assistant Container on Linux installation guide</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/05/07/release-20255/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.5 release notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/auto-discovery-for-tp-link-kasa-devices-on-separate-iot-network/772646" target="_blank" rel="noopener noreferrer">Home Assistant Community: Kasa auto-discovery on a separate IoT network</a></li>
+                <li><a href="https://community.home-assistant.io/t/migrating-to-a-new-home-network/824739?page=2" target="_blank" rel="noopener noreferrer">Home Assistant Community: migrating to a new home network with separate subnets</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1revfnu/how_can_my_homeassistant_server_communicate_with/" target="_blank" rel="noopener noreferrer">Reddit: how can Home Assistant communicate with devices on a separate VLAN?</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1n3zll6/are_you_putting_your_devices_on_your_iot_network/" target="_blank" rel="noopener noreferrer">Reddit: are you putting your devices on an IoT network or trusted network?</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub issue references</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/132654" target="_blank" rel="noopener noreferrer">GitHub issue: TP-Link devices manually reachable but not auto-discovered across an IoT subnet</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/144516" target="_blank" rel="noopener noreferrer">GitHub issue: DHCP discovery browser only seeing the first interface in a multi-VLAN setup</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want a segmented network that still behaves like a house, not a lab?</h2>
+          <p>Tara packages the local hub, the network placement choices, and the protocol handoff so privacy and reliability do not end up fighting each other room by room.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/home-assistant-remote-access-without-port-forwarding/">Remote access guide</a><a href="/blog/smart-home-security-basics/">Smart home security</a><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant hardware</a><a href="/blog/home-automation-without-cloud/">No-cloud smart home</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
