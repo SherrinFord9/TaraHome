@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Back Up Home Assistant So You Can Actually Restore It | Tara Guides</title>
+    <meta name="description" content="Use automatic backups, off-device copies, the backup emergency kit, and a test-restore routine so Home Assistant survives bad updates, dead SSDs, and full hardware moves." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/how-to-back-up-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/how-to-back-up-home-assistant/" />
+    <meta property="og:title" content="How to Back Up Home Assistant So You Can Actually Restore It | Tara Guides" />
+    <meta property="og:description" content="Use automatic backups, off-device copies, the backup emergency kit, and a test-restore routine so Home Assistant survives bad updates, dead SSDs, and full hardware moves." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Back Up Home Assistant So You Can Actually Restore It | Tara Guides" />
+    <meta name="twitter:description" content="Use automatic backups, off-device copies, the backup emergency kit, and a test-restore routine so Home Assistant survives bad updates, dead SSDs, and full hardware moves." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/how-to-back-up-home-assistant/#blogposting",
+      "headline": "How to Back Up Home Assistant So You Can Actually Restore It",
+      "description": "Use automatic backups, off-device copies, the backup emergency kit, and a test-restore routine so Home Assistant survives bad updates, dead SSDs, and full hardware moves.",
+      "image": "https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png",
+      "datePublished": "2026-06-18",
+      "dateModified": "2026-06-18",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/how-to-back-up-home-assistant/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/backup/",
+        "https://www.home-assistant.io/common-tasks/general/",
+        "https://www.home-assistant.io/blog/2025/01/03/release-20251/",
+        "https://www.home-assistant.io/blog/2025/02/05/release-20252/",
+        "https://www.home-assistant.io/blog/2025/05/07/release-20255/",
+        "https://www.home-assistant.io/blog/2026/04/01/release-20264/",
+        "https://www.home-assistant.io/installation/",
+        "https://www.reddit.com/r/homeassistant/comments/1qkhsx3/home_assistant_backups_best_practice_for_a_single/",
+        "https://www.reddit.com/r/homeassistant/comments/1lptq4h/reminder_your_backups_are_encrypted_save_the_key/",
+        "https://community.home-assistant.io/t/alternatives-to-automatic-backups-ways-to-do-it-yourself/824436",
+        "https://community.home-assistant.io/t/restore-docker-backup/647600",
+        "https://github.com/home-assistant/core/issues/166280",
+        "https://github.com/home-assistant/core/issues/173506"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/how-to-back-up-home-assistant/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Back Up Home Assistant So You Can Actually Restore It",
+          "item": "https://tarahome.ai/blog/how-to-back-up-home-assistant/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/how-to-back-up-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are Home Assistant automatic backups enough if I only keep them on the same machine?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant's own common-tasks documentation recommends keeping a copy on another system outside Home Assistant and ideally one off-site. A backup stored only on the same SSD, mini PC, or Raspberry Pi does not help much when that hardware dies."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I really need to save the backup emergency kit and key?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Encrypted backups require the key from the backup emergency kit to restore. Without it, a perfectly good backup file can still be unusable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use full backups or partial backups?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For routine protection, full automated backups are the safer default because they preserve the whole Home Assistant environment. Partial or manual backups make sense only when you have a narrow reason and you understand exactly which dependencies live outside the selected folders."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I restore Home Assistant to different hardware?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually yes. Home Assistant's restore documentation says onboarding restore can migrate from one device type to another as long as the target has enough storage. You still need the old login credentials, the emergency-kit key, and any external radios reattached to the new system."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What if I run Home Assistant Container instead of Home Assistant OS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Container users can still create Home Assistant backups, but Home Assistant Container remains a more manual installation type. Community guidance and install docs both point out that advanced users still need a host-level backup plan for the machine, Docker setup, and any companion services outside Home Assistant itself."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Backups &amp; Restore</span><span>June 18, 2026</span><span>11 min read</span></p>
+            <h1>How to Back Up Home Assistant So You Can Actually Restore It</h1>
+            <p class="lede">A Home Assistant backup is only real if it lives off the box, the decryption key is saved somewhere sane, and you have rehearsed a restore before the lights, locks, and dashboards depend on it.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub placed for power and Ethernet instead of risky last-minute recovery" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Automate Daily, Store One Copy Off the Box, and Keep the Key</h2>
+<p>If your Home Assistant home matters to the rest of the household, the practical answer is simple: <strong>run automatic daily backups, keep at least one copy outside the Home Assistant machine, keep at least one copy off-site, save the backup emergency kit somewhere outside Home Assistant, and make a fresh manual full backup before risky changes.</strong></p>
+<p>That matches Home Assistant's own direction. The January 3, 2025 release overhauled backups around automation, encryption, retention, restore support, and 3-2-1 guidance. The current common-tasks documentation still recommends daily backups, recommends another system outside Home Assistant, and ideally another off-site copy as well.</p>
+
+<div class="callout">
+  <p><strong>Tara's backup rule:</strong> keep one fast restore nearby, one easy copy off the box, one off-site copy, and one decryption key your future self can actually find.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is current and obvious. A Reddit thread from early 2026 asked whether local-only backups on a single Home Assistant mini PC are enough in practice if the box dies. Another Reddit thread from 2025 described a failed restore after the owner realized their backups were encrypted and the key was nowhere to be found. On the Home Assistant Community forum, a January 7, 2025 community guide appeared specifically because many users were still asking how to handle manual backups, alternative storage targets, and container-specific edge cases after the 2025.1 backup overhaul.</p>
+<p>Official product changes made the question more nuanced too. Home Assistant <strong>2025.1</strong> introduced automated backups, encrypted-by-default backups, restore support across installation methods, and retention. Home Assistant <strong>2025.2</strong> added Google Drive and Microsoft OneDrive locations, custom backup times, advanced schedules, and per-location encryption choices. Home Assistant <strong>2025.5</strong> added retention policies per location, which matters when your NAS can keep far more history than a cloud quota. And the April 1, 2026 release notes show the backup ecosystem expanding further with WebDAV, OneDrive for Business, and S3-compatible destinations such as AWS S3, iDrive e2, and Cloudflare R2.</p>
+<p>The deeper reason people keep asking is simpler: a backup file does not equal recovery. GitHub issue reports opened on <strong>March 23, 2026</strong> and <strong>June 11, 2026</strong> show that restore paths can still hit edge cases. That does not mean Home Assistant backups are unreliable as a whole. It does mean that a backup you have never rehearsed is not the same thing as a house you can confidently recover.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/product-gallery/tara-device-kit-product-board.png" alt="Smart home kit components arranged so compute, radios, and backups can be recovered separately" loading="lazy" />
+  <figcaption>A resilient Home Assistant setup treats the hub, radios, storage, and backup copies as recoverable parts instead of one fragile all-in-one box.</figcaption>
+</figure>
+
+<h2 id="best-setup">The Best Backup Setup for Most Homes</h2>
+<p>For a real home, the safest default is a <strong>3-2-1-style backup posture</strong>: three copies, at least two locations, at least one off-site. Home Assistant itself explicitly points users to that model in the 2025.1 release.</p>
+<p>In practice, most Tara-style installs end up with this shape:</p>
+<ul>
+  <li><strong>Daily automatic full backup</strong> stored locally for fast rollback and easy short-term history.</li>
+  <li><strong>The same automatic backup copied to a NAS, network share, or another always-on box</strong> so a dead SSD or mini PC is not the end of the story.</li>
+  <li><strong>An encrypted off-site copy</strong> through Home Assistant Cloud or another supported remote provider so one building failure does not take out every copy.</li>
+</ul>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>What it protects you from</th>
+        <th>What it still misses</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Local backup on the Home Assistant box</td>
+        <td>Bad edits, bad updates, quick same-machine rollback</td>
+        <td>Disk failure, theft, fire, or total machine loss</td>
+      </tr>
+      <tr>
+        <td>NAS or network-share copy</td>
+        <td>Mini PC failure, dead SSD, faster access than off-site storage</td>
+        <td>Whole-building loss, ransomware, or a dead NAS if that is your only other copy</td>
+      </tr>
+      <tr>
+        <td>Encrypted off-site copy</td>
+        <td>Site-wide loss, dead NAS, disaster recovery</td>
+        <td>Slower restore, storage quotas, and total failure if the key is lost</td>
+      </tr>
+      <tr>
+        <td>Backup emergency kit stored outside Home Assistant</td>
+        <td>Restore of encrypted backups when the main box is gone</td>
+        <td>Nothing, if you forgot to save it</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="configure-it">How to Configure It in Home Assistant Today</h2>
+<p>Home Assistant's common-tasks documentation is now good enough that the right setup is not exotic anymore. The important part is choosing the boring defaults on purpose.</p>
+
+<h3 id="automatic-daily-backups">1. Turn on automatic daily backups</h3>
+<p>The official docs recommend a <strong>daily</strong> schedule. Pick a time when your backup locations are actually reachable. Home Assistant explicitly warns that if a target location is asleep or offline, that location's backup will fail. If you have a NAS that spins down overnight, use a custom time or an advanced backup automation instead of hoping the system-optimal window matches your storage behavior.</p>
+
+<h3 id="keep-copies-outside-box">2. Add at least one backup location outside the Home Assistant box</h3>
+<p>The common-tasks page is unambiguous here: if you only store backups on the device itself, they are hard to access after a crash. The docs recommend another system outside Home Assistant and ideally one off-site. As of the April 1, 2026 release notes, supported remote backup paths now include Home Assistant Cloud, WebDAV, Google Drive, OneDrive, OneDrive for Business, and S3-compatible integrations.</p>
+<p>If you already subscribe to Home Assistant Cloud, it is a good off-site safety net, but know its shape: the official docs say it stores <strong>one backup file</strong>, up to <strong>5 GB</strong>, and it is always encrypted. That makes it a strong latest-copy option, not a deep archival history by itself.</p>
+
+<h3 id="retention-policy">3. Use retention on purpose, not by accident</h3>
+<p>Home Assistant 2025.5 added retention per location for a reason: different locations deserve different histories. A roomy NAS can keep weeks of daily backups while a cloud location might keep only the last few. Home Assistant's own release notes even use that exact pattern as the motivating example.</p>
+<p>For many homes, keeping a deeper local or NAS history plus a smaller off-site history is the sensible compromise. The exact counts depend on your storage, but the strategy matters more than the number: <strong>shorter off-site history is still much better than no off-site history.</strong></p>
+
+<h3 id="encryption-choice">4. Keep encryption on anywhere the storage is not fully under your control</h3>
+<p>The February 5, 2025 release added per-location encryption controls. That means you can keep off-site copies encrypted while optionally turning encryption off on a trusted local NAS if you specifically want easier manual file extraction. Home Assistant's default recommendation remains encryption, and downloaded backups from the Home Assistant UI are decrypted on the fly anyway, so most households can simply leave encryption enabled everywhere except maybe a tightly controlled local archive.</p>
+<p>Do not treat this as a cosmetic setting. Backups can contain device credentials, household history, cloud tokens, and other sensitive data. If the copy leaves your house or lives on third-party storage, encryption should stay on.</p>
+
+<h3 id="save-emergency-kit">5. Save the emergency kit somewhere outside Home Assistant</h3>
+<p>This is the step people keep skipping until it hurts. Home Assistant's docs tell you to download the emergency kit and keep it safe because you need it to restore encrypted backups. The Reddit thread about lost backup keys is the real-world version of that warning: the owner had years of backups and still ended up rebuilding from scratch.</p>
+<p>A password manager, secure household vault, or another external system is fine. Just do not store the only copy of the key inside the Home Assistant box you are trying to recover.</p>
+
+<h2 id="what-to-include">What to Back Up, and What to Leave Out</h2>
+<p>The Home Assistant docs specifically recommend disabling <strong>media</strong> and the <strong>shared folder</strong> if you want smaller, faster backups. That is usually the right move for homeowners who care more about getting automations, dashboards, integrations, and credentials back quickly than about preserving every old camera clip.</p>
+<p>A good rule is this:</p>
+<ul>
+  <li><strong>Include by default:</strong> core config, automations, dashboards, entities, secrets, apps/add-ons, and the parts of history you actually rely on.</li>
+  <li><strong>Exclude if separately protected:</strong> camera media, bulky exports, and any large share-folder files that already live on a NAS or another retention system.</li>
+</ul>
+<p>If you run extra services around Home Assistant, treat them as a second backup problem. That matters especially for <strong>Home Assistant Container</strong>, because the official installation docs say Container users bring their own Linux and manual update flow, do not get apps, and do not have out-of-the-box support for some Thread or Z-Wave pieces that HA OS handles more conveniently. Practically, that means your Docker compose files, MQTT broker, databases, radio mappings, and companion containers still need host-level backup coverage.</p>
+
+<div class="callout">
+  <p><strong>Do not let camera retention bloat your recovery path.</strong> Restoring the automations and device state of your house is usually more urgent than restoring months of clips that already belong in a separate video-retention workflow.</p>
+</div>
+
+<h2 id="before-risky-changes">Before Risky Changes, Make a Fresh Manual Backup</h2>
+<p>Automatic daily backups are your floor, not your ceiling. Before a major update, hardware migration, Zigbee coordinator swap, database cleanup, or a big round of HACS and integration changes, create a fresh <strong>manual full backup</strong> with a name you will recognize later.</p>
+<p>Home Assistant 2025.2 and 2025.5 both improved the backup-before-upgrade workflow, including default preferences and OS-upgrade backup toggles. That is useful. Still, if you are about to make a change you would hate to unwind by memory, a clearly named manual milestone backup is the better habit.</p>
+
+<h2 id="test-restore">Practice a Restore Before You Need One</h2>
+<p>This is the difference between a backup strategy and a hopeful pile of files. Home Assistant's current restore docs say onboarding restore works on a current system or on a new device, can migrate between device types, and may take roughly <strong>45 minutes</strong> on a larger install. The docs also warn that the target needs enough storage, the old credentials still matter, and battery devices or radios may need attention after the move.</p>
+<p>Those are exactly the reasons to do a rehearsal. The March 23, 2026 and June 11, 2026 GitHub issues are useful reminders that restore flows can still hit version or environment-specific edge cases. That interpretation is an inference from the issue tracker, not a Home Assistant guarantee of broad instability. The practical takeaway is straightforward: test while the house is calm.</p>
+<ol>
+  <li>Spin up a spare HA OS VM or another temporary test target.</li>
+  <li>Restore your latest backup during onboarding using the emergency-kit key.</li>
+  <li>Confirm login, dashboards, automations, and critical integrations load correctly.</li>
+  <li>Note anything external that the backup did not magically recreate, such as Docker sidecars, NAS mounts, or radio migrations.</li>
+  <li>Delete the test system after you have proven the runbook works.</li>
+</ol>
+<p>If you only do that once or twice a year, you are already ahead of most households. The goal is not enterprise disaster recovery theater. The goal is that a dead SSD or bad update does not turn into a lost weekend.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>A local smart home should not depend on heroics when something breaks. The whole point of running Home Assistant locally is control, privacy, and predictability. A backup plan that lives only on the same box, or only in one person's memory, breaks that promise.</p>
+<p>The Tara version is deliberately boring: stable hardware, clean power, radios that are easy to reattach, a documented off-box backup path, and a handoff that another person in the house could follow without reverse-engineering your hobby.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If your backup question is really an update, hardware, or migration question underneath, these guides help with the next decision.</p>
+<ul>
+  <li><a href="/blog/how-to-update-home-assistant-safely/">How to Update Home Assistant Safely Without Breaking Your House</a></li>
+  <li><a href="/blog/move-home-assistant-to-new-hardware/">How to Move Home Assistant to New Hardware</a></li>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="automatic-enough">Are Home Assistant automatic backups enough if I only keep them on the same machine?</h3>
+<p>No. They help with bad updates and bad edits, but not much with dead storage or a dead host. Home Assistant's own docs recommend another system outside Home Assistant and ideally another off-site copy.</p>
+
+<h3 id="need-emergency-kit">Do I really need the backup emergency kit?</h3>
+<p>Yes. Encrypted backups require the key from the emergency kit. Without that key, the backup file may exist but still be useless for restore.</p>
+
+<h3 id="full-vs-partial">Should I use full backups or partial backups?</h3>
+<p>Use full automated backups for routine recovery unless you have a very specific reason not to. Partial backups are fine for targeted manual work, but they are easier to misunderstand when you are stressed and trying to recover a whole home.</p>
+
+<h3 id="restore-new-hardware">Can I restore Home Assistant to different hardware?</h3>
+<p>Usually yes. Home Assistant's restore docs say you can migrate from one device type to another during onboarding if the target has enough storage. Reattach your radios, keep the old login credentials, and expect some protocol-specific cleanup if the radio hardware changes.</p>
+
+<h3 id="container-users">What if I run Home Assistant Container?</h3>
+<p>Container users can still use Home Assistant backups, but the overall recovery story is more manual. The official install docs make clear that Container is an advanced install type with manual host responsibility, and community restore discussions still talk about manual restore steps for non-HAOS environments. If simple recovery matters more than Docker flexibility, HA OS is usually the calmer choice.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/backup/" target="_blank" rel="noopener noreferrer">Home Assistant Backup integration documentation</a></li>
+                <li><a href="https://www.home-assistant.io/common-tasks/general/" target="_blank" rel="noopener noreferrer">Home Assistant common tasks: backup, download, and restore</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/01/03/release-20251/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.1 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/02/05/release-20252/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.2 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/05/07/release-20255/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.5 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/04/01/release-20264/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.4 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/installation/" target="_blank" rel="noopener noreferrer">Home Assistant installation types</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qkhsx3/home_assistant_backups_best_practice_for_a_single/" target="_blank" rel="noopener noreferrer">Reddit: backups best practice for a single-machine Home Assistant setup</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1lptq4h/reminder_your_backups_are_encrypted_save_the_key/" target="_blank" rel="noopener noreferrer">Reddit: save the backup key somewhere outside Home Assistant</a></li>
+                <li><a href="https://community.home-assistant.io/t/alternatives-to-automatic-backups-ways-to-do-it-yourself/824436" target="_blank" rel="noopener noreferrer">Home Assistant Community: alternatives to automatic backups</a></li>
+                <li><a href="https://community.home-assistant.io/t/restore-docker-backup/647600" target="_blank" rel="noopener noreferrer">Home Assistant Community: restoring a Docker backup</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub issue references</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/166280" target="_blank" rel="noopener noreferrer">GitHub issue: restore backup issue opened March 23, 2026</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/173506" target="_blank" rel="noopener noreferrer">GitHub issue: apps not restoring from backup during setup opened June 11, 2026</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want a local smart home that is easier to recover than to panic about?</h2>
+          <p>Tara packages the hub, radios, off-box backup posture, and household handoff so updates and failures stay boring instead of turning into a weekend rebuild.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/how-to-update-home-assistant-safely/">Update Home Assistant safely</a><a href="/blog/move-home-assistant-to-new-hardware/">Move Home Assistant hardware</a><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant hardware</a><a href="/blog/home-automation-without-cloud/">No-cloud smart home</a><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Installer vs DIY guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
