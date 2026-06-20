@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use? | Tara Guides</title>
+    <meta name="description" content="Use HomeKit Device to bring HomeKit accessories into Home Assistant, and HomeKit Bridge to send selected Home Assistant entities back to Apple Home. Learn the clean architecture, the Matter alternative, and the setup gotchas that trip people up." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/" />
+    <meta property="og:title" content="Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use? | Tara Guides" />
+    <meta property="og:description" content="Use HomeKit Device to bring HomeKit accessories into Home Assistant, and HomeKit Bridge to send selected Home Assistant entities back to Apple Home. Learn the clean architecture, the Matter alternative, and the setup gotchas that trip people up." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use? | Tara Guides" />
+    <meta name="twitter:description" content="Use HomeKit Device to bring HomeKit accessories into Home Assistant, and HomeKit Bridge to send selected Home Assistant entities back to Apple Home. Learn the clean architecture, the Matter alternative, and the setup gotchas that trip people up." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/#blogposting",
+      "headline": "Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?",
+      "description": "Use HomeKit Device to bring HomeKit accessories into Home Assistant, and HomeKit Bridge to send selected Home Assistant entities back to Apple Home. Learn the clean architecture, the Matter alternative, and the setup gotchas that trip people up.",
+      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "datePublished": "2026-06-20",
+      "dateModified": "2026-06-20",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/homekit_controller/",
+        "https://www.home-assistant.io/integrations/homekit/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/blog/2023/10/04/release-202310/",
+        "https://www.home-assistant.io/green/",
+        "https://www.reddit.com/r/homeassistant/comments/1hh3xsp/do_i_need_homekit_bridge_homekit_device/",
+        "https://community.home-assistant.io/t/rename-homekit-bridge-to-apple-home/772261",
+        "https://community.home-assistant.io/t/best-practices-for-homekit-bridge-configuration/828094",
+        "https://community.home-assistant.io/t/home-assistant-and-homekit-bridge-integration/943372",
+        "https://community.home-assistant.io/t/homekit-bridge-integration-homebridge-confusion-and-how-to-use-homebridge-with-ha/927096"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?",
+          "item": "https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need both HomeKit Device and HomeKit Bridge?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only if you need traffic in both directions. Use HomeKit Device to bring a Works with HomeKit accessory into Home Assistant. Use HomeKit Bridge to expose selected Home Assistant entities back to Apple Home and Siri. If you only need one direction, use only the integration that matches that direction."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I keep the same device in Apple Home and Home Assistant at the same time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If the device is HomeKit-only, not directly. HomeKit devices can only be paired to a single controller at once. If the device supports Matter, yes: Home Assistant's Matter docs describe sharing a Matter device from another fabric such as Apple Home into Home Assistant."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need an iPhone or Apple account to use HomeKit devices with Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not usually. Home Assistant's HomeKit Device documentation says the protocol is local and offline and does not require an Apple online account. Some Wi-Fi devices may need an iPhone briefly to join Wi-Fi, and Apple Thread workflows need Apple Home plus a supported Apple Thread border router."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why doesn't Home Assistant Bridge appear in Apple Home?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This is usually a local networking problem. The pairing iPhone must be on the same local network as Home Assistant, and Docker installs often need host networking or advertise_ip plus mDNS reflection. If pairing still fails, Home Assistant's docs recommend testing with a minimal include filter in case one entity is breaking the bridge."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I use Matter instead of HomeKit for Apple homes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use Matter when the device already supports it and you want the device in both Apple Home and Home Assistant without tearing down the existing Apple setup. Keep in mind Home Assistant's Matter docs also warn that native local integrations often expose richer device features than Matter."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant &amp; Apple Home</span><span>June 20, 2026</span><span>11 min read</span></p>
+            <h1>Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?</h1>
+            <p class="lede">Use HomeKit Device when the accessory needs to land in Home Assistant. Use HomeKit Bridge when Home Assistant is the source of truth and Apple Home is just the family-facing front end. If the device already speaks Matter, share it instead.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Home Assistant and Apple Home connected in both directions through HomeKit Device and HomeKit Bridge" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Bring Devices In with HomeKit Device, Push Home Assistant Out with HomeKit Bridge</h2>
+<p><strong>Use <code>HomeKit Device</code> when the accessory itself needs to become a Home Assistant device.</strong> Use <code>HomeKit Bridge</code> when Home Assistant already knows about the entity and you want to expose that entity to Apple Home and Siri.</p>
+<p>If the device already supports <strong>Matter</strong>, there is often a third, cleaner option: keep the existing Apple Home setup and share the device onto Home Assistant's fabric instead of tearing down a working pairing.</p>
+<p>The biggest mistake is assuming both HomeKit integrations solve the same problem. Home Assistant's own <strong>HomeKit Device</strong> documentation explicitly says it <strong>should not be confused with HomeKit Bridge</strong>. That warning exists because people keep making exactly that mistake.</p>
+
+<div class="callout">
+  <p><strong>Tara's rule:</strong> let Home Assistant own logic and state, let Apple Home be a convenient surface when it helps, and only pull devices through HomeKit when that is the cleanest local path available.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>This is not a manufactured topic. On <strong>June 20, 2026</strong>, a review of <code>r/homeassistant</code>, the Home Assistant Community forum, official Home Assistant docs, and Tara's own library showed the same pattern again and again: people asking whether they need both integrations, whether HomeKit Bridge will duplicate devices already in Apple Home, and how to structure a bridge once the house grows past a hundred entities.</p>
+<p>The community confusion is so persistent that one Home Assistant Community thread from <strong>September 18, 2024</strong> literally proposes renaming <strong>HomeKit Bridge</strong> to <strong>Apple Home</strong> because the current naming is easy to conflate with <strong>HomeKit Device</strong>. A newer configuration thread from <strong>October 23, 2025</strong> asks whether importing Home Assistant into HomeKit will create duplicate devices, while another from <strong>January 13, 2025</strong> asks for best practices around separate bridges at roughly <strong>120 devices</strong>.</p>
+<p>Official Home Assistant product direction makes this even more relevant. The <strong>Home Assistant Green</strong> page positions Apple Home support as part of a gradual migration path, not an all-or-nothing breakup. That is useful, but it also means more mixed Apple-plus-Home-Assistant homes, which is exactly where integration direction starts to matter.</p>
+
+<h2 id="start-with-direction">Start with the Direction of Travel</h2>
+<p>Before you click anything, decide where the device or entity is supposed to live.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Goal</th>
+        <th>Best path</th>
+        <th>Why it fits</th>
+        <th>Main watchout</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Bring a Works with HomeKit accessory into Home Assistant</td>
+        <td><strong>HomeKit Device</strong></td>
+        <td>The accessory itself becomes a Home Assistant device</td>
+        <td>HomeKit devices are single-controller, so it usually cannot stay paired to Apple Home at the same time</td>
+      </tr>
+      <tr>
+        <td>Expose Home Assistant entities to Apple Home and Siri</td>
+        <td><strong>HomeKit Bridge</strong></td>
+        <td>Apple Home becomes a client of your Home Assistant setup</td>
+        <td>Filter aggressively or Apple Home fills with junk quickly</td>
+      </tr>
+      <tr>
+        <td>Keep a Matter device in Apple Home and also use it in Home Assistant</td>
+        <td><strong>Matter multi-fabric</strong></td>
+        <td>Home Assistant's Matter docs support sharing from another fabric such as Apple</td>
+        <td>Matter may expose fewer vendor-specific features than a rich native integration</td>
+      </tr>
+      <tr>
+        <td>Use a HomeKit-over-Thread device through Apple Thread hardware</td>
+        <td><strong>HomeKit Device</strong> with the Apple Thread border router workflow</td>
+        <td>Home Assistant documents an official Apple Thread path for HomeKit-over-Thread devices</td>
+        <td>You must pair in Apple Home first, then remove without resetting</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="when-homekit-device-is-right">When HomeKit Device Is the Right Answer</h2>
+<p>The <a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">HomeKit Device</a> integration exists to connect accessories with the <strong>Works with HomeKit</strong> logo to Home Assistant. This is the path for devices that speak HomeKit locally and need to become first-class Home Assistant devices for automations, dashboards, and local control.</p>
+
+<h3 id="wifi-and-bluetooth-homekit">1. Wi-Fi and Bluetooth HomeKit devices</h3>
+<p>For Ethernet, Wi-Fi, and Bluetooth devices, the rule is simple: <strong>the accessory cannot already be paired to another HomeKit controller</strong>. The official docs explain that HomeKit devices can only be paired to a single controller at once.</p>
+<p>That creates the classic HomeKit-only onboarding dance. If the device has no other clean way to join Wi-Fi, the official docs tell you to pair it in the Apple Home app first, then remove it from Apple Home without resetting the device. That gets the accessory onto your network and reopens it for pairing into Home Assistant.</p>
+<p>Once it is in Home Assistant, the same docs note that you can <strong>export it back to Siri and Apple Home</strong> with HomeKit Bridge. That sounds circular, but it is useful when Home Assistant is becoming the new source of truth and Apple Home is just staying around as a control surface.</p>
+
+<h3 id="homekit-over-thread-via-apple">2. HomeKit-over-Thread through Apple Thread hardware</h3>
+<p>Home Assistant's HomeKit Device docs also describe a separate workflow for <strong>HomeKit-over-Thread</strong> devices using an Apple Thread border router such as a HomePod mini. This is <strong>not</strong> the same thing as Matter.</p>
+<p>The documented Apple path is specific: the device must be paired in the Apple Home app first, your Home Assistant instance must be on the same LAN as the Apple border router, and then you remove the device from Apple Home <strong>without resetting it</strong>. That preserves the Thread network details on the accessory and lets Home Assistant discover and pair it.</p>
+<p>If you are really trying to answer, "Can I use my Apple Thread gear without giving Apple the whole house?" this is one of the official yes-but-carefully paths. Tara's separate guide on <a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Apple TV and HomePod as Thread border routers</a> goes deeper on that specific decision.</p>
+
+<h3 id="you-probably-dont-need-apple-account">3. You probably do not need an Apple account</h3>
+<p>One of the most useful clarifications in the official docs is that the HomeKit protocol is <strong>local and offline</strong>. Home Assistant says you do <strong>not</strong> need an Apple online account to use a Works with HomeKit device. The caveat is practical rather than philosophical: some Wi-Fi devices still need an iPhone or iPad once to get onto Wi-Fi, and the Apple Thread path obviously depends on Apple Home plus supported Apple border-router hardware.</p>
+
+<h2 id="when-homekit-bridge-is-right">When HomeKit Bridge Is the Right Answer</h2>
+<p>The <a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">HomeKit Bridge</a> integration works in the opposite direction. It forwards supported Home Assistant entities to Apple HomeKit so they can appear in Apple's Home app and respond to Siri.</p>
+<p>This is the path for mixed households where Home Assistant should own the automations, history, local radios, and device graph, but Apple Home still matters for family familiarity, lock-screen control, or Siri voice commands.</p>
+
+<h3 id="filter-what-you-export">1. Filter what you export</h3>
+<p>The setup pain people describe is usually self-inflicted. If you point HomeKit Bridge at everything, Apple Home fills with entities that never belonged there. The official docs support filters, and Home Assistant troubleshooting guidance even recommends testing with a minimal include list when pairing gets weird.</p>
+<p>For most houses, a better default is to expose only:</p>
+<ul>
+  <li>Lights people actually tap manually</li>
+  <li>Locks, garage doors, and selected covers if Apple Home is part of the family workflow</li>
+  <li>A small number of scenes or helper switches that present well in Apple Home</li>
+  <li>Sensors that genuinely help at a glance, not every diagnostic entity in the system</li>
+</ul>
+
+<div class="callout">
+  <p><strong>Installer instinct:</strong> if Apple Home becomes a graveyard of 120 half-useful entities, people stop trusting the whole stack. Export the controls the household actually reaches for.</p>
+</div>
+
+<h3 id="bridge-limits-and-splitting">2. One bridge is fine until it is not</h3>
+<p>Home Assistant's HomeKit docs call out a <strong>150 accessory limit</strong> and recommend multiple bridge instances when you need more headroom. That lines up with the January 2025 community thread asking whether a large Apple Home setup should be split by device type or kept as one bridge.</p>
+<p>Tara's practical answer is: <strong>start with one well-filtered bridge</strong>. Split it only when you hit the accessory limit, need separate failure domains, or want a clean separation such as upstairs vs downstairs or family-facing vs admin-only entities.</p>
+
+<h3 id="accessory-mode-matters">3. Accessory mode matters more than most people expect</h3>
+<p>HomeKit Bridge has special handling for some categories. The docs list <strong>camera</strong>, <strong>lock</strong>, <strong>activity remote</strong>, and media players with device class <strong>tv</strong> or <strong>receiver</strong> as types that should be exposed in <strong>accessory mode</strong>.</p>
+<p>If a TV, receiver, or camera looks wrong in Apple Home, this is one of the first places to check. Home Assistant's <strong>October 4, 2023</strong> release notes also highlight ongoing HomeKit support improvements for media receivers, which is another signal that the Apple presentation layer has special-case behavior instead of a universal one-size-fits-all bridge.</p>
+
+<h3 id="docker-and-network-gotchas">4. Docker and network layout still matter</h3>
+<p>The HomeKit Bridge docs are direct about networking: the iPhone used for pairing needs to be on the same local network as Home Assistant. The docs also call out Docker-specific pain, recommending <code>network_mode: host</code> first and pointing to <code>advertise_ip</code> plus mDNS reflection when network isolation gets in the way.</p>
+<p>If you are running Home Assistant in containers or across segmented VLANs, do not assume Apple Home discovery will be plug-and-play. Tara already has deeper guides on <a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a> and <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">where Home Assistant should live on the network</a> for exactly this reason.</p>
+
+<h2 id="when-matter-is-better">When Matter Is Actually the Better Answer</h2>
+<p>Many Apple-plus-Home-Assistant homes are now better served by <strong>Matter</strong>, not HomeKit. Home Assistant's Matter docs explain that each controller has its own <strong>fabric</strong>, and devices can be added directly to Home Assistant or <strong>shared from another fabric such as Apple</strong>.</p>
+<p>That means if you already have a Matter device happily running in Apple Home, the cleanest move is often to add it to Home Assistant as another controller instead of doing the old HomeKit remove-and-repair routine. This is especially true when the device is already family-approved in Apple Home and you just want Home Assistant automations or dashboards.</p>
+<p>There is an important tradeoff, though. The same Matter docs warn that Matter may not expose the deeper features of a device-specific local integration. Home Assistant uses Hue as the example: Matter gives you the basics, while the native Hue integration brings richer lighting features. So do not use Matter just because it sounds newer. Use it when interoperability is the main goal.</p>
+
+<h2 id="gotchas">The Gotchas That Break Mixed Apple and Home Assistant Homes Later</h2>
+
+<h3 id="single-controller-vs-multi-fabric">1. HomeKit is single-controller. Matter is multi-fabric.</h3>
+<p>This distinction quietly explains most of the confusion. HomeKit Device accessories can only be paired to one controller at a time. Matter devices can live on multiple fabrics. If you keep that rule in your head, a lot of Apple's smart-home weirdness suddenly becomes legible.</p>
+
+<h3 id="boring-lan-required">2. The LAN still has to be boring</h3>
+<p>HomeKit Device discovery depends on mDNS. The official HomeKit Device docs say that if the accessory is on a different VLAN from Home Assistant, you <strong>must</strong> have an mDNS reflector for discovery and pairing to work. Apple Home pairing for HomeKit Bridge also wants the phone on the same network as Home Assistant. If your network is fancy enough to be interesting, it is fancy enough to make this flaky.</p>
+
+<h3 id="entity-id-changes-have-consequences">3. Entity ID churn can have Apple-side consequences</h3>
+<p>The HomeKit Bridge docs warn that if an entity lacks a unique ID, the accessory identifier can be derived from the <code>entity_id</code>. Rename enough things carelessly and Apple Home may treat the entity like a different accessory. For homeowners this usually just feels annoying. For installers it creates support tickets.</p>
+
+<h3 id="not-everything-belongs-in-apple-home">4. Not every useful Home Assistant entity belongs in Apple Home</h3>
+<p>Apple Home is a good control layer, not a great raw database browser. Exposing every helper, diagnostic sensor, template artifact, and admin switch makes the whole Apple side feel worse. Use HomeKit Bridge to present the house, not to mirror the registry.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>For most mixed Apple households, the clean architecture is straightforward: <strong>Home Assistant is the brain, HomeKit Bridge is the presentation layer, and HomeKit Device is the compatibility escape hatch</strong> for accessories that really need it.</p>
+<p>If a device already has a strong native Home Assistant integration, use that instead of forcing HomeKit into the middle. If a device already supports Matter, use Matter when you want both Apple Home and Home Assistant to coexist. Pull a device in through HomeKit Device only when that is the most local, most supportable path available.</p>
+<p>That keeps the house understandable after the initial excitement wears off. It also keeps the next person from having to reverse-engineer whether a light is in Home Assistant because of HomeKit, Matter, a vendor bridge, or three overlapping integrations that all seemed harmless on setup day.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this question is really about Apple coexistence, Matter vs HomeKit, or how to keep your local stack legible, these are the next useful reads.</p>
+<ul>
+  <li><a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Can Apple TV or HomePod Be Your Thread Border Router for Home Assistant?</a></li>
+  <li><a href="/blog/matter-protocol-explained/">Matter Protocol Explained: The Future of Smart Homes</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="need-both-integrations">Do I need both HomeKit Device and HomeKit Bridge?</h3>
+<p>Only if you need traffic in both directions. Use HomeKit Device to bring a Works with HomeKit accessory into Home Assistant. Use HomeKit Bridge to expose selected Home Assistant entities back to Apple Home and Siri. If you only need one direction, only use the integration that matches that direction.</p>
+
+<h3 id="same-device-both-places">Can I keep the same device in Apple Home and Home Assistant at the same time?</h3>
+<p>If the device is <strong>HomeKit-only</strong>, not directly. HomeKit devices are single-controller. If the device supports <strong>Matter</strong>, yes: Home Assistant's Matter docs describe adding the device to Home Assistant from another fabric such as Apple Home.</p>
+
+<h3 id="need-iphone-or-account">Do I need an iPhone or Apple account to use HomeKit devices with Home Assistant?</h3>
+<p>Not usually. Home Assistant says the protocol is local and offline and does not require an Apple online account. The caveat is that some Wi-Fi accessories need an iPhone or iPad briefly for onboarding, and Apple Thread workflows require Apple Home plus a supported Apple border router.</p>
+
+<h3 id="bridge-not-showing-up">Why does Home Assistant Bridge not show up in Apple Home?</h3>
+<p>Usually because of local networking. Make sure the pairing iPhone is on the same LAN as Home Assistant. If you run Docker, the official docs recommend host networking first and mention <code>advertise_ip</code> plus <code>avahi-daemon</code> reflector mode as fallback tools. If it still fails, test with a tiny include list in case one entity is poisoning the bridge.</p>
+
+<h3 id="when-to-use-matter">When should I use Matter instead of HomeKit?</h3>
+<p>Use Matter when the device already supports it and you want it in both Apple Home and Home Assistant without tearing down the existing Apple setup. Do not assume Matter is automatically superior, though. Home Assistant's docs specifically warn that native local integrations often expose richer features than Matter.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Device documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter documentation</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Official product and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/green/" target="_blank" rel="noopener noreferrer">Home Assistant Green product page</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2023/10/04/release-202310/" target="_blank" rel="noopener noreferrer">Home Assistant 2023.10 release notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1hh3xsp/do_i_need_homekit_bridge_homekit_device/" target="_blank" rel="noopener noreferrer">Reddit: Do I need HomeKit Bridge and HomeKit Device?</a></li>
+                <li><a href="https://community.home-assistant.io/t/rename-homekit-bridge-to-apple-home/772261" target="_blank" rel="noopener noreferrer">Home Assistant Community: Rename HomeKit Bridge to Apple Home</a></li>
+                <li><a href="https://community.home-assistant.io/t/best-practices-for-homekit-bridge-configuration/828094" target="_blank" rel="noopener noreferrer">Home Assistant Community: Best Practices for HomeKit Bridge Configuration</a></li>
+                <li><a href="https://community.home-assistant.io/t/home-assistant-and-homekit-bridge-integration/943372" target="_blank" rel="noopener noreferrer">Home Assistant Community: Home Assistant and HomeKit Bridge Integration</a></li>
+                <li><a href="https://community.home-assistant.io/t/homekit-bridge-integration-homebridge-confusion-and-how-to-use-homebridge-with-ha/927096" target="_blank" rel="noopener noreferrer">Home Assistant Community: HomeKit Bridge and Homebridge confusion</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Apple Home convenience without dual-stack confusion?</h2>
+          <p>Tara packages the local hub, radio ownership, Apple coexistence, and family-proof setup so the house stays understandable after handoff instead of becoming a pile of half-remembered bridge decisions.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Apple Thread border routers</a><a href="/blog/matter-protocol-explained/">Matter explained</a><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Home Assistant on VLANs</a><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
