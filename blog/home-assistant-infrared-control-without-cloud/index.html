@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Add Infrared Remote Control to Home Assistant Without Cloud | Tara Guides</title>
+    <meta name="description" content="Use Broadlink or ESPHome to bring TVs, mini-splits, fans, and receivers into a local Home Assistant setup. Learn what Home Assistant's new infrared platform changes, what it still does not, and which path fits your house." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/" />
+    <meta property="og:title" content="How to Add Infrared Remote Control to Home Assistant Without Cloud | Tara Guides" />
+    <meta property="og:description" content="Use Broadlink or ESPHome to bring TVs, mini-splits, fans, and receivers into a local Home Assistant setup. Learn what Home Assistant's new infrared platform changes, what it still does not, and which path fits your house." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Add Infrared Remote Control to Home Assistant Without Cloud | Tara Guides" />
+    <meta name="twitter:description" content="Use Broadlink or ESPHome to bring TVs, mini-splits, fans, and receivers into a local Home Assistant setup. Learn what Home Assistant's new infrared platform changes, what it still does not, and which path fits your house." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/#blogposting",
+      "headline": "How to Add Infrared Remote Control to Home Assistant Without Cloud",
+      "description": "Use Broadlink or ESPHome to bring TVs, mini-splits, fans, and receivers into a local Home Assistant setup. Learn what Home Assistant's new infrared platform changes, what it still does not, and which path fits your house.",
+      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "datePublished": "2026-06-19",
+      "dateModified": "2026-06-19",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/infrared/",
+        "https://www.home-assistant.io/integrations/broadlink/",
+        "https://www.home-assistant.io/blog/2026/04/01/release-20264/",
+        "https://www.home-assistant.io/blog/2026/05/06/release-20265/",
+        "https://www.home-assistant.io/blog/2026/06/03/release-20266/",
+        "https://www.home-assistant.io/integrations/lg_infrared/",
+        "https://www.home-assistant.io/integrations/samsung_infrared/",
+        "https://www.home-assistant.io/integrations/marantz_infrared/",
+        "https://esphome.io/components/ir_rf_proxy/",
+        "https://esphome.io/components/infrared/",
+        "https://esphome.io/components/climate/climate_ir/",
+        "https://esphome.io/projects/",
+        "https://www.reddit.com/r/homeassistant/comments/1u1l75c/best_option_for_an_ir_blaster_that_works_well/",
+        "https://www.reddit.com/r/homeassistant/comments/1t8mzoh/new_infrared_integration/",
+        "https://www.reddit.com/r/homeassistant/comments/1s9jj04/20264_infrared_never_left_the_chat/",
+        "https://community.home-assistant.io/t/zha-infrared-remote-control-2026-4-ir-features/1001118",
+        "https://community.home-assistant.io/t/suggested-rf-ir-transceivers-for-2026-ha/989762",
+        "https://community.home-assistant.io/t/local-control-for-tuya-ir-blasters-rsh-smart-ir-no-cloud-required/998520",
+        "https://github.com/home-assistant/core/issues/169506",
+        "https://github.com/home-assistant/core/issues/170185"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Add Infrared Remote Control to Home Assistant Without Cloud",
+          "item": "https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the best Home Assistant IR path right now?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For the fastest universal retrofit, Broadlink's learned-command path is still the least work. For full local ownership, native infrared entities, and receiver events, ESPHome is the cleaner long-term path. If your mini-split is supported by ESPHome climate_ir, that is usually better than learning raw button codes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can one IR blaster control more than one device?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. A single emitter can store and send commands for multiple devices as long as the hardware placement and line of sight work for the room. The tradeoff is that infrared is usually one-way, so Home Assistant still cannot confirm the real state of those devices unless you add other sensors or use a richer protocol."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant learn commands from my existing remote?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Broadlink can learn commands through remote.learn_command, and ESPHome receivers can capture raw timing sequences and forward them as events to Home Assistant. Which path is better depends on whether you want a fast retrofit or a fully owned ESPHome setup."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use the new native infrared platform with every Broadlink or Zigbee IR device?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not automatically. Home Assistant's new infrared platform is real, but community threads and early 2026.5 issue reports showed that some Broadlink and Zigbee IR devices did not immediately appear as native infrared entities in every workflow. Treat the platform as promising but still uneven across hardware."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use infrared for safety-critical devices?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No as a sole control path. Infrared is usually one-way and assumed-state. Do not use it as the only source of truth for locks, alarms, garage doors, or anything else that needs confirmed state and positive feedback."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Infrared</span><span>June 19, 2026</span><span>11 min read</span></p>
+            <h1>How to Add Infrared Remote Control to Home Assistant Without Cloud</h1>
+            <p class="lede">The safest answer in June 2026 is simple: use Broadlink when you need arbitrary IR commands working today, use ESPHome when you want full ownership and native infrared entities, and prefer direct IP or serial control whenever a device supports it.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Home Assistant infrared control guide showing local IR paths for legacy devices" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Broadlink Is the Fastest Retrofit, ESPHome Is the Cleanest Long-Term Path</h2>
+<p>If your actual goal is to make an old TV, mini-split, fan, or amplifier behave locally inside Home Assistant, <strong>the most practical answer today is to choose between two different kinds of local control</strong>.</p>
+<p><strong>Broadlink</strong> is still the easiest path when you need Home Assistant to learn arbitrary remote codes and replay them now. Home Assistant's Broadlink documentation still supports <code>remote.learn_command</code> and <code>remote.send_command</code>, and those actions remain available even after the new infrared platform arrived.</p>
+<p><strong>ESPHome</strong> is the cleaner path when you want a device you fully own, want to use the new native infrared entity model, want to receive IR events as well as transmit them, or want to build around Home Assistant's newer IR-first integrations. And if your air conditioner is already supported by <strong>ESPHome <code>climate_ir</code></strong>, that usually beats learning a pile of raw power and mode commands by hand.</p>
+
+<div class="callout">
+  <p><strong>Tara's IR rule:</strong> use infrared to rescue legacy gear that has no better local interface, not to ignore a better interface that already exists.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>This topic is current, not fabricated. On <strong>June 18, 2026</strong>, a fresh <code>r/homeassistant</code> thread asked for the <em>best option for an IR blaster that works well with HA</em>. A month earlier, another Reddit thread asked whether anyone was building a more generic integration for the new infrared support because the poster wanted to use a <strong>Broadlink RM4</strong> and saw that <strong>LG Infrared</strong> only solved LG devices.</p>
+<p>The Home Assistant Community forum shows the same demand, but with more implementation pain. A thread published on <strong>April 2, 2026</strong> asked how the new <strong>2026.4</strong> IR features should apply to a common Tuya Zigbee IR blaster that still appeared as a switch instead of a native IR entity. Another thread from <strong>February 23, 2026</strong> asked what RF and IR transceivers people should buy in 2026 because older bridge workflows were awkward for code capture and playback. A March 2026 community project exists purely because some users still want <strong>local, no-cloud rescue paths</strong> for Tuya-style IR hardware.</p>
+<p>That pattern matters. The community is not merely asking which cheap puck to buy. People are asking which local architecture is worth committing to now that Home Assistant has a real infrared platform, but not yet universal device coverage.</p>
+
+<h2 id="what-changed-in-2026">What Actually Changed in Home Assistant in 2026</h2>
+<p>On <strong>April 1, 2026</strong>, Home Assistant <strong>2026.4</strong> introduced the new <strong>Infrared</strong> integration as a building-block abstraction layer between IR hardware and device-specific integrations. The official docs are explicit: this is <strong>not</strong> something you add directly like a normal integration. It is a stateless entity model that other integrations can use for emitters and receivers.</p>
+<p>That same April release introduced the practical idea of <strong>infrared proxies</strong> through ESPHome, similar to how Bluetooth proxies let you move radios toward the devices instead of dragging the main hub into a bad physical location.</p>
+<p>On <strong>May 6, 2026</strong>, Home Assistant <strong>2026.5</strong> added Broadlink support as an infrared emitter on the new platform and also noted that <strong>SMLIGHT SLZB</strong> devices can expose an infrared platform. On <strong>June 3, 2026</strong>, Home Assistant <strong>2026.6</strong> pushed the receiver side further: ESPHome could now act as an IR listener for the house, and <strong>LG Infrared</strong> became the first device integration to expose remote button events through the new model.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="A local smart home hub using IR control to bring legacy devices into Home Assistant" loading="lazy" />
+  <figcaption>The new infrared platform helps Home Assistant talk to legacy gear locally, but you still need to choose whether you want the fastest retrofit path or the cleanest long-term hardware ownership.</figcaption>
+</figure>
+
+<h2 id="which-path-fits-your-house">Which Path Fits Your House</h2>
+<p>The most useful way to choose is to start from the device and workflow, not the gadget marketing.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Situation</th>
+        <th>Better answer</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>You want to learn arbitrary commands for a TV, fan, projector, amp, or AC remote right now</td>
+        <td>Broadlink learned-command path</td>
+        <td>Home Assistant's Broadlink docs still support direct learning, replay, sequences, and base64 command injection without waiting for a device-specific IR integration.</td>
+      </tr>
+      <tr>
+        <td>You want a fully owned local node, native IR entities, or a receiver that can trigger automations</td>
+        <td>ESPHome IR proxy</td>
+        <td>ESPHome's infrared and IR/RF proxy components were designed for the new Home Assistant infrared API and can both send and receive raw timings.</td>
+      </tr>
+      <tr>
+        <td>You have a supported mini-split or window AC and want thermostat-style control instead of button macros</td>
+        <td>ESPHome <code>climate_ir</code></td>
+        <td>ESPHome's climate IR component already models compatible air conditioners as climate devices instead of a loose collection of learned button presses.</td>
+      </tr>
+      <tr>
+        <td>You already own a Tuya-style IR puck and want to keep it off the cloud</td>
+        <td>Only as a rescue path</td>
+        <td>Community projects exist to replace Tuya cloud dependencies with Tasmota, MQTT, or ESPHome-style local control, but that is a salvage path, not the cleanest new install.</td>
+      </tr>
+      <tr>
+        <td>The device already supports local IP, serial, MQTT, Zigbee, Z-Wave, Matter, or a vendor-local API</td>
+        <td>Use that instead of IR</td>
+        <td>Infrared is typically one-way and assumed-state. If the device offers a richer local interface, that will be easier to automate and support.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="broadlink-path">Path 1: Use Broadlink When You Need Arbitrary Remote Codes Today</h2>
+<p>This is still the most universally useful retrofit path.</p>
+<p>Home Assistant's Broadlink documentation explicitly says the infrared entity is <strong>complementary</strong> to the older remote entity and that the existing <code>remote.learn_command</code> and <code>remote.send_command</code> actions remain available. In other words, the new IR platform did <strong>not</strong> kill the older learned-command workflow that many people still depend on.</p>
+
+<h3 id="learn-send-sequence">What Broadlink is good at</h3>
+<ul>
+  <li>Learning arbitrary button presses from remotes you already own.</li>
+  <li>Sending named commands back to a device later.</li>
+  <li>Sending sequences such as <em>power on</em>, <em>set input</em>, and <em>turn off display</em> in order.</li>
+  <li>Sending raw base64 codes when you already have them from elsewhere.</li>
+</ul>
+<p>The official docs also spell out something practical many users miss: learned codes are stored in <code>/config/.storage/</code> in a device-specific JSON file, which makes the setup portable and inspectable even though Home Assistant warns you not to edit those files by hand.</p>
+
+<h3 id="broadlink-why">Why this path is still strong</h3>
+<p>If you are automating a legacy AV stack or a single-room mini-split and you do not need the new native IR entity model, Broadlink lets you move immediately. The best June 2026 Reddit thread on this topic still had users recommending the <strong>RM4 Mini</strong> while noting the same practical tradeoff: you learn the IR commands in Home Assistant first, then it works well afterward.</p>
+<p>That is why the Broadlink path remains the least risky answer for arbitrary remotes: it already solves the "I have a dumb device and a working remote" problem without requiring Home Assistant to have a device-specific infrared integration for that exact appliance.</p>
+
+<h3 id="broadlink-caveat">The Broadlink caveat</h3>
+<p>Do not confuse "can learn and send raw IR commands" with "will automatically appear as a shiny native infrared device in every Home Assistant config flow." The new native IR platform and the old Broadlink remote path are related, but they are not identical. A Home Assistant maintainer explained on Reddit in the April 2026 IR release thread that the new infrared platform does not automatically appear alongside existing Broadlink remote entities because the command format expectations differ.</p>
+
+<h2 id="esphome-path">Path 2: Use ESPHome When You Want Full Ownership and the New Native IR Model</h2>
+<p>ESPHome is the cleaner path when you are designing around local ownership instead of simply retrofitting an existing Broadlink puck.</p>
+<p>ESPHome's own docs now provide a ready-made <strong>Infrared &amp; radio frequency proxy</strong> project whose stated purpose is to <strong>allow Home Assistant to control infrared and radio frequency devices</strong>. If you want the shortest ESPHome path, start there instead of freehanding a YAML from memory.</p>
+
+<h3 id="esphome-what-it-exposes">What the ESPHome IR model exposes</h3>
+<p>ESPHome's infrared component represents an infrared entity as a <strong>stateless component</strong> that can either transmit raw timing sequences or receive them and forward them to API clients such as Home Assistant. That is the architectural difference from the older "learned remote button names" model. The new API is built around raw timings, optional carrier frequency, repeat count, and receiver events.</p>
+<p>Its IR/RF proxy docs also clarify an important hardware detail: an IR proxy instance must be configured as either a <strong>transmitter</strong> or a <strong>receiver</strong>, not both. If you want both directions, create separate instances. And for infrared transmission specifically, ESPHome says the linked <code>remote_transmitter</code> should normally use a <code>carrier_duty_percent</code> around <strong>30-50%</strong>.</p>
+
+<h3 id="esphome-why">Why this path is stronger long term</h3>
+<ul>
+  <li>You can fully own the hardware and firmware.</li>
+  <li>You can choose exactly where the emitter or receiver sits in the room.</li>
+  <li>You can use the new Home Assistant infrared entity flows instead of only the legacy remote model.</li>
+  <li>You can receive IR events and use a handheld remote as an automation trigger source.</li>
+</ul>
+<p>This is the path to choose if the house is going to stay on Home Assistant for years and you do not want the IR layer to remain a sealed appliance.</p>
+
+<h2 id="climate-ir-path">Path 3: If Your AC Is Supported, Use ESPHome Climate IR Instead of Button Macros</h2>
+<p>This is the most overlooked path, and for air conditioners it is often the best one.</p>
+<p>ESPHome's <strong>IR Remote Climate</strong> component says it controls compatible AC units by sending the same infrared control signal the handheld remote would use, and it explicitly notes that there is a <strong>growing list of compatible units</strong>. When your model is supported, you get an actual climate entity instead of scattered power, mode, temperature, and fan-speed button macros.</p>
+<p>That matters because many air conditioners do not work like televisions. Their remotes often send a full state packet, not a small command such as "volume up." If you model that device with disconnected learned button presses, you can create a lot of brittle automations. If <code>climate_ir</code> supports the unit, use it.</p>
+
+<h2 id="native-platform-current-state">What the New Native IR Platform Can Actually Do Today</h2>
+<p>As of <strong>June 19, 2026</strong>, the official Home Assistant documentation I could verify shows a promising but still short list of device-specific infrared integrations.</p>
+<ul>
+  <li><strong>LG Infrared</strong> can control an LG TV through a configured emitter and can also create event entities from receiver-side remote button presses.</li>
+  <li><strong>Samsung Infrared</strong> can control Samsung TVs through a configured IR transmitter.</li>
+  <li><strong>Marantz Infrared</strong> can control a Marantz PM6006 amplifier through a configured IR transmitter.</li>
+</ul>
+<p>That is real progress, but it is not the same as saying the new infrared platform is already a universal replacement for Broadlink-style learning across every TV, AV receiver, fan, or mini-split in a house.</p>
+
+<div class="callout">
+  <p><strong>The important distinction:</strong> the new IR platform is a standard way for Home Assistant to talk to IR hardware and device integrations. It is not yet a universal library that understands every arbitrary remote in your home.</p>
+</div>
+
+<h2 id="one-way-assumed-state">The Constraint You Must Respect: Infrared Is Usually One-Way and Assumed-State</h2>
+<p>Home Assistant's Samsung and Marantz infrared docs are explicit that these integrations operate in a <strong>one-way, fire-and-forget</strong> fashion and therefore use <strong>assumed states</strong>. That is the core operational truth of most IR control.</p>
+<p>Home Assistant can send a signal. It usually cannot confirm the device actually changed state, whether the line of sight was blocked, or what the exact real-world state is now. That is why IR is acceptable for many TVs and fans, acceptable with care for some mini-splits, and the wrong primitive for anything safety-critical.</p>
+
+<h3 id="prefer-better-protocols">Prefer better local protocols when they exist</h3>
+<p>If an amplifier supports serial, a TV supports a local IP API, or a device can be paired locally over Zigbee, Z-Wave, Matter, or another proper protocol, use that instead. Infrared is excellent for legacy rescue. It is not the first protocol you should choose when a better local protocol already exists.</p>
+
+<h3 id="dont-use-for-safety">Do not use IR as the sole control path for safety-critical devices</h3>
+<p>Do not build a system where a one-way infrared command is the only truth source for a garage door, lock, alarm mode, or other state that matters for real safety or liability. If you automate a door or cover at all, pair the control path with physical position sensing and a protocol that can provide confirmed state.</p>
+
+<h2 id="rough-edges">The Rough Edges Still Showing in June 2026</h2>
+
+<h3 id="native-ir-not-universal">1. Native IR is real, but not universal yet</h3>
+<p>The Home Assistant Community thread about <strong>ZHA Infrared Remote Control: 2026.4 IR features</strong> is a good example. The user wanted to use the new IR UI and native remote features, but their Tuya TS1201 still appeared as a switch-like entity instead of a native IR device. That is exactly the kind of gap you should assume still exists on some hardware.</p>
+
+<h3 id="broadlink-early-2026-issues">2. Early Broadlink-on-native-IR issue reports showed uneven rollout</h3>
+<p>Two Home Assistant core issues from late April and early May 2026 documented Broadlink users not seeing RM4 Mini or RM4 devices behave as expected in native infrared workflows right away. Both issues are now closed, so they are not proof of a permanent defect. They are still useful evidence that the native Broadlink IR path was rough enough in early 2026.5 that you should verify your exact hardware before rebuilding a working room around it.</p>
+
+<h3 id="tuya-rescue-paths">3. Tuya rescue paths exist because official support remains awkward</h3>
+<p>The Home Assistant Community project for <strong>Local Control for Tuya IR Blasters</strong> exists because users still want to replace Tuya cloud control with local Tasmota and MQTT paths. That is useful if you already own the hardware. It is not a great reason to make that hardware your first-choice architecture for a fresh local install.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>If a homeowner asks, "How do I bring my dumb TV and old mini-split into Home Assistant locally?" the answer is no longer "you need a random pile of custom hacks." Home Assistant now has a real IR architecture, and ESPHome has a proper local proxy story for it.</p>
+<p>But the operationally boring answer is still to separate the use cases.</p>
+<p><strong>Use Broadlink</strong> when you need the quickest universal retrofit and already know the device will be infrared-only for the foreseeable future.</p>
+<p><strong>Use ESPHome</strong> when you want the IR layer to be fully owned, receiver-capable, and aligned with the new Home Assistant-native entity model.</p>
+<p><strong>Skip infrared entirely</strong> when the device already offers local network or serial control that can report real state back to Home Assistant.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this IR question is really a hardware, protocol, or no-cloud planning question in disguise, these guides are the next useful read.</p>
+<ul>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+  <li><a href="/blog/how-to-update-home-assistant-safely/">How to Update Home Assistant Safely Without Breaking Your House</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="best-path-right-now">What is the best Home Assistant IR path right now?</h3>
+<p>For the fastest universal retrofit, Broadlink's learned-command path is still the least work. For full local ownership, native infrared entities, and receiver events, ESPHome is the cleaner long-term path. If your mini-split is supported by ESPHome <code>climate_ir</code>, that is usually better than learning raw button codes.</p>
+
+<h3 id="one-blaster-many-devices">Can one IR blaster control more than one device?</h3>
+<p>Yes. One emitter can store and send commands for multiple devices as long as the placement and line of sight work for that room. The tradeoff is still state: Home Assistant usually cannot confirm the real device state over IR alone.</p>
+
+<h3 id="learn-existing-remote">Can Home Assistant learn commands from my existing remote?</h3>
+<p>Yes. Broadlink can learn named commands through <code>remote.learn_command</code>, and ESPHome receivers can capture raw timing sequences and forward them as Home Assistant events. Which is better depends on whether you want a fast retrofit or a fully owned ESPHome setup.</p>
+
+<h3 id="use-native-ir-on-everything">Can I use the new native infrared platform with every Broadlink or Zigbee IR device?</h3>
+<p>Not automatically. Community threads and early 2026.5 issue reports showed some Broadlink and Zigbee IR devices failing to appear as native infrared entities in every workflow. Treat native IR as promising and improving, but verify your exact hardware path before you rip out a working learned-command setup.</p>
+
+<h3 id="should-i-use-ir-if-ip-exists">Should I use infrared if the device also supports local IP or serial control?</h3>
+<p>Usually no. If the device has a good local network or serial integration, that path will usually be more reliable, easier to automate, and better at reporting real state than infrared.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/infrared/" target="_blank" rel="noopener noreferrer">Home Assistant Infrared documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/broadlink/" target="_blank" rel="noopener noreferrer">Home Assistant Broadlink documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/04/01/release-20264/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.4 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/05/06/release-20265/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.5 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/03/release-20266/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.6 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/lg_infrared/" target="_blank" rel="noopener noreferrer">Home Assistant LG Infrared documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/samsung_infrared/" target="_blank" rel="noopener noreferrer">Home Assistant Samsung Infrared documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/marantz_infrared/" target="_blank" rel="noopener noreferrer">Home Assistant Marantz Infrared documentation</a></li>
+                <li><a href="https://esphome.io/components/ir_rf_proxy/" target="_blank" rel="noopener noreferrer">ESPHome IR/RF Proxy documentation</a></li>
+                <li><a href="https://esphome.io/components/infrared/" target="_blank" rel="noopener noreferrer">ESPHome Infrared component documentation</a></li>
+                <li><a href="https://esphome.io/components/climate/climate_ir/" target="_blank" rel="noopener noreferrer">ESPHome IR Remote Climate documentation</a></li>
+                <li><a href="https://esphome.io/projects/" target="_blank" rel="noopener noreferrer">ESPHome ready-made projects</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1u1l75c/best_option_for_an_ir_blaster_that_works_well/" target="_blank" rel="noopener noreferrer">Reddit: best option for an IR blaster that works well with Home Assistant</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1t8mzoh/new_infrared_integration/" target="_blank" rel="noopener noreferrer">Reddit: new infrared integration for Broadlink RM4 users</a></li>
+                <li><a href="https://community.home-assistant.io/t/zha-infrared-remote-control-2026-4-ir-features/1001118" target="_blank" rel="noopener noreferrer">Home Assistant Community: ZHA infrared remote control with 2026.4 IR features</a></li>
+                <li><a href="https://community.home-assistant.io/t/suggested-rf-ir-transceivers-for-2026-ha/989762" target="_blank" rel="noopener noreferrer">Home Assistant Community: suggested RF and IR transceivers for 2026</a></li>
+                <li><a href="https://community.home-assistant.io/t/local-control-for-tuya-ir-blasters-rsh-smart-ir-no-cloud-required/998520" target="_blank" rel="noopener noreferrer">Home Assistant Community: local control for Tuya IR blasters without cloud</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub and implementation notes</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/169506" target="_blank" rel="noopener noreferrer">GitHub issue: Broadlink RM4 Mini missing native infrared platform setup</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/170185" target="_blank" rel="noopener noreferrer">GitHub issue: Broadlink RM4 native IR emitter showing unknown</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1s9jj04/20264_infrared_never_left_the_chat/" target="_blank" rel="noopener noreferrer">Reddit release-thread explanation about why new IR does not automatically mirror old Broadlink remote entities</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want legacy TVs, fans, or mini-splits to stay local without glue-code maintenance?</h2>
+          <p>Tara packages the local hub, protocol choices, radio placement, and handoff so older devices can join a private smart home without turning the house into an integration hobby.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant hardware</a><a href="/blog/home-automation-without-cloud/">No-cloud smart home</a><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Tara vs DIY guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
