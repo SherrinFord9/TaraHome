@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Your Sensor Won't Show Up in Home Assistant Energy Dashboard | Tara Guides</title>
+    <meta name="description" content="Fix Home Assistant Energy Dashboard sensors that will not appear by checking energy vs power, entity attributes, statistics, and whether you need an Integration or Utility Meter helper." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/" />
+    <meta property="og:title" content="Why Your Sensor Won't Show Up in Home Assistant Energy Dashboard | Tara Guides" />
+    <meta property="og:description" content="Fix Home Assistant Energy Dashboard sensors that will not appear by checking energy vs power, entity attributes, statistics, and whether you need an Integration or Utility Meter helper." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/apple-inspired/backgrounds/tara-energy-daylight-4k.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Your Sensor Won't Show Up in Home Assistant Energy Dashboard | Tara Guides" />
+    <meta name="twitter:description" content="Fix Home Assistant Energy Dashboard sensors that will not appear by checking energy vs power, entity attributes, statistics, and whether you need an Integration or Utility Meter helper." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/#blogposting",
+      "headline": "Why Your Sensor Won't Show Up in Home Assistant Energy Dashboard",
+      "description": "Fix Home Assistant Energy Dashboard sensors that will not appear by checking energy vs power, entity attributes, statistics, and whether you need an Integration or Utility Meter helper.",
+      "image": "https://tarahome.ai/assets/generated/apple-inspired/backgrounds/tara-energy-daylight-4k.webp",
+      "datePublished": "2026-06-20",
+      "dateModified": "2026-06-20",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/docs/energy/",
+        "https://www.home-assistant.io/docs/energy/faq/",
+        "https://www.home-assistant.io/docs/energy/individual-devices/",
+        "https://www.home-assistant.io/integrations/integration/",
+        "https://www.home-assistant.io/integrations/utility_meter/",
+        "https://www.home-assistant.io/blog/2026/02/04/release-20262/",
+        "https://www.home-assistant.io/blog/2026/06/03/release-20266/",
+        "https://community.home-assistant.io/t/why-are-my-sensors-not-showing-in-the-energy-dashboard/593820",
+        "https://community.home-assistant.io/t/missing-sensor-in-energy-dashboard/716906",
+        "https://community.home-assistant.io/t/electric-usage-template-sensor-not-showing-in-energy-dashboard/959914",
+        "https://community.home-assistant.io/t/cant-add-helper-sensor-in-2025-12-live-energy-dashboard/961517",
+        "https://www.reddit.com/r/homeassistant/comments/1lwmw6k/energy_sensor_energy_dashboard_cant_find_it/",
+        "https://www.reddit.com/r/homeassistant/comments/1mslr27/how_to_get_started_with_the_home_assistant_energy/",
+        "https://github.com/home-assistant/core/issues/143849",
+        "https://github.com/home-assistant/core/issues/167337"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why Your Sensor Won't Show Up in Home Assistant Energy Dashboard",
+          "item": "https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does my watts sensor not show up in Home Assistant Energy Dashboard?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because many Energy Dashboard fields expect cumulative energy, not just live power. If your entity reports W or kW, use the Integral helper to create a kWh energy sensor first unless you are in one of the newer grid or battery power-sensor scenarios added in Home Assistant 2026.2."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should my energy sensor use total or total_increasing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For energy sensors, Home Assistant's FAQ says total or total_increasing are both valid. For power sensors, the state_class should be measurement."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use sensors that reset or manual readings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually yes. The Utility Meter helper is designed for billing-style cycles, tariff splits, delta values, net meters, and periodically resetting sources."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why can I use a helper entity in one Energy screen but not as an upstream device?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the upstream picker works at the device level, not just the entity level. A valid helper sensor can still fail there if it is not attached to a device in the way that view expects."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does a new Utility Meter sensor look incomplete on day one?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Home Assistant's Utility Meter docs say the first cycle is incomplete. A daily sensor becomes accurate the next day, and a monthly sensor becomes accurate on the first full month after it was added."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Energy</span><span>June 20, 2026</span><span>10 min read</span></p>
+            <h1>Why Your Sensor Won't Show Up in Home Assistant Energy Dashboard</h1>
+            <p class="lede">If a smart plug, CT clamp, solar meter, or template entity will not appear in Home Assistant Energy Dashboard, the fix is usually not magic. It is almost always energy vs power, missing metadata, statistics errors, or the wrong helper.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/apple-inspired/backgrounds/tara-energy-daylight-4k.webp" alt="Home energy tracking view for a local Home Assistant setup" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Check the Sensor Type, the Metadata, and the Statistics</h2>
+<p>If a sensor will not appear in Home Assistant Energy Dashboard, the practical checklist is short: <strong>make sure it is a <code>sensor</code> entity, make sure it has the right <code>device_class</code>, <code>state_class</code>, and unit, make sure it has no statistics errors, and make sure you are feeding Energy Dashboard energy where it expects energy instead of just instantaneous power.</strong></p>
+<p>If you only have a watts sensor, the usual fix is to create a kWh sensor with the <strong>Integral</strong> helper. If the source resets, reports deltas, or needs billing periods or tariffs, the next layer is usually <strong>Utility Meter</strong>. Most failed Energy Dashboard setups are really one of those two problems.</p>
+
+<div class="callout">
+  <p><strong>Tara's energy rule:</strong> get one clean source working end to end before you build tariffs, summed templates, or a whole-house math project around it.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is not hypothetical. Home Assistant Community threads in <strong>July 2023</strong>, <strong>April 2024</strong>, and <strong>December 2025</strong> all revolve around the same pain: a sensor looks valid in Developer Tools but still does not appear in Energy Dashboard. A Reddit thread from the last year answered the same question by telling the owner to inspect <code>device_class</code> first, which is a clue that the failure pattern is still repeating in the wild.</p>
+<p>Official Home Assistant changes also keep drawing more people into the feature. On <strong>February 4, 2026</strong>, the <strong>2026.2</strong> release added support for more power-sensor formats in Energy Dashboard, including inverted single sensors and paired positive sensors for import/export or charge/discharge. On <strong>June 3, 2026</strong>, the <strong>2026.6</strong> release added battery state-of-charge support and custom source names. More capability is good. It also means more people are setting up Energy Dashboard for the first time and hitting the same eligibility rules.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub collecting stable device and meter data for energy tracking" loading="lazy" />
+  <figcaption>Energy tracking works best when the input data is boring: one clear meaning per sensor, stable units, and statistics Home Assistant can trust.</figcaption>
+</figure>
+
+<h2 id="first-filter">First Filter: Energy Dashboard Is Picky on Purpose</h2>
+<p>Home Assistant's own Energy FAQ makes this explicit. If a sensor is missing from the selection list, the first thing to check is not the card, not the dashboard, and not your optimism. It is the entity itself.</p>
+<p>The official checklist is stricter than many people expect:</p>
+<ul>
+  <li>The entity must be in the <code>sensor</code> domain.</li>
+  <li>The <code>device_class</code> must match the kind of source you are adding.</li>
+  <li>The <code>state_class</code> must match whether the entity is power or accumulated usage.</li>
+  <li>The unit must be one the target field accepts, and units with exponents must match exactly.</li>
+  <li>The entity must not have statistics errors.</li>
+</ul>
+<p>For electricity-related sources, the FAQ says <code>device_class</code> must be <code>energy</code> or <code>power</code>. It also says <code>state_class</code> must be <code>measurement</code> for power sensors and <code>total</code> or <code>total_increasing</code> for the rest. If any of that metadata is wrong, Energy Dashboard is doing the right thing by filtering the entity out.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>What your source reports</th>
+        <th>What it means</th>
+        <th>Usual next step</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>W</code> or <code>kW</code></td>
+        <td>Live power right now</td>
+        <td>Create an energy sensor with the Integral helper unless the specific grid or battery field now accepts your power format directly</td>
+      </tr>
+      <tr>
+        <td><code>Wh</code> or <code>kWh</code></td>
+        <td>Accumulated energy usage or production</td>
+        <td>Verify device class, state class, units, and statistics</td>
+      </tr>
+      <tr>
+        <td>Per-sample increments or a counter that resets</td>
+        <td>Not a stable always-rising total</td>
+        <td>Use Utility Meter settings such as delta values, periodically resetting, or net consumption when appropriate</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="most-common-problem">The Most Common Problem: You Have Power, Not Energy</h2>
+<p>This is the trap that wastes the most time. A lot of hardware reports <strong>power</strong> in watts. Energy Dashboard often wants <strong>energy</strong> in watt-hours or kilowatt-hours. The official Energy FAQ leads with that distinction for a reason.</p>
+<p>Home Assistant's <strong>Individual devices</strong> documentation says that if a device exposes a power sensor in watts, you can use the <strong>Integration (Riemann sum integral)</strong> helper to calculate energy usage and then use that resulting sensor in Energy Dashboard. The Integral documentation adds two details that matter in practice: the helper keeps its value across Home Assistant restarts, and a source with more frequent updates produces more accurate totals.</p>
+<p>That means the right repair is usually:</p>
+<ol>
+  <li>Start with the original power sensor.</li>
+  <li>Create an Integral helper that outputs energy in <code>kWh</code>.</li>
+  <li>Check the new helper in Developer Tools and Statistics.</li>
+  <li>Add the new energy sensor, not the original watts sensor, to the relevant Energy Dashboard field.</li>
+</ol>
+<p>If the device is mostly a clean on/off load, the Integral docs note that the <strong>left</strong> method can fit rectangular power behavior better than the default trapezoidal approach. That is not mandatory, but it is a useful detail when you are trying to keep per-device tracking sane for heaters, kettles, or other steady loads.</p>
+
+<h2 id="five-fix-paths">Five Fix Paths That Solve Most Cases</h2>
+
+<h3 id="native-kwh-sensor">1. Your device already reports kWh, but it still does not appear</h3>
+<p>In that case, stop building extra helpers until you inspect the entity itself. Go to Developer Tools and confirm the attributes match the FAQ. Then go to Developer Tools &gt; Statistics and see whether Home Assistant is flagging the entity. A sensor can look alive in States and still be rejected because its statistics are bad.</p>
+<p>If the integration is the thing exposing wrong metadata, Home Assistant's FAQ says to open an issue against that integration. Practically, you can still unblock yourself with a template or helper in the meantime, but that workaround should not hide the underlying integration defect.</p>
+
+<h3 id="watts-only-source">2. You only have watts, amps, or live power</h3>
+<p>This is the classic smart-plug, CT clamp, or inverter problem. Use the Integral helper. The official docs are explicit: a power sensor can be turned into an energy sensor, and the generated unit can become <code>kWh</code> when the source is <code>W</code> with the right prefix and time base.</p>
+<p>Do not assume the original live-power entity should appear everywhere just because the graph looks useful elsewhere in Home Assistant. Energy Dashboard is not a generic dashboard card; it expects specific semantics.</p>
+
+<h3 id="resetting-delta-source">3. The source resets, goes negative, or only gives deltas</h3>
+<p>This is where <strong>Utility Meter</strong> matters. Its docs say it can handle utility-style cycles, tariffs, net consumption, delta values, and periodically resetting sources. Those options exist because many real devices do not behave like a perfectly monotonic lifetime counter.</p>
+<p>If your source reports increments since the last reading, the Utility Meter docs say to enable <strong>delta values</strong>. If your source should be allowed to move both positive and negative, use <strong>net consumption</strong>. If a smart plug resets to zero after a reboot, <strong>periodically resetting</strong> is the relevant switch.</p>
+
+<h3 id="billing-tariffs">4. You need peak, off-peak, daily, or monthly numbers</h3>
+<p>The Utility Meter helper is also the official answer for tariff and billing-cycle logic. Its docs explain that it tracks a source sensor and resets on a configured cycle, while tariffs let you split consumption across time-of-use schedules. If you are trying to force all of that into one heroic template sensor, you are usually skipping the helper that Home Assistant already built for the job.</p>
+<p>One operational detail matters here: the Utility Meter docs say the <strong>first cycle is incomplete</strong>. A new daily sensor becomes accurate the next day, and a monthly one becomes accurate on the next full month boundary. So do not panic because a fresh utility meter looks odd on day one.</p>
+
+<h3 id="template-or-summed-sensor">5. You built a template or summed sensor</h3>
+<p>Template and summed sensors can work, but they need the same metadata discipline as native entities. A 2023 forum thread about ESP-based template sensors and the Utility Meter docs themselves both reinforce the point: give the new sensor the correct device class and units, and make sure the template returns a real numeric value instead of occasional junk.</p>
+<p>The Utility Meter docs even show summed template examples that first verify values with <code>is_number()</code> before adding them together. That is the right instinct. A mathematically elegant template is not useful if it occasionally emits a non-numeric state and poisons the statistics stream.</p>
+
+<div class="callout">
+  <p><strong>Do not stack helpers blindly.</strong> First decide whether you are fixing power vs energy, resets vs totals, or billing-cycle splits. Each problem points to a different helper.</p>
+</div>
+
+<h2 id="recent-version-notes">What Changed in 2026, and What Did Not</h2>
+<p>The <strong>2026.2</strong> release is worth knowing because it removed some old workaround patterns. Home Assistant says that release can now use more power-sensor formats directly in Energy Dashboard for grid or battery scenarios, including a single inverted sensor or two separate positive sensors for import/export or charge/discharge. If your setup matches that exact case, you may not need a template sensor anymore.</p>
+<p>But that improvement did <strong>not</strong> erase the base rules from the Energy FAQ. You still need the right entity type, the right metadata, and clean statistics.</p>
+<p>The <strong>2026.6</strong> release added two more Energy Dashboard quality-of-life features: battery state-of-charge sensors and custom source names. Those make multi-source homes easier to read, but again, they do not change the selection rules.</p>
+<p>There is one more practical reason not to overreact when something looks strange after an update: sometimes the problem is version-specific UI behavior, not your data model. For example, a GitHub issue opened on <strong>April 4, 2026</strong> reported missing Home load configuration fields in <strong>2026.4.1</strong>. That is not proof that Energy Dashboard is broadly unreliable. It is a reminder that when an entire configuration area disappears after a release, you should search current issues before rebuilding all your sensors from scratch.</p>
+
+<h2 id="one-weird-picker">One Weird Picker: Upstream Devices Want a Device, Not Just an Entity</h2>
+<p>This is more niche, but it catches people. A December 7, 2025 Home Assistant Community thread described a template power sensor that worked in Developer Tools but could not be selected as an <strong>upstream device</strong> in Energy Dashboard. The answer there was that the upstream selector works at the <strong>device</strong> level, not just the entity level.</p>
+<p>So if your helper sensor is valid for Energy tracking but still fails in an upstream-device picker, that does not automatically mean the energy math is wrong. It may mean that specific view expects the entity to be attached to a device in a way your loose helper is not.</p>
+
+<h2 id="simple-start">A Simple Start That Works for Most Homes</h2>
+<p>The calmest path is usually much less ambitious than people imagine.</p>
+<ol>
+  <li>Get one main meter source or one trustworthy plug working first.</li>
+  <li>Verify the entity metadata in Developer Tools.</li>
+  <li>Fix any statistics issues before adding more layers.</li>
+  <li>If the source is only power, create an Integral helper.</li>
+  <li>If the source resets or needs billing logic, add Utility Meter after that.</li>
+  <li>Only then add tariffs, solar, battery, and per-device summaries.</li>
+</ol>
+<p>That order matters. The people who get stuck hardest are usually the ones trying to solve import/export polarity, peak/off-peak billing, custom templates, and device hierarchies before they have one clean sensor showing up reliably.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>For a real house, the goal of Energy Dashboard is not to win a YAML contest. It is to answer useful questions reliably: what the house uses, what a few expensive devices cost, whether solar is actually offsetting the load, and whether the data stays understandable when someone revisits it six months later.</p>
+<p>The Tara version is to keep the stack local, stable, and legible: supported hardware, one or two clean helpers where they actually matter, and no mystery templates that only one person in the household can debug.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this Energy Dashboard question is really a hardware, update, or installation question underneath, these guides are the next practical step.</p>
+<ul>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+  <li><a href="/blog/how-to-update-home-assistant-safely/">How to Update Home Assistant Safely Without Breaking Your House</a></li>
+  <li><a href="/blog/move-home-assistant-to-new-hardware/">How to Move Home Assistant to New Hardware</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="watts-sensor">Why does my watts sensor not show up in Energy Dashboard?</h3>
+<p>Because many Energy Dashboard fields expect accumulated energy, not just live power. If your entity reports <code>W</code> or <code>kW</code>, create an energy sensor with the Integral helper unless you are in one of the newer grid or battery cases that <strong>2026.2</strong> added direct support for.</p>
+
+<h3 id="total-vs-total-increasing">Should my energy sensor use <code>total</code> or <code>total_increasing</code>?</h3>
+<p>For energy sensors, Home Assistant's FAQ says both <code>total</code> and <code>total_increasing</code> are valid. For power sensors, the state class should be <code>measurement</code>.</p>
+
+<h3 id="manual-readings">Can I use manual readings or sensors that reset?</h3>
+<p>Usually yes. The Utility Meter helper is specifically built for cycles, tariffs, delta values, net meters, and periodically resetting sources.</p>
+
+<h3 id="upstream-device-entity">Why does a helper entity work in one Energy screen but not as an upstream device?</h3>
+<p>Because the upstream selector is device-oriented. A valid helper sensor can still fail there if it is not attached to a device in the way that picker expects.</p>
+
+<h3 id="first-cycle">Why does my new Utility Meter sensor look wrong today?</h3>
+<p>Because the first cycle is incomplete. Home Assistant's Utility Meter docs say a new daily sensor is accurate the next day, and a monthly one is accurate on the next full monthly cycle.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/docs/energy/" target="_blank" rel="noopener noreferrer">Home Assistant energy management overview</a></li>
+                <li><a href="https://www.home-assistant.io/docs/energy/faq/" target="_blank" rel="noopener noreferrer">Home Assistant energy FAQ</a></li>
+                <li><a href="https://www.home-assistant.io/docs/energy/individual-devices/" target="_blank" rel="noopener noreferrer">Home Assistant individual device energy documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/integration/" target="_blank" rel="noopener noreferrer">Home Assistant Integral helper documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/utility_meter/" target="_blank" rel="noopener noreferrer">Home Assistant Utility Meter documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/02/04/release-20262/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.2 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/03/release-20266/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.6 release notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1lwmw6k/energy_sensor_energy_dashboard_cant_find_it/" target="_blank" rel="noopener noreferrer">Reddit: Energy sensor, Energy Dashboard can't find it</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1mslr27/how_to_get_started_with_the_home_assistant_energy/" target="_blank" rel="noopener noreferrer">Reddit: how to get started with the Home Assistant Energy Dashboard</a></li>
+                <li><a href="https://community.home-assistant.io/t/why-are-my-sensors-not-showing-in-the-energy-dashboard/593820" target="_blank" rel="noopener noreferrer">Home Assistant Community: why are my sensors not showing in the energy dashboard?</a></li>
+                <li><a href="https://community.home-assistant.io/t/missing-sensor-in-energy-dashboard/716906" target="_blank" rel="noopener noreferrer">Home Assistant Community: missing sensor in energy dashboard</a></li>
+                <li><a href="https://community.home-assistant.io/t/electric-usage-template-sensor-not-showing-in-energy-dashboard/959914" target="_blank" rel="noopener noreferrer">Home Assistant Community: electric usage template sensor not showing</a></li>
+                <li><a href="https://community.home-assistant.io/t/cant-add-helper-sensor-in-2025-12-live-energy-dashboard/961517" target="_blank" rel="noopener noreferrer">Home Assistant Community: can't add helper sensor in 2025.12 live energy dashboard</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub issue references</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/143849" target="_blank" rel="noopener noreferrer">GitHub issue: Energy Dashboard stopped calculating, but sensors seem fine</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/167337" target="_blank" rel="noopener noreferrer">GitHub issue: Energy Dashboard configuration missing Home load fields on 2026.4+</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want local energy tracking without the mystery-sensor rabbit hole?</h2>
+          <p>Tara packages the local hub, supported devices, clean setup paths, and homeowner handoff so the house gets useful energy data without turning into a statistics debugging hobby.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant hardware</a><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a><a href="/blog/how-to-update-home-assistant-safely/">Update Home Assistant safely</a><a href="/blog/move-home-assistant-to-new-hardware/">Move Home Assistant hardware</a><a href="/blog/home-automation-without-cloud/">No-cloud smart home</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
