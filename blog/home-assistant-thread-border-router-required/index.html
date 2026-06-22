@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Home Assistant Says "Your Device Requires a Thread Border Router" | Tara Guides</title>
+    <meta name="description" content="Fix the Home Assistant Matter error by checking Thread credentials, preferred network behavior, ZBT-1/ZBT-2 setup, IPv6, and mobile app onboarding." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-thread-border-router-required/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-thread-border-router-required/" />
+    <meta property="og:title" content="Why Home Assistant Says &quot;Your Device Requires a Thread Border Router&quot; | Tara Guides" />
+    <meta property="og:description" content="Fix the Home Assistant Matter error by checking Thread credentials, preferred network behavior, ZBT-1/ZBT-2 setup, IPv6, and mobile app onboarding." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Home Assistant Says &quot;Your Device Requires a Thread Border Router&quot; | Tara Guides" />
+    <meta name="twitter:description" content="Fix the Home Assistant Matter error by checking Thread credentials, preferred network behavior, ZBT-1/ZBT-2 setup, IPv6, and mobile app onboarding." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-thread-border-router-required/#blogposting",
+      "headline": "Why Home Assistant Says \"Your Device Requires a Thread Border Router\"",
+      "description": "Fix the Home Assistant Matter error by checking Thread credentials, preferred network behavior, ZBT-1/ZBT-2 setup, IPv6, and mobile app onboarding.",
+      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "datePublished": "2026-06-22",
+      "dateModified": "2026-06-22",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-thread-border-router-required/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/blog/2025/03/10/matter-certification/",
+        "https://www.home-assistant.io/blog/2026/06/03/release-20266/",
+        "https://community.home-assistant.io/c/configuration/matter-thread/59",
+        "https://community.home-assistant.io/t/your-device-requires-a-thread-border-router/1013258",
+        "https://community.home-assistant.io/t/your-device-requires-a-thread-border-router-i-have-a-zbt-1-configured-for-thread/913245",
+        "https://www.reddit.com/r/homeassistant/comments/1relnsc/apple_tv_as_thread_border_router_without_iphone/",
+        "https://www.reddit.com/r/homeassistant/comments/1qcw5q2/help_me_to_onboard_my_first_matter_device/",
+        "https://github.com/home-assistant/core/issues/125444",
+        "https://github.com/home-assistant/core/issues/164532"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-thread-border-router-required/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why Home Assistant Says \"Your Device Requires a Thread Border Router\"",
+          "item": "https://tarahome.ai/blog/home-assistant-thread-border-router-required/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-thread-border-router-required/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this error always mean I need to buy another Thread border router?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. In Home Assistant, this error often means your phone does not have the right Thread credentials, Home Assistant has not imported the right network, or the setup is blocked by IPv6 or network-layer issues. It does not always mean the hardware is missing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need a Home Assistant Connect ZBT-2 if I already have Apple TV, HomePod, or Google Nest Thread hardware?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not necessarily. Home Assistant can work with third-party Thread border routers. A Home Assistant radio is useful if you want Home Assistant to own the Thread network or you want a dedicated local Thread path, but it is not mandatory in every home."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does Home Assistant still fail after I made a network preferred?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Home Assistant's Thread docs say the preferred-network feature is not completely implemented yet, and the mobile device's preferred network can still be used during commissioning. Stale or duplicate Thread credentials on the phone can keep the wrong network in play."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do VLANs, VMs, or containers make this error more likely?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They often do. Thread is IPv6-only, and Home Assistant's docs warn that issues at the hypervisor, Docker, host OS, virtual network, or router layer can break communication even when the app itself looks fine."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I factory reset the device every time I hit this error?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually no. First confirm which Thread network you want to use, make sure the phone and Home Assistant have the right credentials, and check IPv6 and border-router setup. Re-pairing blindly can create more confusion if the underlying network path is still wrong."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter &amp; Thread</span><span>June 22, 2026</span><span>10 min read</span></p>
+            <h1>Why Home Assistant Says "Your Device Requires a Thread Border Router"</h1>
+            <p class="lede">In Home Assistant, this error usually points to Thread credentials, preferred-network behavior, border-router setup, or IPv6, not simply to missing hardware.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Protocol network diagram showing Home Assistant, Matter, Thread, and border-router connectivity" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: The Error Usually Means the Wrong Thread Network Is Reaching the Phone or the Server</h2>
+<p>If Home Assistant says <strong>"Your device requires a Thread border router"</strong> while you are pairing a Matter-over-Thread device, the problem is often <strong>not</strong> that you physically lack a border router. More often, the phone does not hold the right Thread credentials, Home Assistant has not imported the correct Thread network, your Home Assistant radio is still acting as Zigbee instead of Thread, or the network path between Home Assistant, the Matter Server, and the border router is missing the IPv6 plumbing Thread depends on.</p>
+<p>The official Home Assistant Thread docs split setup into two cases for exactly this reason: <strong>Home Assistant creates the Thread network</strong>, or <strong>Home Assistant joins an existing Apple or Google Thread network</strong>. If you skip the credential-sharing step that matches your case, Home Assistant can look half-configured even when the radio hardware is present.</p>
+
+<div class="callout">
+  <p><strong>Tara's rule:</strong> do not factory-reset the device five times before you know which Thread network your phone is actually trying to use.</p>
+</div>
+
+<h2 id="why-this-keeps-coming-up">Why This Keeps Coming Up in 2026</h2>
+<p>The demand signal is clear and current. On the Home Assistant Matter/Thread category page as surfaced on <strong>June 22, 2026</strong>, recent onboarding threads included a <strong>4,881-view</strong> post titled <em>"Your device requires a Thread border router" &lt;&lt; I have a ZBT-1 configured for Thread</em>, a <strong>5,834-view</strong> iOS pairing-error thread with the same border-router language, and a <strong>13,172-view</strong> VLAN-related Matter-over-Thread thread. On <strong>June 8, 2026</strong>, another user posted the exact error while using Home Assistant OS, a ZBT-2, and an Android phone.</p>
+<p>Reddit uses the same vocabulary. A <strong>March 2026</strong> thread about using an Apple TV Thread border router from Android reported the exact error message and was resolved only after syncing Thread credentials to the phone. A <strong>January 2026</strong> r/homeassistant post about onboarding an IKEA Matter device on a ZBT-2 setup hit the same failure and immediately drew the question: <strong>is IPv6 actually working?</strong></p>
+<p>This is also happening as Matter adoption keeps rising. In its <strong>March 10, 2025</strong> certification announcement, Home Assistant explicitly said more Matter devices are entering the market and framed Matter as a local, open standard that more homes will inevitably encounter. On <strong>June 3, 2026</strong>, the <strong>2026.6</strong> release moved OpenThread Border Router 1.4 out of beta and said its new built-in mDNS handling should help resolve a class of stubborn Thread connectivity issues. Inference: more people are buying Matter devices before they understand the Thread network underneath them, so this exact error keeps surfacing.</p>
+
+<h2 id="what-the-error-actually-means">What the Error Usually Means in Practice</h2>
+<p>In Home Assistant, the error usually maps to one of four situations:</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>If your setup looks like...</th>
+        <th>The likely problem is...</th>
+        <th>Check this first</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>You created a new <code>ha-thread-xxxx</code> network with ZBT-1, ZBT-2, Yellow, or OTBR</td>
+        <td>Your phone does not actually have Home Assistant's Thread credentials</td>
+        <td>Send or sync Thread credentials to the phone before pairing</td>
+      </tr>
+      <tr>
+        <td>Apple Home or Google Home already has the Thread mesh working</td>
+        <td>Home Assistant has not imported those credentials, or the phone is still preferring another network</td>
+        <td>Import credentials into Home Assistant, then make that network preferred</td>
+      </tr>
+      <tr>
+        <td>You plugged in a ZBT-1, ZBT-2, or Yellow and assumed that meant Thread was ready</td>
+        <td>The radio is still running Zigbee, or OTBR is not really joined to the Thread network</td>
+        <td>Verify the Thread integration and OTBR app show a usable preferred network</td>
+      </tr>
+      <tr>
+        <td>You are in a VM, container, or segmented network and the device still will not pair or stay online</td>
+        <td>The IPv6 or discovery path is incomplete</td>
+        <td>Check OTBR logs, host networking, and IPv6 across the host, VM, router, and local segment</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="fix-path">The Fix Path That Works Most Often</h2>
+
+<h3 id="step-1-decide-owner">1. Decide who owns the Thread network today</h3>
+<p>The official Thread docs say Home Assistant supports both <strong>making its own Thread network</strong> and <strong>joining an existing one</strong>. Those are different paths. If you already have Apple or Google Thread networks in the house, the docs tell you to decide which one Home Assistant should join. If you do not make that decision first, your phone, Home Assistant, and the new accessory can each end up talking about a different network.</p>
+
+<h3 id="step-2-share-creds">2. Give the phone the right Thread credentials</h3>
+<p>If Home Assistant created the Thread network, the docs say the phone needs those credentials before you add a Matter-over-Thread device. On <strong>Android</strong>, the Home Assistant Companion app exposes <strong>Settings &gt; Companion app &gt; Troubleshooting &gt; Sync Thread credentials</strong>. On <strong>iPhone</strong>, the docs say to open the <strong>Thread integration</strong> and use <strong>Send credentials to phone</strong>.</p>
+<p>If Apple Home or Google Home already owns the working Thread network, the docs say to import those credentials into Home Assistant first, refresh, and then <strong>Make preferred network</strong>. The same section also says your phone should be on the <strong>same Wi-Fi network</strong> as the existing Google or Apple border router during that import step.</p>
+
+<h3 id="step-3-preferred-not-absolute">3. Treat "preferred network" as helpful, not absolute</h3>
+<p>This is one of the most important nuances in the official docs: Home Assistant says the <strong>preferred network function is not completely implemented yet</strong>, and that when adding Matter devices through the companion apps, the <strong>mobile device's preferred network</strong> may still be used. That means you can set the right network in Home Assistant and still fail if the phone is hanging on to different Thread credentials.</p>
+<p>A current GitHub issue about iOS credential handling makes that limitation concrete. In that report, multiple Thread credentials had been sent to the iPhone companion app, and the device could not be added to the intended preferred network because the app kept using the wrong one. If you have moved between Apple-created, Google-created, and Home Assistant-created Thread networks, assume stale credentials are part of the story until proven otherwise.</p>
+
+<h3 id="step-4-verify-radio">4. Verify that the border router is really configured as a border router</h3>
+<p>The Thread docs are explicit that <strong>Home Assistant Connect ZBT-1, ZBT-2, and Yellow run Zigbee out of the box, not Thread</strong>. Enabling Thread requires manual steps. So if you plugged in the stick and saw hardware appear, that still does not prove the Matter pairing path is ready.</p>
+<p>For a Home Assistant-owned Thread network, you should see the Thread integration present, the OTBR app configured, and a Thread network visible with Home Assistant's logo under the preferred network area. If you are using a third-party Thread network, you should see that network imported into Home Assistant before you try to commission new devices onto it.</p>
+
+<h3 id="step-5-check-ipv6">5. Check IPv6 before you reset the accessory again</h3>
+<p>Home Assistant's Thread docs say it plainly: <strong>Thread is an IPv6-only protocol</strong>. The same troubleshooting section warns that a simple OTBR log warning on the Home Assistant host does <strong>not</strong> cover every failure mode. Problems at the hypervisor, Docker layer, host OS, virtual network, or router can still block communication even when the Home Assistant UI looks normal.</p>
+<p>That is why VM, container, and VLAN setups show up so often in the community threads. The system can be close enough to discover a radio and still broken enough that real commissioning fails. If your setup is virtualized or segmented, keep this issue connected to the larger network design questions in <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Home Assistant main LAN vs IoT VLAN</a> and <a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a>.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub, router, and smart-home accessories showing the network layers behind Matter over Thread" loading="lazy" />
+  <figcaption>When Matter-over-Thread breaks, the problem is often in the boring layers: phone credentials, host networking, router behavior, or IPv6 between Home Assistant, OTBR, and the accessory.</figcaption>
+</figure>
+
+<h2 id="when-apple-google-first">When Apple Home or Google Home First Is Actually Easier</h2>
+<p>If your home already has a stable Apple or Google Thread network and your phone clearly belongs to that ecosystem, pairing there first and then sharing the device to Home Assistant can be the lowest-friction move. That is especially true when the existing border router is already doing the work and the only thing you need from Home Assistant is automation and dashboards afterward.</p>
+<p>That is not the same as saying Apple or Google should run the whole house. It is just a recognition that the commissioning path follows the phone's real credential state more than your architectural ideals. If that is your situation, the deeper controller-choice tradeoff is covered in <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a> and the Apple-specific border-router path is covered in <a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Can Apple TV or HomePod Be Your Thread Border Router for Home Assistant?</a>.</p>
+
+<div class="callout">
+  <p><strong>Practical translation:</strong> use the network that already works on your phone for commissioning, then simplify the rest of the architecture afterward.</p>
+</div>
+
+<h2 id="when-ha-first">When Home Assistant First Is the Cleaner Long-Term Path</h2>
+<p>If Home Assistant is already the automation brain of the house, you want one local operating surface, and you have a clean Home Assistant-owned Thread setup, pairing directly to Home Assistant is usually the cleaner end state. That is especially true if you are already using Home Assistant OS, the Matter Server, and OTBR the way the docs expect.</p>
+<p>The timing matters here. On <strong>June 3, 2026</strong>, Home Assistant said OTBR 1.4 was now the default and that its built-in mDNS implementation should help with some stubborn Thread connectivity issues. So if you wrote off Home Assistant Thread onboarding months ago, the current setup path is worth reassessing before you conclude that Apple-first or Google-first is always required.</p>
+<p>For IKEA's current Matter-over-Thread device line specifically, Tara already has a direct setup guide at <a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">How to Pair IKEA Matter-over-Thread Devices in Home Assistant Without Cloud</a>.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>The stable answer is not "buy more radios" and it is not "keep resetting the accessory until it works." The stable answer is to pick <strong>one Thread network</strong>, make sure the <strong>phone and Home Assistant both know that network</strong>, keep <strong>Home Assistant, Matter Server, and OTBR on a boring local path</strong>, and only then start commissioning devices.</p>
+<p>For locks, entry sensors, and any automations that affect real access to the house, do not trust a pairing path you have not tested twice. A device showing up in one app one time is not the same thing as a reliable home.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this error is really a mix of Thread, controller choice, and network placement, these guides cover the adjacent decisions that usually cause it.</p>
+<ul>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Can Apple TV or HomePod Be Your Thread Border Router for Home Assistant?</a></li>
+  <li><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">How to Pair IKEA Matter-over-Thread Devices in Home Assistant Without Cloud</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+  <li><a href="/blog/matter-protocol-explained/">Matter Protocol Explained: The Future of Smart Homes</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-buy-hardware">Does this error always mean I need to buy another Thread border router?</h3>
+<p>No. In Home Assistant, it often means the phone lacks the right Thread credentials, Home Assistant has not imported the correct network, or the setup is blocked by IPv6 or host-networking issues. Hardware can be the problem, but it is far from the only one.</p>
+
+<h3 id="faq-zbt2">Do I need a Home Assistant Connect ZBT-2 if I already have Apple TV, HomePod, or Google Nest Thread hardware?</h3>
+<p>Not necessarily. Home Assistant can work with third-party Thread border routers. A Home Assistant radio is useful when you want Home Assistant to own the Thread network or you want a dedicated local Thread path, but it is not mandatory in every home.</p>
+
+<h3 id="faq-preferred-network">Why does Home Assistant still fail after I made a network preferred?</h3>
+<p>Because the docs say preferred-network behavior is still incomplete, and companion-app commissioning can still follow the phone's preferred network instead. If the phone has stale or duplicate Thread credentials, the wrong network can still win.</p>
+
+<h3 id="faq-vlans-vms">Do VLANs, VMs, or containers make this error more likely?</h3>
+<p>Often yes. Matter-over-Thread depends on a clean local IPv6 path, and Home Assistant's docs call out failure points at the hypervisor, Docker layer, host OS, virtual network, and router. The more layers you add, the more places the pairing path can fail.</p>
+
+<h3 id="faq-resetting">Should I factory reset the device every time I hit this error?</h3>
+<p>Usually no. First confirm which Thread network you want to use, make sure the phone and Home Assistant have the right credentials, and verify the OTBR and IPv6 path. Re-pairing blindly often hides the real problem instead of fixing it.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/03/10/matter-certification/" target="_blank" rel="noopener noreferrer">Home Assistant officially Matters announcement</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/03/release-20266/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.6 release notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/c/configuration/matter-thread/59" target="_blank" rel="noopener noreferrer">Home Assistant Matter/Thread category activity</a></li>
+                <li><a href="https://community.home-assistant.io/t/your-device-requires-a-thread-border-router/1013258" target="_blank" rel="noopener noreferrer">Home Assistant Community: Your device requires a Thread border router</a></li>
+                <li><a href="https://community.home-assistant.io/t/your-device-requires-a-thread-border-router-i-have-a-zbt-1-configured-for-thread/913245" target="_blank" rel="noopener noreferrer">Home Assistant Community: I have a ZBT-1 configured for Thread</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1relnsc/apple_tv_as_thread_border_router_without_iphone/" target="_blank" rel="noopener noreferrer">Reddit: Apple TV as Thread border router without iPhone</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qcw5q2/help_me_to_onboard_my_first_matter_device/" target="_blank" rel="noopener noreferrer">Reddit: Help me to onboard my first Matter device</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub issues and edge cases</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/125444" target="_blank" rel="noopener noreferrer">GitHub issue: multiple Thread credentials on iOS can block adding to the intended network</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/164532" target="_blank" rel="noopener noreferrer">GitHub issue: check IPv6 access during Matter integration setup</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Matter and Thread to stop arguing with your phone?</h2>
+          <p>Tara packages the hub, radios, onboarding path, and local defaults so a new device joins the right network the first time instead of the fifth.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter controller guide</a><a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Apple Thread border router guide</a><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Network placement guide</a><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
