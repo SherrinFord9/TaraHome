@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Your Home Assistant Person Entity Is Stuck at Home or Away | Tara Guides</title>
+    <meta name="description" content="Fix Home Assistant presence on iPhone or Android when the person or device_tracker stays home or away by checking remote access, permissions, zone tracking, stale trackers, and battery limits." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-person-not-updating/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-person-not-updating/" />
+    <meta property="og:title" content="Why Your Home Assistant Person Entity Is Stuck at Home or Away | Tara Guides" />
+    <meta property="og:description" content="Fix Home Assistant presence on iPhone or Android when the person or device_tracker stays home or away by checking remote access, permissions, zone tracking, stale trackers, and battery limits." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/apple-inspired/backgrounds/tara-arrival-autonomy-4k.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Your Home Assistant Person Entity Is Stuck at Home or Away | Tara Guides" />
+    <meta name="twitter:description" content="Fix Home Assistant presence on iPhone or Android when the person or device_tracker stays home or away by checking remote access, permissions, zone tracking, stale trackers, and battery limits." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-person-not-updating/#blogposting",
+      "headline": "Why Your Home Assistant Person Entity Is Stuck at Home or Away",
+      "description": "Fix Home Assistant presence on iPhone or Android when the person or device_tracker stays home or away by checking remote access, permissions, zone tracking, stale trackers, and battery limits.",
+      "image": "https://tarahome.ai/assets/generated/apple-inspired/backgrounds/tara-arrival-autonomy-4k.webp",
+      "datePublished": "2026-06-21",
+      "dateModified": "2026-06-21",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-person-not-updating/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/person/",
+        "https://www.home-assistant.io/integrations/device_tracker/",
+        "https://companion.home-assistant.io/docs/getting_started/",
+        "https://companion.home-assistant.io/docs/getting_started/connection-security-level",
+        "https://companion.home-assistant.io/docs/core/location/",
+        "https://companion.home-assistant.io/docs/troubleshooting/faqs/",
+        "https://companion.home-assistant.io/docs/notifications/notification-commands/",
+        "https://community.home-assistant.io/t/location-updating-zone-not-changing/710294",
+        "https://community.home-assistant.io/t/ha-android-companion-always-home/769708",
+        "https://community.home-assistant.io/t/iphone-device-tracker-not-working/982829",
+        "https://community.home-assistant.io/t/issue-with-device-tracker-ios-app-not-updating-always-home-or-away/434360",
+        "https://www.reddit.com/r/homeassistant/comments/1m61n7s/ios_companion_app_entities_not_updating_unless/",
+        "https://www.reddit.com/r/homeassistant/comments/1fdukcz/presence_detection_why_is_it_so_slow_to_recognize/",
+        "https://github.com/home-assistant/iOS/issues/2602",
+        "https://github.com/home-assistant/core/issues/139914"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-person-not-updating/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why Your Home Assistant Person Entity Is Stuck at Home or Away",
+          "item": "https://tarahome.ai/blog/home-assistant-person-not-updating/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-person-not-updating/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need Home Assistant Cloud for phone presence tracking to work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant Cloud is the easiest supported remote path, but any reliable secure remote access method can work. The key requirement is that the phone can still reach Home Assistant when it is away from your LAN."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my person stay home even when my phone tracker changes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the Person integration merges multiple trackers. Home Assistant gives priority to stationary trackers that report home before GPS trackers, so a router tracker, tablet, or stale home-only tracker can keep the person at home."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is arrival sometimes delayed by a few minutes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because mobile location updates are background events, not a live feed. On Android, Home Assistant's companion docs say background updates typically arrive every one to three minutes, and battery or data restrictions can make that worse."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use Wi-Fi or router presence by itself?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can, but it is better as a home confirmation signal than as the only away signal. Router and Wi-Fi presence can be late to leave, can miss phones in sleep states, and can conflict with GPS if you do not understand tracker precedence."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I arm alarms or unlock doors on a single phone tracker?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually no. Use grace periods and secondary confirmation for safety-critical actions such as locks, alarms, and garage doors."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Presence</span><span>June 21, 2026</span><span>11 min read</span></p>
+            <h1>Why Your Home Assistant Person Entity Is Stuck at Home or Away</h1>
+            <p class="lede">If Home Assistant still thinks you are home when you are at work, or away when you are already in the driveway, the failure is usually not mysterious GPS drift. It is almost always a broken remote path, missing background permissions, the wrong tracker on the person entity, or the phone app being throttled.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/apple-inspired/backgrounds/tara-arrival-autonomy-4k.webp" alt="Arrival-based home automation scene for local Home Assistant presence tracking" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Check the Remote Path, the Phone Permissions, and the Tracker Assigned to the Person</h2>
+<p>If a Home Assistant <code>person</code> or <code>device_tracker</code> is stuck at <strong>Home</strong> or <strong>Away</strong>, the fastest diagnostic order is simple: <strong>make sure the companion app can still reach Home Assistant away from your LAN, make sure the app has true background location access, make sure the right device tracker is assigned to the person, and make sure the location sensors and zone tracking are actually enabled.</strong></p>
+<p>If the companion app's own location screen looks correct but the <code>person</code> entity is wrong, the issue is usually tracker precedence or a stale extra tracker. If nothing updates until you open the app, the issue is usually remote access, permissions, or battery and data restrictions on the phone.</p>
+
+<div class="callout">
+  <p><strong>Tara's presence rule:</strong> get one phone working cleanly end to end before you add router trackers, BLE trackers, or clever occupancy logic on top of it.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>This is not a niche one-off problem. A Home Assistant Community thread on <strong>March 29, 2024</strong> described companion app location updating while the person entity stayed stuck at home. Another thread on <strong>September 11, 2024</strong> showed an Android phone appearing to update correctly while the wrong tracker or person mapping kept the state wrong. On <strong>February 4, 2026</strong>, an iPhone thread repeated the same question almost verbatim: the phone was always reported as home even though location permissions looked correct.</p>
+<p>GitHub issues reinforce that not every failure is user error. An iOS app issue opened on <strong>February 23, 2024</strong> reported location updating in the app but not making it into Home Assistant correctly, and a Home Assistant Core issue opened on <strong>March 6, 2025</strong> described the <code>device_tracker</code> staying <code>Home</code> even when manual location updates clearly showed the phone away from home. Reddit threads from the last year kept describing two homeowner-visible symptoms: presence only updates when the app is opened, or arrival is recognized several minutes too late to feel reliable.</p>
+<p>The practical takeaway is useful: <strong>there are real bugs sometimes, but the repeating causes are still remote connectivity, permissions, throttling, or tracker design.</strong> Eliminate those first so you know whether you are dealing with configuration or an actual regression.</p>
+
+<h2 id="how-home-assistant-decides-home-away">How Home Assistant Decides If You Are Home</h2>
+<p>Home Assistant's <strong>Person</strong> integration does not just blindly trust one source. It merges the device trackers assigned to that person. The official docs say the state is chosen in this order:</p>
+<ol>
+  <li>If a stationary non-GPS tracker such as a router or Bluetooth tracker says <code>home</code>, the most recently updated one wins.</li>
+  <li>If there are GPS trackers, the most recently updated GPS tracker wins.</li>
+  <li>Otherwise, the latest tracker with state <code>not_home</code> wins.</li>
+</ol>
+<p>This is the most surprising part of Home Assistant presence for many people. <strong>A wall tablet, old phone, router tracker, or BLE tracker that never really leaves the house can keep a person at home even when the companion app on the actual phone is reporting the right GPS location.</strong></p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/docs/tara-doc-home-assistant-ai-map.png" alt="Home Assistant dashboard showing rooms, devices, and map-based context" loading="lazy" />
+  <figcaption>Presence problems usually live in one of three layers: the phone app, the device tracker entity, or the person entity that merges multiple trackers.</figcaption>
+</figure>
+
+<h2 id="step-1-check-the-exact-entity-that-is-wrong">1. Check the Exact Entity That Is Wrong</h2>
+<p>Before changing settings, figure out whether the broken layer is the phone app, the <code>device_tracker</code>, or the <code>person</code>.</p>
+<ul>
+  <li>Open <strong>Settings &gt; Devices &amp; services &gt; Mobile App</strong> and select the phone that is supposed to be tracked.</li>
+  <li>Find the <code>device_tracker</code> entity created by that phone.</li>
+  <li>Compare that tracker's state to the matching <code>person</code> entity.</li>
+</ul>
+<p>If the phone's own <code>device_tracker</code> is wrong, fix the mobile app path first. If the phone tracker is correct but the <code>person</code> is wrong, fix the assigned trackers and precedence first. The Android community thread from <strong>September 11, 2024</strong> is a perfect example: the app appeared to be updating, but the debugging advice was to make sure the user was looking at the correct device tracker entity and not a different one attached to the person.</p>
+<p>If you use multiple Home Assistant servers in the companion app, also confirm the right server has the location sensors enabled. The official troubleshooting page explicitly calls that out because it is easy to think a phone is updating when it is actually reporting to a different server entry.</p>
+
+<h2 id="step-2-make-sure-the-phone-can-reach-home-assistant-away-from-home">2. Make Sure the Phone Can Reach Home Assistant Away From Home</h2>
+<p>Home Assistant's companion troubleshooting starts with a point many people underestimate: <strong>enable remote access for your server.</strong> If the phone cannot send updates when it is off your home Wi-Fi, Home Assistant will just keep the last successful state longer than you expect.</p>
+<p>The current getting-started docs say the app can be set up from any location if your server is configured for remote access, and they explicitly recommend <strong>Home Assistant Cloud</strong> for secure remote access. The same docs also warn against relying on <strong>Trusted Networks</strong> for the app login because that can make the app behave as if it only works on the trusted network.</p>
+<p>There is another modern gotcha here. The companion app's connection-security documentation says that starting with version <strong>2025.11</strong>, if you use an unencrypted internal URL and choose <strong>Most secure</strong>, <strong>background activity is blocked whenever a secure connection cannot be established away from the home network</strong>. That is the correct behavior from a security perspective. It also means a presence setup based on a local HTTP URL and no working secure remote path can look "random" while actually being blocked by design.</p>
+<p>The quick homeowner test is still useful: <strong>turn off Wi-Fi and see whether the app can still load your Home Assistant instance and update the device.</strong> A 2022 community reply pointed directly to this check, and it remains one of the fastest ways to tell whether the problem is networking rather than GPS.</p>
+
+<h2 id="step-3-fix-permissions-and-phone-throttling">3. Fix Permissions and Phone Throttling</h2>
+<p>Once the remote path exists, make sure the phone is allowed to do its part in the background.</p>
+
+<h3 id="ios-permissions">iPhone and iPad</h3>
+<p>The current companion docs say iOS needs location permission set to <strong>Always</strong> and <strong>Precise</strong> for background function to work correctly. During onboarding, the docs describe the practical path as selecting <strong>Allow While Using the App</strong> first and then <strong>Allow Always</strong> on the follow-up prompt.</p>
+<p>The iOS community threads are useful because they show how this fails in real homes. Multiple replies in the long-running "always home or away" thread reported phones silently ending up back on <strong>While Using</strong>, which immediately makes background presence unreliable. Also check <strong>Background App Refresh</strong> while you are there.</p>
+
+<h3 id="android-permissions">Android phones</h3>
+<p>The official troubleshooting checklist is blunt here:</p>
+<ul>
+  <li>Set location permission to <strong>Allow all the time</strong>.</li>
+  <li>Keep <strong>Precise location</strong> enabled when Android offers it.</li>
+  <li>Make sure the phone's location service is on.</li>
+  <li>Disable battery optimizations and other manufacturer power-saving modes for Home Assistant.</li>
+  <li>Allow <strong>unrestricted data</strong> if Data Saver is on.</li>
+</ul>
+<p>If you did not install from the Play Store, the troubleshooting docs also say to verify you are using the <strong>full</strong> Android flavor. And if you expect driveway-fast updates, calibrate your expectations a bit: the Android location docs say background updates typically arrive every <strong>1-3 minutes</strong>, though they can be more frequent during navigation.</p>
+
+<h2 id="step-4-verify-location-sensors-and-zone-tracking">4. Verify Location Sensors and Zone Tracking</h2>
+<p>Presence can also fail because the companion app is installed correctly but the actual tracking sensors are not enabled.</p>
+<p>The current troubleshooting page says to enable these companion sensors:</p>
+<ul>
+  <li><strong>Background location</strong></li>
+  <li><strong>Location zone</strong></li>
+  <li><strong>Single accurate location</strong></li>
+</ul>
+<p>On Android, the location docs also say <strong>Zone Based Tracking</strong> must be enabled in the app configuration. On iOS, the app sets up geofences for all zones in your Home Assistant configuration and sends enter and exit notifications automatically.</p>
+<p>If you are debugging, simplify aggressively. Use the default <strong>Home</strong> zone first. If you created extra zones, renamed things, or disabled iOS tracking with <code>track_ios: false</code> in a zone definition, you can end up debugging the zone model instead of the phone.</p>
+
+<h2 id="step-5-read-location-history-before-you-rebuild-anything">5. Read Location History Before You Rebuild Anything</h2>
+<p>The official troubleshooting docs recommend enabling <strong>Location history</strong> under <strong>Settings &gt; Companion app &gt; Troubleshooting &gt; Location tracking</strong>. That gives you the last <strong>48 hours</strong> of location updates the app received.</p>
+<p>This is the most important debugging branch:</p>
+<ul>
+  <li>If the history is sparse or empty, the problem is usually permissions, battery, or OS throttling.</li>
+  <li>If the history shows updates but they fail to reach Home Assistant, the problem is usually the remote path, connection security, or webhook failures.</li>
+  <li>If the history shows successful updates and the <code>device_tracker</code> changes correctly, but the <code>person</code> is still wrong, the problem is usually tracker precedence or a stale tracker attached to the person.</li>
+  <li>If everything looks correct but the server state is still wrong, you may be hitting a real bug and should compare your behavior against recent GitHub issues.</li>
+</ul>
+<p>The app's event log is also worth checking because community debugging threads frequently surface webhook or update errors there even when the map view looks fine.</p>
+
+<h2 id="step-6-keep-the-person-entity-simple">6. Keep the Person Entity Simple</h2>
+<p>The cleanest presence stack for most homeowners is not the busiest one.</p>
+<p>A good starting point is:</p>
+<ul>
+  <li>one phone-based GPS tracker per person</li>
+  <li>optionally one secondary home-confirmation tracker only if you understand the precedence rules</li>
+  <li>no always-at-home tablets, old phones, or test devices attached to the person</li>
+</ul>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Symptom</th>
+        <th>Likely cause</th>
+        <th>Check first</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>The phone app map looks right, but the person is still home</td>
+        <td>A stationary tracker or stale extra tracker is winning precedence</td>
+        <td>Open the person and remove tablets, router trackers, or old phone trackers you do not trust</td>
+      </tr>
+      <tr>
+        <td>Presence only updates when the app is opened</td>
+        <td>Remote path failure or background restrictions</td>
+        <td>Test away-from-home access, then review permissions, battery settings, and Data Saver</td>
+      </tr>
+      <tr>
+        <td>Android is always home</td>
+        <td>Location sensors or zone-based tracking are not fully enabled</td>
+        <td>Check Background location, Location zone, Single accurate location, and the zone-tracking toggle</td>
+      </tr>
+      <tr>
+        <td>Logs show exits and enters, but Home Assistant still says home</td>
+        <td>Tracker merge issue or a real regression</td>
+        <td>Compare the exact phone tracker to the person entity and then check current GitHub issues</td>
+      </tr>
+      <tr>
+        <td>Arrival is recognized minutes late</td>
+        <td>Normal mobile background cadence or a Wi-Fi-only design</td>
+        <td>Use a grace period and stop expecting front-door precision from a background phone tracker alone</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p>People often make presence worse by adding too many "helpful" signals. Router trackers and Wi-Fi presence can be excellent supporting signals, but because stationary <code>home</code> trackers take priority over GPS in the Person docs, they can also be the reason you never seem to leave.</p>
+
+<h2 id="step-7-make-your-automations-resilient">7. Make Your Automations Resilient</h2>
+<p>Even a healthy phone-tracking setup is still a background mobile system, not an industrial badge reader. Build automations accordingly.</p>
+<ul>
+  <li>Use the <code>person</code> entity for most household home and away logic after you have cleaned up its trackers.</li>
+  <li>Add a short grace period for arrivals and departures so a late update does not flap the home state.</li>
+  <li>Use secondary confirmation for safety-critical actions such as locks, alarms, or garage doors.</li>
+</ul>
+<p>For comfort automations such as lights, climate, and media, a one- to two-minute buffer is usually reasonable. For security automations, do not let a single delayed or missing phone update become the only thing that unlocks, disarms, or opens anything important.</p>
+<p>If you want to refine a setup that is already healthy, Home Assistant's notification-command docs support advanced options such as requesting a location update from the phone, and on Android they also support temporarily switching high-accuracy background mode. Those are refinements, not substitutes for fixing connectivity and permissions first.</p>
+
+<div class="callout">
+  <p><strong>Do not design locks, alarms, or garage access around one flaky phone edge.</strong> Presence is a great comfort and context signal. It is a weak safety signal unless you deliberately confirm it.</p>
+</div>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>A Tara-style local home treats phone presence as one layer of context, not the whole truth. The reliable pattern is a clean remote path, one clearly owned phone tracker per person, sane grace periods, and room-level sensors for what happens once someone is actually inside.</p>
+<p>That approach is less magical, but it is far easier to support. When presence is flaky, fix the architecture before adding more helpers, more trackers, or more automations that depend on bad data.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this presence issue is really a remote-access, network-design, or whole-home reliability question in disguise, these guides help with the next step.</p>
+<ul>
+  <li><a href="/blog/home-assistant-remote-access-without-port-forwarding/">How to Access Home Assistant Remotely Without Port Forwarding</a></li>
+  <li><a href="/blog/presence-detection-smart-home/">Presence Detection: The Missing Piece of Smart Homes</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/smart-home-security-basics/">Smart Home Security: Protect Your Connected Home</a></li>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="need-cloud">Do I need Home Assistant Cloud for phone presence tracking to work?</h3>
+<p>No. You do need a reliable secure way for the phone to reach Home Assistant when it is away from home. Home Assistant Cloud is the easiest supported path, but a well-maintained HTTPS reverse proxy or VPN can also work.</p>
+
+<h3 id="person-stays-home">Why does my person stay home even when my phone tracker changed?</h3>
+<p>Because Home Assistant merges trackers. The official Person docs say stationary trackers that report <code>home</code> take priority before GPS trackers. If a router tracker, tablet, or stale home-only tracker is attached to the person, it can pin the person at home.</p>
+
+<h3 id="arrival-delay">Why is arrival sometimes delayed by a few minutes?</h3>
+<p>Because presence from a phone is a background mobile workflow, not constant live telemetry. The Android docs say background location updates typically arrive every one to three minutes, and battery or data restrictions can extend that.</p>
+
+<h3 id="wifi-only">Can I use Wi-Fi or router presence by itself?</h3>
+<p>You can, but it is better as a confirmation that someone is home than as your only away signal. Wi-Fi and router tracking can be late to drop, can miss sleeping phones, and can confuse the Person merge if you attach too many trackers.</p>
+
+<h3 id="safety-actions">Should I arm alarms or unlock doors from one phone tracker?</h3>
+<p>Usually no. For lights and thermostat changes, phone presence is great. For locks, alarms, and garage doors, use confirmation, delays, or a more deliberate arrival flow.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and companion guidance</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/person/" target="_blank" rel="noopener noreferrer">Home Assistant Person integration documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/device_tracker/" target="_blank" rel="noopener noreferrer">Home Assistant device tracker documentation</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/getting_started/" target="_blank" rel="noopener noreferrer">Home Assistant Companion getting started guide</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/getting_started/connection-security-level" target="_blank" rel="noopener noreferrer">Companion app connection security level guide</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/core/location/" target="_blank" rel="noopener noreferrer">Companion app location tracking documentation</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/troubleshooting/faqs/" target="_blank" rel="noopener noreferrer">Companion app troubleshooting FAQ</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/notifications/notification-commands/" target="_blank" rel="noopener noreferrer">Companion app notification commands</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/location-updating-zone-not-changing/710294" target="_blank" rel="noopener noreferrer">Home Assistant Community: location updating, zone not changing</a></li>
+                <li><a href="https://community.home-assistant.io/t/ha-android-companion-always-home/769708" target="_blank" rel="noopener noreferrer">Home Assistant Community: Android companion always home</a></li>
+                <li><a href="https://community.home-assistant.io/t/iphone-device-tracker-not-working/982829" target="_blank" rel="noopener noreferrer">Home Assistant Community: iPhone device tracker always home</a></li>
+                <li><a href="https://community.home-assistant.io/t/issue-with-device-tracker-ios-app-not-updating-always-home-or-away/434360" target="_blank" rel="noopener noreferrer">Home Assistant Community: iOS device tracker not updating</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1m61n7s/ios_companion_app_entities_not_updating_unless/" target="_blank" rel="noopener noreferrer">Reddit: iOS companion entities not updating unless the app is open</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1fdukcz/presence_detection_why_is_it_so_slow_to_recognize/" target="_blank" rel="noopener noreferrer">Reddit: presence detection is slow to recognize arrival</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub issue references</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/iOS/issues/2602" target="_blank" rel="noopener noreferrer">GitHub issue: iOS location not changing anymore</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/139914" target="_blank" rel="noopener noreferrer">GitHub issue: iPhone device location not updating in Home Assistant Core</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want reliable home and away automations without babysitting phone settings?</h2>
+          <p>Tara packages the local hub, remote path, device choices, presence layers, and handoff so the house behaves consistently instead of depending on one fragile mobile stack.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/presence-detection-smart-home/">Presence detection</a><a href="/blog/home-assistant-remote-access-without-port-forwarding/">Remote access guide</a><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Network design guide</a><a href="/blog/smart-home-security-basics/">Smart home security</a><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant hardware</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
