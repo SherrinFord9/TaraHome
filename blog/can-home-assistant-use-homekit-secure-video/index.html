@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can Home Assistant Use HomeKit Secure Video? | Tara Guides</title>
+    <meta
+      name="description"
+      content="Home Assistant can expose camera live view, motion, and doorbell events to Apple Home, but it does not provide HomeKit Secure Video recording. Learn the clean setup paths, accessory-mode rules, and when to keep cameras native to Apple Home, use Scrypted, or keep recording local."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/" />
+    <meta property="og:title" content="Can Home Assistant Use HomeKit Secure Video? | Tara Guides" />
+    <meta
+      property="og:description"
+      content="Home Assistant can expose camera live view, motion, and doorbell events to Apple Home, but it does not provide HomeKit Secure Video recording. Learn the clean setup paths, accessory-mode rules, and when to keep cameras native to Apple Home, use Scrypted, or keep recording local."
+    />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/camera-capabilities/tara-camera-recording-retention.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can Home Assistant Use HomeKit Secure Video? | Tara Guides" />
+    <meta
+      name="twitter:description"
+      content="Home Assistant can expose camera live view, motion, and doorbell events to Apple Home, but it does not provide HomeKit Secure Video recording. Learn the clean setup paths, accessory-mode rules, and when to keep cameras native to Apple Home, use Scrypted, or keep recording local."
+    />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/#blogposting",
+      "headline": "Can Home Assistant Use HomeKit Secure Video?",
+      "description": "Home Assistant can expose camera live view, motion, and doorbell events to Apple Home, but it does not provide HomeKit Secure Video recording. Learn the clean setup paths, accessory-mode rules, and when to keep cameras native to Apple Home, use Scrypted, or keep recording local.",
+      "image": "https://tarahome.ai/assets/generated/camera-capabilities/tara-camera-recording-retention.png",
+      "datePublished": "2026-06-22",
+      "dateModified": "2026-06-22",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/homekit/",
+        "https://www.home-assistant.io/blog/2020/05/20/release-110/",
+        "https://support.apple.com/guide/icloud/icloud-homekit-secure-video-mme054c72692/icloud",
+        "https://support.apple.com/guide/icloud/set-up-homekit-secure-video-mm7c90d21583/icloud",
+        "https://docs.scrypted.app/homekit.html",
+        "https://docs.frigate.video/integrations/homekit/",
+        "https://docs.frigate.video/frigate/installation/",
+        "https://community.home-assistant.io/t/wth-do-cameras-exposed-to-homekit-not-support-homekit-secure-video/802592",
+        "https://www.reddit.com/r/homeassistant/comments/1l52wjy/getting_nonhomekit_cameras_into_homekit/",
+        "https://community.home-assistant.io/t/how-do-you-use-this-product-with-ring-homekit/952122?page=2"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Can Home Assistant Use HomeKit Secure Video?",
+          "item": "https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant expose a camera to Apple Home?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Home Assistant's HomeKit Bridge docs support exposing cameras to Apple Home, but cameras must be paired in accessory mode rather than on a general multi-device bridge."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant itself provide HomeKit Secure Video recordings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not directly as of June 22, 2026. The current Home Assistant docs describe camera streaming, audio, motion, and doorbell hooks for Apple Home, while Apple's HSV docs describe iCloud+ recording with a home hub. Home Assistant does not currently document a built-in HSV recording role."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I still get Apple Home motion or doorbell alerts without HomeKit Secure Video?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Home Assistant's HomeKit Bridge docs support linked_motion_sensor and linked_doorbell_sensor on camera accessories, which can make Apple Home behave more like a camera endpoint even when recording is handled elsewhere."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does HomeKit Secure Video itself require?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Apple's current docs require iCloud+, a home hub such as a HomePod or Apple TV, and a compatible camera path. Apple says the 50 GB plan supports one camera, the 200 GB plan supports up to five, and 2 TB and above support unlimited cameras."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use Scrypted or Frigate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use Scrypted when the Apple Home and HomeKit Secure Video experience is the primary requirement. Use Frigate or another local NVR path when local recording, Home Assistant automations, and locally controlled review are the primary requirement, and expose live view to Apple Home separately if desired."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Cameras &amp; Apple Home</span><span>June 22, 2026</span><span>11 min read</span></p>
+            <h1>Can Home Assistant Use HomeKit Secure Video?</h1>
+            <p class="lede">As of June 22, 2026, Home Assistant can bridge camera live view, motion, and doorbell events into Apple Home, but it still is not the thing that gives those cameras HomeKit Secure Video recording. If HSV is the actual requirement, plan for that explicitly.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/camera-capabilities/tara-camera-recording-retention.png" alt="Guide to Home Assistant camera paths and HomeKit Secure Video recording choices" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Home Assistant Can Feed Apple Home, but It Does Not Become HomeKit Secure Video</h2>
+<p><strong>Yes, Home Assistant can expose camera accessories to Apple Home.</strong> The current <strong>HomeKit Bridge</strong> docs describe camera support, accessory mode, audio, stream settings, and optional linked motion or doorbell sensors so Apple Home can show the camera and react to events.</p>
+<p><strong>No, that does not mean Home Assistant is directly providing HomeKit Secure Video recording.</strong> Apple's current HSV documentation describes an <strong>iCloud+</strong> recording flow with a <strong>home hub</strong>, ten days of activity history, and Apple-side analysis for people, pets, or cars. Home Assistant's current docs do not describe a built-in HSV recording role.</p>
+
+<div class="callout">
+  <p><strong>Inference from the current docs:</strong> the built-in Home Assistant HomeKit bridge is a camera streaming and event bridge for Apple Home, not a documented HomeKit Secure Video recorder.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>This is not a manufactured topic. On the Home Assistant Community forum, a <strong>December 1, 2024</strong> <em>What the heck?!</em> thread asked again why cameras exposed to HomeKit still did not support <strong>HomeKit Secure Video</strong>, explicitly noting that the same complaint had already been raised <strong>two years earlier</strong>.</p>
+<p>Reddit shows the same demand in more practical language. In the <code>r/homeassistant</code> thread <strong>Getting non-HomeKit cameras into HomeKit</strong>, the actual homeowner question was simple: if cameras land in Home Assistant first, will Apple Home see them, and what features will be missing? The top answer drew the same line this article is drawing: Home Assistant can provide the feed, but not the full HSV feature set, which is why people keep pointing toward <strong>Scrypted</strong>.</p>
+<p>A newer Home Assistant Community thread about <strong>Ring plus HomeKit</strong> pushed the same requirement further on <strong>November 23, 2025</strong>: the user specifically wanted <strong>HomeKit Secure Video recording</strong> and the familiar Apple TV live-view pop-up on motion. The answer again was not "turn on a Home Assistant option." It was "look at Scrypted."</p>
+<p>That repeated pattern matters. The demand is not just "can I see a thumbnail?" The demand is usually one of two more specific things:</p>
+<ul>
+  <li>I want Apple Home to be the family-facing camera app.</li>
+  <li>I want Apple's <strong>recording timeline, recognition, and alerts</strong>, not just a stream tile.</li>
+</ul>
+
+<h2 id="what-home-assistant-officially-supports">What Home Assistant Officially Supports Today</h2>
+<p>Home Assistant added <strong>HomeKit camera support</strong> back on <strong>May 20, 2020</strong>, when the <strong>0.110</strong> release notes announced that Home Assistant could expose cameras to HomeKit.</p>
+<p>The current HomeKit Bridge documentation goes further than a vague "camera support" bullet. It documents the actual camera-specific options Home Assistant exposes to Apple Home today:</p>
+<ul>
+  <li><strong><code>mode: accessory</code></strong> for camera pairing, with a single entity per accessory.</li>
+  <li><strong><code>linked_motion_sensor</code></strong> so the camera accessory can enable motion notifications.</li>
+  <li><strong><code>linked_doorbell_sensor</code></strong> so a camera can also behave like a doorbell endpoint in Apple Home.</li>
+  <li><strong><code>support_audio</code></strong>, plus stream tuning fields such as <code>stream_source</code>, <code>stream_count</code>, and codec settings.</li>
+</ul>
+<p>That is real camera integration. But notice what the docs describe: <strong>streaming and accessory behavior</strong>. They do not describe the Apple-side <strong>recording role</strong> that Apple's HSV docs tie to iCloud+ and a home hub.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/camera-capabilities/tara-camera-local-review.png" alt="A local smart home camera review workflow that separates recording and viewing layers" loading="lazy" />
+  <figcaption>Apple Home, Home Assistant, and a local NVR can coexist cleanly, but only if you decide which layer owns recording, alerts, and review instead of assuming one checkbox will do all three.</figcaption>
+</figure>
+
+<h2 id="choose-the-right-architecture">Choose the Right Architecture for the Goal</h2>
+<p>The practical mistake is trying to solve four different camera goals with one bridge setting. They are not the same problem.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>If your real goal is...</th>
+        <th>Better answer</th>
+        <th>Why</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>See a Home Assistant camera in Apple Home for live view</td>
+        <td>Home Assistant HomeKit Bridge in accessory mode</td>
+        <td>The official HomeKit Bridge docs support this directly and document the camera-specific stream settings.</td>
+      </tr>
+      <tr>
+        <td>Get Apple Home motion or doorbell behavior from a Home Assistant camera</td>
+        <td>Home Assistant HomeKit Bridge plus linked motion or doorbell sensors</td>
+        <td>The docs explicitly support <code>linked_motion_sensor</code> and <code>linked_doorbell_sensor</code> for camera accessories.</td>
+      </tr>
+      <tr>
+        <td>Get Apple's encrypted ten-day recording timeline and HSV experience</td>
+        <td>Keep the camera on a native HSV path or bridge it with Scrypted</td>
+        <td>Apple documents HSV as an iCloud+ and home-hub recording flow, and Scrypted explicitly documents HSV support for imported cameras.</td>
+      </tr>
+      <tr>
+        <td>Keep recordings, retention, and automation review local</td>
+        <td>Use a local NVR path such as Frigate and optionally expose live view to Apple Home separately</td>
+        <td>Frigate documents local install/storage behavior and a separate HomeKit exposure path through go2rtc.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="path-1">Path 1: Use Home Assistant HomeKit Bridge When Live View in Apple Home Is Enough</h2>
+<p>This is the cleanest answer when the camera already integrates well with Home Assistant and your Apple requirement is mostly <strong>family-facing convenience</strong>.</p>
+<p>The official docs are clear that <strong>cameras must be paired in accessory mode</strong>, not buried inside a general bridge with dozens of other entities. That is not a cosmetic recommendation. It is how Home Assistant expects camera accessories to behave in Apple Home.</p>
+
+<h3 id="what-you-get">What you do get</h3>
+<ul>
+  <li>Camera live view inside Apple Home.</li>
+  <li>Optional audio if the stream and config support it.</li>
+  <li>Motion and doorbell behaviors when you link the appropriate Home Assistant entities.</li>
+  <li>A local-first path when the camera itself is already in Home Assistant through ONVIF, vendor RTSP, UniFi Protect, Frigate, or another local integration.</li>
+</ul>
+
+<h3 id="what-you-dont-get">What you do not get</h3>
+<p>Do not confuse the Apple Home camera tile with <strong>HomeKit Secure Video</strong>. A stream tile is not the same as Apple's recording pipeline, timeline, or camera analysis path. If what you really wanted was the Apple recording history with person, pet, or vehicle analysis on the Apple side, this path alone does not deliver that.</p>
+
+<h3 id="when-this-path-is-right">When this path is right</h3>
+<p>Use this when <strong>Home Assistant is already the operational source of truth</strong> and Apple Home is just the viewing surface the household prefers. It is especially reasonable when a separate local recorder already exists and you simply want the camera in the Home app next to the rest of the house.</p>
+
+<h2 id="path-2">Path 2: Keep the Camera Native to Apple Home When HSV Is Non-Negotiable</h2>
+<p>If the actual requirement is "I want <strong>HomeKit Secure Video</strong> exactly as Apple ships it," the clean answer is to keep the camera on a native Apple-compatible path.</p>
+<p>Apple's HSV docs describe the product clearly: with <strong>iCloud+</strong>, you can store camera footage in iCloud, view the last <strong>10 days</strong> of activity, and rely on a <strong>home hub</strong> such as a <strong>HomePod</strong> or <strong>Apple TV</strong> for analysis and recording behavior.</p>
+<p>Apple also makes the plan limits explicit in the current docs:</p>
+<ul>
+  <li><strong>50 GB iCloud+</strong>: one camera.</li>
+  <li><strong>200 GB iCloud+</strong>: up to five cameras.</li>
+  <li><strong>2 TB and above</strong>: unlimited cameras.</li>
+</ul>
+<p>That is useful because it tells you something architectural: <strong>HSV is not just a codec setting</strong>. It is part of Apple's own storage, home-hub, and Home-app behavior. If that experience is the product you want, keep the camera on that product path.</p>
+
+<div class="callout">
+  <p><strong>Tara's camera rule:</strong> if a household depends on the Apple camera timeline, treat Apple Home as the recorder. If the household depends on local retention and Home Assistant automations, treat the local NVR as the recorder. Do not pretend one tile means both layers are now the same thing.</p>
+</div>
+
+<h2 id="path-3">Path 3: Use Scrypted When the Camera Is Not Native HSV, but the Apple Experience Still Matters</h2>
+<p>This is why Scrypted keeps appearing in every serious camera-plus-Apple thread.</p>
+<p>Scrypted's own HomeKit docs explicitly say that <strong>cameras imported into Scrypted can be streamed to the Home app including support for HomeKit Secure Video</strong>. The same docs also say that HSV requires a <strong>HomePod or Apple TV</strong>, and that each camera is typically paired in <strong>accessory mode</strong>.</p>
+<p>That makes Scrypted a very different answer from Home Assistant's built-in HomeKit Bridge. Home Assistant is exposing a Home Assistant entity to Apple Home. Scrypted is presenting the camera to Apple Home in a way that is specifically designed around Apple's camera expectations.</p>
+
+<h3 id="why-people-pick-scrypted">Why people pick Scrypted</h3>
+<ul>
+  <li>They want non-HomeKit cameras to behave more like real HSV cameras.</li>
+  <li>They care about Apple TV pop-ups, iPhone camera review, or the Apple Home camera UX.</li>
+  <li>They already pay for iCloud+ and want to use that spend instead of buying another cloud camera subscription.</li>
+</ul>
+
+<h3 id="the-scrypted-tradeoff">The Scrypted tradeoff</h3>
+<p>It is another moving part. It has its own camera-prep rules, its own plugin layer, and its own operational surface. That is why some Home Assistant users resist it. But the reason the community keeps recommending it is also obvious: <strong>it is purpose-built for the camera-to-Apple gap Home Assistant itself does not fully close.</strong></p>
+
+<h2 id="path-4">Path 4: Keep Recording Local When Local Review Matters More Than Apple's Timeline</h2>
+<p>If your actual priority is privacy, retention ownership, AI review, or long-term event history under your own hardware, a local NVR path is usually the more coherent answer.</p>
+<p>Frigate's docs describe two relevant pieces for this conversation:</p>
+<ul>
+  <li>Frigate can be installed as a <strong>Docker container</strong> or as a <strong>Home Assistant App</strong>.</li>
+  <li>Frigate cameras can also be exposed to <strong>Apple HomeKit through go2rtc</strong>.</li>
+</ul>
+<p>That means Apple Home does not have to be the recorder just because it is the viewer. You can keep recordings, exports, and review on local storage while still giving Apple Home a live-view surface if the household likes it.</p>
+<p>This split is often the best Tara-style architecture: <strong>local NVR for ownership, Apple Home for convenience, Home Assistant for automations and cross-system logic.</strong></p>
+
+<h2 id="rough-edges">The Rough Edges That Still Matter</h2>
+
+<h3 id="networking">1. Same-LAN discovery and networking still matter</h3>
+<p>HomeKit pairing is still boring-network technology. The HomeKit Bridge docs say the pairing iPhone needs to be on the same local network as Home Assistant. Frigate's HomeKit docs also require the iOS device to be on the same network as Frigate. If you run segmented VLANs or container isolation, do not assume this will be plug-and-play.</p>
+
+<h3 id="accessory-mode">2. Accessory mode is not optional for cameras</h3>
+<p>Home Assistant's docs require cameras in <strong>accessory mode</strong>. Scrypted also recommends accessory-style pairing for cameras and explains why: HomeKit bridges serialize requests in a way that can make camera interactions slower. If the camera looks wrong in Apple Home, this is one of the first places to check.</p>
+
+<h3 id="notifications-vs-recording">3. Notifications and recording are different layers</h3>
+<p>You can absolutely make Apple Home feel more camera-aware by linking motion and doorbell sensors from Home Assistant. That still does <strong>not</strong> mean recording ownership moved to Home Assistant or that the camera now has HSV. Motion notifications, live view, and recording are separate concerns. Treat them that way.</p>
+
+<h3 id="decide-system-of-record">4. Decide which system is the system of record</h3>
+<p>If a security incident matters, where will the clip come from? Apple Home? Frigate? The vendor NVR? The Home Assistant stream entity? Decide that now. A mixed camera stack is fine. A mixed stack where nobody knows which timeline is authoritative is not.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>If a homeowner asks, "Can Home Assistant use HomeKit Secure Video?" the honest answer is: <strong>not directly in the built-in HomeKit Bridge path I could verify on June 22, 2026.</strong></p>
+<p>What Home Assistant can do very well is expose a camera to Apple Home, attach motion or doorbell behaviors, and let Apple remain the family-facing app when that helps. What it does <strong>not</strong> do is erase the difference between a camera <em>stream</em> and Apple's <em>HSV recording pipeline</em>.</p>
+<p>If the Apple camera experience is the requirement, plan for Apple-native or Scrypted. If local control, local recording, and Home Assistant automations are the requirement, plan for a local NVR and expose Apple view separately if useful.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this question is really about Apple coexistence, local camera ownership, or how to separate viewing from recording cleanly, these are the next useful reads.</p>
+<ul>
+  <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?</a></li>
+  <li><a href="/guides/no-subscription-smart-home-camera-setup/">No-Subscription Smart Home Camera Setup</a></li>
+  <li><a href="/blog/how-to-use-ai-with-home-assistant/">How to Use AI with Home Assistant</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="can-ha-expose-camera">Can Home Assistant expose a camera to Apple Home?</h3>
+<p>Yes. The HomeKit Bridge docs support exposing cameras to Apple Home, but cameras must be paired in <strong>accessory mode</strong> rather than inside a general multi-device bridge.</p>
+
+<h3 id="can-ha-do-hksv">Can Home Assistant itself provide HomeKit Secure Video recordings?</h3>
+<p>Not directly based on the current official feature surface I could verify on <strong>June 22, 2026</strong>. The Home Assistant docs describe camera streaming and event hooks for Apple Home. Apple's HSV docs describe an iCloud+ recording flow with a home hub. Home Assistant does not currently document a built-in HSV recording role.</p>
+
+<h3 id="motion-doorbell-without-hksv">Can I still get Apple Home motion or doorbell alerts without HSV?</h3>
+<p>Yes. Home Assistant's HomeKit Bridge docs support <code>linked_motion_sensor</code> and <code>linked_doorbell_sensor</code> on camera accessories, which lets Apple Home behave more like a proper camera endpoint even when recording lives somewhere else.</p>
+
+<h3 id="what-hksv-needs">What does HomeKit Secure Video itself require?</h3>
+<p>Apple's current docs require <strong>iCloud+</strong>, a <strong>home hub</strong> such as a HomePod or Apple TV, and a compatible camera path. Apple currently says the <strong>50 GB</strong> plan supports one camera, the <strong>200 GB</strong> plan supports up to five, and <strong>2 TB and above</strong> support unlimited cameras.</p>
+
+<h3 id="scrypted-or-frigate">Should I use Scrypted or Frigate?</h3>
+<p>Use <strong>Scrypted</strong> when the Apple Home and HSV experience is the primary requirement. Use <strong>Frigate</strong> or another local NVR path when local recording, Home Assistant automations, and locally controlled review are the primary requirement, and expose live view to Apple Home separately if desired.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant and Apple docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2020/05/20/release-110/" target="_blank" rel="noopener noreferrer">Home Assistant 0.110 release notes</a></li>
+                <li><a href="https://support.apple.com/guide/icloud/icloud-homekit-secure-video-mme054c72692/icloud" target="_blank" rel="noopener noreferrer">Apple: Store encrypted security camera footage in iCloud with HomeKit Secure Video</a></li>
+                <li><a href="https://support.apple.com/guide/icloud/set-up-homekit-secure-video-mm7c90d21583/icloud" target="_blank" rel="noopener noreferrer">Apple: Set up HomeKit Secure Video on all your devices</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/wth-do-cameras-exposed-to-homekit-not-support-homekit-secure-video/802592" target="_blank" rel="noopener noreferrer">Home Assistant Community: Why do cameras exposed to HomeKit still not support HomeKit Secure Video?</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1l52wjy/getting_nonhomekit_cameras_into_homekit/" target="_blank" rel="noopener noreferrer">Reddit: getting non-HomeKit cameras into HomeKit through Home Assistant</a></li>
+                <li><a href="https://community.home-assistant.io/t/how-do-you-use-this-product-with-ring-homekit/952122?page=2" target="_blank" rel="noopener noreferrer">Home Assistant Community: Ring and HomeKit thread asking for HSV recording and Apple TV pop-ups</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Camera bridge and local NVR references</h3>
+              <ul>
+                <li><a href="https://docs.scrypted.app/homekit.html" target="_blank" rel="noopener noreferrer">Scrypted HomeKit documentation</a></li>
+                <li><a href="https://docs.frigate.video/integrations/homekit/" target="_blank" rel="noopener noreferrer">Frigate HomeKit documentation</a></li>
+                <li><a href="https://docs.frigate.video/frigate/installation/" target="_blank" rel="noopener noreferrer">Frigate installation documentation</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Apple Home camera convenience without guessing where recording, alerts, and review actually live?</h2>
+          <p>Tara packages the local hub, camera layout, Apple coexistence, and handoff so the house keeps a clean camera architecture instead of accumulating half-bridged video paths that nobody trusts six months later.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/camera-kit/">Camera kit</a><a href="/guides/no-subscription-smart-home-camera-setup/">No-subscription camera guide</a><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit bridge guide</a><a href="/privacy/">Privacy</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/how-to-use-ai-with-home-assistant/">Home Assistant AI guide</a><a href="/blog/home-automation-without-cloud/">No-cloud smart home</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
