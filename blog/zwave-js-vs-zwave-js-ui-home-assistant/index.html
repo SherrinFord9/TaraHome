@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Z-Wave JS vs Z-Wave JS UI in Home Assistant: Which Should You Use in 2026? | Tara Guides</title>
+    <meta name="description" content="Most Home Assistant users should start with the official Z-Wave JS app in 2026. Keep a separate Z-Wave JS UI server only when you need remote placement, reboot isolation, or a deliberate advanced topology." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/" />
+    <meta property="og:title" content="Z-Wave JS vs Z-Wave JS UI in Home Assistant: Which Should You Use in 2026? | Tara Guides" />
+    <meta property="og:description" content="Most Home Assistant users should start with the official Z-Wave JS app in 2026. Keep a separate Z-Wave JS UI server only when you need remote placement, reboot isolation, or a deliberate advanced topology." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Z-Wave JS vs Z-Wave JS UI in Home Assistant: Which Should You Use in 2026? | Tara Guides" />
+    <meta name="twitter:description" content="Most Home Assistant users should start with the official Z-Wave JS app in 2026. Keep a separate Z-Wave JS UI server only when you need remote placement, reboot isolation, or a deliberate advanced topology." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/#blogposting",
+      "headline": "Z-Wave JS vs Z-Wave JS UI in Home Assistant: Which Should You Use in 2026?",
+      "description": "Most Home Assistant users should start with the official Z-Wave JS app in 2026. Keep a separate Z-Wave JS UI server only when you need remote placement, reboot isolation, or a deliberate advanced topology.",
+      "image": "https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png",
+      "datePublished": "2026-06-23",
+      "dateModified": "2026-06-23",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/zwave_js/",
+        "https://www.home-assistant.io/docs/z-wave/controllers/",
+        "https://www.home-assistant.io/blog/2026/04/01/release-20264/",
+        "https://www.home-assistant.io/blog/2025/08/13/home-assistant-connect-zwa-2/",
+        "https://www.home-assistant.io/blog/2025/10/13/portable-z-wave-with-wifi-and-poe/",
+        "https://community.home-assistant.io/c/configuration/zwave/12",
+        "https://community.home-assistant.io/t/z-wave-js-1-1-0-vs-z-wave-js-ui-7-0-0/999022",
+        "https://community.home-assistant.io/t/z-wave-broken-after-update-to-ha-2026-6-0/1012844",
+        "https://www.reddit.com/r/homeassistant/comments/1rcdo1v/zwave_js_ui_vs_new_official_zwavejs_1_0_with_ui/",
+        "https://github.com/home-assistant/core/issues/173453",
+        "https://github.com/home-assistant/core/issues/164113"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Z-Wave JS vs Z-Wave JS UI in Home Assistant: Which Should You Use in 2026?",
+          "item": "https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are Z-Wave JS and Z-Wave JS UI different radio protocols?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Both are ways of running a Home Assistant Z-Wave setup through the Z-Wave JS stack. In 2026 the more practical difference is deployment: whether you use the official Home Assistant Z-Wave JS app on the Home Assistant host or keep a separate Z-Wave JS UI server."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should a new Home Assistant user start with the official Z-Wave JS app?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually yes. Home Assistant's Z-Wave docs show the recommended installation path using the Z-Wave JS app on the Home Assistant server. That is the lower-maintenance default for a new Z-Wave network."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "If I run a separate Z-Wave JS UI server, where does the adapter go?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On the same host as the Z-Wave JS server. Home Assistant's Z-Wave docs say the adapter should be connected to the same host where the Z-Wave JS server is running."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to migrate off a stable remote Z-Wave JS UI setup right away?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. If the existing setup is stable and it solves a real placement or lifecycle problem, there is no urgent reason to rebuild it just because the official app now includes more UI. Migrate during a maintenance window and take a controller backup first."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Portable Z-Wave over Wi-Fi or PoE the best default fix for bad placement?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually no. Home Assistant's October 13, 2025 Portable Z-Wave announcement describes that firmware as experimental and says not to use it if you are looking for the most stable Z-Wave experience. Treat it as an advanced option, not the default."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Z-Wave</span><span>June 23, 2026</span><span>10 min read</span></p>
+            <h1>Z-Wave JS vs Z-Wave JS UI in Home Assistant: Which Should You Use in 2026?</h1>
+            <p class="lede">For most new Home Assistant installs, use the official Z-Wave JS app and stop there. Keep a separate Z-Wave JS UI server only when you intentionally want the radio and server decoupled from the Home Assistant host.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub hardware used for a stable Z-Wave setup" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Use the Official Z-Wave JS App by Default, and Separate It Only on Purpose</h2>
+<p>If you are starting a <strong>new Z-Wave network</strong> in Home Assistant in June 2026, the clean default is the <strong>official Z-Wave JS app</strong> on the same Home Assistant host. Home Assistant's Z-Wave docs make that the recommended install path, and the official release notes now treat the old installer split as largely historical.</p>
+<p>A <strong>separate Z-Wave JS UI server</strong> still makes sense, but only when you have a concrete topology reason: you want the radio physically away from the Home Assistant box, you want Z-Wave to stay up while you reboot or tinker with Home Assistant, or you already run a stable remote server and do not want to collapse it back into one box.</p>
+<p>The important shift is this: for many users, the argument is no longer really about <strong>features</strong>. It is about <strong>deployment shape</strong>, <strong>lifecycle coupling</strong>, and how much complexity you want to own.</p>
+
+<div class="callout">
+  <p><strong>Tara's default:</strong> if the home needs reliable locks, lighting, sensors, and supportable maintenance, take the boring path first. Earn the advanced topology later.</p>
+</div>
+
+<h2 id="why-this-question-is-current">Why This Question Is Worth Publishing Right Now</h2>
+<p>The demand signal is active, not theoretical. On the Home Assistant Community's <strong>Z-Wave</strong> category page visible on <strong>June 23, 2026</strong>, recent threads included <em>Zwave JS UI Versioning Differences</em>, <em>Z-Wave JS 1.1.0 Vs Z-Wave JS UI 7.0.0</em>, <em>Z-wave broken after update to HA 2026.6.0</em>, <em>Migrating from Z-Wave USB Stick (ZMEEUZB1) to ZWA-2</em>, and <em>Install and setup Zwave JS UI with Snap on a Raspberry Pi</em>, with the category page showing that last thread at <strong>14,434 views</strong> and the migration thread at <strong>1,020 views</strong>. That is not a dead corner of the ecosystem.</p>
+<p>Reddit shows the same confusion in plainer language. A current r/homeassistant thread from roughly <strong>February 2026</strong> asks whether there is any reason to keep using the community-packaged Z-Wave JS UI now that the official <strong>Z-Wave JS 1.0</strong> includes a UI. The highest-signal replies there say the main reason to keep the separate path is when you want a setup that stays <strong>independent of Home Assistant itself</strong>. That is a community interpretation, not an official Home Assistant statement, but it matches the practical tradeoff visible in the docs and release notes.</p>
+<p>GitHub and the forum also show the downside of the advanced path. A Home Assistant Community thread on <strong>June 4, 2026</strong> and a GitHub issue opened on <strong>June 10, 2026</strong> both describe <strong>remote Z-Wave JS UI servers</strong> that became unavailable or falsely incompatible after upgrading Home Assistant <strong>2026.6.x</strong>. That does not mean remote servers are a bad design. It does mean the extra flexibility comes with a version-matching and upgrade-management tax.</p>
+
+<h2 id="what-actually-changed">What Actually Changed in Home Assistant</h2>
+<p>Home Assistant's official Z-Wave docs now describe the network in four explicit parts: the <strong>adapter</strong>, the <strong>Z-Wave server</strong>, the <strong>Z-Wave integration</strong>, and the <strong>end devices</strong>. The recommended flow says to plug in a supported adapter, accept <strong>Recommended installation</strong>, and let Home Assistant install the Z-Wave JS app on the Home Assistant server.</p>
+<p>Then came the user-facing shift. In the <strong>April 1, 2026</strong> release notes for Home Assistant <strong>2026.4</strong>, Home Assistant says the old hidden <strong>Z-Wave Installer panel</strong> was removed because the same functionality is now available through <strong>Z-Wave JS UI in the Z-Wave app</strong>. The current docs also include a specific migration section for moving from <strong>Z-Wave JS UI</strong> to the <strong>Z-Wave JS app</strong>. That is a strong signal that the official path is no longer the stripped-down one.</p>
+<p>My interpretation from those sources is straightforward: for most users on Home Assistant OS, the official app has become the default not just because it exists, but because Home Assistant expects it to be the supportable baseline.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Diagram showing the Home Assistant host, Z-Wave server, adapter, and local network relationships" loading="lazy" />
+  <figcaption>The question is less “Which UI is better?” and more “Where do the Z-Wave server and radio live, and what breaks when Home Assistant changes?”</figcaption>
+</figure>
+
+<h2 id="which-path-fits">Which Path Fits Which House?</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Best when</th>
+        <th>Main cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Official Z-Wave JS app on the Home Assistant host</td>
+        <td>You are starting fresh, running one main Home Assistant box, and want the least moving parts.</td>
+        <td>Z-Wave lives on the same host lifecycle as Home Assistant, so reboots and host placement matter more.</td>
+      </tr>
+      <tr>
+        <td>Separate Z-Wave JS UI server</td>
+        <td>You want the radio and server independent of Home Assistant restarts, or you need them physically elsewhere.</td>
+        <td>You own the version compatibility, update cadence, and remote connectivity details.</td>
+      </tr>
+      <tr>
+        <td>Existing stable remote Z-Wave JS UI setup</td>
+        <td>You already solved placement and reliability, and the network is behaving.</td>
+        <td>The temptation to migrate for branding reasons can create downtime you did not need.</td>
+      </tr>
+      <tr>
+        <td>Portable Z-Wave over Wi-Fi or PoE</td>
+        <td>You have a specific placement problem and you understand advanced tradeoffs.</td>
+        <td>Home Assistant's own announcement calls it experimental and not the most stable default.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="when-official-app-is-right">When the Official App Is the Right Answer</h2>
+
+<h3 id="new-network-one-box">1. You are building a new Z-Wave network on one main box</h3>
+<p>This is the easiest case. The Home Assistant docs explicitly recommend the install path that uses the Z-Wave JS app on the Home Assistant server. If you are on <a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS</a>, using Home Assistant Green, or using a mini PC as a dedicated Home Assistant appliance, the official app is the path of least friction.</p>
+
+<h3 id="prefer-supported-default">2. You want the most supportable default</h3>
+<p>The docs now treat migration from Z-Wave JS UI to the Z-Wave JS app as a first-class supported activity, and the release notes show Home Assistant moving more Z-Wave workflow into the official app. That is a clear sign of direction. If you want fewer moving parts to explain later, follow that direction unless you have a concrete reason not to.</p>
+
+<h3 id="coordinator-near-host">3. Your coordinator can live in a good spot near the Home Assistant host</h3>
+<p>If the Home Assistant machine can sit in a reasonably central, low-interference location, the single-box setup is often enough. This is especially true if you use a better adapter instead of a tiny dangling stick. Home Assistant's Z-Wave adapter docs recommend the <strong>Home Assistant Connect ZWA-2</strong>, and the <strong>August 13, 2025</strong> ZWA-2 announcement says the design moved away from the classic USB-stick form factor specifically because USB ports and cramped server placement create interference and poor antenna conditions.</p>
+
+<h2 id="when-separate-server-is-right">When a Separate Z-Wave JS UI Server Is Still the Right Call</h2>
+
+<h3 id="need-placement-freedom">1. You need physical placement freedom</h3>
+<p>If your Home Assistant host sits in a rack, closet, basement, or media cabinet where RF placement is bad, separating the Z-Wave server can still be rational. The official docs are explicit that the <strong>adapter should be connected to the same host where the Z-Wave JS server is running</strong>. That means if you move the server, the radio moves with it. Sometimes that is exactly what you want.</p>
+
+<h3 id="need-reboot-isolation">2. You want Z-Wave insulated from Home Assistant reboots and experiments</h3>
+<p>The strongest community argument for the separate path is still operational isolation. If you frequently restart Home Assistant, test add-ons, or rebuild the main box, keeping the Z-Wave server elsewhere means the controller process is not flapping every time the automation hub changes state.</p>
+
+<h3 id="already-stable-remote">3. You already have a stable remote install</h3>
+<p>If a remote Z-Wave JS UI server is already running well and it solves a real topology problem, there is no prize for collapsing it back into the official app immediately. Community replies around the <strong>Z-Wave JS 1.0</strong> transition repeatedly say there is <strong>no hurry</strong> if your current setup works and you are not chasing a missing feature.</p>
+
+<h2 id="why-advanced-path-still-bites">Why the Advanced Path Still Bites People</h2>
+<p>The cost is not imaginary. On <strong>June 4, 2026</strong>, a Community thread documented Home Assistant <strong>2026.6.0</strong> refusing to talk to a reachable remote Z-Wave server and reporting an <strong>invalid server version</strong>. On <strong>June 10, 2026</strong>, GitHub issue <strong>#173453</strong> described a similar regression on Home Assistant Core <strong>2026.6.1</strong>, where the same remote Z-Wave JS UI server still worked on <strong>2026.5.4</strong> but became unavailable after the upgrade. The report says all Z-Wave devices became unavailable and automations stopped functioning until Home Assistant was rolled back.</p>
+<p>That is the real trade: decoupling can improve placement and reboot behavior, but it also means <strong>you</strong> are now the person who has to think about server schema versions, remote discovery, API compatibility, and update order.</p>
+
+<h2 id="dont-migrate-for-branding">Do Not Migrate Just Because the Names Changed</h2>
+<p>A lot of confusion in 2026 comes from the fact that the visible UI got closer while the deployment choices remained different. That is not a good reason to rebuild a healthy Z-Wave network. If you already have dozens of secure devices, locks, or carefully tuned associations, treat migration like infrastructure work, not like changing a theme.</p>
+<p>Home Assistant's current docs include a dedicated migration section from <strong>Z-Wave JS UI</strong> to the <strong>Z-Wave JS app</strong>. That is useful, but it should also tell you something important: migration is a <strong>planned task</strong>, not a casual Friday click.</p>
+
+<div class="callout">
+  <p><strong>Practical rule:</strong> do not move the packaging, the adapter, and the host at the same time unless you enjoy debugging your front door after midnight.</p>
+</div>
+
+<h2 id="before-you-change-anything">Before You Change Anything, Back Up the Controller</h2>
+<p>Home Assistant's Z-Wave docs say to use <strong>Settings &gt; Z-Wave &gt; Download backup</strong> and store the controller backup somewhere safe. The same docs say this backup contains the <strong>non-volatile memory</strong> of the adapter, including paired devices, and recommend taking one before major changes such as migrating to a new adapter or resetting the adapter.</p>
+<p>That is not optional ceremony. If you are moving from a separate Z-Wave JS UI setup to the official app, or from one adapter to another, the backup is the line between a controlled migration and a re-pair marathon. Pair that with your security keys and a maintenance window.</p>
+
+<h2 id="if-placement-is-the-real-problem">If Placement Is the Real Problem, Solve Placement First</h2>
+<p>Home Assistant's ZWA-2 announcement is blunt about RF reality: old USB-stick placement is often poor, and interference from the host can matter. The whole reason ZWA-2 exists as a larger adapter with a dedicated cable and antenna is to give the radio a better physical life.</p>
+<p>So if your urge to build a remote Z-Wave JS UI server is really just "my coordinator is wedged behind a metal rack," first try the simpler fix: a better adapter, better antenna geometry, and better placement. Only move to a network-connected radio path if you actually need it.</p>
+<p>Home Assistant's <strong>October 13, 2025</strong> Portable Z-Wave announcement does offer a network-connected answer for the ZWA-2 over <strong>Wi-Fi or PoE</strong>, but the same announcement explicitly labels it <strong>experimental</strong> and says not to use it if you are looking for the most stable Z-Wave experience. That is a useful tool for advanced installs, not the default homeowner answer.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>For a Tara-style installed home, the ranking is simple. Start with the <strong>official Z-Wave JS app</strong> if the Home Assistant host can live somewhere sensible and the home needs a supportable baseline. Use a <strong>separate Z-Wave JS UI server</strong> only when there is a real topology reason to separate the radio and server from the Home Assistant host. And if a remote setup is already working, do not tear it apart just because the UI names got closer in 2026.</p>
+<p>In other words: let <strong>reliability</strong> decide, not brand nostalgia and not a forum comment you half-remembered from two releases ago.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this decision is really part of a bigger hardware or protocol plan, these guides connect the Z-Wave choice to the rest of the house.</p>
+<ul>
+  <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+  <li><a href="/blog/move-home-assistant-to-new-hardware/">How to Move Home Assistant to New Hardware</a></li>
+  <li><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant?</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a></li>
+  <li><a href="/local-smart-home-hub/">Local smart home hub</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-different-protocols">Are Z-Wave JS and Z-Wave JS UI different radio protocols?</h3>
+<p>No. They are not different radio stacks. In practice, the difference for Home Assistant users in 2026 is how the <strong>Z-Wave server</strong> is deployed and how tightly it is coupled to the Home Assistant host.</p>
+
+<h3 id="faq-new-user">Should a new Home Assistant user start with the official Z-Wave JS app?</h3>
+<p>Usually yes. That is the <strong>recommended installation</strong> path in Home Assistant's current Z-Wave docs, and it is the least complicated answer when you are not solving a placement or lifecycle problem.</p>
+
+<h3 id="faq-remote-adapter-location">If I run a separate Z-Wave JS UI server, where does the adapter go?</h3>
+<p>On the <strong>same host</strong> as the Z-Wave JS server. Home Assistant's docs call that out directly. If the server is remote, the adapter is remote too.</p>
+
+<h3 id="faq-migrate-now">Do I need to migrate off a stable remote Z-Wave JS UI setup right away?</h3>
+<p>No. If the setup is stable and intentional, there is no urgent reason to rebuild it. Migrate only when the simplification benefit is real enough to justify a planned maintenance window.</p>
+
+<h3 id="faq-portable-z-wave">Is Portable Z-Wave over Wi-Fi or PoE the best default answer for bad placement?</h3>
+<p>Usually no. Home Assistant's own announcement says that path is <strong>experimental</strong> and not for people seeking the most stable default. Fix basic placement first, then reach for the advanced option only if you still need it.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/zwave_js/" target="_blank" rel="noopener noreferrer">Home Assistant Z-Wave integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/docs/z-wave/controllers/" target="_blank" rel="noopener noreferrer">Home Assistant Z-Wave adapter recommendations</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/04/01/release-20264/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.4 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/08/13/home-assistant-connect-zwa-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZWA-2 announcement</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/10/13/portable-z-wave-with-wifi-and-poe/" target="_blank" rel="noopener noreferrer">Portable Z-Wave over Wi-Fi or PoE announcement</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/c/configuration/zwave/12" target="_blank" rel="noopener noreferrer">Home Assistant Community Z-Wave category page</a></li>
+                <li><a href="https://community.home-assistant.io/t/z-wave-js-1-1-0-vs-z-wave-js-ui-7-0-0/999022" target="_blank" rel="noopener noreferrer">Home Assistant Community: Z-Wave JS 1.1.0 vs Z-Wave JS UI 7.0.0</a></li>
+                <li><a href="https://community.home-assistant.io/t/z-wave-broken-after-update-to-ha-2026-6-0/1012844" target="_blank" rel="noopener noreferrer">Home Assistant Community: Z-Wave broken after update to 2026.6.0</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1rcdo1v/zwave_js_ui_vs_new_official_zwavejs_1_0_with_ui/" target="_blank" rel="noopener noreferrer">Reddit: Z-Wave JS UI vs the new official Z-Wave JS 1.0 with UI</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Issue tracker and migration edge cases</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/173453" target="_blank" rel="noopener noreferrer">GitHub issue: remote Z-Wave JS UI server reported incompatible after 2026.6.1 upgrade</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/164113" target="_blank" rel="noopener noreferrer">GitHub issue: Z-Wave JS UI reconnecting continuously after 1.0.1</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want a local Z-Wave setup without the migration roulette?</h2>
+          <p>Tara packages the hub, radio placement, backups, and support path so the house runs on a stable local baseline instead of a pile of coordinator experiments.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/best-home-assistant-hardware-2026/">Home Assistant hardware guide</a><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a><a href="/blog/move-home-assistant-to-new-hardware/">Migration guide</a><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">Zigbee coordinator guide</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol buyer guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
