@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Do You Need One or Two Radios for Zigbee and Thread in Home Assistant? | Tara Guides</title>
+    <meta name="description" content="Plan one radio for Zigbee-only or Thread-only homes, two separate 802.15.4 radios when Home Assistant must run both, and learn when Apple or Google Thread hardware means you do not need a second stick." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/" />
+    <meta property="og:title" content="Do You Need One or Two Radios for Zigbee and Thread in Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Plan one radio for Zigbee-only or Thread-only homes, two separate 802.15.4 radios when Home Assistant must run both, and learn when Apple or Google Thread hardware means you do not need a second stick." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Do You Need One or Two Radios for Zigbee and Thread in Home Assistant? | Tara Guides" />
+    <meta name="twitter:description" content="Plan one radio for Zigbee-only or Thread-only homes, two separate 802.15.4 radios when Home Assistant must run both, and learn when Apple or Google Thread hardware means you do not need a second stick." />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/#blogposting",
+      "headline": "Do You Need One or Two Radios for Zigbee and Thread in Home Assistant?",
+      "description": "Plan one radio for Zigbee-only or Thread-only homes, two separate 802.15.4 radios when Home Assistant must run both, and learn when Apple or Google Thread hardware means you do not need a second stick.",
+      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "datePublished": "2026-06-24",
+      "dateModified": "2026-06-24",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/connect/zbt-2/",
+        "https://www.home-assistant.io/blog/2025/11/19/home-assistant-connect-zbt-2/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://community.home-assistant.io/t/looking-for-a-combined-zigbee-coordinator-thread-border-router-ethernet-preferred/945914",
+        "https://community.home-assistant.io/t/how-to-set-up-two-zigbee-dongels-for-zigbee-and-matter-thread/739242",
+        "https://www.reddit.com/r/homeassistant/comments/1rdxa2d/whats_my_best_option_for_a_dongle_for_zigbee_and/",
+        "https://www.reddit.com/r/homeassistant/comments/1qnwbo9/zigbeethread_dongle_recommendations/",
+        "https://github.com/darkxst/silabs-firmware-builder/discussions/41",
+        "https://github.com/darkxst/silabs-firmware-builder"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Do You Need One or Two Radios for Zigbee and Thread in Home Assistant?",
+          "item": "https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can one ZBT-2 or ZBT-1 run both Zigbee and Thread at the same time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not as the recommended Home Assistant path in 2026. Official Home Assistant hardware guidance still treats ZBT-1 and ZBT-2 as an either-or choice: Zigbee or Thread, not both active on one radio at once."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "If I already own Apple TV, HomePod, or Nest Thread hardware, do I still need another Thread stick for Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not necessarily. Home Assistant supports third-party Thread border routers, so many homes only need a Zigbee coordinator on the Home Assistant side while Apple or Google hardware carries the Thread network."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do two radios always mean two USB sticks?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Two radios can live in one enclosure or in two separate devices. The important distinction is separate Zigbee and Thread radios, not the number of boxes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "If I only buy Wi-Fi Matter devices, do I need Thread at all?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant's Matter docs say Matter devices run over Wi-Fi, Ethernet, or Thread depending on the product. Wi-Fi Matter devices do not need a Thread border router."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I convert my only Zigbee radio to Thread?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only if you deliberately want to stop using Zigbee on that adapter or you have already migrated Zigbee elsewhere. Switching an official Home Assistant radio to Thread gives up Zigbee on that radio."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Zigbee &amp; Thread</span><span>June 24, 2026</span><span>10 min read</span></p>
+            <h1>Do You Need One or Two Radios for Zigbee and Thread in Home Assistant?</h1>
+            <p class="lede">If Home Assistant itself needs to run both Zigbee and Thread in 2026, the safe plan is two separate radios. One stick is enough only when you choose one role or another border router already covers Thread.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Diagram showing separate Zigbee coordinator and Thread border router roles around a Home Assistant hub" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Count Network Roles, Not Just Dongles</h2>
+<p>If <strong>Home Assistant itself</strong> needs to operate both a Zigbee mesh and a Home Assistant-owned Thread network, the calmest 2026 answer is <strong>two separate 802.15.4 radios</strong>: one dedicated Zigbee coordinator and one dedicated Thread border-router adapter. Home Assistant's own <strong>Connect ZBT-2</strong> product page says you choose <strong>either a Zigbee or Thread network</strong>, and Nabu Casa's <strong>November 19, 2025</strong> launch post for ZBT-2 says they tested concurrent use on one radio in the past and found it did not work well.</p>
+<p>One radio can still be enough in three common situations: you only run <strong>Zigbee</strong>, you only run <strong>Thread</strong>, or you already have a stable <strong>third-party Thread border router</strong> from Apple or Google and only need to add Zigbee on the Home Assistant side. Home Assistant's Matter and Thread docs explicitly support third-party border routers, and Matter can also run over <strong>plain Wi-Fi</strong>, which means not every new Matter purchase creates a new Thread-radio requirement.</p>
+
+<div class="callout">
+  <p><strong>Tara's rule:</strong> buy for <strong>network roles</strong>, not protocol hype. A single box is fine if it truly gives you separate Zigbee and Thread radios. A single shared radio is where the pain starts.</p>
+</div>
+
+<h2 id="why-this-question-keeps-returning">Why This Question Keeps Returning</h2>
+<p>This is not a one-off beginner question. It keeps resurfacing whenever someone adds Matter-over-Thread to an existing Zigbee house or tries to buy their first <em>"zigbee/matter dongle."</em> The official Home Assistant hardware story itself creates the tension: the <strong>ZBT-2</strong> marketing page frames the product as a clean choice between Zigbee and Thread, while the product-launch blog post from <strong>November 19, 2025</strong> explicitly warns that one radio doing both at once is not the supported sweet spot.</p>
+<p>The same question shows up in the community. On the Home Assistant forum, a <strong>November 3, 2025</strong> hardware thread asked for <strong>one device</strong> that could act as both a Zigbee coordinator and a Thread border router without buying two separate hubs. A <strong>June 17, 2024</strong> forum thread asked how to set up <strong>two dongles</strong> after reading that Home Assistant did not recommend one radio for both Zigbee and Matter/Thread. Recent 2026 Reddit threads asking for the best dongle for Zigbee plus Matter or for budget lighting builds get essentially the same answer from experienced users: <strong>separate Zigbee and Thread radios</strong>, or a combined appliance that still contains <strong>two radios</strong> inside.</p>
+<p>Inference from those sources: the real confusion is not whether Home Assistant supports Zigbee and Thread. It clearly does. The confusion is whether <strong>one physical radio</strong> should be trusted to carry two active 802.15.4 networks at once. Current Home Assistant guidance still says no for normal homes.</p>
+
+<h2 id="decision-table">The Practical Decision Table</h2>
+<p>Most homes do not need an abstract protocol debate. They need a hardware count that matches what already exists in the house.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>If your home looks like...</th>
+        <th>Thread already exists?</th>
+        <th>Practical hardware answer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>You only run Zigbee devices today</td>
+        <td>No</td>
+        <td><strong>One Zigbee coordinator</strong>. No Thread radio needed yet.</td>
+      </tr>
+      <tr>
+        <td>You run Zigbee plus <strong>Wi-Fi Matter</strong> devices</td>
+        <td>No</td>
+        <td><strong>One Zigbee coordinator</strong>. Wi-Fi Matter does not need a Thread border router.</td>
+      </tr>
+      <tr>
+        <td>You run Zigbee plus Matter-over-Thread, and Apple or Google Thread is already stable in the house</td>
+        <td>Yes</td>
+        <td><strong>One Zigbee coordinator</strong> on the Home Assistant side can be enough at first. Home Assistant can use the existing third-party Thread border router.</td>
+      </tr>
+      <tr>
+        <td>You run Zigbee plus Matter-over-Thread, and you want <strong>Home Assistant to own or extend Thread</strong></td>
+        <td>No, or you want a dedicated local path</td>
+        <td><strong>Two radios</strong>: one Zigbee coordinator and one dedicated Thread radio for OpenThread Border Router.</td>
+      </tr>
+      <tr>
+        <td>You are shopping for a <em>"one hub to do both"</em></td>
+        <td>Maybe</td>
+        <td>Only treat it as a serious option if it clearly exposes <strong>two independent radios or two independent network roles</strong>. One shared radio remains the risky path.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="why-one-radio-is-still-the-wrong-bet">Why One Shared Radio Is Still the Wrong Bet</h2>
+<p>The official Home Assistant docs and surrounding implementation notes line up on the same theme. Home Assistant's Thread docs say <strong>ZBT-1, ZBT-2, and Yellow run Zigbee out of the box, not Thread</strong>, and switching them into Thread mode takes manual OpenThread Border Router setup. That is already a clue that you are changing the radio's job, not simply enabling an extra feature.</p>
+<p>The stronger warning comes from the software path underneath. In the same <strong>November 19, 2025</strong> ZBT-2 launch post, Home Assistant said it had done extensive testing on running Zigbee and Thread at the same time on one radio and found it did not work well. The common Silicon Labs firmware-builder project used by many Home Assistant users goes even further in its current documentation: <strong>Multi-PAN is no longer available as the recommended path</strong>, and its README says running multiple active networks on one radio proved unstable and increased software complexity.</p>
+<p>That does not mean every combined device is bad. It means the safe dividing line is <strong>one active network per radio</strong>. If a network appliance, Ethernet bridge, or combo adapter actually contains separate Zigbee and Thread radios, it can still fit the same design principle.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub with separate network roles for radios and automations" loading="lazy" />
+  <figcaption>The calmer Home Assistant design is simple: keep Zigbee and Thread as separate jobs, then decide whether Thread should live on Apple, Google, or a dedicated Home Assistant OpenThread path.</figcaption>
+</figure>
+
+<h2 id="path-a">Path A: Keep Zigbee, Borrow Thread From Apple or Google</h2>
+<p>If your home already has a working <strong>Apple HomePod</strong>, <strong>Apple TV 4K</strong>, <strong>Nest Hub</strong>, <strong>Nest Wifi Pro</strong>, or <strong>Google TV Streamer</strong> doing Thread, you may not need another Thread stick right away. Home Assistant's Thread docs list those device families as known working border routers, and the Matter docs say Home Assistant can use third-party border routers purely to reach the Thread network while the Matter traffic itself stays encrypted end to end.</p>
+<p>In that scenario, the Home Assistant side may only need a <strong>Zigbee coordinator</strong>. That is especially sensible if your Thread use is modest, your phone already commissions reliably through Apple or Google, and your real goal is just to automate those devices from Home Assistant afterward.</p>
+<p>The caveat is control surface and maintenance. Home Assistant's Matter docs say <strong>Thread-device OTA updates from Home Assistant do not currently work when the Thread network uses only Apple border routers</strong>. So if you later want a more Home Assistant-owned Thread path, or you want to reduce dependency on another ecosystem's border router behavior, adding your own OTBR radio can still be worth it.</p>
+
+<h2 id="path-b">Path B: Let Home Assistant Own Zigbee and Thread</h2>
+<p>If Home Assistant is the real automation brain of the house and you want a dedicated local Thread path under its control, plan on <strong>two radios</strong>. Keep the Zigbee side on a dedicated coordinator. Then add a separate Thread-capable adapter for <strong>OpenThread Border Router</strong>.</p>
+<p>The official Thread docs are clear about the mechanics. If you use official Home Assistant hardware, it starts life as <strong>Zigbee</strong>, not Thread. If you use a third-party multiprotocol adapter, the docs say it may ship with <strong>Zigbee firmware by default</strong> and need <strong>OpenThread firmware</strong> plus OTBR configuration before it becomes useful as a Thread radio. That is why blindly flipping your only Zigbee stick to Thread is usually the wrong first move.</p>
+<p>In plain terms: if your current house already depends on one Zigbee stick for lights, sensors, and buttons, converting that radio to Thread means <strong>giving up Zigbee on that radio</strong>. Do not do that unless you are intentionally migrating Zigbee elsewhere or deliberately taking Zigbee offline during the change.</p>
+<p>This is also one of the clearest places where <a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a> stops being abstract architecture talk. Home Assistant's Matter docs say <strong>Home Assistant OS is the supported path</strong> for the Matter app, while custom container setups are at your own risk. If you want the lowest-friction Thread path under Home Assistant, stay close to the supported install shape.</p>
+
+<div class="callout">
+  <p><strong>Practical translation:</strong> if Thread is important enough that Home Assistant should own it, it is important enough to deserve its <strong>own radio</strong>.</p>
+</div>
+
+<h2 id="path-c">Path C: Skip a New Thread Radio Entirely</h2>
+<p>If your next devices are <strong>Wi-Fi Matter</strong>, you may not need Thread at all. Home Assistant's Matter docs say Matter devices communicate over <strong>Wi-Fi, Ethernet, or Thread</strong> depending on the product, and specifically tell you to check packaging for the Matter logo plus either <strong>Wi-Fi</strong> or <strong>Thread</strong>. Wi-Fi Matter does not need a Thread border router.</p>
+<p>That means a very ordinary 2026 path is still valid: run a dedicated Zigbee mesh for low-power sensors and buttons, use Wi-Fi or Ethernet for devices that belong there, and only add Thread when an actual device choice justifies it. Even the ZBT-2 product page frames the tradeoff this way: <strong>Thread has a big future</strong>, but <strong>Zigbee has the devices</strong>. For many installed homes, that is still the right practical split.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>For a real house in 2026, the calmer plan is usually this:</p>
+<ul>
+  <li>Keep Zigbee on a dedicated coordinator.</li>
+  <li>Use an existing Apple or Google Thread border router if it already works cleanly, or add a dedicated OTBR radio if Home Assistant should own Thread.</li>
+  <li>Do not bet the home's radio reliability on one heroic multiprotocol stick.</li>
+</ul>
+<p>That is not anti-Thread. It is just pro-boring infrastructure. Locks, lighting, presence, and automations do not care how elegant the protocol diagram looked. They care whether the radio layout is stable on an ordinary Tuesday.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this decision is part of a broader Zigbee, Matter, or network-design plan, these guides cover the adjacent choices that usually matter next.</p>
+<ul>
+  <li><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant?</a></li>
+  <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says "Your Device Requires a Thread Border Router"</a></li>
+  <li><a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Can Apple TV or HomePod Be Your Thread Border Router for Home Assistant?</a></li>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-zbt2-both">Can one ZBT-2 or ZBT-1 run both Zigbee and Thread at the same time?</h3>
+<p>Not as the recommended Home Assistant path in 2026. Official Home Assistant guidance still treats ZBT-1 and ZBT-2 as an either-or choice: Zigbee or Thread, not both active on one radio at once.</p>
+
+<h3 id="faq-existing-thread">If I already own Apple TV, HomePod, or Nest Thread hardware, do I still need another Thread stick for Home Assistant?</h3>
+<p>Not necessarily. Home Assistant supports third-party Thread border routers, so many homes only need a Zigbee coordinator on the Home Assistant side while Apple or Google hardware carries the Thread network.</p>
+
+<h3 id="faq-two-radios-one-box">Do two radios always mean two USB sticks?</h3>
+<p>No. Two radios can live in one enclosure or in two separate devices. The important distinction is separate Zigbee and Thread radios, not the number of boxes.</p>
+
+<h3 id="faq-wifi-matter">If I only buy Wi-Fi Matter devices, do I need Thread at all?</h3>
+<p>No. Home Assistant's Matter docs say Matter devices run over Wi-Fi, Ethernet, or Thread depending on the product. Wi-Fi Matter devices do not need a Thread border router.</p>
+
+<h3 id="faq-convert-only-zigbee-stick">Should I convert my only Zigbee radio to Thread?</h3>
+<p>Only if you deliberately want to stop using Zigbee on that adapter or you have already migrated Zigbee elsewhere. Switching an official Home Assistant radio to Thread gives up Zigbee on that radio.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and product guidance</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/connect/zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZBT-2 product page</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/11/19/home-assistant-connect-zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant blog: Connect ZBT-2 launch</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration docs</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/looking-for-a-combined-zigbee-coordinator-thread-border-router-ethernet-preferred/945914" target="_blank" rel="noopener noreferrer">Home Assistant Community: looking for a combined Zigbee coordinator and Thread border router</a></li>
+                <li><a href="https://community.home-assistant.io/t/how-to-set-up-two-zigbee-dongels-for-zigbee-and-matter-thread/739242" target="_blank" rel="noopener noreferrer">Home Assistant Community: how to set up two Zigbee dongles for Zigbee and Matter/Thread</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1rdxa2d/whats_my_best_option_for_a_dongle_for_zigbee_and/" target="_blank" rel="noopener noreferrer">Reddit: best option for a dongle for Zigbee and Matter devices</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qnwbo9/zigbeethread_dongle_recommendations/" target="_blank" rel="noopener noreferrer">Reddit: Zigbee and Thread dongle recommendations</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub implementation notes</h3>
+              <ul>
+                <li><a href="https://github.com/darkxst/silabs-firmware-builder/discussions/41" target="_blank" rel="noopener noreferrer">darkxst discussion: disadvantages of Multi-PAN over dedicated Zigbee firmware</a></li>
+                <li><a href="https://github.com/darkxst/silabs-firmware-builder" target="_blank" rel="noopener noreferrer">darkxst firmware-builder README note on unstable single-radio multiprotocol use</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Zigbee and Thread to stop competing for one dongle?</h2>
+          <p>Tara packages the hub, radios, and setup path so the house gets a stable local design instead of a late-night multiprotocol experiment.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">Zigbee software guide</a><a href="/blog/home-assistant-thread-border-router-required/">Thread border router guide</a><a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Apple Thread guide</a><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter controller guide</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
