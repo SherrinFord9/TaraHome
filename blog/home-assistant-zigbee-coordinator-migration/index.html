@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can You Move a Home Assistant Zigbee Network to a New Coordinator Without Re-Pairing? | Tara Guides</title>
+    <meta
+      name="description"
+      content="Usually yes in ZHA, sometimes in Zigbee2MQTT, and sometimes not at all. Learn when Home Assistant Zigbee coordinator migration keeps your pairings, when IEEE cloning matters, and when to expect a rebuild."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/" />
+    <meta
+      property="og:title"
+      content="Can You Move a Home Assistant Zigbee Network to a New Coordinator Without Re-Pairing? | Tara Guides"
+    />
+    <meta
+      property="og:description"
+      content="Usually yes in ZHA, sometimes in Zigbee2MQTT, and sometimes not at all. Learn when Home Assistant Zigbee coordinator migration keeps your pairings, when IEEE cloning matters, and when to expect a rebuild."
+    />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Can You Move a Home Assistant Zigbee Network to a New Coordinator Without Re-Pairing? | Tara Guides"
+    />
+    <meta
+      name="twitter:description"
+      content="Usually yes in ZHA, sometimes in Zigbee2MQTT, and sometimes not at all. Learn when Home Assistant Zigbee coordinator migration keeps your pairings, when IEEE cloning matters, and when to expect a rebuild."
+    />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/#blogposting",
+      "headline": "Can You Move a Home Assistant Zigbee Network to a New Coordinator Without Re-Pairing?",
+      "description": "Usually yes in ZHA, sometimes in Zigbee2MQTT, and sometimes not at all. Learn when Home Assistant Zigbee coordinator migration keeps your pairings, when IEEE cloning matters, and when to expect a rebuild.",
+      "image": "https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png",
+      "datePublished": "2026-06-25",
+      "dateModified": "2026-06-25",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/zha/",
+        "https://www.home-assistant.io/connect/zbt-2/",
+        "https://www.home-assistant.io/blog/2025/11/19/home-assistant-connect-zbt-2/",
+        "https://www.home-assistant.io/blog/2022/09/07/release-20229/",
+        "https://support.nabucasa.com/hc/en-us/articles/26123655295261-Migrating-an-existing-Zigbee-Home-Automation-ZHA-network-to-Home-Assistant-Connect-ZBT-1",
+        "https://support.nabucasa.com/hc/en-us/articles/26123745634845-Migrate-a-Zigbee2MQTT-network-to-Home-Assistant-Connect-ZBT-1-using-Zigbee-Home-Automation-ZHA",
+        "https://www.zigbee2mqtt.io/guide/faq/",
+        "https://www.zigbee2mqtt.io/guide/adapters/",
+        "https://www.zigbee2mqtt.io/guide/adapters/flashing/copy_ieeaddr.html",
+        "https://dongle.sonoff.tech/guide/dongle-m/web_console/",
+        "https://community.home-assistant.io/t/most-painless-way-to-move-from-a-conbee-2-to-a-zbt-2-z2mqtt/953982",
+        "https://community.home-assistant.io/t/configuring-zigbee-devices-for-new-zbt-2/959671",
+        "https://community.home-assistant.io/t/zbt-1-to-zbt-2-z2m-migration-to-z2m/955320",
+        "https://www.reddit.com/r/homeassistant/comments/1p26epv/upgrading_from_a_conbee_2_to_a_zbt2how_to_migrate/",
+        "https://www.reddit.com/r/homeassistant/comments/1pa1m20/zigbee_coordinator_migration_in_z2m_sonoff/",
+        "https://www.reddit.com/r/homeassistant/comments/1p3rfbp/zigbee2mqtt_wont_work_with_my_zbt2/",
+        "https://github.com/home-assistant/core/issues/144077",
+        "https://github.com/home-assistant/core/issues/118237"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Can You Move a Home Assistant Zigbee Network to a New Coordinator Without Re-Pairing?",
+          "item": "https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can ZHA move to a new Zigbee coordinator without re-pairing devices?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually yes. Home Assistant's ZHA docs support backups and coordinator migration, but the cleanest path assumes the existing adapter is already in ZHA, the adapter family is supported, and the old coordinator is still available during migration."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Zigbee2MQTT move to a new coordinator without re-pairing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Often yes for adapters with official backup and restore support, especially zstack and ember, but not always. Zigbee2MQTT says some cross-family moves are unsupported or only partially supported, and preserving the coordinator IEEE address can matter."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are devices offline right after coordinator migration even when I did not re-pair them?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the network still needs time to settle and devices need to rejoin the migrated coordinator. Home Assistant's migration docs say this can take up to an hour, and power-cycling mains-powered devices can speed recovery."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does changing the Zigbee channel or network identity affect whether I must re-pair?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Zigbee2MQTT says changing the network key, PAN ID, or sometimes the Zigbee channel can require re-pairing. A clean coordinator migration tries to preserve the same network identity instead of redesigning it mid-move."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I reuse the old coordinator as a router after migration?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sometimes, but only after you are sure it no longer shares coordinator identity with the new radio. Home Assistant and adapter-vendor docs both warn against casually operating two radios with the same migrated identity in the same area."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Zigbee Migration</span><span>June 25, 2026</span><span>11 min read</span></p>
+            <h1>Can You Move a Home Assistant Zigbee Network to a New Coordinator Without Re-Pairing?</h1>
+            <p class="lede">Usually yes in ZHA, often yes in Zigbee2MQTT, and definitely not always. The real answer depends on your stack, adapter family, backup support, and whether the old coordinator is still available.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub and radio hardware for Zigbee coordinator migration" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+          <h2 id="short-answer">Short Answer: Sometimes You Can Keep Every Pairing, but Only if the Migration Path Preserves the Network Identity</h2>
+          <p>If you are moving a Zigbee network in Home Assistant to a new coordinator, the answer is <strong>often yes</strong>, but not in every stack and not across every adapter family. Home Assistant's <strong>ZHA</strong> docs explicitly support backups and coordinator migration, and since the <strong>September 7, 2022</strong> <strong>2022.9</strong> release, Home Assistant has described that flow as a way to move to a new Zigbee coordinator without losing connected devices or settings.</p>
+          <p>But the phrase <strong>"without re-pairing"</strong> needs translation. It does <strong>not</strong> mean zero downtime, zero device churn, or zero risk. It means the new radio takes over the <strong>same Zigbee network identity</strong> so existing devices can <strong>rejoin</strong> it instead of being factory-reset and paired from scratch. The official ZHA migration docs say devices can take up to <strong>one hour</strong> to rejoin after the move.</p>
+
+          <div class="callout">
+            <p><strong>Tara's rule:</strong> when you hear "no re-pairing," think <strong>same network identity</strong>, not <strong>magic instant cutover</strong>.</p>
+          </div>
+
+          <h2 id="why-this-is-hot">Why This Question Is All Over Home Assistant Right Now</h2>
+          <p>The demand is real and current because Home Assistant itself raised expectations. On <strong>November 19, 2025</strong>, Home Assistant launched <strong>Connect ZBT-2</strong> and said its improved migration tools make upgrades easy, adding that <strong>most adapters migrate with just a few clicks</strong>. The product page also markets <strong>seamless migration</strong> for Zigbee or Thread.</p>
+          <p>That immediately turned into concrete community questions. On <strong>November 22, 2025</strong>, a Home Assistant Community user with <strong>about 100 Zigbee devices</strong> asked for the most painless way to move from <strong>ConBee 2</strong> to <strong>ZBT-2</strong> while keeping automations intact. On <strong>December 7, 2025</strong>, another user asked whether a new ZBT-2 meant re-pairing every end device. Around the same time, Reddit threads asked how to migrate from <strong>ConBee 2</strong> to <strong>ZBT-2</strong>, while a separate Reddit guide showed a <strong>Sonoff Dongle-P</strong> to <strong>ZBT-2</strong> migration finishing with <strong>156 devices</strong> back online and no manual re-pairing.</p>
+          <p>Inference from those sources: users keep hearing <strong>"migration"</strong> as if all coordinators behave alike, but the real dividing lines are <strong>ZHA vs Zigbee2MQTT</strong>, <strong>supported backup formats</strong>, <strong>chip family changes</strong>, and <strong>whether the old stick is still alive</strong>.</p>
+
+          <h2 id="what-decides-it">What Actually Decides Whether You Need to Re-Pair</h2>
+          <p>The coordinator brand matters less than four technical facts: <strong>which stack you use</strong>, <strong>whether backups are supported for that stack and adapter</strong>, <strong>whether the old coordinator is still available</strong>, and <strong>whether the new radio can preserve the old coordinator identity</strong>.</p>
+
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>If your current setup is...</th>
+                  <th>The likely answer is...</th>
+                  <th>Why</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ZHA to another supported ZHA coordinator, with the old adapter still present</td>
+                  <td><strong>Usually no full re-pairing</strong></td>
+                  <td>Home Assistant's ZHA docs support backup and migration between supported Silicon Labs, Texas Instruments, and ConBee/RaspBee adapters.</td>
+                </tr>
+                <tr>
+                  <td>Zigbee2MQTT <code>zstack</code> to <code>zstack</code> or <code>ember</code> to <code>ember</code></td>
+                  <td><strong>Often no full re-pairing</strong></td>
+                  <td>Zigbee2MQTT says official backup and restore support currently exists for <code>zstack</code> and <code>ember</code>, and the old coordinator IEEE can be important.</td>
+                </tr>
+                <tr>
+                  <td>Zigbee2MQTT <code>zstack</code> to <code>ember</code> or <code>ember</code> to <code>zstack</code></td>
+                  <td><strong>Sometimes</strong></td>
+                  <td>Zigbee2MQTT says it might work without re-pairing, but results vary and it is <strong>not officially supported</strong>.</td>
+                </tr>
+                <tr>
+                  <td>Zigbee2MQTT using <code>conbee</code>, older unsupported backup paths, or a stack family with no official restore flow</td>
+                  <td><strong>Expect at least some re-pairing, sometimes a full rebuild</strong></td>
+                  <td>Zigbee2MQTT says backup and restore is not officially implemented for those adapter families.</td>
+                </tr>
+                <tr>
+                  <td>The old coordinator is dead, missing, or cannot be attached during migration</td>
+                  <td><strong>The easy path gets much harder</strong></td>
+                  <td>Home Assistant issue reports and support docs both imply the clean migration flow assumes the old coordinator is still available, unless you have a specific backup-file workflow.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="zha-vs-z2m">ZHA Has the Cleanest Supported Story</h2>
+          <p>The official ZHA documentation is the clearest source here. It says ZHA performs automatic backups of your Zigbee network and supports migrating to a different coordinator. It also says that, during migration, Home Assistant can prompt to <strong>overwrite the radio IEEE address</strong> when necessary so the new coordinator takes over the old network identity.</p>
+          <p>That is why <strong>ZHA-to-ZHA</strong> moves are usually the least dramatic path when you want to keep pairings. Home Assistant's own migration steps explicitly tell you to plug in the new radio, run <strong>Migrate</strong>, pick the new adapter, and then wait for the existing devices to rejoin the network. If you are already on ZHA and your radio family is supported, this is the closest thing to a native <strong>"just move the stick"</strong> experience.</p>
+          <p>The January <strong>16, 2026</strong> Nabu Casa support guide for migrating an existing ZHA network to a Connect adapter reinforces the same point: Home Assistant backs up the old adapter, moves the network settings to the new one, and existing devices usually rejoin within about an hour.</p>
+
+          <h2 id="zigbee2mqtt-reality">Zigbee2MQTT Can Also Work, but the Fine Print Matters More</h2>
+          <p>Zigbee2MQTT is not a dead end for no-repair migration, but it is more conditional. Its current FAQ says official backup and restore support is implemented for <strong><code>zstack</code></strong> and <strong><code>ember</code></strong> adapters. It also says moves between those families might work without re-pairing, but that cross-family path is <strong>not officially supported</strong> and results can vary.</p>
+          <p>The same FAQ is blunt about what <strong>does</strong> force re-pairing: changing the <strong>network key</strong>, the <strong>PAN ID</strong>, or sometimes even the <strong>Zigbee channel</strong>. That means a clean coordinator migration is not the time to redesign the network. Keep the identity stable first. Optimize later.</p>
+          <p>Zigbee2MQTT's IEEE-copy documentation explains why this matters: some devices look up the coordinator by its <strong>IEEE address</strong>, so the new stick may need to use the same one. That is not a cosmetic detail. It is sometimes the difference between a network that quietly reforms and one that makes you walk around the house resetting sensors.</p>
+
+          <div class="callout">
+            <p><strong>Important caution:</strong> Zigbee2MQTT also warns that some EFR32-based IEEE writes can be a <strong>one-time irreversible operation</strong>. Do not treat coordinator identity changes like a harmless toggle.</p>
+          </div>
+
+          <h2 id="conbee-problem">Why ConBee-to-Something-Else Is Where the Happy Marketing Ends</h2>
+          <p>This is where most confusion shows up. A lot of users are not simply replacing one supported coordinator with another equivalent one. They are moving from <strong>ConBee II</strong>, old Sonoff hardware, or an older network built years ago into a newer adapter like <strong>ZBT-2</strong>. That is exactly why the community threads keep asking whether they should expect a clean migration or a total rebuild.</p>
+          <p>The technical issue is that Zigbee2MQTT's official backup and restore support <strong>does not cover every adapter family</strong>. Its docs say <strong><code>conbee</code></strong>, <strong><code>ezsp</code></strong>, <strong><code>zboss</code></strong>, and <strong><code>zigate</code></strong> do not have official backup-and-restore coverage in the same way <code>zstack</code> and <code>ember</code> do. That is why a <strong>ConBee II to ZBT-2</strong> conversation feels very different from a <strong>Sonoff Dongle-P to ZBT-2</strong> conversation.</p>
+          <p>So if someone tells you <strong>"I moved without re-pairing"</strong>, the next question is not <strong>"Which brand?"</strong> It is <strong>"Which stack and chip family were you on before and after?"</strong></p>
+
+          <h2 id="best-practical-path">The Practical Migration Path That Fails Least Often</h2>
+
+          <h3 id="step-1-scope">1. Decide whether you are moving hardware only, or changing the whole Zigbee stack</h3>
+          <p>If you are already happy with <a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA vs Zigbee2MQTT</a>, do <strong>not</strong> turn a coordinator swap into a stack migration at the same time unless you have a very specific reason. Radio migration and application migration are different problems.</p>
+
+          <h3 id="step-2-backups">2. Back up both Home Assistant and the Zigbee network before touching the old adapter</h3>
+          <p>For ZHA, Home Assistant already supports coordinator backups and manual backups from the network settings page. For Zigbee2MQTT, the docs say the network state lives partly in the coordinator and partly in the add-on data directory. This is also the moment to review <a href="/blog/how-to-back-up-home-assistant/">how to back up Home Assistant so you can actually restore it</a>.</p>
+
+          <h3 id="step-3-old-stick">3. Keep the old coordinator available if the migration flow expects it</h3>
+          <p>This is one of the most important caveats in the whole article. A Home Assistant core issue around failed migration reports stated that the <strong>Migrate</strong> function does <strong>not</strong> work when you do not or cannot have the old coordinator connected. If the old stick is dead, stop assuming the normal wizard will save you and check whether you have a documented backup-file path for your exact stack.</p>
+
+          <h3 id="step-4-ieee">4. Preserve coordinator identity only when the documented flow calls for it</h3>
+          <p>In ZHA, the migration flow can prompt to overwrite the new radio's IEEE address when that is required. In Zigbee2MQTT, the official guidance is more manual and sometimes depends on adapter tools. The reason is straightforward: if the new stick presents the wrong coordinator identity, some devices will not trust it as the same network owner.</p>
+          <p>But do not casually write coordinator identity during normal operation. SONOFF's own migration tooling warns that changing the IEEE address is a migration-only action and can destabilize a live Zigbee network if you treat it like a routine configuration tweak.</p>
+
+          <h3 id="step-5-settle">5. Let the network settle before you declare failure</h3>
+          <p>Even a good migration is not instantaneous. ZHA says existing devices can take up to an hour to rejoin. Zigbee2MQTT likewise recommends power-cycling routers if devices are slow to recover. Start with <strong>mains-powered routers</strong> like bulbs and plugs before you start factory-resetting battery sensors.</p>
+
+          <figure class="inline-figure">
+            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Protocol network diagram illustrating the layers behind a Zigbee coordinator migration" loading="lazy" />
+            <figcaption>The clean move is the boring move: preserve the network identity, change one layer at a time, and let routers reform the mesh before you blame the new coordinator.</figcaption>
+          </figure>
+
+          <h3 id="step-6-placement">6. Do not confuse a migration problem with an RF placement problem</h3>
+          <p>Some upgrades happen because the old network feels weak, not because the old adapter is truly failing. Before or after migration, follow the same boring rules that the official docs keep repeating: use an <strong>extension cable</strong>, keep the radio away from <strong>USB 3.0</strong> noise, and avoid hiding it behind your server. The ZBT-2 launch blog explicitly says its new base and antenna were designed to reduce exactly that kind of interference pain.</p>
+
+          <h2 id="when-to-rebuild">When You Should Expect a Rebuild Instead of a Miracle</h2>
+          <p>Some situations are strong warnings that you should budget for manual work:</p>
+          <ul>
+            <li>You are moving from an adapter family without official Zigbee2MQTT backup and restore support.</li>
+            <li>You are changing both the coordinator and the Zigbee stack at the same time.</li>
+            <li>You no longer have the old coordinator available and did not save a usable coordinator backup.</li>
+            <li>You changed the network key, PAN ID, or channel during the move.</li>
+            <li>You expect Home Assistant entity names, areas, and automation assumptions to remain identical after a cross-stack migration.</li>
+          </ul>
+          <p>That last point is easy to miss. A radio-level migration might preserve device pairings while the <strong>application-level model</strong> still shifts. If you move between <strong>ZHA</strong> and <strong>Zigbee2MQTT</strong>, the devices may survive but the entity surface can still change. That is a different kind of rebuild.</p>
+
+          <h2 id="tara-take">Tara's Take</h2>
+          <p>The stable answer is not <strong>"yes"</strong> or <strong>"no."</strong> It is <strong>"only if you preserve the same Zigbee network identity through a supported path."</strong> If your house depends on Zigbee locks, water sensors, or key lighting automations, treat coordinator migration like planned maintenance, not like a lunchtime experiment.</p>
+          <p>If your real goal is better coverage or stability, remember that a better adapter helps only part of the story. A smarter layout of routers, cleaner USB placement, or a simpler architecture can solve the problem without forcing a risky migration at all. That is why this topic sits next to decisions like <a href="/blog/home-assistant-zigbee-thread-one-vs-two-radios/">whether to separate Zigbee and Thread radios</a>, <a href="/blog/best-home-assistant-hardware-2026/">which Home Assistant hardware to run</a>, and <a href="/blog/move-home-assistant-to-new-hardware/">how to move Home Assistant to new hardware</a>.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <p>If you are planning a bigger Zigbee or Home Assistant change, these are the adjacent decisions that usually matter most.</p>
+          <ul>
+            <li><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant?</a></li>
+            <li><a href="/blog/home-assistant-zigbee-thread-one-vs-two-radios/">Do You Need One or Two Radios for Zigbee and Thread in Home Assistant?</a></li>
+            <li><a href="/blog/move-home-assistant-to-new-hardware/">How to Move Home Assistant to New Hardware</a></li>
+            <li><a href="/blog/how-to-back-up-home-assistant/">How to Back Up Home Assistant So You Can Actually Restore It</a></li>
+            <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
+            <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+            <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+            <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+          </ul>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-zha">Can ZHA move to a new Zigbee coordinator without re-pairing devices?</h3>
+          <p>Usually yes. ZHA has a documented backup and migration flow, and Home Assistant explicitly supports coordinator migration for supported adapter families. The cleanest path is when the old adapter is already running in ZHA and is still available during the migration.</p>
+
+          <h3 id="faq-z2m">Can Zigbee2MQTT move to a new coordinator without re-pairing?</h3>
+          <p>Often yes for supported <code>zstack</code> and <code>ember</code> backup paths, but not always. Zigbee2MQTT's own FAQ says some cross-family moves are unsupported or only partially supported, and preserving the coordinator IEEE address can be part of the success path.</p>
+
+          <h3 id="faq-offline">Why are devices offline right after migration even if I did not re-pair them?</h3>
+          <p>Because <strong>no re-pairing</strong> does not mean <strong>instant rejoin</strong>. The docs say devices can take minutes or up to an hour to come back, and power-cycling mains-powered routers often helps the mesh reform faster.</p>
+
+          <h3 id="faq-channel">Does changing the Zigbee channel or network identity affect whether I must re-pair?</h3>
+          <p>Yes. Zigbee2MQTT says changing the network key, PAN ID, or sometimes the channel can require re-pairing. If you want a low-drama coordinator move, keep those values stable during the migration.</p>
+
+          <h3 id="faq-old-stick">Can I reuse the old coordinator as a router after migration?</h3>
+          <p>Sometimes, but only after you are sure it no longer shares the migrated coordinator identity. Two radios acting like the same coordinator in the same area is a bad idea, and adapter-vendor tooling explicitly warns against casual IEEE changes on live networks.</p>
+        </div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and product pages</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/zha/" target="_blank" rel="noopener noreferrer">Home Assistant ZHA integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/connect/zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZBT-2 product page</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/11/19/home-assistant-connect-zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant blog: Connect ZBT-2 launch</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2022/09/07/release-20229/" target="_blank" rel="noopener noreferrer">Home Assistant 2022.9 release notes</a></li>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/26123655295261-Migrating-an-existing-Zigbee-Home-Automation-ZHA-network-to-Home-Assistant-Connect-ZBT-1" target="_blank" rel="noopener noreferrer">Nabu Casa support: migrate an existing ZHA network</a></li>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/26123745634845-Migrate-a-Zigbee2MQTT-network-to-Home-Assistant-Connect-ZBT-1-using-Zigbee-Home-Automation-ZHA" target="_blank" rel="noopener noreferrer">Nabu Casa support: Zigbee2MQTT migration using ZHA</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/most-painless-way-to-move-from-a-conbee-2-to-a-zbt-2-z2mqtt/953982" target="_blank" rel="noopener noreferrer">Home Assistant Community: ConBee 2 to ZBT-2 on Zigbee2MQTT</a></li>
+                <li><a href="https://community.home-assistant.io/t/configuring-zigbee-devices-for-new-zbt-2/959671" target="_blank" rel="noopener noreferrer">Home Assistant Community: configuring Zigbee devices for new ZBT-2</a></li>
+                <li><a href="https://community.home-assistant.io/t/zbt-1-to-zbt-2-z2m-migration-to-z2m/955320" target="_blank" rel="noopener noreferrer">Home Assistant Community: ZBT-1 to ZBT-2 Z2M migration</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1p26epv/upgrading_from_a_conbee_2_to_a_zbt2how_to_migrate/" target="_blank" rel="noopener noreferrer">Reddit: upgrading from ConBee 2 to ZBT-2</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1pa1m20/zigbee_coordinator_migration_in_z2m_sonoff/" target="_blank" rel="noopener noreferrer">Reddit: Sonoff Dongle-P to ZBT-2 migration guide</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1p3rfbp/zigbee2mqtt_wont_work_with_my_zbt2/" target="_blank" rel="noopener noreferrer">Reddit: why some ZBT-2 migrations still turn into rebuilds</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Implementation caveats</h3>
+              <ul>
+                <li><a href="https://www.zigbee2mqtt.io/guide/faq/" target="_blank" rel="noopener noreferrer">Zigbee2MQTT FAQ migration rules</a></li>
+                <li><a href="https://www.zigbee2mqtt.io/guide/adapters/" target="_blank" rel="noopener noreferrer">Zigbee2MQTT supported adapters and backup support</a></li>
+                <li><a href="https://www.zigbee2mqtt.io/guide/adapters/flashing/copy_ieeaddr.html" target="_blank" rel="noopener noreferrer">Zigbee2MQTT: copying the coordinator IEEE address</a></li>
+                <li><a href="https://dongle.sonoff.tech/guide/dongle-m/web_console/" target="_blank" rel="noopener noreferrer">SONOFF web console migration warnings</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/144077" target="_blank" rel="noopener noreferrer">GitHub issue: migration can fail when the old coordinator is unavailable</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/118237" target="_blank" rel="noopener noreferrer">GitHub issue: stale coordinator identity can create confusing post-migration states</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want to upgrade Zigbee without rebuilding the house?</h2>
+          <p>Tara packages the hub, radios, placement, backups, and handoff steps so a hardware refresh stays predictable instead of becoming a weekend of repairing sensors.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA vs Zigbee2MQTT</a><a href="/blog/home-assistant-zigbee-thread-one-vs-two-radios/">Zigbee and Thread radios</a><a href="/blog/move-home-assistant-to-new-hardware/">Move Home Assistant hardware</a><a href="/blog/how-to-back-up-home-assistant/">Backup guide</a><a href="/blog/best-home-assistant-hardware-2026/">Hardware guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
