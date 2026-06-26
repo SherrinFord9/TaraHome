@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Do You Need Nabu Casa for Home Assistant in 2026? | Tara Guides</title>
+    <meta
+      name="description"
+      content="No. Home Assistant works without a subscription. Learn what Nabu Casa adds, what still works locally, and when Home Assistant Cloud is worth it in 2026."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/" />
+    <meta
+      property="og:title"
+      content="Do You Need Nabu Casa for Home Assistant in 2026? | Tara Guides"
+    />
+    <meta
+      property="og:description"
+      content="No. Home Assistant works without a subscription. Learn what Nabu Casa adds, what still works locally, and when Home Assistant Cloud is worth it in 2026."
+    />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Do You Need Nabu Casa for Home Assistant in 2026? | Tara Guides"
+    />
+    <meta
+      name="twitter:description"
+      content="No. Home Assistant works without a subscription. Learn what Nabu Casa adds, what still works locally, and when Home Assistant Cloud is worth it in 2026."
+    />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/#blogposting",
+      "headline": "Do You Need Nabu Casa for Home Assistant in 2026?",
+      "description": "No. Home Assistant works without a subscription. Learn what Nabu Casa adds, what still works locally, and when Home Assistant Cloud is worth it in 2026.",
+      "image": "https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png",
+      "datePublished": "2026-06-25",
+      "dateModified": "2026-06-25",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/cloud/",
+        "https://www.home-assistant.io/docs/configuration/remote/",
+        "https://www.home-assistant.io/docs/configuration/securing/",
+        "https://www.home-assistant.io/integrations/alexa/",
+        "https://www.home-assistant.io/integrations/google_assistant/",
+        "https://www.home-assistant.io/blog/2025/06/25/voice-chapter-10/",
+        "https://www.home-assistant.io/common-tasks/general/",
+        "https://www.home-assistant.io/blog/2025/01/03/3-2-1-backup/",
+        "https://www.home-assistant.io/blog/2025/02/05/release-20252/",
+        "https://support.nabucasa.com/hc/en-us/articles/26260474250269-List-of-Home-Assistant-Cloud-features",
+        "https://support.nabucasa.com/hc/en-us/articles/26177731023261-Do-you-have-access-to-my-Home-Assistant-instance",
+        "https://support.nabucasa.com/hc/en-us/articles/26508882007581-Remote-access-Security-aspects",
+        "https://community.home-assistant.io/t/ha-on-alexa-without-nabucasa/872663",
+        "https://community.home-assistant.io/t/nabucasa-vs-tailscale/857747",
+        "https://www.reddit.com/r/homeassistant/comments/1najmoo/is_the_nabu_subscription_worth_it/",
+        "https://www.reddit.com/r/homeassistant/comments/1mhjr0w/how_are_your_loved_ones_coping_with_remote_access/",
+        "https://www.reddit.com/r/homeassistant/comments/1q33bt0/can_alexa_be_used_to_trigger_home_assistant/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Do You Need Nabu Casa for Home Assistant in 2026?",
+          "item": "https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Home Assistant work without Nabu Casa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Home Assistant's own Cloud documentation says Home Assistant works fully without Home Assistant Cloud. Local dashboards, automations, device integrations, and fully local voice can all run on your own hardware without a subscription."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need Nabu Casa for Alexa or Google Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, but it is the simplest path. Home Assistant documents manual Alexa and Google Assistant setups without Cloud, but those paths require an externally reachable HTTPS endpoint and developer-console work. Home Assistant Cloud turns both into a much shorter setup."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need Nabu Casa for local voice in Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant's voice roadmap describes focused-local and full-local combinations such as Speech-to-Phrase with Piper or Whisper with Piper. Cloud is optional when you want its speech services or simpler setup, not when your goal is fully local voice."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Home Assistant Cloud backup enough by itself?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is a useful off-site latest copy, but not a full backup strategy by itself. Current docs say Cloud stores one encrypted backup up to 5 GB, while Home Assistant also supports other backup locations such as network shares, Google Drive, and OneDrive."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Tailscale better than Nabu Casa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Better for some homes, not universally. Tailscale is excellent when one technical owner wants private VPN access. Nabu Casa is usually better when you want remote access, cloud voice integrations, and simpler support for other household members."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Cloud</span><span>June 25, 2026</span><span>10 min read</span></p>
+            <h1>Do You Need Nabu Casa for Home Assistant in 2026?</h1>
+            <p class="lede">No. Home Assistant works without a subscription. Nabu Casa is about convenience at the edges: remote access, Alexa and Google setup, cloud speech services, and a simple off-site fallback backup.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub with optional Home Assistant Cloud services" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+          <h2 id="short-answer">Short Answer: No, Home Assistant Works Without Nabu Casa. Cloud Just Removes Friction.</h2>
+          <p>Home Assistant's own Cloud documentation is explicit: <strong>Home Assistant Cloud is optional</strong>, and <strong>Home Assistant works fully without it</strong>. Your dashboards, automations, Zigbee or Z-Wave radios, device integrations, and local control still run on the hardware in your home.</p>
+          <p>What Nabu Casa buys is convenience for the parts that are tedious to build and maintain yourself: <strong>secure remote access</strong>, the <strong>shortest Alexa and Google Assistant setup path</strong>, <strong>cloud speech services</strong> for Assist, and an <strong>off-site latest-copy backup</strong>. If you are comfortable operating your own VPN, hostname, SSL, and developer-console setup, you can skip it. If you want the house to keep working without turning yourself into permanent support, Cloud is often worth it.</p>
+
+          <div class="callout">
+            <p><strong>Tara's rule:</strong> buy Home Assistant Cloud for <strong>supportability and convenience</strong>, not because your local automations need permission to run.</p>
+          </div>
+
+          <h2 id="why-people-ask">Why This Question Keeps Coming Up</h2>
+          <p>The demand is current, not hypothetical. On <strong>April 2, 2025</strong>, a new Home Assistant Community user asked how to use Alexa <strong>without</strong> Nabu Casa and immediately ran into the AWS and developer-account reality. On <strong>March 3, 2025</strong>, another thread compared <strong>Nabu Casa vs Tailscale</strong> because both can solve remote access but do not solve the same surrounding problems.</p>
+          <p>Reddit shows the same pressure from a different angle. In a thread published about <strong>September 2025</strong>, one user wanted voice control for <strong>their mom and guests</strong> without adding another subscription. In another thread from about <strong>December 2025</strong>, a user asked whether Nabu Casa would make <strong>Alexa automations</strong> and <strong>remote iPhone access</strong> easy, and the immediate answer was essentially <strong>yes</strong>.</p>
+          <p>Inference from those sources: people are usually <strong>not</strong> asking whether Home Assistant can technically function without Cloud. They are asking <strong>who has to own the remote-access, voice-assistant, and family-support glue</strong>.</p>
+
+          <h2 id="what-still-works">What Still Works Without Nabu Casa</h2>
+          <p>If your goal is a local smart home, most of the important parts do <strong>not</strong> depend on Nabu Casa.</p>
+
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Goal</th>
+                  <th>Without Nabu Casa</th>
+                  <th>What Cloud changes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Local dashboards and automations</td>
+                  <td><strong>Already local</strong>. No subscription required.</td>
+                  <td>No change to where the logic runs. It still runs in your home.</td>
+                </tr>
+                <tr>
+                  <td>Remote app access</td>
+                  <td>Use a <strong>VPN</strong> such as Tailscale or ZeroTier, or maintain your own HTTPS endpoint.</td>
+                  <td>Single-toggle remote URL, encrypted traffic, and no router port changes.</td>
+                </tr>
+                <tr>
+                  <td>Alexa integration</td>
+                  <td>Use Home Assistant's <strong>manual Alexa setup</strong> with Amazon developer tooling and usually AWS Lambda.</td>
+                  <td>Turns Alexa exposure into a few-click flow.</td>
+                </tr>
+                <tr>
+                  <td>Google Assistant integration</td>
+                  <td>Use Home Assistant's <strong>manual Google Assistant setup</strong> with a public hostname, SSL, and Google Home Developer Console work.</td>
+                  <td>Turns Google Assistant setup into a few-click flow.</td>
+                </tr>
+                <tr>
+                  <td>Voice in the house</td>
+                  <td>Run <strong>focused-local</strong> or <strong>full-local</strong> Assist with Speech-to-Phrase, Whisper, and Piper.</td>
+                  <td>Adds cloud STT/TTS services and an easier cloud voice path.</td>
+                </tr>
+                <tr>
+                  <td>Backups</td>
+                  <td>Use network shares and other backup locations. Since <strong>February 5, 2025</strong>, Home Assistant also supports Google Drive and OneDrive backup integrations.</td>
+                  <td>Adds one encrypted off-site latest backup up to <strong>5 GB</strong>.</td>
+                </tr>
+                <tr>
+                  <td>Household handoff</td>
+                  <td>Fine for one technical owner if you maintain it.</td>
+                  <td>Usually calmer for spouses, guests, and remote troubleshooting.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The important nuance is that <strong>"without Nabu Casa"</strong> is not the same as <strong>"without cloud."</strong> If you manually wire Home Assistant into <strong>Alexa</strong> or <strong>Google Assistant</strong>, you are still using Amazon or Google cloud services. If your actual goal is <strong>fully local voice</strong>, that is a different path entirely, and Home Assistant's <strong>June 25, 2025</strong> voice roadmap explicitly lays out <strong>focused-local</strong> and <strong>full-local</strong> options.</p>
+
+          <h2 id="what-cloud-adds">What Nabu Casa Actually Adds</h2>
+          <p>The current Home Assistant Cloud and Nabu Casa support docs describe a fairly tight feature bundle:</p>
+          <ul>
+            <li><strong>Secure remote access</strong> to your Home Assistant instance.</li>
+            <li><strong>Easy voice-assistant integration</strong> for Assist, Alexa, and Google Assistant.</li>
+            <li><strong>Improved text-to-speech</strong> and cloud speech-to-text options.</li>
+            <li><strong>Cloud storage of your latest Home Assistant backup</strong>.</li>
+            <li><strong>Webhooks</strong> for automation triggers.</li>
+            <li><strong>Improved camera streaming with WebRTC</strong>.</li>
+          </ul>
+          <p>The remote-access value is the most obvious. The official remote-access docs say the easiest and safest option for most people is Home Assistant Cloud, and that it gives you a unique remote URL with encrypted traffic and <strong>no port forwarding</strong>. The security guide repeats the same recommendation and explicitly says to use a secure remote-access method rather than exposing Home Assistant directly to the internet.</p>
+          <p>The voice-assistant value is the second major reason people subscribe. The Alexa docs say Cloud avoids the dynamic DNS, SSL, and router-port work that manual Alexa setup needs. The Google Assistant docs say the manual path requires an <strong>externally accessible hostname with SSL</strong> plus Google Home Developer Console configuration. That is exactly the kind of setup advanced users can do, but beginners often do not want to operate.</p>
+
+          <figure class="inline-figure">
+            <img src="/assets/generated/docs/tara-doc-local-voice-app.png" alt="Home Assistant voice paths including local voice and cloud-assisted options" loading="lazy" />
+            <figcaption>Home Assistant's current voice stack supports both local and cloud-assisted paths. Nabu Casa is the convenience layer, not the definition of whether the house is local.</figcaption>
+          </figure>
+
+          <h2 id="remote-access-boundary">Remote Access Is the Real Decision Boundary</h2>
+          <p>For many homes, the real question is not Cloud versus no Cloud. It is <strong>managed remote access</strong> versus <strong>DIY remote access</strong>.</p>
+          <p>Home Assistant's docs recommend <strong>VPN</strong> first when you want a self-managed remote path. Tailscale is a very good answer when <strong>one technical owner</strong> wants private access from their own devices. That is why the community keeps comparing Tailscale and Nabu Casa directly.</p>
+          <p>But Tailscale and Nabu Casa do different jobs. The <strong>March 3, 2025</strong> community discussion summarized it well: Tailscale is a VPN path, while Nabu Casa is the easier remote-access path that also lines up with <strong>Google</strong>, <strong>Alexa</strong>, <strong>voice</strong>, and <strong>remote storage</strong>. If you only need your own phone and laptop to reach the dashboard, Tailscale may be enough. If you want the same home to work for less technical family members and voice ecosystems, Cloud is usually the calmer choice.</p>
+
+          <h2 id="privacy-security">Privacy and Security Boundaries</h2>
+          <p>There are two misconceptions worth killing early.</p>
+          <p>First: <strong>Home Assistant Cloud does not move your automations into the cloud.</strong> Home Assistant's own Cloud page says the cloud service exists for things that genuinely benefit from a cloud connection while <strong>everything else continues to run locally on your own hardware</strong>.</p>
+          <p>Second: <strong>Nabu Casa says it does not have access to your Home Assistant instance.</strong> Its support docs say the connection is established from your Home Assistant instance outward, messages stay encrypted, and the company has no administrative tools to log back into your system. Its remote-access security page also says traffic stays <strong>end-to-end encrypted</strong> from your instance to your device.</p>
+          <p>That said, remote access is still remote access. Home Assistant's security guide says to use a <strong>strong unique password</strong> and turn on <strong>multi-factor authentication</strong> for user accounts. The Nabu Casa security page adds the same practical warning: if your instance is reachable from the wider internet, credential hygiene still matters. Cloud reduces infrastructure burden; it does not eliminate account security responsibility.</p>
+
+          <div class="callout">
+            <p><strong>Privacy line to remember:</strong> if your household goal is <strong>zero cloud voice</strong>, skip Alexa and Google entirely and build around <a href="/blog/home-assistant-local-voice-assistant-no-cloud/">fully local Home Assistant voice</a>. "No Nabu Casa" alone does not automatically mean "no cloud."</p>
+          </div>
+
+          <h2 id="best-paths">Which Path Fits Which Home</h2>
+          <ol>
+            <li><strong>Single technical owner, privacy-first:</strong> skip Nabu Casa, use <a href="/blog/home-assistant-remote-access-without-port-forwarding/">Tailscale or another VPN</a>, build local voice, and keep off-site backups through a second backup location.</li>
+            <li><strong>Family home with Alexa or Google already in the house:</strong> buy Nabu Casa. The reduced setup and support burden is usually the real win.</li>
+            <li><strong>Installed local system that still needs easy handoff:</strong> a hybrid is reasonable. Keep automations, radios, and most logic local, but use Cloud for remote access and voice-assistant exposure.</li>
+            <li><strong>Backup-conscious household:</strong> do not rely on Cloud backup alone. Use Home Assistant Cloud as one off-site copy and keep a second backup destination too.</li>
+          </ol>
+
+          <h2 id="tara-take">Tara's Take</h2>
+          <p>The wrong framing is <strong>"Is Nabu Casa required?"</strong> The right framing is <strong>"What support job am I trying to avoid?"</strong></p>
+          <p>If the answer is <strong>"none, I like owning the stack"</strong>, skip it. Home Assistant gives you the tools to do that. If the answer is <strong>"I want my phone, my partner's phone, the guest speaker, and the backup path to stay boring"</strong>, Cloud is a reasonable operating choice, not a betrayal of a local smart-home philosophy.</p>
+          <p>Tara's bias is local-first, private-first, and supportable. That usually means <strong>local automations by default</strong>, <strong>Cloud only where it lowers household risk</strong>, and a design that still works when one person is not around to debug a certificate or broken OAuth flow.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <p>If this question is on your mind, these adjacent guides usually matter next.</p>
+          <ul>
+            <li><a href="/blog/home-assistant-remote-access-without-port-forwarding/">How to Access Home Assistant Remotely Without Port Forwarding</a></li>
+            <li><a href="/blog/home-assistant-local-voice-assistant-no-cloud/">How to Set Up a Fully Local Voice Assistant in Home Assistant</a></li>
+            <li><a href="/blog/how-to-back-up-home-assistant/">How to Back Up Home Assistant So You Can Actually Restore It</a></li>
+            <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+            <li><a href="/blog/how-to-use-ai-with-home-assistant/">How to Use AI with Home Assistant</a></li>
+            <li><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs a Preconfigured Smart Home Kit</a></li>
+          </ul>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-required">Does Home Assistant work without Nabu Casa?</h3>
+          <p>Yes. Home Assistant's own Cloud page says Home Assistant works fully without Home Assistant Cloud. The subscription is optional and mainly changes how easily you handle remote access, cloud voice integrations, and a few convenience features.</p>
+
+          <h3 id="faq-voice-assistants">Do I need Nabu Casa for Alexa or Google Assistant?</h3>
+          <p>No, but it is the easiest path. Home Assistant documents manual Alexa and Google Assistant setups without Cloud, but both require more infrastructure and developer-console work than most homeowners want to own long-term.</p>
+
+          <h3 id="faq-local-voice">Do I need Nabu Casa for local voice?</h3>
+          <p>No. Home Assistant's current voice roadmap supports <strong>focused-local</strong> and <strong>full-local</strong> voice paths using local speech and text-to-speech engines. If strict privacy is the goal, that is the path to follow.</p>
+
+          <h3 id="faq-backups">Is Home Assistant Cloud backup enough by itself?</h3>
+          <p>It is useful, but it is not the whole backup plan. Current docs say Cloud stores one encrypted backup up to 5 GB. That makes it a strong <strong>latest-copy safety net</strong>, not a complete archival strategy by itself.</p>
+
+          <h3 id="faq-tailscale">Is Tailscale better than Nabu Casa?</h3>
+          <p>Sometimes. Tailscale is excellent for one technical owner who wants private remote access. Nabu Casa is usually better when the home also wants Alexa or Google, easier phone setup for multiple people, or lower maintenance overall.</p>
+        </div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/cloud/" target="_blank" rel="noopener noreferrer">Home Assistant Cloud overview</a></li>
+                <li><a href="https://www.home-assistant.io/docs/configuration/remote/" target="_blank" rel="noopener noreferrer">Remote access to Home Assistant</a></li>
+                <li><a href="https://www.home-assistant.io/docs/configuration/securing/" target="_blank" rel="noopener noreferrer">Securing your Home Assistant</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/alexa/" target="_blank" rel="noopener noreferrer">Amazon Alexa integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/google_assistant/" target="_blank" rel="noopener noreferrer">Google Assistant integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/06/25/voice-chapter-10/" target="_blank" rel="noopener noreferrer">Home Assistant Voice chapter 10</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Backups and Cloud specifics</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/common-tasks/general/" target="_blank" rel="noopener noreferrer">Home Assistant common tasks and Cloud backup notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/01/03/3-2-1-backup/" target="_blank" rel="noopener noreferrer">Home Assistant 3-2-1 backup announcement</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/02/05/release-20252/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.2 backup improvements</a></li>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/26260474250269-List-of-Home-Assistant-Cloud-features" target="_blank" rel="noopener noreferrer">Nabu Casa: list of Cloud features</a></li>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/26177731023261-Do-you-have-access-to-my-Home-Assistant-instance" target="_blank" rel="noopener noreferrer">Nabu Casa: access and privacy FAQ</a></li>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/26508882007581-Remote-access-Security-aspects" target="_blank" rel="noopener noreferrer">Nabu Casa: remote-access security aspects</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/ha-on-alexa-without-nabucasa/872663" target="_blank" rel="noopener noreferrer">Home Assistant Community: Alexa without Nabu Casa</a></li>
+                <li><a href="https://community.home-assistant.io/t/nabucasa-vs-tailscale/857747" target="_blank" rel="noopener noreferrer">Home Assistant Community: Nabu Casa vs Tailscale</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1najmoo/is_the_nabu_subscription_worth_it/" target="_blank" rel="noopener noreferrer">Reddit: Is the Nabu subscription worth it?</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1mhjr0w/how_are_your_loved_ones_coping_with_remote_access/" target="_blank" rel="noopener noreferrer">Reddit: loved ones and Home Assistant remote access</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1q33bt0/can_alexa_be_used_to_trigger_home_assistant/" target="_blank" rel="noopener noreferrer">Reddit: can Alexa trigger Home Assistant automations without Nabu Casa?</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Home Assistant convenience without creating a new support job?</h2>
+          <p>Tara packages the local hub, backup plan, remote-access choice, and voice-assistant handoff so the smart home stays private where it should and easy where it matters.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/home-assistant-remote-access-without-port-forwarding/">Remote access guide</a><a href="/blog/home-assistant-local-voice-assistant-no-cloud/">Local voice guide</a><a href="/blog/how-to-back-up-home-assistant/">Backup guide</a><a href="/blog/home-automation-without-cloud/">No-cloud automation</a><a href="/guides/home-assistant-vs-preconfigured-smart-home-kit/">Home Assistant vs kit</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
