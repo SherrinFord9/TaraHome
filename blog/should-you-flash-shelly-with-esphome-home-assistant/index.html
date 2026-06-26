@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Should You Flash Shelly Devices with ESPHome for Home Assistant? | Tara Guides</title>
+    <meta
+      name="description"
+      content="Usually no. Shelly already works locally in Home Assistant. Flash ESPHome only when you need device-side logic, custom sensors, richer Bluetooth proxying, or full YAML control."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/" />
+    <meta
+      property="og:title"
+      content="Should You Flash Shelly Devices with ESPHome for Home Assistant? | Tara Guides"
+    />
+    <meta
+      property="og:description"
+      content="Usually no. Shelly already works locally in Home Assistant. Flash ESPHome only when you need device-side logic, custom sensors, richer Bluetooth proxying, or full YAML control."
+    />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Should You Flash Shelly Devices with ESPHome for Home Assistant? | Tara Guides"
+    />
+    <meta
+      name="twitter:description"
+      content="Usually no. Shelly already works locally in Home Assistant. Flash ESPHome only when you need device-side logic, custom sensors, richer Bluetooth proxying, or full YAML control."
+    />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
+      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
+      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/#blogposting",
+      "headline": "Should You Flash Shelly Devices with ESPHome for Home Assistant?",
+      "description": "Usually no. Shelly already works locally in Home Assistant. Flash ESPHome only when you need device-side logic, custom sensors, richer Bluetooth proxying, or full YAML control.",
+      "image": "https://tarahome.ai/assets/generated/product-gallery/tara-local-pc-hub-server.png",
+      "datePublished": "2026-06-26",
+      "dateModified": "2026-06-26",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/shelly/",
+        "https://www.home-assistant.io/integrations/esphome/",
+        "https://www.home-assistant.io/integrations/bluetooth/",
+        "https://www.home-assistant.io/blog/2025/06/11/release-20256/",
+        "https://www.home-assistant.io/blog/2025/07/29/shelly-joins-works-with-home-assistant/",
+        "https://shelly-api-docs.shelly.cloud/gen2/Scripts/Overview/",
+        "https://kb.shelly.cloud/knowledge-base/shelly-1-mini-gen-3-device-smart-control",
+        "https://esphome.io/components/bluetooth_proxy/",
+        "https://esphome.io/projects/",
+        "https://community.home-assistant.io/t/newbie-question-why-esphome-on-a-shelly-device/882572",
+        "https://community.home-assistant.io/t/is-esphome-worth-it-for-a-2-5-shelly/724990",
+        "https://community.home-assistant.io/t/backing-up-restoring-shelly-firmware-before-flashing-esphome-tamsota/980633",
+        "https://www.reddit.com/r/homeassistant/comments/1mcgcyf/shelly_has_officially_joined_the_works_with_home/",
+        "https://www.reddit.com/r/homeassistant/comments/1s1cho8/after_90_shelly_devices_i_think_im_done/",
+        "https://www.reddit.com/r/homeassistant/comments/1ne3wps/shelly_as_bt_proxy_not_passing_data_to_ha/",
+        "https://github.com/esphome/feature-requests/issues/2756"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Should You Flash Shelly Devices with ESPHome for Home Assistant?",
+          "item": "https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Shelly already work locally with Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Home Assistant's Shelly integration communicates directly with the device and explicitly says a cloud connection is not needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does flashing ESPHome make a Shelly more private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not automatically. Stock Shelly firmware can already run locally with the cloud disabled. ESPHome is more about customization, device-side logic, and a unified YAML-based fleet than basic local-only privacy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can stock Shelly act as a Bluetooth proxy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Partly. Home Assistant says Shelly Gen 2 and newer non-battery devices can forward Bluetooth advertisements, but they do not support active GATT connections."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can you go back to Shelly firmware later?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sometimes, but you should treat that as a project, not a toggle. Current community threads still ask how to back up and restore newer Gen 4 units before flashing, which is a sign that rollback is not a carefree workflow."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you need MQTT with Shelly or ESPHome in Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant's Shelly integration works directly with Shelly devices, and the ESPHome integration uses the native ESPHome API. MQTT is optional if you deliberately want it."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Shelly &amp; ESPHome</span><span>June 26, 2026</span><span>11 min read</span></p>
+            <h1>Should You Flash Shelly Devices with ESPHome for Home Assistant?</h1>
+            <p class="lede">Usually no. Stock Shelly firmware is already local and works well with Home Assistant. Flash ESPHome only when you need logic that lives on the device, custom hardware behavior, or a richer Bluetooth-proxy role.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub coordinating smart relays and radio extensions without cloud dependence" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><h2 id="short-answer">Short Answer: Keep Stock Shelly Unless You Need a Specific ESPHome-Only Win</h2>
+<p>For most Home Assistant homes, the right default is to <strong>keep Shelly on stock firmware</strong>. Home Assistant's official Shelly integration supports auto-discovery, talks directly to the device, and explicitly says a <strong>cloud connection is not needed</strong>. Shelly's own current docs also show that Gen 3 devices can disable the cloud while still exposing local features such as <strong>Bluetooth gateway</strong>, <strong>MQTT</strong>, <strong>RPC</strong>, <strong>local actions</strong>, and <strong>scripts</strong>.</p>
+<p><strong>Flash ESPHome</strong> when you have a concrete requirement that stock Shelly does not meet well: on-device fallback logic for important relays, custom sensors or entities, a fully YAML-defined fleet, or a <strong>true ESPHome Bluetooth proxy</strong> that supports active GATT connections. That is a real engineering reason. <em>"Because ESPHome is cooler"</em> is not usually a strong enough reason once the relay is already in the wall.</p>
+
+<div class="callout">
+  <p><strong>Important boundary:</strong> this is a firmware-architecture guide, not a mains-wiring tutorial. In-wall relay installation may require a qualified electrician depending on your region.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>This is one of the most persistent Shelly questions in the Home Assistant world because Shelly sits in a confusingly strong middle ground. It is <strong>already local-friendly</strong>, yet it is also hackable enough that people wonder if leaving the stock firmware in place means leaving capability on the table.</p>
+<p>The demand signal is easy to defend. On <strong>April 26, 2025</strong>, a Home Assistant Community thread asked the exact beginner question: why flash ESPHome onto a Shelly when the Shelly is already smart? On <strong>January 29, 2026</strong>, another forum thread asked how to <strong>back up or restore Gen 4 Shelly firmware before flashing</strong>, which is the more advanced version of the same uncertainty. On Reddit, a <strong>July 2025</strong> Works with Home Assistant discussion asked what the benefit of ESPHome over Shelly firmware actually is, while a <strong>March 2026</strong> large-deployment thread showed why some users standardize on ESPHome for fleet management and why others push back that network design may be the real issue.</p>
+<p>Inference from those sources: people are not asking because Shelly lacks local control. They are asking because both paths are plausible, and the wrong reason to flash is easy to confuse with the right one.</p>
+
+<h2 id="what-stock-shelly-already-gives-you">What Stock Shelly Already Gives You</h2>
+<h3 id="local-home-assistant-control">1. Local Home Assistant control</h3>
+<p>The official Shelly integration is not a cloud wrapper. Home Assistant says it communicates <strong>directly with the device</strong>, and for Gen 2+ hardware it uses Shelly's RPC model. If all you want is stable local switching, power monitoring, cover control, detached-mode events, and normal Home Assistant automations, stock Shelly is already on the correct side of the local-vs-cloud line.</p>
+
+<h3 id="local-logic-on-the-device">2. Local logic on the device</h3>
+<p>A lot of people assume ESPHome is required for local device-side behavior. That is not true. Shelly's current scripting docs say Shelly devices run <strong>JavaScript directly on-device</strong> for local automations and integrations, with no cloud or external server required. The Gen 3 control docs also expose <strong>local actions</strong>, scripts, schedules, detached mode, and webhooks from the device UI itself.</p>
+<p>That does not mean stock Shelly and ESPHome feel the same to build on. They do not. It means the baseline question is not <em>"local or cloud?"</em> The real question is <em>"which local toolchain fits the job better?"</em></p>
+
+<h3 id="bluetooth-mqtt-rpc-options">3. Bluetooth, MQTT, and RPC options without reflashing</h3>
+<p>Stock Shelly can do more than plain switch control. The Home Assistant integration says Gen 2 and newer non-battery Shelly devices can act as <strong>Bluetooth proxies</strong> for advertisement forwarding, and Shelly's own device settings expose Bluetooth gateway, MQTT, outbound WebSocket, and RPC-over-UDP controls. So if your goal is simply <strong>more integration options</strong>, you may already have them without touching the firmware.</p>
+
+<figure class="inline-figure">
+  <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Diagram showing that local automations can live either in Home Assistant or on the edge device itself" loading="lazy" />
+  <figcaption>Both stock Shelly and ESPHome can be local. The real design choice is where you want the logic to live and how much device customization you actually need.</figcaption>
+</figure>
+
+<h2 id="when-esphome-is-actually-worth-it">When ESPHome Is Actually Worth It</h2>
+<h3 id="ha-down-resilience">1. You need the relay to behave intelligently when Home Assistant is down</h3>
+<p>This is the strongest reason to flash. In the April 2025 forum thread, multiple examples centered on <strong>home-down resilience</strong>: detached smart-bulb fallbacks, boiler control that still works if Wi-Fi or Home Assistant disappears, and input-to-output logic that should continue without the central server.</p>
+<p>If the device is part of something that must remain sane during outages, ESPHome's device-side automations can be the cleaner long-term path, especially if you already build the rest of your edge logic in YAML.</p>
+
+<h3 id="custom-io-and-entities">2. You want custom I/O, sensors, or entity behavior</h3>
+<p>Community examples here are concrete, not theoretical: attaching extra sensors, exposing a more suitable entity type, tuning dimming behavior more precisely, or building a custom cover/fan abstraction instead of accepting the stock device model. If the relay is becoming a small general-purpose embedded node instead of <em>just a relay</em>, ESPHome starts to make much more sense.</p>
+
+<h3 id="fleet-consistency">3. You want one repeatable, backup-friendly configuration method across a fleet</h3>
+<p>A recent Reddit discussion from a large Shelly deployment described a familiar benefit: <strong>config files instead of a web interface</strong>, easy reuse of common snippets, and easier restore when something goes wrong. Home Assistant's ESPHome integration also highlights the native ESPHome API, persistent connections, and near-real-time push updates. If you already manage many ESPHome devices, putting Shelly into the same operational model can reduce cognitive friction.</p>
+
+<h3 id="true-bluetooth-proxy-role">4. You specifically need a true ESPHome Bluetooth proxy role</h3>
+<p>This is the most common technical misunderstanding. Stock Shelly Bluetooth proxying is <strong>not</strong> the same thing as an ESPHome proxy. Home Assistant's Shelly docs say Shelly forwards Bluetooth advertisements but <strong>does not support active GATT connections</strong>. The general Home Assistant Bluetooth docs, by contrast, say remote adapters can handle both advertisement data and active connections, and ESPHome's Bluetooth proxy docs say the default proxy provides <strong>three active GATT slots</strong>.</p>
+<p>So if your goal is BTHome-style passive listening, stock Shelly may be enough. If your goal is broader BLE device support that needs active connections, ESPHome is the right answer.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>If you need...</th>
+        <th>Keep stock Shelly</th>
+        <th>Flash ESPHome</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Basic relay control, energy monitoring, detached-mode events, and local Home Assistant automations</td>
+        <td><strong>Usually yes.</strong> You already have the core value without reflashing.</td>
+        <td>Usually unnecessary.</td>
+      </tr>
+      <tr>
+        <td>Logic that still behaves correctly when Home Assistant or Wi-Fi is having a bad day</td>
+        <td>Possible in some cases through Shelly scripts and local actions.</td>
+        <td><strong>Often better.</strong> This is one of ESPHome's clearest wins.</td>
+      </tr>
+      <tr>
+        <td>Active Bluetooth GATT connections for BLE-heavy device support</td>
+        <td><strong>No.</strong> Shelly's proxy path does not support active GATT.</td>
+        <td><strong>Yes.</strong> ESPHome proxying is the cleaner fit.</td>
+      </tr>
+      <tr>
+        <td>External sensors, unusual entity models, or custom hardware behavior</td>
+        <td>Limited compared with ESPHome.</td>
+        <td><strong>Yes.</strong> This is exactly where ESPHome shines.</td>
+      </tr>
+      <tr>
+        <td>The easiest first-time deployment and the least risk of regretting the choice later</td>
+        <td><strong>Yes.</strong> Leave the proven local firmware alone.</td>
+        <td>No, unless the added capability is already justified.</td>
+      </tr>
+      <tr>
+        <td>A standardized YAML-based fleet with reusable config patterns</td>
+        <td>Not its strength.</td>
+        <td><strong>Often yes</strong> for large or highly customized installs.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="when-you-probably-should-not-flash">When You Probably Should Not Flash</h2>
+<h3 id="simple-jobs">1. The device's job is simple and already works</h3>
+<p>If the Shelly is just turning a light, fan, or pump on and off while reporting energy cleanly to Home Assistant, community replies keep landing in the same place: <strong>there is usually no sense changing the firmware</strong>. That is especially true after the relay is installed and hidden behind a switch plate.</p>
+
+<h3 id="easy-rollback">2. You are assuming rollback will be effortless</h3>
+<p>Do not plan around a carefree <em>"I'll just switch it back later"</em> workflow. The January 2026 Gen 4 forum thread exists because people still worry about how to back up and restore newer Shelly firmware safely before experimenting. And on the ESPHome side, a feature request opened on <strong>June 10, 2024</strong> asked for factory-fresh Shelly devices to be flashed <strong>over the air instead of opening and soldering</strong>, with the stated alternative still being to open the device and flash it over serial. That is not the profile of a no-risk toggle.</p>
+
+<h3 id="wifi-topology">3. Your real problem may be Wi-Fi or network topology, not firmware</h3>
+<p>One of the more useful recent Reddit conversations involved a user frustrated with a very large Shelly deployment. Several replies immediately challenged whether the root problem was <strong>firmware at all</strong>, or simply a Wi-Fi design that had outgrown the network around it. That is a good instinct.</p>
+<p>If your Shelly fleet is spread across weak access points, bad channel planning, or awkward VLAN rules, firmware swapping can become a way to misdiagnose a network problem. That is why articles like <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a> matter more than brand arguments once the device count gets high.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>Tara's default would be:</p>
+<ul>
+  <li><strong>Leave Shelly on stock firmware</strong> for straightforward relay, cover, and energy-monitoring jobs.</li>
+  <li><strong>Flash ESPHome on purpose</strong> when the device needs to be more than a relay: richer edge logic, custom sensors, or a proper BLE proxy role.</li>
+  <li><strong>Fix architecture before firmware</strong> when the pain smells like Wi-Fi coverage, VLAN policy, or role confusion rather than missing device features.</li>
+</ul>
+<p>That keeps the house boring in the good way. Boring means the lights still work, the fan still works, the relay still reports power, and nobody has to remember which clever experiment is hiding behind which switch.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this firmware decision is part of a bigger local-control plan, these guides cover the adjacent choices that usually matter next.</p>
+<ul>
+  <li><a href="/blog/home-assistant-bluetooth-proxy-guide/">Home Assistant Bluetooth Proxy: When You Need One and How to Add It</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
+  <li><a href="/blog/how-to-update-home-assistant-safely/">How to Update Home Assistant Safely Without Breaking Your House</a></li>
+  <li><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a></li>
+  <li><a href="/local-smart-home-hub/">Local smart home hub</a></li>
+  <li><a href="/configurator/">Configurator</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-local">Does Shelly already work locally with Home Assistant?</h3>
+<p>Yes. Home Assistant's Shelly integration communicates directly with the device and says the cloud is not required. For a normal local Home Assistant install, stock Shelly is already a local-control path.</p>
+
+<h3 id="faq-privacy">Does flashing ESPHome make a Shelly more private?</h3>
+<p>Not automatically. Stock Shelly can already run with the cloud disabled, plus local RPC, Bluetooth gateway, MQTT, scripts, and local actions. ESPHome is mainly about customization and operational consistency, not fixing a cloud dependency that must exist.</p>
+
+<h3 id="faq-bt-proxy">Can stock Shelly act as a Bluetooth proxy?</h3>
+<p>Yes, but with an important limit. Home Assistant says Shelly Gen 2 and newer non-battery devices can forward Bluetooth advertisements, but they do <strong>not</strong> support active GATT connections. If your BLE device needs active connections, use ESPHome.</p>
+
+<h3 id="faq-rollback">Can I go back to Shelly firmware later?</h3>
+<p>Possibly, but treat that as real work. Current community threads still ask how to back up and restore newer Shelly firmware before experimenting, and the initial-factory OTA flash story in ESPHome is still not effortless enough to assume zero-risk reversal.</p>
+
+<h3 id="faq-mqtt">Do I need MQTT with Shelly or ESPHome in Home Assistant?</h3>
+<p>No. Shelly integrates directly with Home Assistant, and ESPHome uses its native API. MQTT is still available if you deliberately want that architecture, but it is not the default requirement for either route.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official docs and product guidance</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/shelly/" target="_blank" rel="noopener noreferrer">Home Assistant Shelly integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/esphome/" target="_blank" rel="noopener noreferrer">Home Assistant ESPHome integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/bluetooth/" target="_blank" rel="noopener noreferrer">Home Assistant Bluetooth integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/06/11/release-20256/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.6 release notes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/07/29/shelly-joins-works-with-home-assistant/" target="_blank" rel="noopener noreferrer">Home Assistant blog: Shelly joins Works with Home Assistant</a></li>
+                <li><a href="https://shelly-api-docs.shelly.cloud/gen2/Scripts/Overview/" target="_blank" rel="noopener noreferrer">Shelly Scripts Overview</a></li>
+                <li><a href="https://kb.shelly.cloud/knowledge-base/shelly-1-mini-gen-3-device-smart-control" target="_blank" rel="noopener noreferrer">Shelly 1 Mini Gen 3 device control docs</a></li>
+                <li><a href="https://esphome.io/components/bluetooth_proxy/" target="_blank" rel="noopener noreferrer">ESPHome Bluetooth proxy docs</a></li>
+                <li><a href="https://esphome.io/projects/" target="_blank" rel="noopener noreferrer">ESPHome ready-made projects</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals and implementation notes</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/newbie-question-why-esphome-on-a-shelly-device/882572" target="_blank" rel="noopener noreferrer">Home Assistant Community: Why ESPHome on a Shelly device?</a></li>
+                <li><a href="https://community.home-assistant.io/t/is-esphome-worth-it-for-a-2-5-shelly/724990" target="_blank" rel="noopener noreferrer">Home Assistant Community: Is ESPHome worth it for a Shelly 2.5?</a></li>
+                <li><a href="https://community.home-assistant.io/t/backing-up-restoring-shelly-firmware-before-flashing-esphome-tamsota/980633" target="_blank" rel="noopener noreferrer">Home Assistant Community: backing up and restoring Shelly firmware before flashing</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1mcgcyf/shelly_has_officially_joined_the_works_with_home/" target="_blank" rel="noopener noreferrer">Reddit: Shelly has joined Works with Home Assistant</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1s1cho8/after_90_shelly_devices_i_think_im_done/" target="_blank" rel="noopener noreferrer">Reddit: After ~90 Shelly devices, I think I'm done</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ne3wps/shelly_as_bt_proxy_not_passing_data_to_ha/" target="_blank" rel="noopener noreferrer">Reddit: Shelly as Bluetooth proxy not passing data to Home Assistant</a></li>
+                <li><a href="https://github.com/esphome/feature-requests/issues/2756" target="_blank" rel="noopener noreferrer">ESPHome feature request: initial Shelly OTA flash without soldering</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want relays that stay local without turning every switch box into a firmware project?</h2>
+          <p>Tara helps map which jobs should stay on stock firmware, which ones deserve ESPHome, and how the network should be laid out so the home stays stable after installation.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/home-assistant-bluetooth-proxy-guide/">Bluetooth proxy guide</a><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Network layout guide</a><a href="/blog/home-automation-without-cloud/">No-cloud guide</a><a href="/blog/home-assistant-os-vs-docker/">Install-shape guide</a><a href="/blog/how-to-update-home-assistant-safely/">Update-safely guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
