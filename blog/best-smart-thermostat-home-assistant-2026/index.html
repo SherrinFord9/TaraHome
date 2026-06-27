@@ -65,6 +65,7 @@
       .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
       .blog-card p { font-size: 0.98rem; line-height: 1.35; }
       .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
       .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
       .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
       .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
@@ -86,6 +87,10 @@
       .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
       .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
       .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
       .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
       .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
       .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
@@ -107,7 +112,7 @@
       @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
       @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
-      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
     </style>
     <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -251,7 +256,16 @@
             <img src="/assets/generated/blog/best-smart-thermostat-home-assistant-2026/cover.png" alt="Home Assistant thermostat options arranged around a local smart home hub" loading="eager" />
           </figure>
         </header>
-        <div class="article-body"><h2 id="short-answer">Short Answer: Buy the Control Path, Not Just the Screen</h2>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Best local-first path:</strong> Z-Wave, or documented local Wi-Fi like Venstar.</li>
+    <li><strong>Start the shortlist with:</strong> Honeywell/Resideo T6 Pro Z-Wave and Venstar local-API models.</li>
+    <li><strong>ecobee can be good hardware,</strong> but official Home Assistant is cloud polling unless you use a supported local HomeKit Device path.</li>
+    <li><strong>Nest, Honeywell Wi-Fi, Matter, and Aqara need extra checking:</strong> verify cloud dependency, HVAC compatibility, and exposed Home Assistant entities before buying.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Buy the Control Path, Not Just the Screen</h2>
 <p>For a typical Home Assistant house in the United States, the calmest thermostat answer in mid-2026 is still <strong>a thermostat that either talks directly over Z-Wave or exposes a clearly documented local LAN path</strong>. That usually means <strong>Z-Wave first</strong>, or a thermostat like <strong>Venstar</strong> with an explicit local API if you know you want Wi-Fi.</p>
 <p><strong>ecobee can still be reasonable</strong>, but only if you decide up front whether you are comfortable with its official <strong>cloud-polling</strong> integration or you want to bring a supported model in through <strong>HomeKit Device</strong> for a more local path. <strong>Nest can work</strong>, but Home Assistant's own docs make clear that Nest is a Google-cloud integration with OAuth setup and a paid Device Access project, which is the opposite of a boring local path. <strong>Matter thermostats are real</strong>, but they are not automatically the best Home Assistant thermostat just because the box says Matter.</p>
 
