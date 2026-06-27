@@ -107,6 +107,13 @@
       @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
       @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
     </style>
     <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -245,7 +252,15 @@
             <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local smart home hub server prepared for a Home Assistant hardware migration" loading="eager" />
           </figure>
         </header>
-        <div class="article-body"><h2 id="short-answer">Short Answer: Fresh Install, Full Backup, Safe Restore</h2>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Short answer:</strong> The clean migration path in 2026 is not cloning disks or rebuilding from memory.</li>
+    <li><strong>Start here:</strong> If you want to move Home Assistant from one machine to another, the safest path for most homes is simple: create a full backup on the old system, save the backup emergency kit, install Home Assistant cleanly on the new target, move your radios deliberately, and restore during onboarding.</li>
+    <li><strong>Keep in mind:</strong> That path now works much better than it used to.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Fresh Install, Full Backup, Safe Restore</h2>
 <p>If you want to move Home Assistant from one machine to another, the safest path for most homes is simple: <strong>create a full backup on the old system, save the backup emergency kit, install Home Assistant cleanly on the new target, move your radios deliberately, and restore during onboarding</strong>.</p>
 <p>That path now works much better than it used to. Home Assistant's January 3, 2025 release expanded restore support across all installation methods, and the current backup system is built to help with hardware moves instead of only disaster recovery. The goal is not to make migration clever. The goal is to make it boring enough that the lights, sensors, dashboards, and routines come back cleanly.</p>
 

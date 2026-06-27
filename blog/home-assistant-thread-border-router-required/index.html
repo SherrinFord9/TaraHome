@@ -107,6 +107,13 @@
       @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
       @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
     </style>
     <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -240,7 +247,15 @@
             <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Protocol network diagram showing Home Assistant, Matter, Thread, and border-router connectivity" loading="eager" />
           </figure>
         </header>
-        <div class="article-body"><h2 id="short-answer">Short Answer: The Error Usually Means the Wrong Thread Network Is Reaching the Phone or the Server</h2>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Short answer:</strong> In Home Assistant, this error usually points to Thread credentials, preferred-network behavior, border-router setup, or IPv6, not simply to missing hardware.</li>
+    <li><strong>Start here:</strong> If Home Assistant says "Your device requires a Thread border router" while you are pairing a Matter-over-Thread device, the problem is often not that you physically lack a border router.</li>
+    <li><strong>Keep in mind:</strong> The official Home Assistant Thread docs split setup into two cases for exactly this reason: Home Assistant creates the Thread network, or Home Assistant joins an existing Apple or Google Thread network.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: The Error Usually Means the Wrong Thread Network Is Reaching the Phone or the Server</h2>
 <p>If Home Assistant says <strong>"Your device requires a Thread border router"</strong> while you are pairing a Matter-over-Thread device, the problem is often <strong>not</strong> that you physically lack a border router. More often, the phone does not hold the right Thread credentials, Home Assistant has not imported the correct Thread network, your Home Assistant radio is still acting as Zigbee instead of Thread, or the network path between Home Assistant, the Matter Server, and the border router is missing the IPv6 plumbing Thread depends on.</p>
 <p>The official Home Assistant Thread docs split setup into two cases for exactly this reason: <strong>Home Assistant creates the Thread network</strong>, or <strong>Home Assistant joins an existing Apple or Google Thread network</strong>. If you skip the credential-sharing step that matches your case, Home Assistant can look half-configured even when the radio hardware is present.</p>
 

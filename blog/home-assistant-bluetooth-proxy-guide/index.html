@@ -107,6 +107,13 @@
       @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
       @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
     </style>
     <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -241,7 +248,15 @@
             <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Bluetooth proxy network extending Home Assistant coverage across a home" loading="eager" />
           </figure>
         </header>
-        <div class="article-body"><h2 id="short-answer">Short Answer: Use a Proxy When the Radio Needs to Move, Not the Hub</h2>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Short answer:</strong> A Bluetooth proxy is usually the cleanest way to reach BLE sensors, thermostats, and locks when the Home Assistant hub is not in the same room, especially on virtualized or rack-mounted installs.</li>
+    <li><strong>Start here:</strong> If your Bluetooth devices already work reliably from the Home Assistant box, you may not need a proxy.</li>
+    <li><strong>Keep in mind:</strong> That is not just community folklore.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Use a Proxy When the Radio Needs to Move, Not the Hub</h2>
 <p>If your Bluetooth devices already work reliably from the Home Assistant box, you may not need a proxy. <strong>If they are too far away, if Home Assistant is running in a VM or tucked into a rack, or if a direct USB adapter has become fussy, an ESP32 Bluetooth proxy is usually the better answer.</strong> It lets the Bluetooth radio live near the devices while the hub stays where Ethernet, storage, backups, and clean power make sense.</p>
 <p>That is not just community folklore. Home Assistant's own Bluetooth documentation says that, in many cases, a Bluetooth proxy is a better approach than a directly connected adapter because Linux kernel updates and USB pass-through can create Bluetooth problems. The docs specifically call proxies out as especially interesting for virtualized Home Assistant installs. Also, despite the name, a Bluetooth proxy in this context is for <strong>BLE</strong>, not classic Bluetooth audio or keyboards.</p>
 

@@ -122,6 +122,13 @@
       @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
       @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
     </style>
     <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -261,7 +268,15 @@
             <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local Home Assistant hub with optional Home Assistant Cloud services" loading="eager" />
           </figure>
         </header>
-        <div class="article-body">
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Short answer:</strong> No. Home Assistant works without a subscription. Nabu Casa is about convenience at the edges: remote access, Alexa and Google setup, cloud speech services, and a simple off-site fallback backup.</li>
+    <li><strong>Start here:</strong> Home Assistant's own Cloud documentation is explicit: Home Assistant Cloud is optional, and Home Assistant works fully without it.</li>
+    <li><strong>Keep in mind:</strong> What Nabu Casa buys is convenience for the parts that are tedious to build and maintain yourself: secure remote access, the shortest Alexa and Google Assistant setup path, cloud speech services for Assist, and an off-site latest-copy backup.</li>
+  </ul>
+</aside>
+
           <h2 id="short-answer">Short Answer: No, Home Assistant Works Without Nabu Casa. Cloud Just Removes Friction.</h2>
           <p>Home Assistant's own Cloud documentation is explicit: <strong>Home Assistant Cloud is optional</strong>, and <strong>Home Assistant works fully without it</strong>. Your dashboards, automations, Zigbee or Z-Wave radios, device integrations, and local control still run on the hardware in your home.</p>
           <p>What Nabu Casa buys is convenience for the parts that are tedious to build and maintain yourself: <strong>secure remote access</strong>, the <strong>shortest Alexa and Google Assistant setup path</strong>, <strong>cloud speech services</strong> for Assist, and an <strong>off-site latest-copy backup</strong>. If you are comfortable operating your own VPN, hostname, SSL, and developer-console setup, you can skip it. If you want the house to keep working without turning yourself into permanent support, Cloud is often worth it.</p>
