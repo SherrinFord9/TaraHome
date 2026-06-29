@@ -11,7 +11,7 @@
     <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/" />
     <meta property="og:title" content="Should Home Assistant Live on Your Main Network or IoT VLAN? | Tara Guides" />
     <meta property="og:description" content="Should Home Assistant live on your main LAN or IoT VLAN? Learn the discovery tradeoffs, mDNS and SSDP limits, and the network layouts that actually work." />
-    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-main-lan-vs-iot-vlan/cover.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Should Home Assistant Live on Your Main Network or IoT VLAN? | Tara Guides" />
     <meta name="twitter:description" content="Should Home Assistant live on your main LAN or IoT VLAN? Learn the discovery tradeoffs, mDNS and SSDP limits, and the network layouts that actually work." />
@@ -80,9 +80,6 @@
       .article-body li { margin: 0 0 10px; }
       .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
       .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
-      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
-      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
-      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
       .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
       .article-body .callout p:last-child { margin-bottom: 0; }
       .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
@@ -130,7 +127,7 @@
       "@id": "https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/#blogposting",
       "headline": "Should Home Assistant Live on Your Main Network or IoT VLAN?",
       "description": "Should Home Assistant live on your main LAN or IoT VLAN? Learn the discovery tradeoffs, mDNS and SSDP limits, and the network layouts that actually work.",
-      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-main-lan-vs-iot-vlan/cover.png",
       "datePublished": "2026-06-17",
       "dateModified": "2026-06-17",
       "author": {
@@ -246,7 +243,7 @@
             <p class="lede">If you want the fewest surprises, keep Home Assistant on the same local segment as the discovery-heavy devices it controls, or give it a clean path into that segment. If you isolate it too aggressively, the house starts turning into a multicast debugging exercise.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Diagram-style smart home network showing Home Assistant and device segments" loading="eager" />
+            <img src="/assets/generated/blog/home-assistant-main-lan-vs-iot-vlan/cover.png" alt="Should Home Assistant Live on Your Main Network or IoT VLAN? cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
@@ -269,10 +266,6 @@
 <p>The demand signal is broad and current. A <strong>September 19, 2024</strong> Home Assistant Community thread asked how to restore Kasa auto-discovery when Home Assistant lived on the main network and the devices moved to a separate IoT range. A <strong>January 27, 2025</strong> forum reply in a migration thread explained that once Home Assistant and ESPHome-style devices live on different subnets, you need a discovery proxy or you fall back to manual IP entry where the integration allows it.</p>
 <p>Reddit threads kept circling the same tradeoff from the homeowner side: people want separate IoT networks for security, but they also keep discovering that mDNS, SSDP, and local pairing do not magically survive routing boundaries. Home Assistant's own <strong>May 7, 2025</strong> release notes acknowledged this troubleshooting burden by adding discovery browsers for DHCP, mDNS/Zeroconf, and SSDP/UPnP so users could see what the system is actually seeing on the network.</p>
 
-<figure class="inline-figure">
-  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local smart home server near wired networking gear" loading="lazy" />
-  <figcaption>Good smart-home networking is less about ideological purity and more about placing the controller where local protocols can still reach it cleanly.</figcaption>
-</figure>
 
 <h2 id="what-actually-breaks">What Actually Breaks When You Cross VLANs</h2>
 <p>Home Assistant's developer docs say integrations may discover devices through <strong>mDNS/Zeroconf</strong>, <strong>SSDP</strong>, or other methods when they need to find devices with changing IPs or dynamically appearing services. That matters because routed VLANs are not the same thing as a shared local broadcast domain.</p>

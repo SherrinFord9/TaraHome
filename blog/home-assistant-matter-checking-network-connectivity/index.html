@@ -11,7 +11,7 @@
     <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-matter-checking-network-connectivity/" />
     <meta property="og:title" content="Why Home Assistant Matter Pairing Gets Stuck on &quot;Checking Network Connectivity&quot; | Tara Guides" />
     <meta property="og:description" content="Fix the Home Assistant Matter onboarding failure by checking Thread credentials, 2.4 GHz Wi-Fi, local IPv6, multicast discovery, and VM or VLAN network quirks." />
-    <meta property="og:image" content="https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png" />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-checking-network-connectivity/cover.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Why Home Assistant Matter Pairing Gets Stuck on &quot;Checking Network Connectivity&quot; | Tara Guides" />
     <meta name="twitter:description" content="Fix the Home Assistant Matter onboarding failure by checking Thread credentials, 2.4 GHz Wi-Fi, local IPv6, multicast discovery, and VM or VLAN network quirks." />
@@ -80,9 +80,6 @@
       .article-body li { margin: 0 0 10px; }
       .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
       .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
-      .article-body .inline-figure { background: rgba(255, 250, 240, 0.54); border: 1px solid var(--line); border-radius: 24px; margin: 30px 0 34px; max-width: 860px; overflow: hidden; }
-      .article-body .inline-figure img { aspect-ratio: 16 / 9; background: rgba(65, 168, 103, 0.08); display: block; height: auto; object-fit: cover; width: 100%; }
-      .article-body .inline-figure figcaption { border-top: 1px solid var(--line); color: var(--muted); font-size: 0.92rem; font-weight: 720; line-height: 1.35; padding: 12px 16px; }
       .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
       .article-body .callout p:last-child { margin-bottom: 0; }
       .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
@@ -130,7 +127,7 @@
       "@id": "https://tarahome.ai/blog/home-assistant-matter-checking-network-connectivity/#blogposting",
       "headline": "Why Home Assistant Matter Pairing Gets Stuck on \"Checking Network Connectivity\"",
       "description": "Fix the Home Assistant Matter onboarding failure by checking Thread credentials, 2.4 GHz Wi-Fi, local IPv6, multicast discovery, and VM or VLAN network quirks.",
-      "image": "https://tarahome.ai/assets/generated/docs/tara-doc-protocol-network.png",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-matter-checking-network-connectivity/cover.png",
       "datePublished": "2026-06-23",
       "dateModified": "2026-06-23",
       "author": {
@@ -246,7 +243,7 @@
             <p class="lede">This failure usually means Bluetooth onboarding worked, but the handoff to local IP networking did not: wrong Thread credentials, disabled IPv6, 2.4 GHz mismatch, multicast filtering, or a too-clever VM or VLAN setup.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/docs/tara-doc-protocol-network.png" alt="Local network diagram for Home Assistant Matter and Thread onboarding" loading="eager" />
+            <img src="/assets/generated/blog/home-assistant-matter-checking-network-connectivity/cover.png" alt="Why Home Assistant Matter Pairing Gets Stuck on &quot;Checking Network Connectivity&quot; cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
@@ -269,10 +266,6 @@
 <p>The demand signal is not vague. It is active right now. On the Home Assistant Community's <strong>Matter/Thread</strong> category pages visible in early June 2026, current onboarding topics included <em>Pairing IKEA Grillplats plug issues - ipv6?</em> with <strong>2,288 views</strong> on <strong>June 6, 2026</strong>, <em>Home Assistant Green + ZBT-2 do not connect to Thread devices</em> on <strong>June 7, 2026</strong>, and <em>Can't add Matter devices (stuck on Checking network connectivity)</em> with <strong>2,752 views</strong> on the next category page. The category pages also showed <em>Can't add new Matter devices using HA with Apple TV as TBR</em>, which reinforces that the issue is not limited to one radio brand or one phone platform.</p>
 <p>Reddit is using the same language. Recent r/homeassistant threads describe Home Assistant <strong>stuck at checking connectivity to the Thread network</strong> and the companion app <strong>using the wrong Thread network</strong> during commissioning. GitHub issues from <strong>April 2026</strong> track closely related edge cases: Thread credentials not reaching an iPhone, Home Assistant allowing Matter setup while IPv6 is disabled, and ZBT-2 plus OTBR setups showing <code>NoAddress</code> warnings with no successful commissioning. That does not prove Matter is broadly broken. It does show that current onboarding failures cluster around the same local-network layers. That interpretation is an inference from community patterns, not a direct Home Assistant claim.</p>
 
-<figure class="inline-figure">
-  <img src="/assets/generated/product-gallery/tara-local-pc-hub-server.png" alt="Local smart home hub, router, and accessories showing the boring network layers behind Matter onboarding" loading="lazy" />
-  <figcaption>When Matter onboarding fails, the culprit is often not the QR code or the brand. It is the boring local stack underneath: phone credentials, IPv6, multicast, Wi-Fi placement, or VM networking.</figcaption>
-</figure>
 
 <h2 id="what-the-spinner-actually-means">What the Spinner Actually Means</h2>
 <p>Home Assistant's Matter docs describe the onboarding flow in plain terms: your <strong>phone</strong> connects to the accessory over <strong>Bluetooth</strong>, sends the network credentials, and then the accessory begins communicating over its native interface, which is either <strong>Wi-Fi</strong> or <strong>Thread</strong>. The companion app is involved in the commissioning flow, but the device does not stay on Bluetooth after onboarding.</p>
