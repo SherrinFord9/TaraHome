@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Set Up a Home Assistant Wall Tablet Dashboard That Stays Awake | Tara Guides</title>
+    <meta name="description" content="Build a reliable Home Assistant wall tablet dashboard: choose Companion app kiosk mode or Fully Kiosk, keep the screen awake safely, use a dedicated user, and avoid slow dashboard layouts." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/" />
+    <meta property="og:title" content="How to Set Up a Home Assistant Wall Tablet Dashboard That Stays Awake | Tara Guides" />
+    <meta property="og:description" content="Build a reliable Home Assistant wall tablet dashboard: choose Companion app kiosk mode or Fully Kiosk, keep the screen awake safely, use a dedicated user, and avoid slow dashboard layouts." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Set Up a Home Assistant Wall Tablet Dashboard That Stays Awake | Tara Guides" />
+    <meta name="twitter:description" content="Build a reliable Home Assistant wall tablet dashboard: choose Companion app kiosk mode or Fully Kiosk, keep the screen awake safely, use a dedicated user, and avoid slow dashboard layouts." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/#blogposting",
+      "headline": "How to Set Up a Home Assistant Wall Tablet Dashboard That Stays Awake",
+      "description": "Build a reliable Home Assistant wall tablet dashboard: choose Companion app kiosk mode or Fully Kiosk, keep the screen awake safely, use a dedicated user, and avoid slow dashboard layouts.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover.png",
+      "datePublished": "2026-07-01",
+      "dateModified": "2026-07-01",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/"
+      },
+      "citation": [
+        "https://www.reddit.com/r/homeassistant/comments/1l314o5/wall_dashboard_getting_painfully_slow/",
+        "https://www.reddit.com/r/homeassistant/comments/1rpr43f/best_tablet_for_ha_dashboard_with_motionactivated/",
+        "https://www.reddit.com/r/homeassistant/comments/1t4i5o2/ha_wallmounted_dashboards_show_and_tell/",
+        "https://community.home-assistant.io/t/creating-a-large-home-assistant-display-instructions/943122",
+        "https://community.home-assistant.io/t/fully-kiosk-browser-very-slow-to-load-after-upgrade-to-2026-4-and-2026-5/892578",
+        "https://community.home-assistant.io/t/home-assistant-on-a-tablet-fully-kiosk-browser-or-app/265283",
+        "https://www.home-assistant.io/dashboards/",
+        "https://www.home-assistant.io/integrations/fully_kiosk/",
+        "https://companion.home-assistant.io/docs/integrations/android-home-app-launcher/",
+        "https://companion.home-assistant.io/docs/integrations/android-webview/",
+        "https://companion.home-assistant.io/docs/integrations/ios-kiosk-mode/",
+        "https://www.home-assistant.io/blog/2026/05/06/release-20265/",
+        "https://www.fully-kiosk.com/en/",
+        "https://github.com/cgarwood/homeassistant-fullykiosk",
+        "https://github.com/home-assistant/android/issues/5395",
+        "https://www.nfpa.org/education-and-research/energy-transition/lithium-ion-batteries"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Set Up a Home Assistant Wall Tablet Dashboard That Stays Awake",
+          "item": "https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the best app for a Home Assistant wall tablet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use the official Home Assistant Companion app if its Android launcher or iOS kiosk mode covers your needs. Use Fully Kiosk Browser on Android when you need stronger wall-display controls such as local screen, motion, and remote administration."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a Home Assistant wall tablet work without the cloud?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, if the tablet uses your local Home Assistant URL on the same network. Fully Kiosk's Home Assistant integration and the dashboard itself can run on the LAN. Remote access from outside the house still needs a safe remote-access method."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should the wall tablet use my admin Home Assistant account?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Create a dedicated non-admin Home Assistant user and give it a dashboard made for that room. The tablet should not expose backups, integrations, logs, security devices, or other admin tools to anyone walking by."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my wall dashboard get slow?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The common causes are old tablet hardware, a heavy dashboard, too many live camera feeds, large history graphs, popups, custom cards, and browser memory growth. Start by making a lighter tablet-only dashboard before replacing hardware."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it safe to keep a tablet plugged in all the time?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It can be practical, but treat it like a powered device with a lithium-ion battery. Use a quality charger, keep it ventilated, do not bury it in a sealed wall, inspect it, and stop using it if the battery swells or the device overheats."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Wall Tablets</span><span>July 1, 2026</span><span>12 min read</span></p>
+            <h1>How to Set Up a Home Assistant Wall Tablet Dashboard That Stays Awake</h1>
+            <p class="lede">A good wall tablet is not just an old screen taped to the wall. It needs the right kiosk app, a simple dashboard, a safe power plan, and a login that cannot expose the rest of the house.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover.png" alt="Home Assistant wall tablet dashboard mounted in a warm kitchen with a local hub and presence sensor" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Best default:</strong> start with the official Home Assistant Companion app if Android launcher mode or iOS kiosk mode gives you enough control.</li>
+    <li><strong>Use Fully Kiosk when needed:</strong> pick Fully Kiosk Browser on Android if you need local screen control, motion wake, remote admin, or Home Assistant automations that turn the tablet display on and off.</li>
+    <li><strong>Do not use your admin account:</strong> create a dedicated non-admin Home Assistant user and a room-specific dashboard with only the controls that belong on the wall.</li>
+    <li><strong>Avoid slow dashboards:</strong> do not load every camera, chart, popup, and custom card on a cheap tablet; make a lighter tablet-only dashboard.</li>
+    <li><strong>Main caveat:</strong> true sleep can break wake behavior or background updates. Many homes do better with a dim screensaver, dark night mode, and safe always-powered mounting.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Use a Kiosk Path, Not a Normal Browser</h2>
+<p>The reliable path is: <strong>make a simple dashboard, log in with a dedicated non-admin user, then run it in a kiosk app that is allowed to keep the screen awake.</strong> For many homes, the official Home Assistant Companion app is the cleanest place to start. On Android, the app can act as the home app launcher so the tablet opens Home Assistant instead of a normal Android home screen. On iPhone and iPad, Home Assistant's Companion docs now describe an iOS kiosk mode in Labs, with requirements tied to Home Assistant frontend 2025.2 or newer and the iOS app 2026.7.0 or newer.</p>
+<p>If the wall tablet needs stronger display control, use <strong>Fully Kiosk Browser</strong> on Android. Home Assistant has an official Fully Kiosk integration that talks to Fully's local Remote Admin API, so Home Assistant can see tablet sensors and control display behavior over your LAN. That does not mean every tablet is good hardware. It means you get a better control path than a normal browser tab.</p>
+<p>Matter, Thread, Zigbee, Z-Wave, and HomeKit are not the control path here. The tablet is a dashboard client. It talks to Home Assistant over Wi-Fi, and Home Assistant talks to the devices.</p>
+
+<h2 id="why-wall-tablets-fail">Why Wall Tablets Fail in Real Homes</h2>
+<p>Recent r/homeassistant and Home Assistant Community threads keep circling the same pain: wall dashboards get slow, cheap tablets sleep at the wrong time, Fully Kiosk behaves differently after updates, and households want one screen that guests can use without seeing the whole system. The problem is rarely one magic setting. It is usually the combination of an underpowered tablet, a heavy dashboard, OS battery rules, and a login that was never designed for a shared wall display.</p>
+<p>Use plain language for the job. A <strong>dashboard</strong> is the Home Assistant page with lights, climate, locks, cameras, and room controls. <strong>Kiosk mode</strong> means the tablet hides normal browser or app chrome so the wall screen feels like a fixed control panel. <strong>Local control</strong> means the tablet is talking to Home Assistant inside the house instead of depending on a vendor cloud. A <strong>dedicated user</strong> is a separate Home Assistant login just for the tablet.</p>
+<p>That last piece matters. A wall dashboard is physically public inside your home. It should not expose admin pages, backups, add-ons, logs, camera archives, alarm controls, or remote access settings to anyone who can tap the screen.</p>
+
+<h2 id="paths">Choose the Right Wall Tablet Path</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Official support</th>
+        <th>Local/cloud behavior</th>
+        <th>When to choose it</th>
+        <th>Main caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Home Assistant Companion app on Android</td>
+        <td>Official Companion app docs include an Android Home App Launcher integration and Android WebView settings.</td>
+        <td>Use your local Home Assistant URL on the home network. Remote access is separate.</td>
+        <td>You want the official app, sensors, notifications, and a simpler setup than Fully Kiosk.</td>
+        <td>Android vendor battery rules and WebView behavior vary by tablet.</td>
+      </tr>
+      <tr>
+        <td>Home Assistant Companion app on iPad or iPhone</td>
+        <td>Official Companion docs describe iOS kiosk mode in Labs, with 2026-era app and frontend requirements.</td>
+        <td>Dashboard traffic can stay local when the tablet uses the local URL. Remote controls from outside the house need remote access.</td>
+        <td>You already have an iPad and want the official app experience.</td>
+        <td>iOS is stricter than Android. Read the current kiosk-mode requirements before mounting the tablet.</td>
+      </tr>
+      <tr>
+        <td>Fully Kiosk Browser on Android</td>
+        <td>Home Assistant has an official Fully Kiosk Browser integration; Fully provides the Android kiosk app and Remote Admin features.</td>
+        <td>Home Assistant talks to Fully Kiosk's local Remote Admin API on your LAN. Do not expose it to the internet.</td>
+        <td>You need motion wake, screensaver behavior, display control, and Home Assistant automations that manage the tablet.</td>
+        <td>Some features require Fully Kiosk Browser PLUS licensing, and tablet firmware can still affect wake reliability.</td>
+      </tr>
+      <tr>
+        <td>Plain browser tab</td>
+        <td>Home Assistant dashboards work in browsers, but a plain browser is not a wall-display control system.</td>
+        <td>Local URL works on the LAN; cloud is not required for the dashboard itself.</td>
+        <td>Temporary testing, desk screens, or a tablet you do not plan to mount.</td>
+        <td>The browser may sleep, show address bars, reload poorly, or expose normal device controls.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="dashboard-design">Build a Tablet Dashboard, Not an Admin Dashboard</h2>
+<p>Home Assistant dashboards are flexible enough to become too heavy. A dashboard that feels fine on a laptop can be miserable on a wall tablet because the tablet has less memory, a smaller processor, a smaller screen, and a browser engine that may stay open for weeks.</p>
+<p>For a shared wall screen, make a separate dashboard with only the controls that make sense in that room:</p>
+<ul>
+  <li><strong>Kitchen:</strong> main lights, nearby climate, music, timers, presence status, front door glance, and one or two camera snapshots.</li>
+  <li><strong>Entry:</strong> locks, garage, exterior lights, alarm state if appropriate, weather, and arrival scenes.</li>
+  <li><strong>Bedroom:</strong> lights, shades, climate, sleep scene, white noise, and a simple morning view.</li>
+  <li><strong>Utility room:</strong> leak sensors, washer/dryer, energy, water shutoff status, and maintenance alerts.</li>
+</ul>
+<p>Avoid the tempting version with every room, every camera, every history graph, and every custom card. Live camera streams, large graphs, animated cards, maps, browser popups, and complex custom cards are the first things to remove when a tablet becomes slow. A useful wall dashboard is usually dense but calm: a few big controls, clear status, and a path to more detail only when needed.</p>
+
+<h2 id="dedicated-user">Create a Dedicated Dashboard User</h2>
+<p>Do not mount a tablet that is logged in as the same admin account you use for Home Assistant maintenance. Create a separate user for the wall tablet, then set that user's default dashboard to the room dashboard. If your household has kids, guests, cleaners, renters, or real estate showings, assume the wall screen can be touched by someone who should not manage your integrations.</p>
+<p>The tablet user should usually be able to:</p>
+<ul>
+  <li>Turn room lights and scenes on and off.</li>
+  <li>Adjust climate within safe limits.</li>
+  <li>See simple house status such as doors, water leaks, weather, and presence.</li>
+  <li>Use media or routines that are safe for anyone in that room.</li>
+</ul>
+<p>The tablet user should usually not be able to:</p>
+<ul>
+  <li>Open Settings, backups, logs, add-ons, integrations, or developer tools.</li>
+  <li>Change automations or helpers.</li>
+  <li>View private camera history or microphones unless that is intentional.</li>
+  <li>Unlock exterior doors or disarm alarms without an extra household decision.</li>
+</ul>
+<p>If you put locks, garage doors, alarm panels, or cameras on a wall screen, add a family policy before you add the button. In many homes, "show state, require phone for action" is the better default for security devices.</p>
+
+<h2 id="keep-awake">Keep the Screen Awake Without Fighting the Operating System</h2>
+<p>The most common mistake is treating "screen off" as the same thing as "wall tablet is ready." On many tablets, true sleep can pause background activity, kill the browser, drop the WebSocket connection, or delay wake. The result is a black screen that looks energy-efficient but takes too long to become useful.</p>
+<p>A more reliable pattern is:</p>
+<ol>
+  <li><strong>Keep the wall app in the foreground.</strong> Use Android launcher mode, iOS kiosk mode, or Fully Kiosk so the tablet returns to the dashboard.</li>
+  <li><strong>Use a dim or black screensaver overnight.</strong> That gives you a dark wall without depending on deep sleep.</li>
+  <li><strong>Wake by motion or presence only if the device can do it reliably.</strong> Fully Kiosk is the stronger Android path for this.</li>
+  <li><strong>Keep the local URL simple.</strong> The tablet should load the internal Home Assistant address while at home.</li>
+  <li><strong>Disable aggressive battery optimization where the OS allows it.</strong> This is device-specific, especially on budget Android tablets.</li>
+</ol>
+<p>Fully Kiosk's local controls are useful because Home Assistant can automate around real household context: dim at night, brighten in the morning, turn the screen on when the hallway is occupied, and keep it off during sleep hours. The official Fully Kiosk integration depends on the Remote Admin feature, so use a strong admin password and keep that endpoint on the local network only.</p>
+
+<h2 id="power-safety">Power and Mounting Safety</h2>
+<p>A wall tablet is a permanently powered device with a lithium-ion battery. Treat it like installed electronics, not a framed picture. Use a quality charger and cable, keep the device ventilated, and leave a way to inspect or remove it. Do not bury a consumer tablet, charger, or swelling battery in a sealed wall cavity.</p>
+<p>NFPA lithium-ion battery safety guidance says not to charge a battery when the charger or battery is damaged and not to store batteries in extreme hot or cold conditions. For a wall tablet, this means you should be able to see the device, feel if it is getting hot, and remove it without demolition. If a tablet battery swells, leaks, smells unusual, or overheats, stop using it and handle it as a safety problem, not a software problem.</p>
+<p>If the mount requires in-wall power, low-voltage routing, or a recessed outlet, use hardware that is meant for that installation and bring in an electrician where your local code or comfort level calls for it. A clean Home Assistant dashboard is not worth unsafe power.</p>
+
+<h2 id="troubleshooting">If the Dashboard Is Slow or Unreliable</h2>
+<p>Try the boring fixes in order before buying another screen.</p>
+<ol>
+  <li><strong>Make a lighter dashboard.</strong> Remove live cameras, history graphs, maps, popups, animations, and custom cards from the wall-tablet view.</li>
+  <li><strong>Test on the local URL.</strong> If the tablet is at home, it should not hairpin through remote access just to reach Home Assistant.</li>
+  <li><strong>Update the tablet browser engine or app.</strong> Android WebView, the Companion app, Fully Kiosk, and Home Assistant frontend updates can all change behavior.</li>
+  <li><strong>Check memory by rebooting once.</strong> If a reboot makes the tablet fast for a day and then slow again, reduce dashboard complexity and consider a scheduled maintenance reboot.</li>
+  <li><strong>Check Wi-Fi at the wall.</strong> A tablet mounted in a weak spot may look like a dashboard problem when it is really a network problem.</li>
+  <li><strong>Replace truly underpowered hardware last.</strong> If the tablet cannot keep a simple dashboard smooth, it is the wrong wall tablet.</li>
+</ol>
+<p>Community reports around Home Assistant 2026.4 and 2026.5 show why this needs to be practical, not dogmatic: some users saw Fully Kiosk pages become slow after updates, while others found specific dashboard or app combinations that worked. Keep the wall dashboard simple enough that an update does not turn it into a science project.</p>
+
+<h2 id="privacy">Privacy and Local Control Boundaries</h2>
+<p>A wall tablet can be local-first, but it is still a screen on the wall. Keep the tablet on your home network, use the local Home Assistant URL, and do not expose Fully Kiosk Remote Admin or Home Assistant directly to the public internet. If you need remote access, use a supported path such as Home Assistant Cloud, a properly configured VPN, or a hardened tunnel. Tara has a separate guide on <a href="/blog/home-assistant-remote-access-without-port-forwarding/">remote access without port forwarding</a>.</p>
+<p>If the tablet includes a camera or microphone, decide whether you actually need it. Motion wake by camera can be convenient, but it also means a device pointed into the room is watching for motion. Many homes can use a separate presence sensor instead, which keeps the dashboard responsive without adding a camera to the kitchen or bedroom.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>The best wall dashboard is useful enough that people use it, limited enough that it does not expose the whole system, and boring enough that it survives updates. Tara's default is a dedicated dashboard user, a room-specific interface, local network access, simple controls, and a mounting plan that can be serviced later.</p>
+<p>For installed homes, the handoff matters as much as the screen. A homeowner should know what the wall tablet can control, what it cannot control, how to restart it, and what to do if the screen goes blank. That is the difference between a smart-home feature and another device someone has to babysit.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>Wall tablets sit between dashboard design, remote access, privacy, presence, and Home Assistant maintenance. These Tara guides are useful next.</p>
+<ul>
+  <li><a href="/blog/home-assistant-person-not-updating/">Why Your Home Assistant Person Entity Is Stuck at Home or Away</a></li>
+  <li><a href="/blog/home-assistant-remote-access-without-port-forwarding/">How to Access Home Assistant Remotely Without Port Forwarding</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/how-to-update-home-assistant-safely/">How to Update Home Assistant Safely Without Breaking Your House</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3>What is the best app for a Home Assistant wall tablet?</h3>
+<p>Start with the official Home Assistant Companion app if Android launcher mode or iOS kiosk mode covers your needs. Use Fully Kiosk Browser on Android when you need stronger wall-display controls such as local screen control, motion wake, and Remote Admin integration with Home Assistant.</p>
+<h3>Can a Home Assistant wall tablet work without the cloud?</h3>
+<p>Yes. Use the local Home Assistant URL while the tablet is on your home network. The dashboard itself does not need a vendor cloud. Remote access from outside the house is a separate design choice.</p>
+<h3>Should I use Matter, Thread, or HomeKit for the tablet?</h3>
+<p>No. Those are device-control ecosystems and protocols, not the wall-tablet path. The tablet is a Wi-Fi dashboard client. Home Assistant is the system that talks to Matter, Thread, Zigbee, Z-Wave, HomeKit, and vendor integrations.</p>
+<h3>Should the wall tablet use my admin account?</h3>
+<p>No. Use a dedicated non-admin user and a room-specific dashboard. A shared wall screen should not expose Home Assistant settings, backups, add-ons, logs, camera archives, or security controls to anyone walking by.</p>
+<h3>Why does my wall dashboard get slow?</h3>
+<p>The common causes are old tablet hardware, too many live camera feeds, large charts, heavy custom cards, popups, memory growth, weak Wi-Fi, or a browser engine that needs an update. Make a lighter tablet-only dashboard first.</p>
+<h3>Is it safe to keep a tablet plugged in all the time?</h3>
+<p>It can be practical, but use a quality charger, keep the device ventilated, inspect it, and remove it if it gets hot or the battery swells. Do not bury a consumer tablet or charger in a sealed wall cavity.</p>
+        </div>
+      </article>
+      <section class="block article-cta">
+        <h2>Want the installed version?</h2>
+        <p>Tara packages local Home Assistant hardware, dashboards, presence sensors, remote access, backup habits, and homeowner handoff so wall controls feel useful without exposing the whole system.</p>
+        <a class="cta" href="/configurator/">Plan your Tara kit</a>
+      </section>
+      <section class="block source-list">
+        <h2>Sources</h2>
+        <p>Demand came from recent r/homeassistant and Home Assistant Community threads about wall dashboards, tablet performance, Fully Kiosk behavior, and motion-activated screens. Technical claims are grounded in Home Assistant docs, Companion app docs, Fully Kiosk documentation, release notes, GitHub context, and battery-safety guidance.</p>
+        <div class="source-grid">
+          <div>
+            <h3>Home Assistant docs</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/dashboards/">Home Assistant dashboard documentation</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/fully_kiosk/">Home Assistant Fully Kiosk Browser integration</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/05/06/release-20265/">Home Assistant 2026.5 release notes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Companion app and vendor docs</h3>
+            <ul>
+              <li><a href="https://companion.home-assistant.io/docs/integrations/android-home-app-launcher/">Android Home App Launcher documentation</a></li>
+              <li><a href="https://companion.home-assistant.io/docs/integrations/android-webview/">Android WebView settings documentation</a></li>
+              <li><a href="https://companion.home-assistant.io/docs/integrations/ios-kiosk-mode/">iOS kiosk mode documentation</a></li>
+              <li><a href="https://www.fully-kiosk.com/en/">Fully Kiosk Browser documentation and feature overview</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community demand signals</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1l314o5/wall_dashboard_getting_painfully_slow/">r/homeassistant: wall dashboard getting painfully slow</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1rpr43f/best_tablet_for_ha_dashboard_with_motionactivated/">r/homeassistant: wall dashboard with motion-activated display</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1t4i5o2/ha_wallmounted_dashboards_show_and_tell/">r/homeassistant: wall-mounted dashboard show-and-tell</a></li>
+              <li><a href="https://community.home-assistant.io/t/creating-a-large-home-assistant-display-instructions/943122">Community: creating a large Home Assistant display</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Issue and safety context</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/fully-kiosk-browser-very-slow-to-load-after-upgrade-to-2026-4-and-2026-5/892578">Community: Fully Kiosk slow after 2026.4 and 2026.5</a></li>
+              <li><a href="https://community.home-assistant.io/t/home-assistant-on-a-tablet-fully-kiosk-browser-or-app/265283">Community: Fully Kiosk Browser or app for a tablet</a></li>
+              <li><a href="https://github.com/cgarwood/homeassistant-fullykiosk">GitHub: legacy Fully Kiosk custom integration context</a></li>
+              <li><a href="https://github.com/home-assistant/android/issues/5395">GitHub: Android app launcher and wall-tablet context</a></li>
+              <li><a href="https://www.nfpa.org/education-and-research/energy-transition/lithium-ion-batteries">NFPA lithium-ion battery safety guidance</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
