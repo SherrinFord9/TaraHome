@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Home Assistant Notifications Are Delayed or Not Arriving | Tara Guides</title>
+    <meta name="description" content="Fix slow or missing Home Assistant phone alerts by testing the notify target, app permissions, push ID, rate limits, Android priority/ttl, iPhone Focus, and Local Push." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/" />
+    <meta property="og:title" content="Why Home Assistant Notifications Are Delayed or Not Arriving | Tara Guides" />
+    <meta property="og:description" content="Fix slow or missing Home Assistant phone alerts by testing the notify target, app permissions, push ID, rate limits, Android priority/ttl, iPhone Focus, and Local Push." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Home Assistant Notifications Are Delayed or Not Arriving | Tara Guides" />
+    <meta name="twitter:description" content="Fix slow or missing Home Assistant phone alerts by testing the notify target, app permissions, push ID, rate limits, Android priority/ttl, iPhone Focus, and Local Push." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body pre { background: rgba(6, 40, 32, 0.92); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 18px; color: #fffaf0; margin: 22px 0 28px; max-width: 780px; overflow-x: auto; padding: 18px 20px; }
+      .article-body pre code { background: transparent; border: 0; color: inherit; display: block; font-size: 0.95rem; line-height: 1.5; padding: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol, .article-body pre { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/#blogposting",
+      "headline": "Why Home Assistant Notifications Are Delayed or Not Arriving",
+      "description": "Fix slow or missing Home Assistant phone alerts by testing the notify target, app permissions, push ID, rate limits, Android priority/ttl, iPhone Focus, and Local Push.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover.png",
+      "datePublished": "2026-07-01",
+      "dateModified": "2026-07-01",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/"
+      },
+      "citation": [
+        "https://community.home-assistant.io/t/mobile-app-notifications-are-slow-android/617334",
+        "https://community.home-assistant.io/t/android-notifications-delayed-10-mins/919744",
+        "https://community.home-assistant.io/t/delayed-notifications-over-time-doze-issue-works-initially-then-breaks-after-1-month/1000662",
+        "https://www.reddit.com/r/homeassistant/comments/1l35ux8/not_receiving_ha_mobile_push_notifications_on/",
+        "https://www.reddit.com/r/homeassistant/comments/1ifool5/delayed_push_notifications_on_ios_companion_app/",
+        "https://www.reddit.com/r/homeassistant/comments/1rrqvor/delayed_notifications_on_android_using_nabu_casa/",
+        "https://www.home-assistant.io/integrations/notify/",
+        "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+        "https://companion.home-assistant.io/docs/troubleshooting/faqs/",
+        "https://companion.home-assistant.io/docs/notifications/notification-local/",
+        "https://companion.home-assistant.io/docs/notifications/critical-notifications/",
+        "https://companion.home-assistant.io/docs/notifications/notification-details/",
+        "https://www.home-assistant.io/blog/2022/02/11/android-february/",
+        "https://developer.android.com/training/monitoring-device-state/doze-standby",
+        "https://support.apple.com/guide/iphone/change-notification-settings-iph7c3d96bab/ios",
+        "https://support.apple.com/guide/iphone/set-up-a-focus-iphd6288a67f/ios",
+        "https://github.com/home-assistant/android/issues/594",
+        "https://github.com/home-assistant/android/issues/6829"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why Home Assistant Notifications Are Delayed or Not Arriving",
+          "item": "https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why do Home Assistant notifications arrive only after I unlock my Android phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Android power saving can defer normal background work while the phone is idle. For urgent user-visible Home Assistant alerts, use the Companion App Android options priority: high and ttl: 0, then check the app notification channel and battery settings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is there no notify.mobile_app action for my phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After setting up the Companion App, restart Home Assistant. If the action still does not appear, reopen the app, confirm notification permission, check the Push ID on iOS, or remove and re-add the mobile app integration for that device."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Home Assistant need remote access for phone notifications?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Default Companion App push notifications can leave your Home Assistant server and travel through push infrastructure, so they can work even when the phone cannot browse your Home Assistant URL. Local Push is different: it uses a direct WebSocket connection and works only when the app sees your internal Home Assistant connection."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use critical notifications for everything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Reserve critical or high-priority behavior for alerts people truly need to see now, such as water leaks, smoke or CO alarms, security events, garage doors, or important access warnings. Routine laundry, battery, and status messages should stay normal."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are Home Assistant notification contents private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Companion App docs say notification content is not stored on remote servers, but the normal push path uses Firebase and notification contents are not encrypted on Firebase. Avoid putting door codes, private camera details, or sensitive household information in push text."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Troubleshooting</span><span>July 1, 2026</span><span>10 min read</span></p>
+            <h1>Why Home Assistant Notifications Are Delayed or Not Arriving</h1>
+            <p class="lede">If Home Assistant says it sent an alert but your phone is quiet, debug the path in order: Home Assistant action, Companion App registration, phone permissions, push delivery, and only then the automation that created the alert.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover.png" alt="Home Assistant notification troubleshooting cover image" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> first send a plain test message from Developer Tools to the exact phone target. If that fails, fix the Companion App registration or phone permission before editing the automation.</li>
+    <li><strong>Android delay fix:</strong> for urgent alerts that arrive only after the phone wakes, use <code>ttl: 0</code> and <code>priority: high</code>, then check the Android notification channel and battery settings.</li>
+    <li><strong>iPhone delay fix:</strong> check Settings &gt; Notifications &gt; Home Assistant, Focus, Scheduled Summary, and whether the alert should be time-sensitive or critical.</li>
+    <li><strong>What to avoid:</strong> do not use <code>notify.notify</code> as your only target, do not put sensitive details in push text, and do not rely on one phone notification for smoke, CO, locks, water, or alarms.</li>
+    <li><strong>Main caveat:</strong> normal push notifications are not fully local. Local Push can help at home, but it requires the internal connection and may affect battery behavior.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Find Out Where the Alert Gets Stuck</h2>
+<p>The fastest fix is to separate two problems that feel identical. Either <strong>Home Assistant did not send the notification correctly</strong>, or <strong>the phone received the message path but delayed, silenced, grouped, or hid it</strong>. Do not start by rewriting the whole automation.</p>
+<p>Open <strong>Settings &gt; Developer tools &gt; Actions</strong> in Home Assistant and send a simple message to the exact phone notify entity or action, such as <code>notify.mobile_app_pixel</code> or the newer <code>notify.send_message</code> action with your phone selected. A <strong>notify entity</strong> is the named target Home Assistant uses to send a message. If the plain test does not arrive, the problem is usually Companion App setup, notification permission, push token, rate limit, or the phone's operating-system settings. If the test arrives instantly, the notification system works and the problem is probably the automation payload, action target, template, camera attachment, or trigger.</p>
+<p>For Android delays, the common culprit is power saving while the screen is off. For iPhone delays, check Focus and Scheduled Summary first. For both platforms, remember that ordinary mobile push is a cloud-assisted delivery path, while Local Push is the local WebSocket path that only works in the right home-network conditions.</p>
+
+<h2 id="why-common">Why This Question Keeps Coming Up</h2>
+<p>Home Assistant notification threads repeat because the symptom is simple but the path is not. Reddit r/homeassistant and the Home Assistant Community forum have separate threads for Android alerts delayed until unlock, Nabu Casa users seeing slow delivery, iPhone notifications arriving late, and phones that simply stop appearing as mobile app targets. The advice that solves one case can be wrong for another.</p>
+<p>The official docs point to the same split. Home Assistant's Notify documentation says to test a notification action from Developer Tools and warns that <code>notify.notify</code> is shorthand for the first notify action the system can find. The Companion App troubleshooting docs say to check the phone-specific <code>notify.mobile_app_</code> action, the plain message payload, notification limits, Push ID, and system notification settings.</p>
+<p>That is why the right troubleshooting order matters. If your test message never arrives, Android <code>ttl</code> and iPhone critical-alert YAML are distractions. If your test message arrives but a camera alert is late, the problem may be the image URL, automation delay, phone power saving, or an attachment that takes time to render.</p>
+
+<h2 id="first-test">The 10-Minute Test Before You Change Anything Else</h2>
+<p>Use this order for one phone at a time.</p>
+<ol>
+  <li><strong>Send a plain test message.</strong> Go to Developer Tools &gt; Actions. Pick your phone-specific target or <code>notify.send_message</code> with your phone selected. Send only a short message.</li>
+  <li><strong>Avoid <code>notify.notify</code> for testing.</strong> Home Assistant warns that it may choose the first notify target it finds. That can make a family phone, browser target, or persistent notification look like your phone alert is broken.</li>
+  <li><strong>Check the phone action exists.</strong> If <code>notify.mobile_app_...</code> is missing after app setup, restart Home Assistant, reopen the Companion App, and check notification permission.</li>
+  <li><strong>Check the app's notification page.</strong> On iOS, the Companion App troubleshooting docs say an empty Push ID means you should reset it. On Android, if the target still does not appear, the docs point to starting fresh with the app registration.</li>
+  <li><strong>Check the daily limit.</strong> The Companion App push service currently has a 500-push-per-day-per-device limit for normal push notifications, resetting at midnight UTC. Local Push and some special notification types are handled differently, but a runaway automation can still make normal testing confusing.</li>
+  <li><strong>Check OS permissions.</strong> iPhone: Settings &gt; Notifications &gt; Home Assistant. Android: Settings &gt; Apps &gt; Home Assistant &gt; Notifications, then inspect the channel used by that alert.</li>
+  <li><strong>Only then inspect the automation.</strong> If the manual message works, check Traces, action target, message template, attachment URL, tags, grouping, channels, and whether the automation actually reached the notification action.</li>
+</ol>
+
+<div class="callout">
+  <p><strong>Plain-English rule:</strong> prove that one simple phone message works before you debug a complicated camera, garage, person, leak, or alarm notification.</p>
+</div>
+
+<h2 id="symptoms">What the Symptom Usually Means</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>What you see</th>
+        <th>Most likely area</th>
+        <th>What to check first</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>No phone notify target exists</td>
+        <td>Companion App registration</td>
+        <td>Restart Home Assistant, reopen the app, grant notification permission, reset Push ID on iOS, or re-add the mobile app integration.</td>
+      </tr>
+      <tr>
+        <td>Manual test works, automation alert does not</td>
+        <td>Automation action or payload</td>
+        <td>Trace, exact notify target, template, attachment path, condition, and whether <code>notify.notify</code> sent to the wrong place.</td>
+      </tr>
+      <tr>
+        <td>Android alert appears after unlocking the phone</td>
+        <td>Android Doze or notification priority</td>
+        <td><code>ttl: 0</code>, <code>priority: high</code>, channel importance, battery settings, and Local Push status.</td>
+      </tr>
+      <tr>
+        <td>iPhone alert arrives quietly or in a bundle</td>
+        <td>iOS notification settings</td>
+        <td>Allow Notifications, Lock Screen/Banner/Sound settings, Focus, Scheduled Summary, and interruption level.</td>
+      </tr>
+      <tr>
+        <td>Works at home but not away</td>
+        <td>Remote access or notification architecture</td>
+        <td>External URL, Home Assistant Cloud/VPN, whether the alert is normal push or Local Push, and whether attachments require phone access to Home Assistant.</td>
+      </tr>
+      <tr>
+        <td>Works sometimes, then stops after a noisy event</td>
+        <td>Rate limit or runaway automation</td>
+        <td>Daily push count, repeated triggers, notification grouping/tagging, and logs around the event.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="android">If Android Notifications Are Late</h2>
+<p>Android is aggressive about battery life. Google's own Doze documentation says Android can defer network and background work when a device is unplugged, stationary, and the screen is off. It also says high-priority Firebase messages are the correct tool for time-sensitive, user-visible notifications. Home Assistant's Android critical notification docs translate that into the practical Companion App payload: use <code>priority: high</code> and <code>ttl: 0</code> for urgent alerts.</p>
+<p>Use this for alerts where a person should know now, such as water leak, garage open, freezer temperature, security, or a door left unlocked. Do not use it for every battery percentage, washer finished, room temperature, or debug message. Too many urgent alerts makes people ignore all of them.</p>
+<pre><code>action: notify.mobile_app_your_android_phone
+data:
+  title: "Home alert"
+  message: "The garage has been open for 10 minutes."
+  data:
+    ttl: 0
+    priority: high
+    channel: "Security"
+    importance: high</code></pre>
+<p>Then check the Android notification channel. Android 8 and newer lets apps create channels such as General, Security, Motion, or Alarm. The first channel settings can stick, and users can change them later in system settings. If one type of Home Assistant alert is silent but another works, the channel is often the reason.</p>
+<p>Finally, check battery settings. If the Home Assistant app is heavily restricted, background behavior can suffer. Local Push or the Android persistent connection can reduce delay in some setups, but it keeps an ongoing connection and can have battery tradeoffs. Use it deliberately, not as a magic setting for every phone.</p>
+
+<h2 id="iphone">If iPhone Notifications Are Late or Quiet</h2>
+<p>On iPhone, start with Apple's notification controls. Open <strong>Settings &gt; Notifications &gt; Home Assistant</strong>. Confirm Allow Notifications is on, then check Lock Screen, Notification Center, Banners, Sounds, and whether delivery is immediate or scheduled. Apple documents Scheduled Summary as a way to receive selected app notifications together later, which is useful for social apps and bad for leak alerts.</p>
+<p>Next check Focus. Focus can silence or delay notifications by design. Apple lets you choose which apps are allowed during a Focus and can turn Focus on by schedule, location, or activity. If Home Assistant works during the day but not at night, Sleep Focus or Do Not Disturb may be doing exactly what it was told to do.</p>
+<p>For important iOS alerts, Home Assistant supports interruption levels. <code>time-sensitive</code> can break through some Focus behavior, and <code>critical</code> is for the small set of alerts that should make sound even when the phone is muted or Do Not Disturb is enabled. Keep critical for smoke/CO, water leak, security, and other real household risk.</p>
+<pre><code>action: notify.mobile_app_your_iphone
+data:
+  title: "Water leak"
+  message: "The laundry leak sensor is wet."
+  data:
+    push:
+      interruption-level: time-sensitive</code></pre>
+<p>If the iPhone target is missing, follow the Companion App troubleshooting path: confirm notification permission, open Companion App settings, check Notifications, and reset the Push ID if it is empty. After that, force quit and reopen the app, then restart Home Assistant so the action can register cleanly.</p>
+
+<h2 id="local-push">Local Push vs Normal Push</h2>
+<p><strong>Local Push</strong> means the Companion App keeps a direct WebSocket connection to your Home Assistant server and can receive notifications without Apple's Push Notification Service or Google's Firebase Cloud Messaging. That is the local-control path people usually want when they say "can Home Assistant notify me locally?"</p>
+<p>It has limits. The Companion App docs say Local Push only works through the internal URL and requires the app to recognize internal SSIDs. On Android, persistent connection behavior can require a persistent notification and can affect battery life depending on settings and device. On iOS, Local Push status can be inspected in the server section of Companion App settings.</p>
+<p>Normal push is different. The Companion App privacy and security docs say notification content is not stored on remote servers, but the architecture uses Firebase cloud messaging, and notification contents are not encrypted on Firebase. For a homeowner, that means ordinary phone push is convenient and useful, but it is not the place to put door codes, private camera descriptions, guest names, or sensitive household details.</p>
+<p>At home, Local Push can be a strong option. Away from home, you still need a reliable remote path for opening Home Assistant, loading camera images, and acting on notifications. Home Assistant Cloud, Tailscale, WireGuard, or another secure remote-access design is better than exposing raw Home Assistant or camera ports.</p>
+
+<h2 id="payloads">When the Payload Is the Problem</h2>
+<p>If a simple test message works but the real alert does not, compare the payload. Common mistakes are not exotic:</p>
+<ul>
+  <li><strong>Wrong target:</strong> <code>notify.notify</code> sent somewhere else, or the phone was renamed after migration.</li>
+  <li><strong>Broken template:</strong> the message uses an entity or attribute that is <code>unknown</code>, <code>unavailable</code>, or misspelled.</li>
+  <li><strong>Image attachment problem:</strong> the phone cannot fetch the camera image because the URL only works inside the home network or needs authentication.</li>
+  <li><strong>Tag or group behavior:</strong> a newer notification replaces an older one, so it looks like the first alert never arrived.</li>
+  <li><strong>Channel mismatch:</strong> Android sends it to a quiet channel that the user silenced months ago.</li>
+  <li><strong>Runaway automation:</strong> repeated triggers hit rate limits or train the family to ignore Home Assistant.</li>
+</ul>
+<p>For camera and doorbell alerts, first test text-only delivery. Then add one attachment. Then add action buttons. Rich notifications are useful, but each extra feature adds one more failure point.</p>
+
+<h2 id="critical-alerts">Use Critical Alerts Sparingly</h2>
+<p>Critical notifications are a household agreement, not just a YAML setting. If every motion alert is critical, the house teaches people to silence Home Assistant. Use normal notifications for routine information and urgent notification behavior only for events that deserve interruption.</p>
+<ul>
+  <li><strong>Good urgent alerts:</strong> water leak, smoke/CO, freezer warming, garage open late at night, unlocked exterior door after everyone leaves, alarm state, sump pump power failure.</li>
+  <li><strong>Usually normal:</strong> laundry done, mailbox opened, robot vacuum stuck, low battery, package detected, room temperature, a dashboard reminder.</li>
+  <li><strong>Needs care:</strong> camera person detection and doorbell alerts. They matter, but false positives can become noise unless tuned.</li>
+</ul>
+<p>Do not let a phone notification replace code-required safety devices. Smoke alarms, CO alarms, leak shutoff valves, security systems, and locks need physical controls, local alarms, and manual fallback. Home Assistant alerts are excellent as an extra layer, not as the only layer.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>A good Tara-style notification setup has three levels. Routine messages are quiet and useful. Important household alerts are fast and reach more than one adult. Safety alerts have a local alarm or physical backup even if the phone is dead, silenced, out of service, or left in another room.</p>
+<p>For installed homes, we also separate channels by meaning. Security, leaks, climate, and maintenance should not all share one generic notification path. That makes the phone settings easier for a homeowner to understand and easier to hand off later.</p>
+<p>The goal is not to make every Home Assistant alert louder. The goal is to make the right alerts reliable enough that the family trusts them.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>Notification reliability usually sits next to remote access, automation traces, presence, and safety planning.</p>
+<ul>
+  <li><a href="/blog/home-assistant-automation-not-firing/">Why your Home Assistant automation is not firing</a></li>
+  <li><a href="/blog/home-assistant-remote-access-without-port-forwarding/">How to access Home Assistant remotely without port forwarding</a></li>
+  <li><a href="/blog/home-assistant-person-not-updating/">Why your Home Assistant person entity is stuck at home or away</a></li>
+  <li><a href="/blog/best-water-leak-sensors-home-assistant-2026/">Best water leak sensors for Home Assistant</a></li>
+  <li><a href="/blog/best-doorbell-camera-home-assistant-2026/">Best doorbell cameras for Home Assistant</a></li>
+  <li><a href="/configurator/">Configurator</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-android-unlock">Why do Home Assistant notifications arrive only after I unlock my Android phone?</h3>
+<p>Android may delay normal background delivery while the phone is idle. For urgent user-visible alerts, set <code>ttl: 0</code> and <code>priority: high</code>, then check the notification channel and app battery settings. Use this for important alerts, not every routine message.</p>
+
+<h3 id="faq-no-target">Why is there no <code>notify.mobile_app</code> action for my phone?</h3>
+<p>After setting up the Companion App, restart Home Assistant. If the target still does not appear, reopen the app, confirm notification permission, check the iOS Push ID, or remove and re-add the mobile app integration for that device.</p>
+
+<h3 id="faq-remote-access">Does Home Assistant need remote access for notifications?</h3>
+<p>Normal push can work even when your phone cannot browse Home Assistant because the message travels through push infrastructure. But tapping the notification, loading images, or using Local Push depends on the phone being able to reach the right Home Assistant URL.</p>
+
+<h3 id="faq-critical-everything">Should I use critical notifications for everything?</h3>
+<p>No. Reserve critical or high-priority behavior for alerts that should interrupt someone now. If every notification is urgent, the family will mute the app and the truly important alerts will get weaker.</p>
+
+<h3 id="faq-privacy">Are notification contents private?</h3>
+<p>Do not put sensitive details in push text. The Companion App docs say notification content is not stored on remote servers, but normal push uses Firebase and the notification contents are not encrypted on Firebase. Use neutral text such as "front door alert" rather than door codes or private camera descriptions.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/mobile-app-notifications-are-slow-android/617334" target="_blank" rel="noopener noreferrer">Home Assistant Community: Android mobile app notifications are slow</a></li>
+                <li><a href="https://community.home-assistant.io/t/android-notifications-delayed-10-mins/919744" target="_blank" rel="noopener noreferrer">Home Assistant Community: Android notifications delayed more than 10 minutes</a></li>
+                <li><a href="https://community.home-assistant.io/t/delayed-notifications-over-time-doze-issue-works-initially-then-breaks-after-1-month/1000662" target="_blank" rel="noopener noreferrer">Home Assistant Community: delayed notifications over time, 2026</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1l35ux8/not_receiving_ha_mobile_push_notifications_on/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: not receiving HA mobile push notifications on Android</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ifool5/delayed_push_notifications_on_ios_companion_app/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: delayed push notifications on iOS Companion App</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1rrqvor/delayed_notifications_on_android_using_nabu_casa/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: delayed Android notifications using Nabu Casa</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Official Home Assistant docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/notify/" target="_blank" rel="noopener noreferrer">Home Assistant Notify integration</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/" target="_blank" rel="noopener noreferrer">Companion App notification basics</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/troubleshooting/faqs/" target="_blank" rel="noopener noreferrer">Companion App notification troubleshooting</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/notifications/critical-notifications/" target="_blank" rel="noopener noreferrer">Companion App critical notifications</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/notifications/notification-local/" target="_blank" rel="noopener noreferrer">Companion App Local Push</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/notifications/notification-details/" target="_blank" rel="noopener noreferrer">Companion App privacy, rate limiting, and security</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2022/02/11/android-february/" target="_blank" rel="noopener noreferrer">Home Assistant Android Companion 2022.2 Local Push release notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Platform and GitHub references</h3>
+              <ul>
+                <li><a href="https://developer.android.com/training/monitoring-device-state/doze-standby" target="_blank" rel="noopener noreferrer">Android Developers: Doze and App Standby</a></li>
+                <li><a href="https://support.apple.com/guide/iphone/change-notification-settings-iph7c3d96bab/ios" target="_blank" rel="noopener noreferrer">Apple Support: change notification settings on iPhone</a></li>
+                <li><a href="https://support.apple.com/guide/iphone/set-up-a-focus-iphd6288a67f/ios" target="_blank" rel="noopener noreferrer">Apple Support: set up Focus on iPhone</a></li>
+                <li><a href="https://github.com/home-assistant/android/issues/594" target="_blank" rel="noopener noreferrer">GitHub: Android notifications while phone is locked</a></li>
+                <li><a href="https://github.com/home-assistant/android/issues/6829" target="_blank" rel="noopener noreferrer">GitHub: notification-related Android app behavior example, 2026</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Tara context</h3>
+              <ul>
+                <li><a href="/blog/home-assistant-automation-not-firing/">Home Assistant automation troubleshooting</a></li>
+                <li><a href="/blog/home-assistant-remote-access-without-port-forwarding/">Home Assistant remote access without port forwarding</a></li>
+                <li><a href="/blog/home-assistant-person-not-updating/">Home Assistant person and phone tracking troubleshooting</a></li>
+                <li><a href="/blog/home-automation-without-cloud/">How to run your smart home without the cloud</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want alerts that your family can trust?</h2>
+          <p>Tara packages the hub, local devices, remote access, notification channels, backups, and handoff notes so alerts are useful without making the homeowner maintain a fragile setup.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/home-assistant-automation-not-firing/">Automation guide</a><a href="/blog/home-assistant-remote-access-without-port-forwarding/">Remote access guide</a><a href="/blog/home-assistant-person-not-updating/">Presence guide</a><a href="/blog/best-water-leak-sensors-home-assistant-2026/">Leak sensor guide</a><a href="/blog/home-automation-without-cloud/">No-cloud guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
