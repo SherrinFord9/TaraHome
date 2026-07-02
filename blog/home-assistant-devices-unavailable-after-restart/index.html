@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Your Home Assistant Devices Are Unavailable After a Restart | Tara Guides</title>
+    <meta name="description" content="Fix Home Assistant devices and entities showing unavailable by checking reachability, IP changes, mDNS, logs, MQTT discovery, ESPHome, Zigbee, Z-Wave, Matter, and cloud caveats before deleting devices." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/" />
+    <meta property="og:title" content="Why Your Home Assistant Devices Are Unavailable After a Restart | Tara Guides" />
+    <meta property="og:description" content="Fix Home Assistant devices and entities showing unavailable by checking reachability, IP changes, mDNS, logs, MQTT discovery, ESPHome, Zigbee, Z-Wave, Matter, and cloud caveats before deleting devices." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-devices-unavailable-after-restart/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Your Home Assistant Devices Are Unavailable After a Restart | Tara Guides" />
+    <meta name="twitter:description" content="Fix Home Assistant devices and entities showing unavailable by checking reachability, IP changes, mDNS, logs, MQTT discovery, ESPHome, Zigbee, Z-Wave, Matter, and cloud caveats before deleting devices." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-devices-unavailable-after-restart/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/#blogposting",
+      "headline": "Why Your Home Assistant Devices Are Unavailable After a Restart",
+      "description": "Fix Home Assistant devices and entities showing unavailable by checking reachability, IP changes, mDNS, logs, MQTT discovery, ESPHome, Zigbee, Z-Wave, Matter, and cloud caveats before deleting devices.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-devices-unavailable-after-restart/cover.png",
+      "datePublished": "2026-07-02",
+      "dateModified": "2026-07-02",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/docs/templating/states/",
+        "https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/entity-unavailable/",
+        "https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/log-when-unavailable/",
+        "https://www.home-assistant.io/integrations/system_log/",
+        "https://www.home-assistant.io/integrations/zeroconf/",
+        "https://www.home-assistant.io/integrations/mqtt/",
+        "https://www.home-assistant.io/integrations/wled/",
+        "https://www.home-assistant.io/integrations/esphome/",
+        "https://esphome.io/components/api/",
+        "https://esphome.io/guides/faq/",
+        "https://www.home-assistant.io/integrations/zwave_js/",
+        "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+        "https://www.reddit.com/r/homeassistant/comments/1g5zpcy/many_devices_unavailable_after_restarting/",
+        "https://community.home-assistant.io/t/multiple-devices-with-different-integrations-are-becoming-unavailable/313369",
+        "https://community.home-assistant.io/t/esphome-devices-becoming-unavailable-in-home-assistant/429842",
+        "https://github.com/home-assistant/core/issues/135266"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why Your Home Assistant Devices Are Unavailable After a Restart",
+          "item": "https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I delete and re-add unavailable Home Assistant devices?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually no. First prove whether Home Assistant can still reach the device, whether its IP address changed, whether the integration logged an error, and whether the device is waiting for discovery or a radio network to recover. Deleting or re-pairing too early can create more work."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do devices go unavailable after a router reboot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The common local cause is reachability: the router may have handed out new IP addresses, mDNS discovery may not be crossing the right network, or a Wi-Fi device may have rejoined slowly. DHCP reservations for Home Assistant and fixed-location devices prevent many repeat incidents."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are MQTT devices unavailable after a Home Assistant restart?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Home Assistant documents that discovered MQTT devices can stay unavailable until discovery messages are received after MQTT starts. Devices should respond to the Home Assistant birth message, retain discovery where appropriate, or periodically resend discovery with care."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can an unavailable entity still mean the physical device works?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. A Shelly, ESPHome, WLED, cloud appliance, or radio device may still work in its own app or on its own buttons while Home Assistant cannot reach the integration path. That is why the first check is device reachability outside Home Assistant."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should automations run when a sensor is unavailable?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For safety-critical actions, no. Use unavailable states as a reason to pause, notify, or fall back safely. Do not make locks, garage doors, alarms, HVAC, or water shutoff routines take risky actions because a device disappeared."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Troubleshooting</span><span>July 2, 2026</span><span>12 min read</span></p>
+            <h1>Why Your Home Assistant Devices Are Unavailable After a Restart</h1>
+            <p class="lede">Fix unavailable Home Assistant devices by finding the broken path first: address, discovery, broker, radio, cloud, or integration logs.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-devices-unavailable-after-restart/cover.png" alt="Tara local hub and router cover image for Home Assistant unavailable devices troubleshooting" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> when several Home Assistant devices or entities, meaning the switches, sensors, and controls Home Assistant shows, say <code>unavailable</code> after a restart or router reboot, check reachability, IP addresses, and logs before deleting or re-pairing anything.</li>
+    <li><strong>Start here:</strong> make DHCP reservations for Home Assistant and fixed Wi-Fi devices, confirm the device opens or pings outside Home Assistant, then reconfigure the affected integration if its address changed.</li>
+    <li><strong>Avoid this:</strong> do not use Update all, factory reset Matter/Thread gear, or rebuild a Zigbee/Z-Wave network as the first fix. Those are later steps after you know which layer failed.</li>
+    <li><strong>Main caveat:</strong> cloud integrations, sleepy battery sensors, MQTT discovery, and weak radio networks can all look like the same red unavailable state, so the fix depends on the integration path.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Prove the Broken Path First</h2>
+<p>If Home Assistant says a device or entity is <code>unavailable</code>, it usually means Home Assistant cannot reach the device, service, or integration path right now. The device may still have power. It may still work from its own wall switch, vendor app, or local web page. The broken part is the path Home Assistant uses to talk to it. In Home Assistant, an <strong>entity</strong> is one visible switch, sensor, light, lock, value, or control, while an <strong>integration</strong> is the software connection that talks to the device or service.</p>
+<p>Start with the boring checks because they fix the most houses: confirm Home Assistant itself is online, open the affected device outside Home Assistant if it has a local web page, check whether the router gave it a new IP address, and read <strong>Settings &gt; System &gt; Logs</strong> for the integration name. If many Wi-Fi or LAN devices disappeared after router work, use DHCP reservations, which are router rules that give important devices the same local IP address every time, and reconfigure integrations with the current address. If only Zigbee, Z-Wave, Matter, MQTT, or ESPHome devices are affected, troubleshoot that stack instead of resetting everything.</p>
+<p>The rule is simple: <strong>one unavailable device is usually a device or integration problem; many unrelated unavailable devices are usually a network, radio, broker, or cloud reachability problem.</strong></p>
+
+<div class="callout">
+  <p><strong>Do not delete first.</strong> Removing devices can break entity IDs, dashboards, automations, and history. Treat deletion or re-pairing as a last resort after you know the device really cannot be recovered in place.</p>
+</div>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is current and practical. In r/homeassistant, a homeowner described many devices becoming unavailable after restarting networking equipment; the thread quickly narrowed toward changed IP addresses and DHCP reservations. Home Assistant Community threads show the same pattern from different angles: multiple unrelated integrations timing out together, ESPHome devices that still appeared alive on Wi-Fi but dropped from Home Assistant, and MQTT devices that showed unavailable after a Home Assistant restart.</p>
+<p>Home Assistant's own direction also makes the topic worth a fresh guide. The <strong>July 1, 2026</strong> Home Assistant 2026.7 release added an Update all button and improved ZHA Zigbee device management. Those are useful improvements, but they are not a substitute for diagnosis. If your house is offline because the router reassigned addresses, clicking more updates only adds more variables. If ZHA has weak routes, the new device-management view can help you inspect the network, but it does not mean every unavailable state is a Zigbee problem.</p>
+
+<h2 id="what-unavailable-means">What Unavailable Actually Means</h2>
+<p>Home Assistant's state docs separate <code>unknown</code> from <code>unavailable</code>. <code>unknown</code> means Home Assistant has the entity but does not know the value right now. <code>unavailable</code> means the entity cannot be reached at all, often because a device is offline or an integration failed to load.</p>
+<p>The developer docs reinforce that behavior: integrations should mark an entity unavailable when they cannot fetch data from the device or service, and they should log when a device or service becomes unreachable and when it comes back. For a homeowner, this means an unavailable state is not a moral judgment about the device. It is a clue about communication.</p>
+<p>That clue still needs context. A cloud appliance can be unavailable because the vendor API is down. A WLED or ESPHome device can be unavailable because its IP address changed. An MQTT device can be waiting for discovery to be resent. A battery Zigbee sensor can be asleep, out of route, or actually dead. The red state looks the same, but the fix is different.</p>
+
+<h2 id="five-minute-triage">The Five-Minute Triage Order</h2>
+<p>Use this order before you reset anything. It is intentionally plain because most unavailable-device problems are solved by narrowing the failure, not by trying dramatic fixes.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>What it tells you</th>
+        <th>Likely next step</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Is it one device or many unrelated devices?</td>
+        <td>One device points at that device or integration. Many unrelated devices point at the network, broker, radio, Home Assistant host, or vendor cloud.</td>
+        <td>Do not re-pair a whole network for one device, and do not blame one device when the network changed.</td>
+      </tr>
+      <tr>
+        <td>Did the router, access points, VLAN, DNS, or Home Assistant host restart?</td>
+        <td>Changed addressing and discovery are common after network work.</td>
+        <td>Check router DHCP leases, Home Assistant's IP, device IPs, and mDNS/Bonjour visibility.</td>
+      </tr>
+      <tr>
+        <td>Can the device be reached outside Home Assistant?</td>
+        <td>If its app, web page, ping, or local controls work, the device may be fine and the integration path is broken.</td>
+        <td>Reconfigure the integration, update the stored host, or troubleshoot discovery.</td>
+      </tr>
+      <tr>
+        <td>What do logs say?</td>
+        <td>Timeout, authentication, DNS, MQTT discovery, cloud API, and radio errors point in different directions.</td>
+        <td>Use Settings &gt; System &gt; Logs, and search for the integration name.</td>
+      </tr>
+      <tr>
+        <td>Which control path is this?</td>
+        <td>Wi-Fi, Ethernet, Zigbee, Z-Wave, Matter, Thread, MQTT, ESPHome, HomeKit, and cloud paths fail differently.</td>
+        <td>Follow the matching section below.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="router-restart">If It Happened After Router or Network Work</h2>
+<p>This is the most common homeowner version of the problem: the modem, router, controller, or access points restarted, and Home Assistant came back with several unavailable devices.</p>
+<p>The first suspect is <strong>IP address change</strong>. Many local integrations remember a device by hostname or IP address. If the router gives that device a different address after a long outage, Home Assistant may keep trying the old address. The WLED integration docs spell out the practical version of this: DHCP address reuse can make Home Assistant connect to the wrong device or fail validation, and the fix is to reconfigure the integration with the correct address, check the router's assignment, and reduce repeats with a DHCP reservation or static IP.</p>
+<p>For most homes, prefer <strong>DHCP reservations in the router</strong> over manually setting static IPs on every small device. Reserve addresses for Home Assistant, local hubs, WLED, Shelly, ESPHome, cameras, NVRs, bridges, and anything mounted in a wall or ceiling. A reservation keeps the router in charge while making the address stable, so the device does not quietly move to a new address after an outage.</p>
+<p>The second suspect is <strong>mDNS/Bonjour</strong>, the local discovery traffic behind many <code>*.local</code> names and auto-discovered devices. Home Assistant's Zeroconf docs describe a browser under <strong>Settings &gt; System &gt; Network &gt; Zeroconf Browser</strong>. If the device no longer appears there, the problem may be the network path, selected Home Assistant interface, VLAN boundary, meaning a separate network segment, multicast setting, or access point behavior. This matters especially for HomeKit Device, ESPHome discovery, some media devices, and other local integrations.</p>
+
+<h2 id="wifi-local-devices">If Wi-Fi Devices Work in Their App but Not Home Assistant</h2>
+<p>This is common with ESPHome, a local firmware system for ESP-based devices, WLED LED controllers, Shelly-style local devices, cameras, and other Wi-Fi gear. The device can appear healthy in its vendor app or web page while Home Assistant still marks it unavailable.</p>
+<p>For ESPHome, the official Home Assistant integration can auto-discover devices, or you can add one manually with an IP address or hostname. ESPHome's own native API docs say a device may be added by <code>&lt;NODE_NAME&gt;.local</code> or by IP address. If <code>*.local</code> names are unreliable across your router, VLAN, or access point setup, try the actual IP address and then make that address stable with a DHCP reservation.</p>
+<p>Also check Wi-Fi quality, not just signal bars. Community ESPHome threads show a recurring pain: the ESP device can still be on Wi-Fi while the Home Assistant API connection is flaky. ESPHome's FAQ says devices may intentionally reboot after configured timeouts when Wi-Fi, API, or MQTT connections are lost. If unavailable events come and go, look at 2.4 GHz coverage, access point roaming, power supply quality, and whether the device is stuck to a weak AP after an outage.</p>
+<p>Do not assume that a vendor app working means Home Assistant is wrong. Vendor apps often use a different path, sometimes cloud-backed, while Home Assistant may use local polling, local push, mDNS, or a native API connection inside the house.</p>
+
+<h2 id="mqtt">If MQTT Devices Are Unavailable After a Restart</h2>
+<p>MQTT, a local message-bus system used by many DIY and bridge devices, adds another layer: Home Assistant, the MQTT broker that passes messages, and the device must agree on discovery and availability. Home Assistant's MQTT docs say that when MQTT starts up, discovered MQTT devices and entities can be unavailable until a discovery message is received and processed. The docs also say devices using MQTT discovery should subscribe to the Home Assistant birth message and use it to resend discovery.</p>
+<p>That matches real GitHub issue patterns. A 2025 Home Assistant Core issue described some MQTT devices remaining unavailable after a restart even though retained discovery and fresh device messages were visible in MQTT Explorer. The exact bug history is less important than the lesson: if MQTT devices are the only thing affected, check the broker, retained discovery topics, birth messages, availability topics, and whether the device publishes its discovery again after Home Assistant restarts.</p>
+<p>Practical order:</p>
+<ul>
+  <li>Confirm the broker is running and Home Assistant is connected to it.</li>
+  <li>Use MQTT Explorer or the Home Assistant MQTT listen tool to verify messages are arriving.</li>
+  <li>Check whether the device publishes availability topics like <code>online</code> and <code>offline</code>.</li>
+  <li>Check whether discovery payloads are retained or resent after Home Assistant's birth message.</li>
+  <li>Reload the MQTT integration only after you understand whether messages are missing or Home Assistant is not processing them.</li>
+</ul>
+
+<h2 id="zigbee-zwave-matter">If Only Zigbee, Z-Wave, Matter, or Thread Devices Are Unavailable</h2>
+<p>Radio networks fail differently from Wi-Fi devices. If only one protocol family is affected, stay inside that family first.</p>
+<p>For <strong>Zigbee</strong>, a local low-power mesh radio used by many sensors and switches, look at the coordinator, meaning the USB or network radio that owns the Zigbee network, USB placement, powered routers, battery levels, and whether the outage happened after moving the hub or changing channels. Home Assistant 2026.7's ZHA overhaul moved Zigbee device management into a fuller page with neighbors, clusters, bindings, and signatures easier to inspect. Use that visibility, but do not rebuild the network because one sleepy sensor missed a check-in.</p>
+<p>For <strong>Z-Wave</strong>, another local smart-home radio common in locks, sensors, and North American installed devices, the Home Assistant Z-Wave JS docs note node status sensors, ping buttons, and statistics that can help troubleshoot dead nodes and RF issues. A dead node is not the same as a Wi-Fi IP change. Start with the Z-Wave JS health and node tools before excluding and including devices again.</p>
+<p>For <strong>Matter and Thread</strong>, Matter is the cross-platform smart-home standard and Thread is the low-power mesh network many Matter devices use. Unavailable devices often come down to IPv6, Thread border routers, fabric/controller state, or the Matter server. Tara has separate guides for Thread border-router errors and Matter network-connectivity stalls because those topics have their own traps. The short version here: if every Matter-over-Thread device is unavailable, check the border router and network path before factory-resetting accessories.</p>
+
+<h2 id="cloud-integrations">If a Cloud Integration Is Unavailable</h2>
+<p>Cloud integrations are different because the device can be fine and your local network can be fine, while the vendor login, API, rate limit, or internet path is not. Logs usually make this obvious with authentication, timeout, token, or API errors.</p>
+<p>Do not build critical household behavior that assumes every cloud device will always be reachable. Use local-first paths for lights, locks, leak sensors, presence, and essential notifications where possible. If a cloud appliance is useful but not critical, let Home Assistant show the state, but keep fallback controls available in the vendor app or at the physical device.</p>
+<p>This matters for safety. A missing cloud state should not cause an alarm to disarm, a lock to unlock, a garage door to open, an HVAC system to run aggressively, or a water valve to toggle without confirmation. For risky devices, unavailable should pause or notify, not improvise.</p>
+
+<h2 id="dashboard-automation">Make Dashboards and Automations Handle Unavailable Gracefully</h2>
+<p>After you fix the immediate issue, improve how the system behaves next time. Home Assistant's templating docs recommend handling <code>unknown</code> and <code>unavailable</code> explicitly, and the <code>has_value()</code> helper can keep templates from pretending an unavailable sensor is a valid reading.</p>
+<p>In plain English: do not make a dashboard card or notification say the freezer is 0 degrees because a temperature sensor disappeared and your template defaulted to zero. Show "sensor unavailable" or send a maintenance alert. For automations, add safe conditions around important sensors so a missing value does not trigger a risky action.</p>
+<p>A useful homeowner alert is a small daily or hourly check that counts unavailable devices you actually care about, not every disabled diagnostic entity in Home Assistant. Label critical devices, ignore chatty extras, and send one calm notification when a meaningful device has been unavailable longer than expected.</p>
+
+<h2 id="what-not-to-do">What Not to Do First</h2>
+<ul>
+  <li><strong>Do not delete integrations first.</strong> You can lose stable entity IDs and break automations that were otherwise recoverable.</li>
+  <li><strong>Do not factory reset Matter, Zigbee, or Z-Wave devices first.</strong> Radio re-pairing is slow and may create duplicate devices.</li>
+  <li><strong>Do not click Update all as a troubleshooting reflex.</strong> Updates can help known bugs, but they also add change while you are trying to isolate a problem.</li>
+  <li><strong>Do not reboot the whole house repeatedly.</strong> Restarting Home Assistant, routers, coordinators, and devices at random makes it harder to know what fixed the issue.</li>
+  <li><strong>Do not hide unavailable states with optimistic templates.</strong> If the device is missing, the house should say so clearly.</li>
+</ul>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>A reliable smart home is not a home where nothing ever goes unavailable. It is a home where unavailable states are easy to interpret, safe by default, and not catastrophic when the router reboots.</p>
+<p>For Tara-style Home Assistant installs, the default is a local hub with stable network reservations, labeled critical devices, restrained cloud dependency, and backup controls for safety-sensitive paths. That makes the first response boring: check the network, check logs, identify the stack, fix the address or integration path, and only then decide whether a device needs deeper repair.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If the unavailable device points to a more specific stack, these guides go deeper.</p>
+<ul>
+  <li><a href="/blog/home-assistant-zigbee-channel-wifi-interference/">What Zigbee Channel Should You Use for Home Assistant?</a></li>
+  <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says "Your Device Requires a Thread Border Router"</a></li>
+  <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Why Home Assistant Matter Pairing Gets Stuck on "Checking Network Connectivity"</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/home-assistant-automation-not-firing/">Why Your Home Assistant Automation Is Not Firing</a></li>
+  <li><a href="/blog/how-to-update-home-assistant-safely/">How to Update Home Assistant Safely Without Breaking Your House</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="delete-readd">Should I delete and re-add unavailable Home Assistant devices?</h3>
+<p>Usually no. First prove whether Home Assistant can still reach the device, whether its IP address changed, whether the integration logged an error, and whether the device is waiting for discovery or a radio network to recover. Delete or re-pair only after recovery in place fails.</p>
+
+<h3 id="router-reboot">Why do devices go unavailable after a router reboot?</h3>
+<p>The common local cause is reachability. The router may have handed out new IP addresses, mDNS discovery may not be crossing the right network, or a Wi-Fi device may have rejoined slowly. DHCP reservations for Home Assistant and fixed-location devices prevent many repeat incidents.</p>
+
+<h3 id="mqtt-after-restart">Why are MQTT devices unavailable after a Home Assistant restart?</h3>
+<p>Home Assistant documents that discovered MQTT devices can stay unavailable until discovery messages are received after MQTT starts. Devices should respond to the Home Assistant birth message, retain discovery where appropriate, or periodically resend discovery with care.</p>
+
+<h3 id="device-still-works">Can an unavailable entity still mean the physical device works?</h3>
+<p>Yes. A Shelly, ESPHome, WLED, cloud appliance, or radio device may still work in its own app or on its own buttons while Home Assistant cannot reach the integration path. That is why the first check is device reachability outside Home Assistant.</p>
+
+<h3 id="automation-safety">Should automations run when a sensor is unavailable?</h3>
+<p>For safety-critical actions, no. Use unavailable states as a reason to pause, notify, or fall back safely. Do not make locks, garage doors, alarms, HVAC, or water shutoff routines take risky actions because a device disappeared.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/docs/templating/states/" target="_blank" rel="noopener noreferrer">Home Assistant states docs: unknown and unavailable</a></li>
+                <li><a href="https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/entity-unavailable/" target="_blank" rel="noopener noreferrer">Developer docs: mark entity unavailable when data cannot be fetched</a></li>
+                <li><a href="https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/log-when-unavailable/" target="_blank" rel="noopener noreferrer">Developer docs: log when a device or service is unreachable</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/system_log/" target="_blank" rel="noopener noreferrer">Home Assistant System Log docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zeroconf/" target="_blank" rel="noopener noreferrer">Home Assistant Zeroconf and mDNS troubleshooting</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.7 release notes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Integration and protocol docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/mqtt/" target="_blank" rel="noopener noreferrer">Home Assistant MQTT integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/wled/" target="_blank" rel="noopener noreferrer">Home Assistant WLED integration DHCP/IP troubleshooting</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/esphome/" target="_blank" rel="noopener noreferrer">Home Assistant ESPHome integration docs</a></li>
+                <li><a href="https://esphome.io/components/api/" target="_blank" rel="noopener noreferrer">ESPHome native API docs</a></li>
+                <li><a href="https://esphome.io/guides/faq/" target="_blank" rel="noopener noreferrer">ESPHome FAQ: reboot timeouts and connectivity</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zwave_js/" target="_blank" rel="noopener noreferrer">Home Assistant Z-Wave JS troubleshooting tools</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1g5zpcy/many_devices_unavailable_after_restarting/" target="_blank" rel="noopener noreferrer">r/homeassistant: many devices unavailable after restarting networking equipment</a></li>
+                <li><a href="https://community.home-assistant.io/t/multiple-devices-with-different-integrations-are-becoming-unavailable/313369" target="_blank" rel="noopener noreferrer">Home Assistant Community: multiple integrations becoming unavailable</a></li>
+                <li><a href="https://community.home-assistant.io/t/esphome-devices-becoming-unavailable-in-home-assistant/429842" target="_blank" rel="noopener noreferrer">Home Assistant Community: ESPHome devices becoming unavailable</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/135266" target="_blank" rel="noopener noreferrer">GitHub issue: MQTT devices unavailable after Home Assistant restart</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want unavailable devices to be easier to diagnose next time?</h2>
+          <p>Tara packages the local hub, network defaults, device labels, and handoff notes so the house is easier to support when something drops offline.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/smart-home-kit/">Smart home kit</a><a href="/home-automation-kit/">Home automation kit</a><a href="/no-subscription-smart-home/">No subscription smart home</a><a href="/presence-detection-smart-home/">Presence detection</a><a href="/camera-kit/">Camera kit</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
