@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Your Home Assistant Automation Runs Twice | Tara Guides</title>
+    <meta name="description" content="Fix Home Assistant automations that run twice, loop, or send duplicate alerts by checking traces, duplicate triggers, run mode, state changes, helpers, and MQTT edge cases." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-automation-runs-twice/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-automation-runs-twice/" />
+    <meta property="og:title" content="Why Your Home Assistant Automation Runs Twice | Tara Guides" />
+    <meta property="og:description" content="Fix Home Assistant automations that run twice, loop, or send duplicate alerts by checking traces, duplicate triggers, run mode, state changes, helpers, and MQTT edge cases." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-automation-runs-twice/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Your Home Assistant Automation Runs Twice | Tara Guides" />
+    <meta name="twitter:description" content="Fix Home Assistant automations that run twice, loop, or send duplicate alerts by checking traces, duplicate triggers, run mode, state changes, helpers, and MQTT edge cases." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-automation-runs-twice/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-automation-runs-twice/#blogposting",
+      "headline": "Why Your Home Assistant Automation Runs Twice",
+      "description": "Fix Home Assistant automations that run twice, loop, or send duplicate alerts by checking traces, duplicate triggers, run mode, state changes, helpers, and MQTT edge cases.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-automation-runs-twice/cover.png",
+      "datePublished": "2026-07-02",
+      "dateModified": "2026-07-02",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-automation-runs-twice/"
+      },
+      "keywords": [
+        "Home Assistant automation runs twice",
+        "Home Assistant duplicate automation",
+        "Home Assistant automation loop",
+        "Home Assistant automation mode",
+        "Home Assistant traces"
+      ],
+      "citation": [
+        "https://www.reddit.com/r/homeassistant/comments/1fkspy8/preventing_automation_from_running_twice_before/",
+        "https://www.reddit.com/r/homeassistant/comments/101lhfa/automations_multiple_retriggers_need_to_stop/",
+        "https://community.home-assistant.io/t/automation-with-2-triggers-for-the-same-door-prevent-triggering-twice/103089",
+        "https://community.home-assistant.io/t/preventing-duplicate-runs-of-an-automation/227953",
+        "https://community.home-assistant.io/t/automation-is-triggered-by-state-change-from-off-to-off/682853",
+        "https://community.home-assistant.io/t/clarification-on-state-trigger-please/987891",
+        "https://community.home-assistant.io/t/automation-loop-will-it-happen/827656",
+        "https://www.home-assistant.io/docs/automation/troubleshooting/",
+        "https://www.home-assistant.io/docs/automation/trigger/",
+        "https://www.home-assistant.io/docs/automation/modes/",
+        "https://www.home-assistant.io/docs/automation/condition/",
+        "https://www.home-assistant.io/docs/automation/action/",
+        "https://www.home-assistant.io/docs/configuration/state_object/",
+        "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+        "https://www.home-assistant.io/blog/2025/12/03/release-202512/",
+        "https://github.com/home-assistant/core/issues/168379"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-automation-runs-twice/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why Your Home Assistant Automation Runs Twice",
+          "item": "https://tarahome.ai/blog/home-assistant-automation-runs-twice/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-automation-runs-twice/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does my Home Assistant automation run twice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually because Home Assistant received two trigger events, two automations are acting on the same device, the trigger is too broad, or the automation changes the same entity that starts it. Start with Traces to prove which case you have."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will mode: single stop duplicate runs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only while the first run is still active. If the first run finishes quickly, a second physical event can start a second run. Use a clear trigger, a short cooldown helper, or a for duration when you need debounce behavior."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should I check first in Traces?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Check whether there are two separate traces for one household event. If yes, fix the trigger source. If there is one trace but two actions, inspect choose paths, scripts, scenes, and duplicate automations."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a state trigger fire twice without the device really changing twice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It can look that way when the trigger is too broad, when attributes or unavailable states are involved, or when an integration reports more than one event. Specify the exact to and from states where possible."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it safe to debounce locks, alarms, garage doors, or leak shutoff automations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use conservative debouncing and test with notifications first. Do not hide repeated safety events until you know whether they are sensor noise, a real condition, or a device integration problem."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Automations</span><span>July 2, 2026</span><span>11 min read</span></p>
+            <h1>Why Your Home Assistant Automation Runs Twice</h1>
+            <p class="lede">When an automation runs twice, do not start by changing mode. First prove whether Home Assistant saw two triggers, one trigger with two action paths, a retrying device, or a loop.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-automation-runs-twice/cover.png" alt="Two door sensors on one opening illustrating duplicate Home Assistant automation triggers" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> open Traces and count runs. Two traces usually means two real trigger events. One trace with duplicate results usually means the action path, script, scene, or another automation is duplicating the work.</li>
+    <li><strong>Best next step:</strong> tighten the trigger with exact <code>to</code>, <code>from</code>, or <code>for</code> settings, then use trigger IDs or a short helper-based cooldown only after you know what repeated.</li>
+    <li><strong>Avoid this:</strong> do not switch to <code>parallel</code>, delete conditions, or merge everything into one giant automation just to make the warning disappear.</li>
+    <li><strong>Main caveat:</strong> <code>mode: single</code> only blocks a new run while the first run is still active. If the first run ends quickly, the next sensor bounce, button event, cloud update, or MQTT message can still start another run.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Prove Whether You Have Two Triggers or Two Actions</h2>
+<p>If a Home Assistant automation runs twice, start by deciding whether Home Assistant saw <strong>two separate trigger events</strong> or whether <strong>one trigger path did the same action twice</strong>. That one distinction prevents most wasted debugging. Open the automation's Traces. If you see two traces for one door opening, button press, motion event, or sensor update, the trigger side is repeating. If you see one trace but two notifications, two light commands, or two script calls, the action side is duplicating the work.</p>
+<p>The common fixes are practical. For a state trigger, name the exact change you care about, such as off to on, open to closed, or a value above a threshold for a short time. For two physical sensors on one door, combine them into a helper or add a short cooldown so one opening creates one household event. For motion lights, choose the automation mode deliberately instead of guessing. For loops, stop watching the same entity that the automation changes unless you add a guard condition.</p>
+<p>Do not start by blaming Home Assistant or by changing every automation to <code>parallel</code>. A duplicate run is usually Home Assistant telling you the house produced two inputs, the automation is too broad, or another routine is touching the same device.</p>
+
+<h2 id="why-current">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is clear. In r/homeassistant, users ask how to prevent an automation from running again before a timer or temporary scene finishes. In the Home Assistant Community forum, people describe duplicate notifications, two door sensors causing one camera automation to fire twice, state triggers that appear to go from off to off, and loops where one automation changes the same thing another automation watches.</p>
+<p>Home Assistant has also made automation debugging more visible. The official troubleshooting docs say traces show what triggered, which conditions were checked, and what each action did. The <strong>Home Assistant 2026.7</strong> release notes, published on <strong>July 1, 2026</strong>, say automation and script traces now include template errors more clearly. The <strong>2025.12</strong> release notes also introduced more target-first automation building in Labs, which is useful but can make it easier to target a room, area, or label without noticing how many things that target includes.</p>
+<p>So this is not only a beginner mistake. It is a normal Home Assistant maintenance question: as the house grows, automations start to overlap, targets get broader, and a routine that was harmless with one sensor can become noisy with three.</p>
+
+<h2 id="trace-first">The Trace-First Checklist</h2>
+<p>Use this order before rewriting the automation.</p>
+<ol>
+  <li><strong>Open Traces for the automation.</strong> Look at the time of the household event. Two traces means the automation started twice. One trace means the duplication happened inside the action path or somewhere else.</li>
+  <li><strong>Check the triggering row.</strong> Home Assistant's trigger docs say multiple triggers are treated as alternatives: processing starts whenever one of them fires. If two sensors, two button events, or two time patterns are present, each one can start the automation.</li>
+  <li><strong>Check Related activity and the logbook.</strong> If another automation, script, scene, Node-RED flow, or manual dashboard tap changed the same device, the duplicate may not come from the automation you are staring at.</li>
+  <li><strong>Check the action list.</strong> Home Assistant action docs say actions are processed in order. A script can be called twice, a choose branch can fall through in a surprising way, or two actions can target the same light group.</li>
+  <li><strong>Only then change mode.</strong> Mode handles overlap while the automation is already running. It does not fix a trigger that is too broad or another automation doing the same job.</li>
+</ol>
+
+<h2 id="usual-causes">The Usual Causes and the Right Fix</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>What you see</th>
+        <th>Most likely cause</th>
+        <th>Plain-English fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Two traces for one door opening or button press</td>
+        <td>Two sensors, two triggers, button down/up events, or a device that reports more than one event</td>
+        <td>Use one helper group or one trigger event, add trigger IDs, or add a short cooldown that treats the physical action as one household event.</td>
+      </tr>
+      <tr>
+        <td>Notifications repeat while the value stays high</td>
+        <td>Trigger is too broad or the sensor keeps updating while still matching the condition</td>
+        <td>Use a threshold trigger, a <code>for</code> duration, or a helper that records that the alert has already been sent.</td>
+      </tr>
+      <tr>
+        <td>A motion light turns on, waits, then the timer behaves strangely</td>
+        <td>Mode and delay do not match the room behavior</td>
+        <td>Use <code>restart</code> when new motion should reset the timer, <code>single</code> when new motion should be ignored, and a timer helper for longer waits.</td>
+      </tr>
+      <tr>
+        <td>The automation flips something back and forth</td>
+        <td>Feedback loop: the action changes the same entity or state that triggers another automation</td>
+        <td>Add a guard condition, split control from observation, or use a helper that says the change was intentional.</td>
+      </tr>
+      <tr>
+        <td>The same device command appears from two places</td>
+        <td>Duplicate automation, blueprint copy, old YAML file, script, scene, or Node-RED flow</td>
+        <td>Search by entity ID and automation alias, disable one routine at a time, and keep one owner for each household behavior.</td>
+      </tr>
+      <tr>
+        <td>MQTT device triggers duplicate after a broker or add-on update</td>
+        <td>Integration or broker edge case</td>
+        <td>Confirm in MQTT logs before changing automation logic. A 2026 Home Assistant Core issue documents duplicate MQTT trigger behavior with overlapping subscriptions under Mosquitto 2.1+.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="tighten-state-triggers">Tighten State Triggers Before Adding Clever Logic</h2>
+<p>A <strong>state trigger</strong> watches an entity, such as <code>binary_sensor.front_door</code>, <code>light.porch</code>, or <code>sensor.outdoor_uv</code>. An <strong>entity</strong> is Home Assistant's named version of something in the house. State is the main value, such as on, off, open, closed, home, away, 72, or unavailable. Attributes are extra details attached to that entity.</p>
+<p>Home Assistant's state object docs explain that an entity has one main state and can also have attributes, timestamps, and context. Community examples show why broad state triggers surprise people: if you only tell Home Assistant "watch this entity" and do not say which state change matters, a noisy update can look like a duplicate run.</p>
+<p>The homeowner-safe pattern is boring and clear. Say the exact transition. For a door, use closed to open or open to closed. For motion, use clear to detected, and consider a short <code>for</code> only if the sensor is noisy. For a numeric value, use a numeric-state trigger and avoid alerting every time the sensor reports while still above the threshold. If you truly need every update, keep that automation small and harmless.</p>
+
+<h2 id="mode-is-not-debounce">Automation Mode Is Not the Same as Debounce</h2>
+<p>Home Assistant's mode docs say the default <code>single</code> mode ignores a new trigger while the current run is still active. That is useful, but it is not a magic "only once per door opening" setting. If the automation starts, sends a notification, and finishes in one second, a second sensor event two seconds later can start it again.</p>
+<p>Use modes this way:</p>
+<ul>
+  <li><strong><code>single</code>:</strong> use when the automation should ignore overlap while it is still busy. This is useful for short throttles or critical sequences that should not stack.</li>
+  <li><strong><code>restart</code>:</strong> use when a newer event should reset the timer, common for motion lighting where new motion should extend the light.</li>
+  <li><strong><code>queued</code>:</strong> use when every command must finish in order, especially for devices that dislike simultaneous commands.</li>
+  <li><strong><code>parallel</code>:</strong> use only when overlapping copies are safe, such as independent notifications that do not touch the same device state.</li>
+</ul>
+<p>If the real requirement is "one alert per 10 minutes" or "one temporary scene per open door event," use a timer, an input boolean, or an input datetime as a cooldown. That is debounce: treating several noisy signals as one household event.</p>
+
+<h2 id="two-sensors-one-event">Two Sensors Can Be Correct and Still Too Noisy</h2>
+<p>The cover image for this post shows the simplest real-world case: one opening can have two sensors. A Home Assistant Community thread describes a door with two door sensors where one door opening caused two triggers close together. Neither sensor is necessarily broken. The automation just needs to define what counts as one event.</p>
+<p>If both sensors mean the same thing, create a binary sensor group or helper that represents the door as a household state. If the two sensors mean different things, use trigger IDs and a choose action so each trigger has one intended path. Do not let both paths send the same camera snapshot, unlock command, or announcement unless that is truly what the family wants.</p>
+<p>For cameras, locks, alarms, and garage doors, treat duplicate sensor events as useful evidence until proven otherwise. Start by sending notifications that show which trigger fired. After a week of clean traces, turn on the control action.</p>
+
+<h2 id="loops">How Loops Happen</h2>
+<p>A loop starts when automation A changes something that automation B watches, and then B changes something A watches. It can also happen inside one automation: a state change turns on a light, the light state change triggers another branch, and the system keeps reacting to itself.</p>
+<p>Look for phrases like these in your own logic:</p>
+<ul>
+  <li>When the light turns on, change the same light again.</li>
+  <li>When the switch turns off, turn the switch back on.</li>
+  <li>When a scene changes the room, run another automation that also changes the room.</li>
+  <li>When a notification action toggles a helper, use that helper to trigger the original notification again.</li>
+</ul>
+<p>The fix is to separate observation from control. Use one automation to decide that the room is occupied, one automation to act on occupancy, and a helper that records whether Home Assistant intentionally made the change. Home Assistant's state object context can help advanced users trace what caused a state change, but most households benefit more from simpler ownership: one routine owns one behavior.</p>
+
+<h2 id="mqtt-edge-case">The MQTT Edge Case: Do Not Assume It, but Do Check It</h2>
+<p>Most duplicate automations are design or trigger problems. Still, integration-specific edge cases exist. A Home Assistant Core GitHub issue from 2026 reports MQTT triggers firing multiple times per physical event when overlapping subscriptions met Mosquitto 2.1+ behavior. That does not mean every MQTT automation is broken. It means you should check logs before adding workarounds.</p>
+<p>If the automation uses MQTT, Zigbee2MQTT, or a remote button that publishes events, verify the raw event stream. If the broker, integration, or device sends two messages, Home Assistant may be doing exactly what it was told. If the broker sends one message and the automation still runs twice, search the Home Assistant side for duplicate triggers, device triggers, blueprints, and scripts.</p>
+
+<h2 id="safety">Safety and Privacy Guardrails</h2>
+<p>Duplicate runs are annoying for lights and notifications. They can be risky for access, security, water, power, recording, or comfort systems.</p>
+<ul>
+  <li><strong>Locks and garage doors:</strong> do not hide repeated open, close, lock, or unlock signals until you know the physical device state is trustworthy. Use notifications and manual confirmation first.</li>
+  <li><strong>Alarms and cameras:</strong> do not suppress duplicate motion or door events if they may represent real activity. Debounce alerts carefully and keep recording logic separate from alert logic.</li>
+  <li><strong>HVAC:</strong> avoid loops where window, occupancy, and thermostat automations fight each other. Keep fallback temperatures and manual control.</li>
+  <li><strong>Leak and shutoff routines:</strong> test with water-safe simulations, not by removing safeguards. A duplicate leak alert is better than a silently ignored real leak.</li>
+</ul>
+<p>A good local smart home should explain itself. Tara's approach is to make automations small enough that a trace tells the story: what started it, what could block it, what it changed, and what it did if the signal looked uncertain.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>For a Tara-style Home Assistant install, duplicate automations are a design smell, not a reason to fear automation. The fix is usually naming the household event more clearly: "front door opened," "kitchen occupied," "UV alert already sent," or "bedtime routine running." Once the event has a clear owner, the automations around it get quieter.</p>
+<p>Keep important routines local, visible, and boring. Use helpers for household state, trigger IDs for multi-trigger automations, traces for proof, and conservative modes for devices that should not receive overlapping commands. The point is not fewer automations at any cost. The point is fewer surprises.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>Duplicate-run debugging pairs naturally with broader automation, backup, network, and update hygiene.</p>
+<ul>
+  <li><a href="/blog/home-assistant-automation-not-firing/">Why your Home Assistant automation is not firing</a></li>
+  <li><a href="/blog/home-assistant-notifications-delayed-not-arriving/">Why Home Assistant notifications are delayed or not arriving</a></li>
+  <li><a href="/blog/home-assistant-person-not-updating/">Why your Home Assistant person entity is stuck at home or away</a></li>
+  <li><a href="/blog/how-to-back-up-home-assistant/">How to back up Home Assistant so you can actually restore it</a></li>
+  <li><a href="/blog/how-to-update-home-assistant-safely/">How to update Home Assistant safely without breaking your house</a></li>
+  <li><a href="/configurator/">Configurator</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-why-twice">Why does my Home Assistant automation run twice?</h3>
+<p>Usually because Home Assistant received two trigger events, two automations are acting on the same device, the trigger is too broad, or the automation changes the same entity that starts it. Open Traces first so you know which case you have.</p>
+
+<h3 id="faq-single-mode">Will <code>mode: single</code> stop duplicate runs?</h3>
+<p>Only while the first run is still active. If the first run ends quickly, a second sensor bounce, button event, cloud update, or MQTT message can start another run. Use a clear trigger and a cooldown helper when you need debounce behavior.</p>
+
+<h3 id="faq-traces">What should I check first in Traces?</h3>
+<p>Check whether there are two separate traces for one household event. If yes, fix the trigger source. If there is one trace but two actions, inspect choose paths, scripts, scenes, and duplicate automations.</p>
+
+<h3 id="faq-state-trigger">Can a state trigger fire twice without the device really changing twice?</h3>
+<p>It can look that way when the trigger is too broad, when attributes or unavailable states are involved, or when an integration reports more than one event. Specify the exact <code>to</code> and <code>from</code> states where possible.</p>
+
+<h3 id="faq-safety">Is it safe to debounce locks, alarms, garage doors, or leak shutoff automations?</h3>
+<p>Use conservative debouncing and test with notifications first. Do not hide repeated safety events until you know whether they are sensor noise, a real condition, or a device integration problem.</p>
+</div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1fkspy8/preventing_automation_from_running_twice_before/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: preventing an automation from running twice before it finishes</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/101lhfa/automations_multiple_retriggers_need_to_stop/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: multiple retriggers need to stop</a></li>
+                <li><a href="https://community.home-assistant.io/t/automation-with-2-triggers-for-the-same-door-prevent-triggering-twice/103089" target="_blank" rel="noopener noreferrer">Home Assistant Community: two door triggers causing one automation twice</a></li>
+                <li><a href="https://community.home-assistant.io/t/preventing-duplicate-runs-of-an-automation/227953" target="_blank" rel="noopener noreferrer">Home Assistant Community: preventing duplicate automation runs</a></li>
+                <li><a href="https://community.home-assistant.io/t/automation-is-triggered-by-state-change-from-off-to-off/682853" target="_blank" rel="noopener noreferrer">Home Assistant Community: state trigger from off to off</a></li>
+                <li><a href="https://community.home-assistant.io/t/clarification-on-state-trigger-please/987891" target="_blank" rel="noopener noreferrer">Home Assistant Community: state trigger clarification, 2026</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Official Home Assistant docs and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/" target="_blank" rel="noopener noreferrer">Home Assistant: testing and troubleshooting automations</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/trigger/" target="_blank" rel="noopener noreferrer">Home Assistant automation triggers</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/modes/" target="_blank" rel="noopener noreferrer">Home Assistant automation modes</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/condition/" target="_blank" rel="noopener noreferrer">Home Assistant automation conditions</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/action/" target="_blank" rel="noopener noreferrer">Home Assistant automation actions</a></li>
+                <li><a href="https://www.home-assistant.io/docs/configuration/state_object/" target="_blank" rel="noopener noreferrer">Home Assistant state object docs</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.7 release notes: clearer automation traces</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/12/03/release-202512/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.12 release notes: target-first automation building</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Edge cases and Tara context</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/168379" target="_blank" rel="noopener noreferrer">GitHub: MQTT overlapping subscriptions duplicate-trigger issue, 2026</a></li>
+                <li><a href="https://community.home-assistant.io/t/automation-loop-will-it-happen/827656" target="_blank" rel="noopener noreferrer">Home Assistant Community: automation loop question</a></li>
+                <li><a href="/blog/home-assistant-automation-not-firing/">Tara: why your Home Assistant automation is not firing</a></li>
+                <li><a href="/blog/home-assistant-notifications-delayed-not-arriving/">Tara: delayed or missing Home Assistant notifications</a></li>
+                <li><a href="/blog/how-to-update-home-assistant-safely/">Tara: how to update Home Assistant safely</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want automations that are easier to trace and hand off?</h2>
+          <p>Tara packages the hub, device naming, helpers, backups, and tested routines so the house has useful local automation without making every duplicate alert a weekend debugging project.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/blog/home-assistant-automation-not-firing/">Automation not firing</a><a href="/blog/home-assistant-notifications-delayed-not-arriving/">Notification guide</a><a href="/blog/home-assistant-person-not-updating/">Presence guide</a><a href="/blog/how-to-back-up-home-assistant/">Backup guide</a><a href="/blog/how-to-update-home-assistant-safely/">Update guide</a><a href="/home-assistant-smart-home-kit/">Smart home kit</a><a href="/local-smart-home-hub/">Local hub</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
