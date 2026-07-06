@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Won't Start After a YAML Change | Tara Guides</title>
+    <meta name="description" content="Recover Home Assistant after a YAML or configuration change breaks startup. Use logs, Safe Mode, Recovery Mode, ha core check, backups, and one small fix at a time." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/" />
+    <meta property="og:title" content="Home Assistant Won't Start After a YAML Change | Tara Guides" />
+    <meta property="og:description" content="Recover Home Assistant after a YAML or configuration change breaks startup with logs, Safe Mode, Recovery Mode, ha core check, and backups." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-wont-start-yaml-safe-mode/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Won't Start After a YAML Change | Tara Guides" />
+    <meta name="twitter:description" content="Recover Home Assistant after a YAML or configuration change breaks startup with logs, Safe Mode, Recovery Mode, ha core check, and backups." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-wont-start-yaml-safe-mode/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .hero, .hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body pre { background: rgba(6, 40, 32, 0.92); border-radius: 18px; color: #fffaf0; line-height: 1.45; margin: 18px 0 24px; max-width: 860px; overflow-x: auto; padding: 18px 20px; }
+      .article-body pre code { background: transparent; border: 0; color: inherit; padding: 0; white-space: pre; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      strong { font-weight: 900; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, h2, h3, p, ul, ol, pre { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/#blogposting",
+      "headline": "Home Assistant Won't Start After a YAML Change",
+      "description": "Recover Home Assistant after a YAML or configuration change breaks startup. Use logs, Safe Mode, Recovery Mode, ha core check, backups, and one small fix at a time.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-wont-start-yaml-safe-mode/cover.png",
+      "datePublished": "2026-07-06",
+      "dateModified": "2026-07-06",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/common-tasks/os/",
+        "https://www.home-assistant.io/docs/troubleshooting_general/",
+        "https://www.home-assistant.io/integrations/recovery_mode/",
+        "https://www.home-assistant.io/docs/configuration/",
+        "https://www.home-assistant.io/docs/configuration/yaml/",
+        "https://www.home-assistant.io/blog/2025/01/03/release-20251/",
+        "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+        "https://community.home-assistant.io/t/ha-core-update-failed-and-recovery-mode-activated/872972",
+        "https://www.reddit.com/r/homeassistant/comments/1pe3kfv/homeassistant_2025120_no_response/",
+        "https://www.reddit.com/r/homeassistant/comments/1oq0n67/ha_core_check_config/",
+        "https://www.reddit.com/r/homeassistant/comments/1typo7u/is_there_a_better_way_to_write_ha_automation/",
+        "https://www.reddit.com/r/homeassistant/comments/1sasae5/stuck_in_loading_data_screen_how_to_debug/",
+        "https://github.com/home-assistant/core/issues/124695"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Won't Start After a YAML Change",
+          "item": "https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I factory reset Home Assistant if it will not start?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Read the logs first, undo the last YAML or configuration change, run a configuration check, and restore a known good backup only if the specific fix is not clear."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between Home Assistant Safe Mode and Recovery Mode?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Safe Mode is a troubleshooting startup path that loads Home Assistant Core without custom integrations, custom cards, or custom themes. Recovery Mode is an automatic minimal startup mode used when Home Assistant cannot start normally."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What command checks Home Assistant YAML on Home Assistant OS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On Home Assistant OS, the official command is ha core check. It validates the stored Home Assistant Core configuration before you restart."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Recovery Mode delete my devices or history?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Home Assistant's Recovery Mode documentation says it does not delete, reset, or modify your configuration, entities, or history. It starts a minimal system so you can fix the problem."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Recovery</span><span>July 6, 2026</span><span>11 min read</span></p>
+            <h1>Home Assistant Won't Start After a YAML Change</h1>
+            <p class="lede">If Home Assistant breaks after a configuration edit, do not start by deleting files or rebuilding. Use the logs, Safe Mode, Recovery Mode, and a backup path to make the smallest fix that gets the house running again.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-wont-start-yaml-safe-mode/cover.png" alt="Local Home Assistant server and router hardware for YAML recovery troubleshooting" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Do this first:</strong> stop making changes, read Settings &gt; System &gt; Logs or the command-line logs, and fix the exact file and line Home Assistant reports.</li>
+    <li><strong>Use the right mode:</strong> Recovery Mode means Home Assistant started a minimal rescue UI; Safe Mode is for testing whether custom integrations, cards, or themes are the problem.</li>
+    <li><strong>Check before restart:</strong> on Home Assistant OS, run <code>ha core check</code> or use Developer Tools &gt; YAML before restarting again.</li>
+    <li><strong>Avoid this:</strong> do not factory reset, delete <code>configuration.yaml</code>, wipe <code>.storage</code>, or run a pile of updates while you are still recovering.</li>
+    <li><strong>Main caveat:</strong> if the logs point at corrupted storage, a bad update, or files you cannot access, restore a known good backup instead of guessing.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Fix the Last Change, Not the Whole House</h2>
+<p>If Home Assistant will not start after a YAML edit, the safest answer is usually to undo or correct the most recent configuration change, run a configuration check, and restart once. <strong>YAML</strong> is Home Assistant's text configuration format, and small details matter: indentation, missing colons, tabs, quotes, deleted include files, and old options can stop startup. The good news is that Home Assistant usually tells you where to look.</p>
+<p>Start with the latest error, not the scariest symptom. If the normal UI opens, go to <strong>Settings &gt; System &gt; Logs</strong> and search for the file name or integration that failed. An <strong>integration</strong> is Home Assistant's connector for a device, service, or feature. If Home Assistant opened in <strong>Recovery Mode</strong>, use that minimal UI to read the same logs and fix the exact line. If the UI will not open, use the Home Assistant OS command line, Terminal & SSH app, Samba, Studio Code Server, File Editor, or another access method you already trust. The first command to try on Home Assistant OS is <code>ha core check</code>, because it checks whether the stored configuration is valid before you restart again.</p>
+<p>Do not factory reset because a single YAML line broke. A factory reset turns a narrow configuration problem into a full rebuild.</p>
+
+<h2 id="why-this-topic">Why This Keeps Happening</h2>
+<p>This is not a theoretical support question. A Home Assistant Community thread from <strong>April 5, 2025</strong> shows a Core update landing in Recovery Mode because Home Assistant could not parse <code>automations.yaml</code>. A Reddit r/homeassistant thread about <strong>HomeAssistant 2025.12.0</strong> described repairs for invalid template YAML followed by a reboot that did not come back cleanly. Another recent Reddit thread wrestled with <code>ha core check</code> path confusion, while a June 2026 automation-code discussion described using <code>ha core check</code> before restart as part of a safer workflow.</p>
+<p>The official docs line up with those community patterns. Home Assistant documents configuration checks from the UI and CLI, Safe Mode for isolating custom integrations, and Recovery Mode as a minimal rescue path. The <strong>July 1, 2026</strong> Home Assistant 2026.7 release also added grouped <strong>Update all</strong> buttons for integration and app updates, which is convenient when the system is healthy. During recovery, the better move is still one change at a time.</p>
+
+<h2 id="safe-mode-vs-recovery-mode">Safe Mode vs Recovery Mode</h2>
+<p>The names sound similar, but they answer different questions.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Mode</th>
+        <th>What it means in the house</th>
+        <th>Best use</th>
+        <th>What not to assume</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Recovery Mode</strong></td>
+        <td>Home Assistant could not start normally, so it opened a minimal working system for repair.</td>
+        <td>Read logs, fix the exact YAML or startup problem, or restore a backup.</td>
+        <td>It does not mean your devices or history were deleted.</td>
+      </tr>
+      <tr>
+        <td><strong>Safe Mode</strong></td>
+        <td>Home Assistant Core starts without custom integrations, custom cards, or custom themes.</td>
+        <td>Prove whether a custom integration, dashboard card, or theme is causing the failure.</td>
+        <td>It is not a normal operating mode for the home.</td>
+      </tr>
+      <tr>
+        <td><strong>Normal Mode</strong></td>
+        <td>Your usual integrations, automations, dashboards, and devices load.</td>
+        <td>Use after the configuration check passes and the underlying error is fixed.</td>
+        <td>A normal boot does not prove every automation is healthy. Check Repairs and Logs.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="recovery-order">The Recovery Order to Try</h2>
+<ol>
+  <li><strong>Stop changing things.</strong> Do not update more integrations, install HACS packages, delete files, or restart repeatedly. Preserve the evidence.</li>
+  <li><strong>Read the first real error.</strong> Check Settings &gt; System &gt; Logs, the Recovery Mode notification, or command-line logs. Look for a file path, line number, integration name, or missing include.</li>
+  <li><strong>Undo the last YAML change.</strong> If you added a template, automation, include, integration block, customize entry, or package file, comment out only that change and save.</li>
+  <li><strong>Run the configuration check.</strong> In the UI, use Developer Tools &gt; YAML &gt; Check configuration. On Home Assistant OS, use <code>ha core check</code>.</li>
+  <li><strong>Restart once.</strong> If the same error returns, read the new line number. If a different error appears, fix that one next.</li>
+  <li><strong>Restore a backup if the fix is not obvious.</strong> Use the newest backup from before the bad edit or failed update. Make sure the backup key or emergency kit is available before relying on encrypted backups.</li>
+</ol>
+
+<h2 id="commands">Useful Commands on Home Assistant OS</h2>
+<p>Use these from the Home Assistant OS command line or from the Terminal & SSH app if it is already installed and running. If you are using Home Assistant Container or another install type, paths and commands can differ.</p>
+<pre><code>ha core check</code></pre>
+<p>Runs the Home Assistant Core configuration check against the stored configuration. This is the command Home Assistant documents for Home Assistant OS.</p>
+<pre><code>ha core restart --safe-mode</code></pre>
+<p>Restarts Home Assistant Core in Safe Mode so you can test whether custom integrations, custom cards, or custom themes are involved.</p>
+<pre><code>ha core logs</code></pre>
+<p>Shows Home Assistant Core logs from the CLI. If the UI is unreachable, this is often where the useful file path or integration name appears.</p>
+<div class="callout">
+  <p><strong>Plain-English warning:</strong> do not use random host commands from old forum posts unless you know which installation type you are using. Home Assistant OS, Container, Supervised, and Core installs do not all keep configuration files in the same place.</p>
+</div>
+
+<h2 id="common-fixes">Common Fixes by Error Type</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Error pattern</th>
+        <th>What it usually means</th>
+        <th>Practical fix</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Parser error in <code>configuration.yaml</code>, <code>automations.yaml</code>, or an included file</td>
+        <td>Bad indentation, a missing colon, a tab, an unmatched quote, or a list item in the wrong place.</td>
+        <td>Fix the line named in the log, then run <code>ha core check</code>. YAML indentation uses spaces, not tabs.</td>
+      </tr>
+      <tr>
+        <td>Missing <code>!include</code> file</td>
+        <td>The main config points at a YAML file that was renamed, deleted, or moved.</td>
+        <td>Restore the file, correct the include path, or remove that include line if you no longer use it.</td>
+      </tr>
+      <tr>
+        <td>Option no longer valid after update</td>
+        <td>A release changed or removed a manually configured option.</td>
+        <td>Check every release note between your old version and target version, especially backward-incompatible changes.</td>
+      </tr>
+      <tr>
+        <td>Works in Safe Mode but not normal mode</td>
+        <td>A custom integration, custom dashboard card, or custom theme is likely involved.</td>
+        <td>Disable or update custom pieces one at a time. Avoid changing core configuration at the same time.</td>
+      </tr>
+      <tr>
+        <td>Recovery Mode returns after every restart</td>
+        <td>The root startup problem is still present.</td>
+        <td>Read the current log again. If the error is not obvious, restore the last known good backup.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="backup-decision">When to Restore a Backup</h2>
+<p>Restore a backup when the error is not a single clear YAML fix, when configuration storage appears corrupted, when several custom integrations changed at once, or when the home needs to work again faster than you can debug. Home Assistant's <strong>2025.1</strong> release overhauled backups with automated backups, encrypted cloud backup storage, retention policies, and an emergency-kit workflow. That makes recovery much better, but only if the backup and its key are actually available.</p>
+<p>Use this rule: if you know the exact line, fix the line. If you are guessing across many files, restore a backup and reproduce the change later in a safer window.</p>
+
+<h2 id="what-not-to-do">What Not to Do</h2>
+<ul>
+  <li><strong>Do not factory reset first.</strong> It is rarely the fastest path for a YAML mistake.</li>
+  <li><strong>Do not delete <code>.storage</code>.</strong> That directory contains Home Assistant's internal storage. Deleting it can create a much larger problem.</li>
+  <li><strong>Do not delete <code>configuration.yaml</code> unless you have a tested backup and a deliberate rebuild plan.</strong> A missing main config can create fresh errors and confusion.</li>
+  <li><strong>Do not run Update all while recovering.</strong> In Home Assistant 2026.7, Update all is organized by update groups, but recovery calls for fewer variables, not more.</li>
+  <li><strong>Do not let a half-fixed system control risky automations.</strong> Locks, garage doors, alarms, water valves, HVAC, and security notifications need manual fallback while the hub is unstable.</li>
+</ul>
+
+<h2 id="safer-workflow">A Safer Workflow for Future YAML Edits</h2>
+<p>Most homeowners do not want a software deployment process for a smart home. Still, three small habits prevent most painful YAML incidents:</p>
+<ol>
+  <li><strong>Make one change at a time.</strong> Add one automation, one template, or one include, then validate.</li>
+  <li><strong>Check before restart.</strong> Use Developer Tools &gt; YAML or <code>ha core check</code> before restarting Home Assistant Core.</li>
+  <li><strong>Keep an off-device backup.</strong> A backup stored only on the failed box is not a recovery plan.</li>
+</ol>
+<p>If you maintain lots of YAML, consider keeping the files in a private Git repository or another versioned backup. You do not need a complex pipeline. You need the ability to see what changed yesterday.</p>
+
+<h2 id="tara-view">How Tara Thinks About This</h2>
+<p>Tara's bias is to keep the house boring under failure. <strong>Local control</strong> means the hub can run routines inside the home instead of depending on a cloud service for every action. That is valuable only if the system is recoverable by a normal homeowner or a support handoff. That means fewer clever YAML one-offs, clear backup ownership, simple file access, and automations that fail visibly instead of silently.</p>
+<p>In a Tara setup, YAML is treated as infrastructure. We use it where it makes the home clearer, not where it turns a hallway light or water sensor into a debugging project. The right recovery workflow is part of the design: local hub, clear device labels, backups, and enough documentation that the next person can fix the issue without guessing.</p>
+
+<h2 id="faq">FAQ</h2>
+<h3>Should I factory reset Home Assistant if it will not start?</h3>
+<p>No. Read the logs first, undo the last YAML or configuration change, run a configuration check, and restore a known good backup only if the specific fix is not clear.</p>
+<h3>What is the difference between Safe Mode and Recovery Mode?</h3>
+<p><strong>Safe Mode</strong> is a troubleshooting startup path that leaves out custom integrations, custom cards, and custom themes. <strong>Recovery Mode</strong> is an automatic minimal startup mode Home Assistant uses when something prevents normal startup.</p>
+<h3>Can Recovery Mode delete my devices or history?</h3>
+<p>Home Assistant's Recovery Mode docs say it does not delete, reset, or modify your configuration, entities, or history. It starts a minimal system so you can investigate and fix the problem.</p>
+<h3>What if the UI never opens?</h3>
+<p>Use the access method you already prepared: local console, Terminal & SSH, Samba, Studio Code Server, File Editor, or a backup restore path. If you have none of those, stop power-cycling and get file access before making more changes.</p>
+<h3>Should I disable HACS or custom integrations?</h3>
+<p>If Home Assistant works in Safe Mode but not normally, HACS items or custom integrations are suspects. HACS is the community store many people use for unofficial Home Assistant add-ons, integrations, and dashboard cards. Disable or update those custom pieces one at a time after you have a backup.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>Use <a href="/blog/how-to-back-up-home-assistant/">the Home Assistant backup guide</a> before the next big change. If this happened after a release, read <a href="/blog/how-to-update-home-assistant-safely/">how to update Home Assistant safely</a>. If the issue is a stale template rather than a startup failure, start with <a href="/blog/home-assistant-template-sensor-not-updating/">why a template sensor is not updating</a>. If devices disappear after the restart succeeds, use <a href="/blog/home-assistant-devices-unavailable-after-restart/">the unavailable-device checklist</a>.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <h2>Sources</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant Sources</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/common-tasks/os/" target="_blank" rel="noopener noreferrer">Home Assistant OS common tasks: configuration check, backups, updates, and CLI</a></li>
+              <li><a href="https://www.home-assistant.io/docs/troubleshooting_general/" target="_blank" rel="noopener noreferrer">Home Assistant general troubleshooting: Safe Mode</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/recovery_mode/" target="_blank" rel="noopener noreferrer">Home Assistant Recovery Mode docs</a></li>
+              <li><a href="https://www.home-assistant.io/docs/configuration/" target="_blank" rel="noopener noreferrer">Home Assistant configuration.yaml docs</a></li>
+              <li><a href="https://www.home-assistant.io/docs/configuration/yaml/" target="_blank" rel="noopener noreferrer">Home Assistant YAML syntax docs</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2025/01/03/release-20251/" target="_blank" rel="noopener noreferrer">Home Assistant 2025.1 backup release notes</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.7 release notes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Demand and Community Context</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/ha-core-update-failed-and-recovery-mode-activated/872972" target="_blank" rel="noopener noreferrer">Home Assistant Community: Core update failed and Recovery Mode activated</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1pe3kfv/homeassistant_2025120_no_response/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: HomeAssistant 2025.12.0 no response after YAML repairs</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1oq0n67/ha_core_check_config/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: ha core check config confusion</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1typo7u/is_there_a_better_way_to_write_ha_automation/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: safer automation code workflow with ha core check</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1sasae5/stuck_in_loading_data_screen_how_to_debug/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: stuck loading data and Safe Mode debugging</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/124695" target="_blank" rel="noopener noreferrer">GitHub issue: Home Assistant does not work after update</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <p class="kicker">Want supportable local control?</p>
+        <h2>Plan a Tara kit around recoverable Home Assistant patterns.</h2>
+        <p>Tara packages the local hub, device plan, automations, backups, and handoff so routine smart-home logic stays understandable.</p>
+        <a class="cta" href="/configurator/">Start the configurator</a>
+      </section>
+
+      <section class="block">
+        <h2>Keep Reading</h2>
+        <div class="links">
+          <a href="/blog/how-to-back-up-home-assistant/">Back Up Home Assistant</a>
+          <a href="/blog/how-to-update-home-assistant-safely/">Update Safely</a>
+          <a href="/blog/home-assistant-template-sensor-not-updating/">Template Sensor Fixes</a>
+          <a href="/blog/home-assistant-devices-unavailable-after-restart/">Unavailable Devices</a>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
