@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Keep Home Assistant Running During a Power Outage | Tara Guides</title>
+    <meta name="description" content="Use a UPS and Network UPS Tools with Home Assistant so your hub, router, and storage keep running long enough to notify you, shut down cleanly, and restart safely." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/" />
+    <meta property="og:title" content="How to Keep Home Assistant Running During a Power Outage | Tara Guides" />
+    <meta property="og:description" content="Use a UPS and Network UPS Tools with Home Assistant so your hub, router, and storage keep running long enough to notify you, shut down cleanly, and restart safely." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-ups-nut-safe-shutdown/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Keep Home Assistant Running During a Power Outage | Tara Guides" />
+    <meta name="twitter:description" content="Use a UPS and Network UPS Tools with Home Assistant so your hub, router, and storage keep running long enough to notify you, shut down cleanly, and restart safely." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-ups-nut-safe-shutdown/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body pre { background: rgba(6, 40, 32, 0.92); border-radius: 18px; color: #fffaf0; line-height: 1.45; margin: 18px 0 24px; max-width: 860px; overflow-x: auto; padding: 18px 20px; }
+      .article-body pre code { background: transparent; border: 0; color: inherit; padding: 0; white-space: pre; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol, .article-body pre { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/#blogposting",
+      "headline": "How to Keep Home Assistant Running During a Power Outage",
+      "description": "Use a UPS and Network UPS Tools with Home Assistant so your hub, router, and storage keep running long enough to notify you, shut down cleanly, and restart safely.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-ups-nut-safe-shutdown/cover.png",
+      "datePublished": "2026-07-06",
+      "dateModified": "2026-07-06",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/"
+      },
+      "citation": [
+        "https://www.reddit.com/r/homeassistant/comments/1194bwr/automated_power_down_during_power_outage/",
+        "https://www.reddit.com/r/homeassistant/comments/1pzm666/uses_for_a_raspberry_pi_zero_w/",
+        "https://community.home-assistant.io/t/restart-home-assistant-pi-4-ups-after-power-outage/574738",
+        "https://community.home-assistant.io/t/how-do-i-manage-an-ups-with-nut-addon-and-integration/590028",
+        "https://community.home-assistant.io/t/graceful-shutdown-and-restart-in-case-of-power-failure/487102",
+        "https://www.home-assistant.io/integrations/nut/",
+        "https://www.home-assistant.io/blog/2025/05/07/release-20255/",
+        "https://www.home-assistant.io/blog/2025/09/03/release-20259/",
+        "https://www.home-assistant.io/blog/2025/01/03/3-2-1-backup/",
+        "https://networkupstools.org/",
+        "https://networkupstools.org/stable-hcl.html",
+        "https://github.com/hassio-addons/app-nut/blob/main/nut/DOCS.md",
+        "https://github.com/hassio-addons/app-nut/issues/368",
+        "https://github.com/home-assistant/core/issues/130622"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to Keep Home Assistant Running During a Power Outage",
+          "item": "https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need a UPS for Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If Home Assistant controls lighting, locks, alarms, cameras, HVAC, leak alerts, or family notifications, use a UPS for the Home Assistant host and the network gear it needs. The goal is not all-night runtime. The goal is time to notify, keep radios online, and shut down cleanly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is NUT in Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "NUT means Network UPS Tools. A NUT server talks to the UPS, usually by USB or network. The official Home Assistant NUT integration talks to that NUT server locally, reads battery and status data, and can expose supported UPS commands."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should the NUT server run on the Home Assistant box?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It can, especially for a simple Home Assistant OS setup with a USB UPS. If you need to shut down multiple machines or recover gracefully after the Home Assistant host turns off, an external NUT server on a NAS, router, mini PC, or small always-on device may be cleaner."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why did Home Assistant not restart after the outage?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A clean shutdown does not guarantee a later boot. Set the mini PC or server BIOS to restore power after AC returns, test Wake-on-LAN from a device that stays awake, or use UPS outlet behavior that fully power cycles after battery depletion."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant turn the UPS off and on?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sometimes, but it depends on the UPS, NUT server, credentials, supported commands, and outlet controls. Treat UPS shutdown and reboot commands as advanced. Test them with noncritical equipment before using them on a live home server."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Reliability</span><span>July 6, 2026</span><span>11 min read</span></p>
+            <h1>How to Keep Home Assistant Running During a Power Outage</h1>
+            <p class="lede">A UPS only solves half the problem. Home Assistant also needs local UPS monitoring, a safe shutdown rule, powered network gear, and a restart plan for when power comes back.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-ups-nut-safe-shutdown/cover.png" alt="Local Home Assistant hub, router, and UPS hardware for outage-safe smart home reliability" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> put the Home Assistant hub, router, modem, network switch, and the small radio boxes or USB sticks for Zigbee, Z-Wave, Thread, or Bluetooth on a UPS, then monitor that UPS locally with Network UPS Tools.</li>
+    <li><strong>Best next step:</strong> use the official Home Assistant NUT integration to send outage and low-battery alerts before you automate any shutdown.</li>
+    <li><strong>Avoid this:</strong> do not plug heaters, refrigerators, sump pumps, or large appliances into a small computer UPS, and do not copy shutdown commands you have not tested.</li>
+    <li><strong>Main caveat:</strong> a clean shutdown is not the same as automatic restart. Plan BIOS restore-on-power, Wake-on-LAN, or an external NUT server before you trust it.</li>
+    <li><strong>Tara view:</strong> UPS runtime is household infrastructure, not a gadget metric. Ten to thirty clean minutes can be better than a big battery with no recovery plan.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Back Up the Hub and the Network Together</h2>
+<p>Yes, a serious Home Assistant home should have a UPS. A <strong>UPS</strong>, or uninterruptible power supply, is a battery backup that keeps small electronics alive during an outage. It should power the Home Assistant host, the router or gateway, the modem or fiber box if needed, the main switch, and any separate Zigbee, Z-Wave, Thread, or Bluetooth radio bridge. In plain English, those bridges are the USB sticks or small boxes that let local sensors, locks, switches, and other devices talk to Home Assistant.</p>
+<p>The practical setup is a UPS plus <strong>NUT</strong>, short for Network UPS Tools. NUT is local software that talks to the UPS. Home Assistant's official NUT integration, meaning the Home Assistant connection for NUT, then reads UPS battery, load, runtime, and status from the NUT server. That means Home Assistant can notify you when utility power fails, show whether the UPS is on battery, and take a controlled action before the battery dies.</p>
+<p>Do not start by automating shutdown. Start by proving the UPS keeps the hub and network online, then add notifications, then test a clean shutdown, then test how the machine comes back after power returns. Most confusing Home Assistant UPS threads are not about the first outage. They are about the restart after the outage.</p>
+
+<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is steady. A Reddit r/homeassistant thread asked whether Home Assistant could automate device shutdown when a UPS reports an outage and the Wi-Fi stays up. Home Assistant Community threads go further: people want to know how to restart a Pi or NUC after a UPS shutdown, how the NUT add-on and integration fit together, and how to coordinate NAS, Proxmox, routers, switches, and smart plugs when battery power is running out.</p>
+<p>The official docs support the same pattern. Home Assistant documents NUT as a local polling integration, says it needs a NUT server, and shows a basic outage notification automation. The NUT integration reached Home Assistant's platinum quality scale in the <strong>September 3, 2025</strong> Home Assistant 2025.9 release notes, which is a useful trust signal. The caveats are still real: available sensors and commands depend on the UPS, the NUT server, credentials, and device support.</p>
+
+<h2 id="support-boundaries">What Is Official, Local, Cloud, or Device-Dependent?</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Part</th>
+        <th>What it means in the house</th>
+        <th>Support boundary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Official Home Assistant NUT integration</td>
+        <td>Reads UPS status from a NUT server and exposes sensors, diagnostics, and some supported device actions.</td>
+        <td>Official integration, local polling, no cloud required. It cannot talk directly to the UPS without a NUT server.</td>
+      </tr>
+      <tr>
+        <td>NUT server or Home Assistant NUT app</td>
+        <td>The service that talks to the UPS by USB or network, then serves that data to Home Assistant and other clients.</td>
+        <td>Device support depends on NUT compatibility and your add-on, OS, or server setup.</td>
+      </tr>
+      <tr>
+        <td>UPS commands and outlet control</td>
+        <td>Actions such as testing the battery, muting a beeper, power cycling an outlet, or shutting down a load.</td>
+        <td>Not universal. Home Assistant docs say buttons and switches need credentials with command permissions, and only supported parameterless commands appear.</td>
+      </tr>
+      <tr>
+        <td>Matter, HomeKit, Alexa, or Google</td>
+        <td>Not the normal path for UPS reliability.</td>
+        <td>A UPS plan is local infrastructure. Voice platforms and Matter do not replace NUT shutdown and restart planning.</td>
+      </tr>
+      <tr>
+        <td>Cloud dependency</td>
+        <td>Outage alerts can still work if your modem, router, and internet path remain powered.</td>
+        <td>NUT itself is local. Phone push notifications may still depend on internet, mobile push services, and your router staying up.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="what-to-put-on-the-ups">What to Put on the UPS</h2>
+<p>Think in terms of the smallest stack that lets the home still report what happened:</p>
+<ul>
+  <li><strong>Home Assistant host:</strong> mini PC, Home Assistant Green, Raspberry Pi, NUC, network attached storage (NAS) running a virtual machine (VM), or server.</li>
+  <li><strong>Network path:</strong> router, modem, fiber ONT, main switch, and any Power over Ethernet (PoE) switch required by sensors or cameras you expect to stay online.</li>
+  <li><strong>Local radios:</strong> USB Zigbee or Z-Wave coordinator if it sits away from the hub, Bluetooth proxy if the outage rule needs it, or a Thread border router if Thread devices matter during outages.</li>
+  <li><strong>Storage owner:</strong> NAS, SSD enclosure, or small server if Home Assistant depends on it for VM storage, backups, Frigate, or add-ons.</li>
+</ul>
+<p>Do not use a small computer UPS for appliances, heaters, pumps, refrigerators, garage door motors, or anything with heavy startup current unless the UPS and wiring are explicitly rated for that load. Do not do mains wiring to install this. Plug listed, low-power equipment into a listed UPS, keep airflow clear, and replace batteries on the manufacturer's schedule.</p>
+
+<h2 id="where-the-nut-server-should-live">Where the NUT Server Should Live</h2>
+<p>The <strong>NUT server</strong> is the part that talks directly to the UPS. The <strong>Home Assistant NUT integration</strong> is the part that reads from the NUT server. That distinction matters.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Topology</th>
+        <th>Use it when</th>
+        <th>Main caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>NUT app on Home Assistant OS</td>
+        <td>You have one Home Assistant box plugged into one USB UPS and want the simplest local setup.</td>
+        <td>If that host shuts down, it cannot also be the awake brain that later sends Wake-on-LAN or coordinates other machines.</td>
+      </tr>
+      <tr>
+        <td>NUT server on a NAS or always-on mini PC</td>
+        <td>The UPS powers Home Assistant plus storage, Proxmox, network gear, or several clients.</td>
+        <td>The NAS or server must be on the same UPS plan and must itself shut down safely.</td>
+      </tr>
+      <tr>
+        <td>NUT server on a small dedicated device</td>
+        <td>You want a tiny external watcher that can stay awake longer than the Home Assistant host.</td>
+        <td>It adds another device to maintain, power, and document.</td>
+      </tr>
+      <tr>
+        <td>Network UPS with built-in card</td>
+        <td>You have a supported UPS that exposes NUT or another network management path.</td>
+        <td>Capabilities vary widely by model, card, firmware, and permissions.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="setup-order">Setup Order That Avoids Surprises</h2>
+<ol>
+  <li><strong>Check NUT support first.</strong> Use the NUT hardware compatibility list before you assume a UPS will expose useful battery, load, and command data.</li>
+  <li><strong>Power only the needed stack.</strong> Put the hub and network gear on the UPS. Leave high-load devices off.</li>
+  <li><strong>Install and test the NUT server.</strong> With the Home Assistant NUT app, the app docs say to configure users and devices, start the app, check logs, note the hostname, then add the official NUT integration using port <code>3493</code>.</li>
+  <li><strong>Add the official NUT integration.</strong> Home Assistant can auto-discover a NUT server; if not, add it from Settings &gt; Devices &amp; services.</li>
+  <li><strong>Watch the sensors for a week.</strong> Confirm status, battery charge, load, runtime, and unavailable behavior before you let automations shut anything down.</li>
+  <li><strong>Create notifications first.</strong> Alert on "On Battery" and again at a conservative low-battery threshold.</li>
+  <li><strong>Only then test shutdown.</strong> Test during the day, with someone home, after a fresh Home Assistant backup exists.</li>
+</ol>
+
+<h2 id="basic-notifications">Start With Notifications, Not Shutdown</h2>
+<p>Home Assistant's NUT docs include an outage notification example. Adapt the entity names to your own system and verify the status text in Developer Tools &gt; States. Since Home Assistant 2025.5, NUT status messages that combine multiple states are separated with commas, so a common battery state may look like <code>On Battery, Battery Discharging</code>.</p>
+<pre><code>automation:
+  alias: "UPS power failure notification"
+  triggers:
+    - trigger: state
+      entity_id:
+        - sensor.main_ups_status
+      to: "On Battery, Battery Discharging"
+  actions:
+    - action: notify.notify
+      data:
+        title: "UPS on battery"
+        message: "Utility power is out. Home Assistant and network gear are running on UPS battery."</code></pre>
+<p>Add a second notification based on battery charge or runtime remaining. Keep the threshold conservative. The point is to give the household time to react, not to squeeze the last minute out of a battery.</p>
+
+<h2 id="shutdown-plan">Build a Shutdown Plan Separately</h2>
+<p>A safe shutdown plan has three parts:</p>
+<ul>
+  <li><strong>What shuts down first:</strong> optional loads, secondary servers, camera recorders (NVRs), or dashboards that do not need to stay alive.</li>
+  <li><strong>What stays up longest:</strong> Home Assistant, router, modem or ONT, and the NUT server path.</li>
+  <li><strong>What shuts down last:</strong> the Home Assistant host or VM storage owner, before the UPS battery is so low that the machine loses power abruptly.</li>
+</ul>
+<p>If Home Assistant runs as a VM on Proxmox or another host, do not assume shutting down the Home Assistant VM protects the host, other VMs, or attached storage. A 2024 GitHub issue in the NUT app tracker shows why people ask for more control here: in multi-machine setups, automatic forced shutdown can be too blunt, and users may need their own order of operations.</p>
+<p>If Home Assistant OS is the only computer on the UPS, the NUT app's host shutdown behavior may be enough once tested. If a NAS or hypervisor owns the disks, the NAS or hypervisor should usually be the shutdown authority.</p>
+
+<h2 id="restart-plan">The Restart Plan Is the Part People Miss</h2>
+<p>Many homeowners think "the UPS shut it down cleanly" means "the system will come back by itself." Not necessarily. If the machine shuts down while the UPS still has battery, and utility power returns before the UPS fully turns off, the computer may never see a fresh power-on event.</p>
+<p>Plan one of these recovery paths:</p>
+<ul>
+  <li><strong>Restore AC power setting:</strong> in the mini PC or server startup settings screen, often called BIOS or UEFI, set the machine to power on when AC returns.</li>
+  <li><strong>Wake-on-LAN from outside Home Assistant:</strong> use a router, NAS, always-on device, or small ESPHome controller that remains powered after Home Assistant shuts down to send the network wake-up signal.</li>
+  <li><strong>UPS outlet behavior:</strong> some UPS models and management cards can power cycle outlets, but this is device-specific and must be tested.</li>
+  <li><strong>Manual recovery:</strong> if none of the above is reliable, document the physical power button and make the automation stop at notification plus clean shutdown.</li>
+</ul>
+<p>That restart caveat is the through-line in Home Assistant Community discussions. People can often trigger shutdown. The hard part is making the house recover predictably after the battery and utility power dance through a messy outage.</p>
+
+<h2 id="testing-checklist">Test It Without Breaking the House</h2>
+<ol>
+  <li>Create and download a current Home Assistant backup. Home Assistant's 2025 backup work makes automatic encrypted backups easier, but you still need the emergency key and an off-box copy.</li>
+  <li>Plug only the intended low-power equipment into the UPS.</li>
+  <li>Confirm NUT status while everything is online.</li>
+  <li>Unplug the UPS from the wall, not from the devices. Do this during a planned test, not during severe weather.</li>
+  <li>Confirm Home Assistant changes to on-battery status and sends the first notification.</li>
+  <li>Let it run long enough to confirm runtime estimates and load.</li>
+  <li>Cancel before shutdown on the first test. On a later test, allow the clean shutdown if you are ready to restart manually.</li>
+  <li>Restore power and confirm the system returns without corrupted storage, missing devices, or dead network gear.</li>
+</ol>
+<p>Never test by repeatedly yanking power from the Home Assistant host. The UPS is there to avoid exactly that kind of storage risk.</p>
+
+<h2 id="common-mistakes">Common Mistakes</h2>
+<ul>
+  <li><strong>Only backing up the hub.</strong> If the router and switch lose power, Home Assistant may be alive but unable to notify you or reach devices.</li>
+  <li><strong>Using runtime as the only metric.</strong> Battery runtime at idle can look generous and still collapse under real load.</li>
+  <li><strong>Letting Home Assistant be the only recovery brain.</strong> Once it shuts down, it cannot send Wake-on-LAN unless something else is still awake.</li>
+  <li><strong>Expecting every UPS command to work.</strong> Home Assistant only exposes the NUT commands your server, credentials, and UPS support.</li>
+  <li><strong>Skipping documentation.</strong> Write down which outlet powers what, where the UPS USB cable goes, and how to boot the host after a long outage.</li>
+</ul>
+
+<h2 id="tara-view">How Tara Handles UPS Planning</h2>
+<p>Tara treats UPS design as part of the local-control foundation. A local smart home is only useful during an outage if the hub, network, and radio path stay alive together. The install goal is simple: the house can tell you power failed, keep important local automations stable for a short window, and shut down cleanly before storage gets hurt.</p>
+<p>For most homes, Tara would rather have a modest, well-documented UPS plan than a giant battery nobody understands. The plan should say what stays online, what sends the final alert, what shuts down, and what brings the system back.</p>
+
+<h2 id="faq">FAQ</h2>
+<h3>Do I need a UPS if Home Assistant only controls lights?</h3>
+<p>If Home Assistant is a convenience layer, maybe not. If it controls entry, security, leak alerts, HVAC, cameras, or family notifications, use a UPS for the hub and network path.</p>
+<h3>Does NUT require the internet?</h3>
+<p>No. NUT is local. The Home Assistant NUT integration is listed as local polling. Phone push notifications can still need internet or mobile push services, so keep the modem, router, and switch on the UPS if outage alerts matter.</p>
+<h3>Can I use a smart plug to detect the outage instead?</h3>
+<p>A power-monitoring smart plug can help in some setups, but it is not a replacement for UPS battery data, runtime, load, and low-battery status. It also needs to remain reachable during the outage.</p>
+<h3>Should Home Assistant shut itself down automatically?</h3>
+<p>Only after you test notifications, battery thresholds, restart behavior, and backup restore. For VM, NAS, or Proxmox setups, let the storage or host owner control shutdown order.</p>
+<h3>What if the NUT entities go unavailable?</h3>
+<p>Check the NUT server logs, USB cable, UPS driver, static IP or hostname, and credentials. The official Home Assistant docs also suggest querying NUT directly with <code>upsc</code> and <code>upscmd -l</code> from the NUT server when you have command-line access.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>Start with <a href="/blog/how-to-back-up-home-assistant/">how to back up Home Assistant</a> before testing shutdown. If your devices disappear after power cycles, read <a href="/blog/home-assistant-devices-unavailable-after-restart/">why devices are unavailable after restart</a>. For hardware choices, see <a href="/blog/best-home-assistant-hardware-2026/">the Home Assistant hardware guide</a>. If outage alerts are unreliable, use <a href="/blog/home-assistant-notifications-delayed-not-arriving/">the notification troubleshooting guide</a>.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <h2>Sources</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official and Primary Sources</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/nut/">Home Assistant Network UPS Tools integration docs</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2025/05/07/release-20255/">Home Assistant 2025.5 release notes: NUT status sensor and polling changes</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2025/09/03/release-20259/">Home Assistant 2025.9 release notes: NUT platinum quality scale</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2025/01/03/3-2-1-backup/">Home Assistant 3-2-1 backup announcement</a></li>
+              <li><a href="https://networkupstools.org/">Network UPS Tools project</a></li>
+              <li><a href="https://networkupstools.org/stable-hcl.html">Network UPS Tools hardware compatibility list</a></li>
+              <li><a href="https://github.com/hassio-addons/app-nut/blob/main/nut/DOCS.md">Home Assistant Community App: Network UPS Tools docs</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Demand and Caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1194bwr/automated_power_down_during_power_outage/">Reddit r/homeassistant: automated power down during outage</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1pzm666/uses_for_a_raspberry_pi_zero_w/">Reddit r/homeassistant: small device as NUT server</a></li>
+              <li><a href="https://community.home-assistant.io/t/restart-home-assistant-pi-4-ups-after-power-outage/574738">Home Assistant Community: restart after UPS shutdown</a></li>
+              <li><a href="https://community.home-assistant.io/t/how-do-i-manage-an-ups-with-nut-addon-and-integration/590028">Home Assistant Community: managing UPS with NUT add-on and integration</a></li>
+              <li><a href="https://community.home-assistant.io/t/graceful-shutdown-and-restart-in-case-of-power-failure/487102">Home Assistant Community: graceful shutdown and restart in power failure</a></li>
+              <li><a href="https://github.com/hassio-addons/app-nut/issues/368">GitHub: NUT app issue on forced shutdown behavior</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/130622">GitHub: NUT status message readability issue</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Want local reliability planned before install day?</p>
+        <h2>Build the hub, network, radios, and backup plan together.</h2>
+        <p>Tara packages local smart-home hardware, automations, documentation, and handoff so the house keeps making sense when power or internet gets weird.</p>
+        <a class="cta" href="/configurator/">Start the configurator</a>
+      </section>
+
+      <section class="block related">
+        <h2>Keep Reading</h2>
+        <div class="links">
+          <a href="/blog/how-to-back-up-home-assistant/">Back Up Home Assistant</a>
+          <a href="/blog/home-assistant-devices-unavailable-after-restart/">Unavailable After Restart</a>
+          <a href="/blog/best-home-assistant-hardware-2026/">Home Assistant Hardware</a>
+          <a href="/blog/home-assistant-notifications-delayed-not-arriving/">Notification Delays</a>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
