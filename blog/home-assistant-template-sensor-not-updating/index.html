@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Your Home Assistant Template Sensor Is Not Updating | Tara Guides</title>
+    <meta name="description" content="Fix a Home Assistant template sensor that is stale, unknown, unavailable, or only updates after reload by checking triggers, watched entities, YAML syntax, and input errors." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/" />
+    <meta property="og:title" content="Why Your Home Assistant Template Sensor Is Not Updating | Tara Guides" />
+    <meta property="og:description" content="Fix a Home Assistant template sensor that is stale, unknown, unavailable, or only updates after reload by checking triggers, watched entities, YAML syntax, and input errors." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-template-sensor-not-updating/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Your Home Assistant Template Sensor Is Not Updating | Tara Guides" />
+    <meta name="twitter:description" content="Fix a Home Assistant template sensor that is stale, unknown, unavailable, or only updates after reload by checking triggers, watched entities, YAML syntax, and input errors." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-template-sensor-not-updating/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body pre { background: rgba(6, 40, 32, 0.92); border-radius: 18px; color: #fffaf0; line-height: 1.45; margin: 18px 0 24px; max-width: 860px; overflow-x: auto; padding: 18px 20px; }
+      .article-body pre code { background: transparent; border: 0; color: inherit; padding: 0; white-space: pre; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol, .article-body pre { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/#blogposting",
+      "headline": "Why Your Home Assistant Template Sensor Is Not Updating",
+      "description": "Fix a Home Assistant template sensor that is stale, unknown, unavailable, or only updates after reload by checking triggers, watched entities, YAML syntax, and input errors.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-template-sensor-not-updating/cover.png",
+      "datePublished": "2026-07-06",
+      "dateModified": "2026-07-06",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/"
+      },
+      "citation": [
+        "https://www.reddit.com/r/homeassistant/comments/ip0baw/template_sensor_not_updating/",
+        "https://www.reddit.com/r/homeassistant/comments/18zptgo/template_binary_sensor_not_updating/",
+        "https://community.home-assistant.io/t/template-sensor-not-auto-updating-a-possible-bug/701379",
+        "https://community.home-assistant.io/t/force-template-sensor-to-update-periodically/952841",
+        "https://community.home-assistant.io/t/template-sensor-not-updating-as-intended/1013684",
+        "https://www.home-assistant.io/integrations/template/",
+        "https://www.home-assistant.io/docs/templating/debugging/",
+        "https://www.home-assistant.io/docs/templating/errors/",
+        "https://www.home-assistant.io/blog/2026/06/03/release-20266/",
+        "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+        "https://github.com/home-assistant/core/issues/114195",
+        "https://github.com/home-assistant/core/issues/140447",
+        "https://github.com/home-assistant/core/issues/155712"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Why Your Home Assistant Template Sensor Is Not Updating",
+          "item": "https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does my Home Assistant template sensor update in Developer Tools but not on the dashboard?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Template editor renders the expression when you test it. The real template entity only updates when Home Assistant sees a watched state change, a time function update, or a trigger you defined. Add the missing watched entity or convert it to a trigger-based template."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use a trigger-based template sensor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use trigger-based templates when the sensor must update on a schedule, on an event, at startup, or from attributes and helper logic that Home Assistant cannot infer reliably. For a simple formula based on entity states, a normal state-based template is usually easier."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why did my template sensor break after Home Assistant 2026.6?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Home Assistant 2026.6 removed the old per-domain platform: template syntax for several entity types. Move template sensors, binary sensors, switches, locks, covers, and related entities to the modern top-level template: syntax, then check Settings > System > Logs and Repairs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should I do with unknown or unavailable inputs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not hide bad input with a fake zero unless that is safe. Add availability checks and numeric fallbacks so the template either produces a valid value or honestly reports unavailable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I force a template sensor to update every few seconds?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can define a time_pattern trigger, but avoid very fast polling unless the value truly needs it. Most house automations do not need second-by-second template updates, and noisy templates can create database and performance problems."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Templates</span><span>July 6, 2026</span><span>12 min read</span></p>
+            <h1>Why Your Home Assistant Template Sensor Is Not Updating</h1>
+            <p class="lede">If a template sensor is stuck, unknown, or only changes after you reload template entities, the fix is usually an update trigger problem, a hidden input error, or old YAML syntax that no longer loads.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-template-sensor-not-updating/cover.png" alt="Tara local hub and sensor status panels for Home Assistant template sensor troubleshooting" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> a template sensor updates only when Home Assistant has a reason to re-render it: a watched entity changed, <code>now()</code> ticks, or a trigger fired.</li>
+    <li><strong>Try this first:</strong> copy the template into Developer Tools &gt; Template, check the raw input states, then read Settings &gt; System &gt; Logs for the exact render error.</li>
+    <li><strong>Use the right type:</strong> keep simple formulas as state-based templates; use trigger-based templates when you need a schedule, startup update, event, or explicit state trigger.</li>
+    <li><strong>Avoid this:</strong> do not fix stale sensors by deleting entities, adding random reload automations, or turning unknown values into fake zeros unless that is genuinely safe.</li>
+    <li><strong>Main caveat:</strong> Home Assistant 2026.6 removed legacy <code>platform: template</code> entity syntax, so older YAML may need migration before any update logic can work.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Find Why Home Assistant Is Not Re-Rendering It</h2>
+<p>A Home Assistant template sensor is not a spreadsheet cell that recalculates continuously. It updates when Home Assistant can see that something relevant changed. An <strong>entity</strong> is the named sensor, switch, light, helper, or other object Home Assistant shows in dashboards and automations. For a normal state-based template, the usual update reason is that an entity state inside the template changed. For a template that uses <code>now()</code>, Home Assistant re-renders on a minute cadence. For a trigger-based template, the template updates only when one of the triggers you wrote fires.</p>
+<p>So the fastest fix is this order: prove the template renders in <strong>Developer Tools &gt; Template</strong>, check whether the real entity has a log error, decide whether it is state-based or trigger-based, then add the missing update source. If it only changes after <strong>Reload template entities</strong>, Home Assistant probably has no watched state or trigger telling it to run again. If it shows <code>unknown</code> or <code>unavailable</code>, the template probably hit a missing entity, a bad attribute, or a numeric conversion error. If it disappeared after a recent update, check the 2026.6 legacy template syntax removal before rewriting the math.</p>
+<p>That sounds technical, but the house-level meaning is simple: Home Assistant needs both a correct formula and a clear reason to run that formula at the right time.</p>
+
+<h2 id="symptom-map">What the Symptom Usually Means</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Symptom</th>
+        <th>Most likely cause</th>
+        <th>What to do first</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Works in Developer Tools but dashboard value is stale</td>
+        <td>The editor proves the expression can render once. It does not prove the entity has an update trigger.</td>
+        <td>Check whether the template reads a real entity state, uses <code>now()</code>, or has explicit triggers.</td>
+      </tr>
+      <tr>
+        <td>Only updates after reloading template entities</td>
+        <td>No watched state changes, or a trigger-based template is missing the trigger that should update it.</td>
+        <td>Add a state, time_pattern, event, homeassistant start, or manual update trigger that matches the real need.</td>
+      </tr>
+      <tr>
+        <td>Shows <code>unknown</code> or <code>unavailable</code></td>
+        <td>An input entity is missing, unavailable, or a filter such as <code>float</code> received text it cannot safely convert.</td>
+        <td>Print the raw inputs, add <code>has_value()</code> or an availability check, and use numeric defaults intentionally.</td>
+      </tr>
+      <tr>
+        <td>Stopped after Home Assistant 2026.6</td>
+        <td>Old <code>sensor: - platform: template</code> style YAML no longer loads for legacy template entities.</td>
+        <td>Move the entity to the modern top-level <code>template:</code> syntax, then restart and read logs.</td>
+      </tr>
+      <tr>
+        <td>Updates too slowly for history or Grafana</td>
+        <td>The value does not change often, so Home Assistant does not create new state rows just to repeat the same value.</td>
+        <td>Decide whether you need a real state change, a statistics helper, or a trigger-based sensor with a sane interval.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="state-based-vs-trigger-based">State-Based vs Trigger-Based Templates</h2>
+<p>A <strong>state-based template sensor</strong> is the right default for simple household values: average room temperature, a combined door state, a power calculation, or a display-friendly version of another sensor. It watches the entity states it reads and updates when those states change.</p>
+<p>A <strong>trigger-based template sensor</strong> is for cases where you want to decide exactly when the template runs. Home Assistant's template integration docs are clear that trigger-based template entities do not automatically update just because a referenced state inside the template changed. The triggers are the schedule. That is useful, but it also means a missing trigger makes the sensor look frozen.</p>
+<p>Use this rule of thumb:</p>
+<ul>
+  <li><strong>Use state-based</strong> when the template reads normal entity states and should update when those entities change.</li>
+  <li><strong>Use trigger-based</strong> when the source is time, events, startup, MQTT payloads, calendar changes, button events, attribute-only changes, or helper functions that Home Assistant cannot infer reliably.</li>
+  <li><strong>Do not mix them casually.</strong> Adding a trigger changes the mental model. Once you make it trigger-based, the listed triggers control updates.</li>
+</ul>
+
+<h2 id="first-checks">The First Five Checks</h2>
+<ol>
+  <li><strong>Open Developer Tools &gt; Template.</strong> Paste only the state expression. Print each raw input first, then add filters and math one piece at a time.</li>
+  <li><strong>Open Settings &gt; System &gt; Logs.</strong> Search for the template entity name and the exact error. Home Assistant's template error docs list common messages such as undefined variables, missing attributes, text-number math, and bad YAML quoting.</li>
+  <li><strong>Check the input entities in Developer Tools &gt; States.</strong> Make sure the entity IDs are exact, the entities are not <code>unknown</code>, and the values are changing when you expect.</li>
+  <li><strong>Check Repairs after a version update.</strong> Home Assistant 2026.6 removed legacy template entity syntax after a six-month deprecation period. If the entity no longer loads, update syntax before debugging update cadence.</li>
+  <li><strong>Decide whether the update source is visible.</strong> If the template reads no state and has no trigger, it may render once at startup and then sit there.</li>
+</ol>
+
+<h2 id="working-patterns">Working Patterns to Copy</h2>
+<h3>Simple state-based template</h3>
+<p>This is the boring path. It watches the listed states and updates when they change.</p>
+<pre><code>template:
+  - sensor:
+      - name: "Upstairs Average Temperature"
+        unique_id: upstairs_average_temperature
+        unit_of_measurement: "deg F"
+        state: &gt;
+          {% set bedroom = states('sensor.bedroom_temperature') | float(0) %}
+          {% set hallway = states('sensor.hallway_temperature') | float(0) %}
+          {{ ((bedroom + hallway) / 2) | round(1) }}</code></pre>
+<p>This is fine if zero is a safe fallback in your situation. For temperature, zero is usually not a safe hidden value, so the next pattern is better.</p>
+
+<h3>Safer numeric template with availability</h3>
+<p><strong>Availability</strong> means the template honestly reports unavailable when the inputs are not trustworthy. That is better than making a room look like it is zero degrees because a battery sensor dropped offline.</p>
+<pre><code>template:
+  - sensor:
+      - name: "Upstairs Average Temperature"
+        unique_id: upstairs_average_temperature
+        unit_of_measurement: "deg F"
+        availability: &gt;
+          {{ has_value('sensor.bedroom_temperature')
+             and has_value('sensor.hallway_temperature') }}
+        state: &gt;
+          {% set bedroom = states('sensor.bedroom_temperature') | float(0) %}
+          {% set hallway = states('sensor.hallway_temperature') | float(0) %}
+          {{ ((bedroom + hallway) / 2) | round(1) }}</code></pre>
+<p>Use this for HVAC, freeze alerts, water shutoff logic, comfort rules, and anything that could mislead an automation if the input disappears.</p>
+
+<h3>Trigger-based template for a scheduled update</h3>
+<p>Use this when the value is time-shaped or when the template needs to run even if the input state did not change.</p>
+<pre><code>template:
+  - triggers:
+      - trigger: time_pattern
+        minutes: "/5"
+      - trigger: homeassistant
+        event: start
+      - trigger: state
+        entity_id:
+          - sensor.washer_power
+          - input_boolean.laundry_mode
+    sensor:
+      - name: "Washer Running Summary"
+        unique_id: washer_running_summary
+        state: &gt;
+          {% if states('sensor.washer_power') | float(0) &gt; 8 %}
+            running
+          {% elif is_state('input_boolean.laundry_mode', 'on') %}
+            waiting
+          {% else %}
+            idle
+          {% endif %}</code></pre>
+<p>The schedule is the point here. If you remove the triggers, Home Assistant will try to infer update sources from the template. If you keep the triggers, they are what drive the sensor.</p>
+
+<h2 id="why-editor-lies">Why the Template Editor Can Mislead You</h2>
+<p>The Template editor is still the right first tool. It shows the output live, points at syntax errors, and lets you test against real entity data. The trap is assuming a successful editor result means the entity will keep updating forever.</p>
+<p>The editor answers one question: <strong>Can this expression render right now?</strong> The entity has a second question: <strong>When should Home Assistant run it again?</strong> If the template uses <code>this</code>, <code>trigger</code>, events, attributes, device areas, or helper functions that do not produce normal state-change tracking, the editor can look perfect while the real entity stays stale.</p>
+<p>When that happens, add temporary debug output. Print the raw value, the converted value, and the branch the template chose. Once you know the data is right, move the update logic into a state-based or trigger-based pattern deliberately.</p>
+
+<h2 id="legacy-template-2026-6">The 2026.6 Legacy Syntax Caveat</h2>
+<p>As of Home Assistant 2026.6, legacy template entities under old per-domain platform keys have been removed. This affects legacy template sensors and several other template entity types, including binary sensors, covers, fans, lights, locks, switches, vacuums, weather entities, and alarm control panels. <strong>YAML</strong> is Home Assistant's text configuration format, so this caveat matters most if you maintain template entities in configuration files instead of only in the UI.</p>
+<p>Plain English version: old YAML like this may no longer load after 2026.6:</p>
+<pre><code>sensor:
+  - platform: template
+    sensors:
+      old_style_sensor:
+        value_template: "{{ states('sensor.example') }}"</code></pre>
+<p>Move it to modern syntax instead:</p>
+<pre><code>template:
+  - sensor:
+      - name: "Old Style Sensor"
+        unique_id: old_style_sensor
+        state: "{{ states('sensor.example') }}"</code></pre>
+<p>After migrating, restart Home Assistant, check configuration, and read the logs. A reload can refresh templates, but a syntax removal problem needs a valid configuration first.</p>
+
+<h2 id="avoid-risky-automations">Do Not Let a Stale Template Control Risky Devices</h2>
+<p>Templates often sit between raw devices and important automations. That is useful, but it can also hide a bad assumption. Do not let a stale or guessed template directly unlock a door, open a garage, disable an alarm, change HVAC aggressively, shut off water, or suppress a camera notification without a safe fallback.</p>
+<p>For those routines, use conservative rules:</p>
+<ul>
+  <li>Make unknown input stop the automation or send a notification, not take the risky action.</li>
+  <li>Use availability checks so the dashboard shows that the data is bad.</li>
+  <li>Keep a manual override for locks, garage doors, HVAC, and water valves.</li>
+  <li>Test with notifications for a few days before allowing control actions.</li>
+</ul>
+
+<h2 id="tara-view">How Tara Handles This</h2>
+<p>Tara treats template sensors as supportable infrastructure, not clever one-off code. In a local smart home, the best template is usually boring: clear entity IDs, a visible update source, unavailable handling, and a small number of branches. If a room depends on the value, the template should fail loudly enough that the homeowner can see the issue.</p>
+<p>That is why a Tara install favors simple local entities first, then templates only where they make the home easier to understand: room comfort summaries, presence confidence, device health, quiet-hours behavior, and household notifications. Templates should reduce confusion, not move it into YAML that nobody wants to touch later.</p>
+
+<h2 id="faq">FAQ</h2>
+<h3>Why does my template sensor only update once a minute?</h3>
+<p>If it uses <code>now()</code> or <code>utcnow()</code>, Home Assistant's current debugging docs say those templates re-run on a minute cadence. If you need a different cadence, use an explicit trigger-based template, but be careful with very fast intervals.</p>
+<h3>Why does my template sensor not update when an attribute changes?</h3>
+<p>Attribute-only changes are a common source of confusion. Start by checking what event or state actually changes. If Home Assistant is not watching the change you need, use a trigger-based template with an explicit state trigger or event trigger.</p>
+<h3>Should I call <code>homeassistant.update_entity</code> from an automation?</h3>
+<p>Sometimes it helps for integrations that support polling, but it is usually not the first fix for template sensors. A template entity that has no reliable update source should be rewritten with the right state references or triggers.</p>
+<h3>Why is my template sensor missing after an update?</h3>
+<p>Check Settings &gt; Repairs and Settings &gt; System &gt; Logs. If the YAML still uses old <code>platform: template</code> entity syntax, migrate it to modern <code>template:</code> syntax. If the syntax is current, look for entity ID, availability, or conversion errors.</p>
+<h3>Can I make a template sensor update every second?</h3>
+<p>You can write fast triggers, but most homes do not need that. If the value goes into history, graphs, or automations, very frequent updates can add noise and database load. Use the slowest interval that still makes the room behave correctly.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>If this template feeds an automation, read <a href="/blog/home-assistant-automation-not-firing/">why automations do not fire</a> and <a href="/blog/home-assistant-automation-runs-twice/">why automations run twice</a>. If the input entities disappear after restarts, start with <a href="/blog/home-assistant-devices-unavailable-after-restart/">unavailable devices after restart</a>. Before a major Home Assistant upgrade, use <a href="/blog/how-to-update-home-assistant-safely/">the safe update checklist</a>.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <h2>Sources</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant Sources</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/template/">Home Assistant template integration docs</a></li>
+              <li><a href="https://www.home-assistant.io/docs/templating/debugging/">Home Assistant debugging templates docs</a></li>
+              <li><a href="https://www.home-assistant.io/docs/templating/errors/">Home Assistant template error messages and fixes</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/03/release-20266/">Home Assistant 2026.6 release notes</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/">Home Assistant 2026.7 release notes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Demand and Community Context</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/ip0baw/template_sensor_not_updating/">Reddit r/homeassistant: template sensor not updating</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/18zptgo/template_binary_sensor_not_updating/">Reddit r/homeassistant: template binary sensor not updating</a></li>
+              <li><a href="https://community.home-assistant.io/t/template-sensor-not-auto-updating-a-possible-bug/701379">Home Assistant Community: template sensor auto-update confusion</a></li>
+              <li><a href="https://community.home-assistant.io/t/force-template-sensor-to-update-periodically/952841">Home Assistant Community: forcing periodic template updates</a></li>
+              <li><a href="https://community.home-assistant.io/t/template-sensor-not-updating-as-intended/1013684">Home Assistant Community: template sensor not updating as intended</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/114195">GitHub issue 114195: trigger-based template sensor update confusion</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/140447">GitHub issue 140447: template errors after update</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/155712">GitHub issue 155712: template sensor stopped updating</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Want local automations without brittle YAML?</p>
+        <h2>Plan a Tara kit around supportable Home Assistant patterns.</h2>
+        <p>Tara packages the hub, sensors, automations, and handoff so routine logic stays local and maintainable.</p>
+        <a class="cta" href="/configurator/">Start the configurator</a>
+      </section>
+
+      <section class="block related">
+        <h2>Keep Reading</h2>
+        <div class="links">
+          <a href="/blog/home-assistant-automation-not-firing/">Automation Not Firing</a>
+          <a href="/blog/home-assistant-devices-unavailable-after-restart/">Unavailable Devices</a>
+          <a href="/blog/how-to-update-home-assistant-safely/">Update Safely</a>
+          <a href="/blog/do-you-need-mqtt-mosquitto-home-assistant/">MQTT and Mosquitto</a>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
