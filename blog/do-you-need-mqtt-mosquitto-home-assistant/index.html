@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Do You Need MQTT and Mosquitto for Home Assistant? | Tara Guides</title>
+    <meta name="description" content="Use MQTT in Home Assistant only when a device, bridge, or app needs it. Learn what MQTT, Mosquitto, and the MQTT integration each do, plus setup and security rules." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/" />
+    <meta property="og:title" content="Do You Need MQTT and Mosquitto for Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Use MQTT only when a Home Assistant device, bridge, or app needs it. Learn what MQTT, Mosquitto, and the MQTT integration each do." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Do You Need MQTT and Mosquitto for Home Assistant? | Tara Guides" />
+    <meta name="twitter:description" content="Use MQTT only when a Home Assistant device, bridge, or app needs it. Learn what MQTT, Mosquitto, and the MQTT integration each do." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 1040px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/#blogposting",
+      "headline": "Do You Need MQTT and Mosquitto for Home Assistant?",
+      "description": "Use MQTT in Home Assistant only when a device, bridge, or app needs it. Learn what MQTT, Mosquitto, and the MQTT integration each do, plus setup and security rules.",
+      "image": "https://tarahome.ai/assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover.png",
+      "datePublished": "2026-07-06",
+      "dateModified": "2026-07-06",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/"
+      },
+      "citation": [
+        "https://www.reddit.com/r/homeassistant/comments/tl4o3n/what_is_mqtt_does_it_replace_zwavezigbee/",
+        "https://www.reddit.com/r/homeassistant/comments/uncby2/how_important_is_mqtt_when_you_first_start_i_feel/",
+        "https://www.reddit.com/r/homeassistant/comments/1cwpe0d/what_is_the_username_to_login_to_your_mqtt_broker/",
+        "https://community.home-assistant.io/t/zigbee2mqtt-initial-setup-mqtt-not-adding-devices/412275",
+        "https://community.home-assistant.io/t/mqtt-vs-mqtt-broker-trying-to-setup-frigate/960471",
+        "https://www.home-assistant.io/integrations/mqtt/",
+        "https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md",
+        "https://www.zigbee2mqtt.io/guide/getting-started/",
+        "https://esphome.io/components/mqtt/",
+        "https://esphome.io/components/api/",
+        "https://tasmota.github.io/docs/Home-Assistant/",
+        "https://www.home-assistant.io/integrations/tasmota/",
+        "https://www.home-assistant.io/integrations/shelly/",
+        "https://docs.frigate.video/frigate/installation/",
+        "https://docs.frigate.video/integrations/home-assistant/",
+        "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+        "https://github.com/home-assistant/frontend/issues/28881"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Do You Need MQTT and Mosquitto for Home Assistant?",
+          "item": "https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need MQTT for Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, not by default. Install MQTT only when a device, bridge, or application specifically needs it, such as Zigbee2MQTT, Tasmota, Frigate's Home Assistant integration, or a custom device that publishes MQTT messages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Mosquitto the same thing as the MQTT integration?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Mosquitto is an MQTT broker that receives and distributes messages. The Home Assistant MQTT integration is the Home Assistant-side client that connects Home Assistant to that broker and creates entities from MQTT messages or discovery payloads."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is MQTT local or cloud?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MQTT is local when the broker and clients are on your home network. It can also be cloud-based if you point devices at an external broker. For Home Assistant homes, keep the broker on the LAN unless you have a specific secure reason not to."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Zigbee2MQTT require MQTT?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Zigbee2MQTT is built around an MQTT broker. Its getting-started docs say the host should have an MQTT broker installed, with Mosquitto recommended."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are my MQTT devices not showing in Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Check that the broker is running, Home Assistant's MQTT integration is connected, the device or bridge is using the same host, port, username, and password, and MQTT discovery is enabled with the expected discovery prefix. For containers, do not use localhost unless the broker is in the same container namespace."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant MQTT</span><span>July 6, 2026</span><span>11 min read</span></p>
+            <h1>Do You Need MQTT and Mosquitto for Home Assistant?</h1>
+            <p class="lede">Most Home Assistant homes do not need MQTT on day one. Add it when a specific device, bridge, camera system, or DIY project needs a local message relay called a broker; otherwise a native integration is usually simpler to maintain.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover.png" alt="Local Home Assistant MQTT broker and hub hardware cover image" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> do not install MQTT just because a tutorial mentions it. Home Assistant works without MQTT unless something in your setup specifically needs a local message broker.</li>
+    <li><strong>Use MQTT for:</strong> Zigbee2MQTT, Tasmota, Frigate's Home Assistant integration, custom sensors, and devices that only publish MQTT topics.</li>
+    <li><strong>Know the pieces:</strong> MQTT is the message protocol, Mosquitto is the local relay service, and the Home Assistant MQTT integration is the connector inside Home Assistant.</li>
+    <li><strong>What to avoid:</strong> do not expose port 1883 to the internet, do not reuse admin passwords, and do not build lock, alarm, or safety automations only around raw MQTT topics.</li>
+    <li><strong>Main caveat:</strong> MQTT is local and powerful when kept on your LAN, but it adds another service to back up, secure, restart, and troubleshoot.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Add MQTT Only When a Specific Thing Needs It</h2>
+<p>For a normal Home Assistant setup, <strong>MQTT is optional</strong>. If you use ZHA for Zigbee, Z-Wave JS for Z-Wave, the Shelly integration for Shelly devices, Matter for Matter devices, HomeKit Device for HomeKit accessories, or a vendor's official local integration, you usually do not need MQTT at all. Those integrations already give Home Assistant entities, which are the lights, sensors, switches, locks, and cameras you automate in the UI.</p>
+<p>Use MQTT when a product or bridge is designed around it. <strong>Zigbee2MQTT</strong> needs a broker, which is the local relay service that accepts messages and passes them to Home Assistant. <strong>Tasmota</strong> talks to Home Assistant over MQTT. <strong>Frigate</strong> can run without MQTT by itself, but its Home Assistant integration requires MQTT to be configured. Some DIY sensors, energy monitors, alarm panels, and local bridge projects also publish MQTT messages because it is a simple way for devices to announce state.</p>
+<p>The plain-English rule is this: <strong>MQTT is a tool, not a requirement</strong>. It is excellent when you need a local message bus. It is unnecessary complexity when a direct Home Assistant integration already handles the device well.</p>
+
+<h2 id="why-people-ask">Why This Question Keeps Coming Up</h2>
+<p>The demand is real because MQTT appears in a lot of Home Assistant tutorials before anyone explains the parts. Reddit r/homeassistant has long beginner threads asking whether MQTT replaces Zigbee or Z-Wave, whether new users need it, and what username should be used for the broker. Home Assistant Community threads show the practical failure mode: Zigbee2MQTT does not add devices, Frigate asks for MQTT, or the MQTT integration asks for broker credentials and the homeowner is not sure which component is which.</p>
+<p>The timing matters too. Home Assistant keeps improving native integrations and protocol screens. The Home Assistant 2026.7 release notes, published July 1, 2026, highlight new device-management and protocol work such as the ZHA Zigbee overhaul and dedicated infrared/radio-frequency panels. That does not make MQTT obsolete. It does mean old advice that treated MQTT as the default answer for everything is not the right homeowner default in 2026.</p>
+<p>A useful MQTT setup starts with vocabulary, not YAML.</p>
+
+<h2 id="pieces">MQTT, Mosquitto, and the Home Assistant Integration Are Different Things</h2>
+<p><strong>MQTT</strong> is a lightweight message protocol. A device publishes a message to a topic, such as a temperature value, and another system subscribes to that topic. Think of it as a local message board for devices, not as a radio like Zigbee or Z-Wave.</p>
+<p><strong>Mosquitto</strong> is a broker. The broker is the service that receives MQTT messages and distributes them to subscribed clients. On Home Assistant OS, the official Mosquitto broker app is the common broker. Home Assistant's Mosquitto app docs say to install the app, start it, create a new Home Assistant user for MQTT, then add the discovered MQTT integration.</p>
+<p><strong>The Home Assistant MQTT integration</strong> is not the broker. It is Home Assistant connecting to a broker. The official MQTT docs say Home Assistant requires a broker that supports MQTT protocol version 5, and the integration can be configured with the broker host, port, username, and password. Once connected, Home Assistant can create entities from MQTT discovery messages or manually configured MQTT platforms.</p>
+<div class="callout">
+  <p><strong>Simple translation:</strong> MQTT is the language, Mosquitto is the local post office, and the Home Assistant MQTT integration is Home Assistant's mailbox at that post office.</p>
+</div>
+
+<h2 id="when-not-needed">When You Usually Do Not Need MQTT</h2>
+<p>Skip MQTT when the official integration already gives local entities and your setup is straightforward. That reduces the number of services that can fail, the number of passwords to track, and the number of places a device can be misconfigured.</p>
+<ul>
+  <li><strong>Zigbee with ZHA:</strong> ZHA is Home Assistant's built-in Zigbee integration. It does not require MQTT.</li>
+  <li><strong>Z-Wave with Z-Wave JS:</strong> the official Z-Wave JS path exposes devices through Home Assistant's Z-Wave integration, not MQTT.</li>
+  <li><strong>Shelly stock devices:</strong> Home Assistant's Shelly integration can auto-discover Shelly devices and is listed as Local Push. MQTT can be useful for some advanced Shelly designs, but it is not required just to control Shelly locally.</li>
+  <li><strong>ESPHome devices made for Home Assistant:</strong> ESPHome's MQTT docs say you may prefer the native API when connecting to Home Assistant, and that MQTT is not needed in that case.</li>
+  <li><strong>Matter, HomeKit, Lutron, Hue, and many Wi-Fi integrations:</strong> use their native Home Assistant integration first unless the device documentation specifically says MQTT is the supported path.</li>
+</ul>
+<p>Native does not always mean better for every advanced build. It does mean easier to hand off to a homeowner when the native integration is mature and local.</p>
+
+<h2 id="when-needed">When MQTT Is the Right Tool</h2>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Use case</th>
+        <th>Why MQTT appears</th>
+        <th>Homeowner caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Zigbee2MQTT</td>
+        <td>Zigbee2MQTT's getting-started docs say the host should have an MQTT broker installed, with Mosquitto recommended.</td>
+        <td>Great device support, but Zigbee enters Home Assistant through MQTT rather than the built-in ZHA path.</td>
+      </tr>
+      <tr>
+        <td>Tasmota devices</td>
+        <td>Tasmota's docs say it communicates with Home Assistant using MQTT, and Home Assistant's Tasmota integration docs say each device must be configured with MQTT broker settings.</td>
+        <td>Useful for flashed or DIY Wi-Fi devices, but it adds broker credentials and topic troubleshooting.</td>
+      </tr>
+      <tr>
+        <td>Frigate camera integration</td>
+        <td>Frigate's installation docs say an MQTT broker is optional for Frigate itself but required for the Home Assistant integration.</td>
+        <td>Cameras and Home Assistant must point at the same broker. Container installs often fail when people use <code>localhost</code> incorrectly.</td>
+      </tr>
+      <tr>
+        <td>Custom sensors and bridges</td>
+        <td>MQTT is a simple way for a small device, script, or bridge to publish state without writing a full Home Assistant integration.</td>
+        <td>Give each device a stable topic plan and unique IDs, or discovery can create duplicate or confusing entities.</td>
+      </tr>
+      <tr>
+        <td>Multi-system homes</td>
+        <td>MQTT can let Home Assistant, Node-RED, dashboards, and other local services share events.</td>
+        <td>Good for advanced installs, but it should be documented because the broker becomes shared infrastructure.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="setup-haos">The Home Assistant OS Setup Path</h2>
+<p>If you run Home Assistant OS or a supervised install and you need MQTT, the simplest path is the official Mosquitto broker app plus the MQTT integration.</p>
+<ol>
+  <li><strong>Install the Mosquitto broker app.</strong> In Home Assistant, go to Settings &gt; Apps &gt; Install app, install Mosquitto broker, then start it.</li>
+  <li><strong>Create a dedicated MQTT user.</strong> The Mosquitto docs say to create a user from Settings &gt; People &gt; Users, not by reusing reserved usernames such as <code>homeassistant</code> or <code>addons</code>.</li>
+  <li><strong>Add the MQTT integration.</strong> Home Assistant should discover MQTT. Add it from Settings &gt; Devices &amp; services, and enable discovery if your devices or bridges use it.</li>
+  <li><strong>Point the device or bridge at the broker.</strong> Use the broker host, port <code>1883</code> for unencrypted LAN MQTT, and the username/password you created. For an add-on running inside Home Assistant's add-on network, docs and community examples often use <code>core-mosquitto</code> as the broker host.</li>
+  <li><strong>Confirm entities appear.</strong> If using discovery, the bridge or device must publish discovery payloads under the expected prefix, commonly <code>homeassistant</code>.</li>
+</ol>
+<p>Do not turn MQTT into a public internet service. The broker belongs on your LAN unless you have a real reason, certificate plan, and access-control plan.</p>
+
+<h2 id="setup-container">The Container or Separate-Server Path</h2>
+<p>Home Assistant Container users do not get the Home Assistant app store. That means Mosquitto is a separate container, VM, package, or network service that you operate yourself. Home Assistant then connects to it through the MQTT integration.</p>
+<p>The most common confusion is <code>localhost</code>. If Frigate, Zigbee2MQTT, Mosquitto, and Home Assistant are in different containers or VMs, <code>localhost</code> usually means "this container," not "the other service." Use a Docker network name when the containers share a network, or use the broker's LAN IP address when services are separated.</p>
+<p>This is where a small diagram in your house notes pays for itself. Record:</p>
+<ul>
+  <li>where the broker runs</li>
+  <li>which clients connect to it</li>
+  <li>which username each client uses</li>
+  <li>where the broker configuration and persistence live</li>
+  <li>how to restart it without guessing</li>
+</ul>
+<p>MQTT is reliable when the operational notes are boring. It is frustrating when the broker is treated as invisible glue nobody wrote down.</p>
+
+<h2 id="local-cloud-security">Local Control and Security Boundaries</h2>
+<p>MQTT can be fully local, but it is not automatically private in every configuration. It is local when the broker runs inside your home network and all clients connect to that local broker. It becomes cloud-dependent when devices publish to an external broker or when you bridge your local broker to a cloud service.</p>
+<p>The Mosquitto app docs note that all connections must use a username and password, and that unencrypted connections are possible on default ports such as <code>1883</code> unless certificate files are configured for encrypted ports. For a normal home, the practical rule is simple: keep port <code>1883</code> inside the LAN, use strong per-purpose credentials, and do not port-forward MQTT from the router.</p>
+<p>For locks, alarms, garage doors, and safety devices, avoid raw topic shortcuts as the only control path. Prefer Home Assistant entities created by the integration, add sanity checks, and keep a manual fallback. MQTT is a transport; it does not decide whether an action is safe.</p>
+
+<h2 id="discovery">Why MQTT Devices Sometimes Do Not Show Up</h2>
+<p>When MQTT devices fail to appear, check the layers in order instead of deleting integrations at random.</p>
+<ol>
+  <li><strong>Broker:</strong> is Mosquitto or your chosen broker running?</li>
+  <li><strong>Home Assistant integration:</strong> is the MQTT integration connected to the right host and port?</li>
+  <li><strong>Client credentials:</strong> is Zigbee2MQTT, Tasmota, Frigate, or the device using the same username and password that the broker accepts?</li>
+  <li><strong>Discovery:</strong> is MQTT discovery enabled in Home Assistant, and is the device using the expected discovery prefix?</li>
+  <li><strong>Topics:</strong> can you see the device publish messages with the Home Assistant MQTT listen tool or an MQTT client?</li>
+  <li><strong>Retained discovery:</strong> Home Assistant's MQTT docs explain that retained discovery payloads can make entities available after restarts; missing or stale retained messages can make recovery confusing.</li>
+</ol>
+<p>The Home Assistant MQTT docs also show that deleting a discovered MQTT entity can be done by sending an empty message to the discovery config topic. That is powerful and dangerous. Do not purge retained topics until you know which device published them and what will recreate them.</p>
+
+<h2 id="restarts">What Happens When Home Assistant or MQTT Restarts?</h2>
+<p>MQTT can make some systems more resilient during a Home Assistant restart because the broker can keep running while Home Assistant reloads. Devices can continue publishing messages to the broker, and Home Assistant can read current retained discovery or state when it reconnects.</p>
+<p>But the broker is now its own dependency. If Mosquitto is down, misconfigured, out of storage, or restored without its data, MQTT-based devices can become unavailable even while Home Assistant itself is healthy. If your Zigbee2MQTT network, Tasmota devices, or Frigate entities matter to daily life, include the broker in backups and update plans.</p>
+<p>Power matters too. If Home Assistant and the broker are on one small hub, a short outage can take them both down. If the broker runs on a separate server, it needs the same UPS, restart, and backup thinking as Home Assistant. Do not let "it is just MQTT" become "nobody knows why half the house disappeared."</p>
+
+<h2 id="z2m-caveat">The Zigbee2MQTT Caveat</h2>
+<p>Zigbee2MQTT is one of the strongest reasons to use MQTT in Home Assistant. It has broad device support and deep device-level control. It is also a different operating model from ZHA.</p>
+<p>Home Assistant sees Zigbee2MQTT devices through MQTT, not through the built-in ZHA integration. That can affect where devices appear in new Home Assistant protocol screens. A Home Assistant frontend GitHub issue opened on January 8, 2026, documented that the new protocol dashboard did not include Zigbee when Zigbee2MQTT was used, because the user expected the Zigbee protocol to show even though ZHA was not the integration path.</p>
+<p>That is not a reason to avoid Zigbee2MQTT. It is a reason to choose it intentionally. If you want the built-in Home Assistant Zigbee path, use ZHA. If you want Zigbee2MQTT's device catalog, converter ecosystem, and MQTT architecture, accept the extra broker and document it.</p>
+
+<h2 id="tara-take">Tara's Take</h2>
+<p>For a homeowner, the best default is native first, MQTT second. Use MQTT when it solves a real integration problem: Zigbee2MQTT, Tasmota, Frigate, custom hardware, or a bridge that is designed for MQTT. Do not add it just because a forum answer from five years ago said every serious Home Assistant setup needs Mosquitto.</p>
+<p>When Tara packages a Home Assistant system with MQTT, we treat the broker as installed infrastructure. It gets a documented host, dedicated credentials, backups, and a clear restart path. We also avoid putting sensitive lock codes, alarm state shortcuts, or camera privacy details into cloud-routed message paths.</p>
+<p>The goal is a smart home that a family can live with. MQTT can be part of that, but only when it earns its place.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>MQTT decisions usually sit next to Zigbee stack choice, Home Assistant hosting, backups, network layout, and no-cloud planning.</p>
+<ul>
+  <li><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA vs Zigbee2MQTT: which should you use?</a></li>
+  <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a></li>
+  <li><a href="/blog/how-to-back-up-home-assistant/">How to back up Home Assistant so you can actually restore it</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant live on your main LAN or IoT VLAN?</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to run your smart home without the cloud</a></li>
+  <li><a href="/configurator/">Configurator</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-need-mqtt">Do I need MQTT for Home Assistant?</h3>
+<p>No, not by default. Install MQTT only when a device, bridge, or application specifically needs it. A native integration is usually simpler when it already gives Home Assistant reliable local entities.</p>
+
+<h3 id="faq-mosquitto-vs-mqtt">Is Mosquitto the same thing as the MQTT integration?</h3>
+<p>No. Mosquitto is the broker that receives and distributes MQTT messages. The MQTT integration is Home Assistant connecting to that broker. On Home Assistant OS, many people use both: Mosquitto as the broker and the MQTT integration as Home Assistant's connection to it.</p>
+
+<h3 id="faq-local">Is MQTT local or cloud?</h3>
+<p>It depends where the broker lives. A broker on your LAN is local. A hosted broker or vendor broker is cloud. For a Home Assistant home, keep MQTT local unless you have a specific secure design for doing otherwise.</p>
+
+<h3 id="faq-zigbee2mqtt">Does Zigbee2MQTT require MQTT?</h3>
+<p>Yes. Zigbee2MQTT is designed around MQTT. Its docs say the host should have an MQTT broker installed, and Home Assistant receives Zigbee2MQTT devices through MQTT discovery and MQTT topics.</p>
+
+<h3 id="faq-not-showing">Why are my MQTT devices not showing in Home Assistant?</h3>
+<p>Check the broker first, then the MQTT integration, then device credentials, then discovery settings and topics. In container setups, make sure the device or app is pointing at the broker's reachable network address, not <code>localhost</code> in the wrong container.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/tl4o3n/what_is_mqtt_does_it_replace_zwavezigbee/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: what is MQTT and does it replace Zigbee or Z-Wave?</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/uncby2/how_important_is_mqtt_when_you_first_start_i_feel/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: how important is MQTT when starting?</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1cwpe0d/what_is_the_username_to_login_to_your_mqtt_broker/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: MQTT broker username confusion</a></li>
+                <li><a href="https://community.home-assistant.io/t/zigbee2mqtt-initial-setup-mqtt-not-adding-devices/412275" target="_blank" rel="noopener noreferrer">Home Assistant Community: Zigbee2MQTT initial setup and MQTT devices not adding</a></li>
+                <li><a href="https://community.home-assistant.io/t/mqtt-vs-mqtt-broker-trying-to-setup-frigate/960471" target="_blank" rel="noopener noreferrer">Home Assistant Community: MQTT vs MQTT broker while setting up Frigate</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Official Home Assistant docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/mqtt/" target="_blank" rel="noopener noreferrer">Home Assistant MQTT integration docs</a></li>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/mosquitto/DOCS.md" target="_blank" rel="noopener noreferrer">Home Assistant Mosquitto broker app docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/tasmota/" target="_blank" rel="noopener noreferrer">Home Assistant Tasmota integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/shelly/" target="_blank" rel="noopener noreferrer">Home Assistant Shelly integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.7 release notes, July 1, 2026</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Primary project docs</h3>
+              <ul>
+                <li><a href="https://www.zigbee2mqtt.io/guide/getting-started/" target="_blank" rel="noopener noreferrer">Zigbee2MQTT getting-started guide</a></li>
+                <li><a href="https://esphome.io/components/api/" target="_blank" rel="noopener noreferrer">ESPHome native API docs</a></li>
+                <li><a href="https://esphome.io/components/mqtt/" target="_blank" rel="noopener noreferrer">ESPHome MQTT component docs</a></li>
+                <li><a href="https://tasmota.github.io/docs/Home-Assistant/" target="_blank" rel="noopener noreferrer">Tasmota Home Assistant docs</a></li>
+                <li><a href="https://docs.frigate.video/frigate/installation/" target="_blank" rel="noopener noreferrer">Frigate installation docs: MQTT dependency notes</a></li>
+                <li><a href="https://docs.frigate.video/integrations/home-assistant/" target="_blank" rel="noopener noreferrer">Frigate Home Assistant integration docs</a></li>
+                <li><a href="https://github.com/home-assistant/frontend/issues/28881" target="_blank" rel="noopener noreferrer">GitHub: protocol dashboard and Zigbee2MQTT issue, 2026</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Tara context</h3>
+              <ul>
+                <li><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA vs Zigbee2MQTT</a></li>
+                <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker</a></li>
+                <li><a href="/blog/how-to-back-up-home-assistant/">Home Assistant backup guide</a></li>
+                <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Home Assistant network guide</a></li>
+                <li><a href="/blog/home-automation-without-cloud/">No-cloud home automation guide</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want the local stack without the maintenance trap?</h2>
+          <p>Tara packages the hub, local devices, broker-dependent services when needed, backups, network notes, and homeowner handoff so the system is understandable after installation.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">Zigbee guide</a><a href="/blog/home-assistant-os-vs-docker/">OS vs Docker</a><a href="/blog/how-to-back-up-home-assistant/">Backup guide</a><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Network guide</a><a href="/blog/home-automation-without-cloud/">No-cloud guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
