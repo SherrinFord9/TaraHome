@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home? | Tara Guides</title>
+    <meta name="description" content="Use Eve Matter-over-Thread devices directly with Home Assistant when they already support Matter, share existing Apple Home devices when needed, and avoid HomeKit-only upgrade traps." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/" />
+    <meta property="og:title" content="Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home? | Tara Guides" />
+    <meta property="og:description" content="Use Eve Matter-over-Thread devices directly with Home Assistant when they already support Matter, share existing Apple Home devices when needed, and avoid HomeKit-only upgrade traps." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/eve-matter-thread-home-assistant-without-apple-home/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home? | Tara Guides" />
+    <meta name="twitter:description" content="Use Eve Matter-over-Thread devices directly with Home Assistant when they already support Matter, share existing Apple Home devices when needed, and avoid HomeKit-only upgrade traps." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/eve-matter-thread-home-assistant-without-apple-home/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 900px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/#blogposting",
+      "headline": "Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home?",
+      "description": "Use Eve Matter-over-Thread devices directly with Home Assistant when they already support Matter, share existing Apple Home devices when needed, and avoid HomeKit-only upgrade traps.",
+      "image": "https://tarahome.ai/assets/generated/blog/eve-matter-thread-home-assistant-without-apple-home/cover.png",
+      "datePublished": "2026-07-07",
+      "dateModified": "2026-07-07",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/eve/",
+        "https://www.home-assistant.io/blog/2025/04/29/eve-joins-works-with-home-assistant/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/integrations/homekit_controller/",
+        "https://www.home-assistant.io/integrations/homekit/",
+        "https://www.evehome.com/en/eve-energy-works-with-home-assistant",
+        "https://www.evehome.com/en-us/eve-energy",
+        "https://www.evehome.com/en-us/eve-door-window",
+        "https://www.evehome.com/en-us/eve-motion",
+        "https://www.evehome.com/en-us/hub",
+        "https://www.evehome.com/en-us/upgrade-to-matter",
+        "https://community.home-assistant.io/t/eve-energy-matter-can-t-add-it-home-assistant/730241",
+        "https://community.home-assistant.io/t/add-eve-energy-to-ha/838306",
+        "https://community.home-assistant.io/t/how-to-control-eve-energy-plugs-via-matter-thread-on-a-raspberry-pi-with-home-assistant/1014920",
+        "https://www.reddit.com/r/homeassistant/comments/1r4oeto/how_to_start_with_ha_when_only_having_matter_over/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home?", "item": "https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can you use Eve Matter-over-Thread devices with Home Assistant without Apple Home?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, if the Eve device already supports Matter. Pair it through Home Assistant's Matter integration and make sure the home has a working Thread border router. Older HomeKit-over-Thread Eve devices may need an Apple-only Matter upgrade before Home Assistant can use them as Matter devices." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do Eve devices need an Eve hub?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No Eve hub is required for Matter-over-Thread Eve devices. You need a Matter controller, such as Home Assistant, and a Thread border router, such as Home Assistant OpenThread hardware, Apple TV, HomePod, Nest Hub, or another compatible router." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should you use Matter, HomeKit Device, or HomeKit Bridge for Eve?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Use Matter for Eve devices that support Matter. Use HomeKit Device only for HomeKit accessories that are not Matter devices. Use HomeKit Bridge when you want Apple Home to see selected Home Assistant entities. The three paths solve different problems." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can you upgrade older Eve Thread devices to Matter without Apple hardware?",
+          "acceptedAnswer": { "@type": "Answer", "text": "For older Eve devices that need migration from HomeKit to Matter, Eve and Home Assistant document an iPhone or iPad plus an Apple Thread border router as the upgrade path. Once upgraded to Matter, Eve says the device cannot be migrated back to HomeKit." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Eve Energy report power usage in Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Eve and Home Assistant document Eve Energy support through Matter, including energy reporting on supported firmware and platforms. App graphs, historical views, and manufacturer-specific settings can still vary by platform." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Eve Matter &amp; Thread</span><span>July 7, 2026</span><span>12 min read</span></p>
+            <h1>Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home?</h1>
+            <p class="lede">Yes, but the answer depends on whether your Eve device already speaks Matter or is an older HomeKit-over-Thread model that still needs Apple hardware for its Matter upgrade.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/eve-matter-thread-home-assistant-without-apple-home/cover.png" alt="Eve Matter-over-Thread devices on a warm surface for a Home Assistant no-cloud setup" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> Yes, Eve Matter-over-Thread devices can work with Home Assistant without Apple Home when they already support Matter and your home has a working Thread border router.</li>
+    <li><strong>Best next step:</strong> For a new Eve Matter device, add it with Home Assistant's Matter integration first if Home Assistant will run the automations. If it already lives in Apple Home, share it to Home Assistant with Matter multi-admin.</li>
+    <li><strong>What to avoid:</strong> Do not buy or reset older HomeKit-only Eve Thread devices assuming Home Assistant can magically make them Matter. Check the Matter logo and upgrade status first.</li>
+    <li><strong>Main caveat:</strong> Some older Eve devices need an iPhone or iPad plus an Apple Thread border router to migrate from HomeKit to Matter, and Eve says that migration cannot be undone.</li>
+    <li><strong>Safety note:</strong> Treat heating, plugs on heavy loads, outdoor outlets, and security sensors as real household systems. Test manual control and failure behavior before relying on automations.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Yes for Matter Eve, Not for Every Old Eve</h2>
+<p>You can use current Eve Matter-over-Thread devices with Home Assistant without making Apple Home the owner. The clean path is Home Assistant's Matter integration, a Thread border router, and an Eve device that already has Matter support. Good examples from Home Assistant's Eve documentation include <strong>Eve Energy</strong>, <strong>Eve Door &amp; Window</strong>, <strong>Eve Motion</strong>, <strong>Eve Weather</strong>, <strong>Eve Thermo</strong>, <strong>Eve Energy Outlet</strong>, <strong>Eve Energy Outdoor</strong>, Eve light controls, and Eve MotionBlinds.</p>
+<p>The trap is older Eve hardware. Some Eve products were sold as Bluetooth or HomeKit-over-Thread devices before they had Matter firmware. Home Assistant's Eve page and Eve's own Matter upgrade guide both warn that these models may need an Apple upgrade path before they can be added through Matter. In plain English: <strong>Thread is the radio, Matter is the control language</strong>. A Thread device is not automatically a Matter device.</p>
+<p>If you already have Eve devices working in Apple Home through HomePods or Apple TV, do not factory reset everything just to start over. Use Matter sharing from Apple Home to Home Assistant when the device is already Matter. If Home Assistant is a fresh local-first build, pair new Eve Matter devices directly to Home Assistant first and use Apple, Google, or SmartThings only when the household needs those apps too.</p>
+<div class="callout">
+  <p><strong>Tara's rule:</strong> use Eve Matter devices as local Home Assistant devices, but keep one owner for real automations. Family apps can be control surfaces. They should not become extra brains with duplicate rules.</p>
+</div>
+<h2 id="why-this-question">Why This Question Is Showing Up Now</h2>
+<p>The demand signal is practical. Reddit r/homeassistant has users asking how to start with Home Assistant when they already own Eve Thermo, Eve Energy, and Eve Door &amp; Window devices on an Apple Thread network. Home Assistant Community threads keep asking how to add Eve Energy from Apple Home, why sharing fails, and how to build the Matter/Thread stack without a preexisting Apple setup.</p>
+<p>The official support picture also changed. Home Assistant announced Eve joining Works with Home Assistant on April 29, 2025, and the Eve integration page now calls out local Matter support, supported devices, and the upgrade caveat for older models. That makes Eve a strong no-cloud option, but not a zero-planning option.</p>
+<h2 id="terms">The Three Terms That Decide the Setup</h2>
+<p><strong>Matter</strong> is the smart-home control standard Home Assistant uses to talk to the Eve device. Home Assistant's Matter integration runs a Matter controller and controls Matter devices locally.</p>
+<p><strong>Thread</strong> is the low-power mesh network many Eve devices use instead of Wi-Fi. A Thread border router connects that mesh to your normal home network. Home Assistant can use its own OpenThread setup or certain third-party border routers, but setup details differ by ecosystem.</p>
+<p><strong>HomeKit</strong> is Apple's older smart-home accessory path. HomeKit Device in Home Assistant can bring some HomeKit accessories into Home Assistant, while HomeKit Bridge exposes Home Assistant entities to Apple Home. Neither one is the same as adding a Matter device.</p>
+<h2 id="decision-table">Which Eve Path Should You Use?</h2>
+<p>This table separates official support, local behavior, Matter and HomeKit paths, and the caveats homeowners usually discover too late.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Situation</th>
+        <th>Official support</th>
+        <th>Local control and cloud dependency</th>
+        <th>Correct setup path</th>
+        <th>Main caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>New Eve Matter-over-Thread device</strong><br />Examples: Eve Energy, Eve Motion, Eve Door &amp; Window, Eve Weather, Eve Energy Outlet, Eve Energy Outdoor.</td>
+        <td>Home Assistant lists Eve as a Works with Home Assistant partner for Matter products and lists supported devices on the Eve integration page.</td>
+        <td>Matter control is local. Eve's product pages emphasize no Eve cloud, no registration, and no subscription for core operation.</td>
+        <td>Add through Home Assistant's Matter integration. Use a working Thread border router and the Home Assistant Companion app for commissioning.</td>
+        <td>Check for the Matter logo or official model support. Thread alone is not enough.</td>
+      </tr>
+      <tr>
+        <td><strong>Eve device already in Apple Home and already upgraded to Matter</strong><br />Common when HomePod mini or Apple TV 4K already owns Thread.</td>
+        <td>Home Assistant's Matter docs support sharing a device from another Matter controller, and Eve documents adding a second platform.</td>
+        <td>Home Assistant control can still be local; Apple Home remains another controller. Apple remote access, Siri, and Home app behavior remain Apple ecosystem features.</td>
+        <td>In Apple Home, turn on pairing mode for the accessory and use the fresh Matter setup code to add it to Home Assistant as already in use.</td>
+        <td>Do not reuse the original box QR code after the device is already commissioned. Generate a new sharing code.</td>
+      </tr>
+      <tr>
+        <td><strong>Older Eve HomeKit-over-Thread device that is not Matter yet</strong><br />Common with older Eve Energy, Eve Thermo, Eve Motion, or Eve Door &amp; Window units.</td>
+        <td>Eve's upgrade guide says selected devices can migrate from HomeKit to Matter, and Home Assistant notes that some older Eve devices need this first.</td>
+        <td>Before the Matter upgrade, it is not a Matter device. After the upgrade, Matter control can be local, but the upgrade process itself may require Apple hardware.</td>
+        <td>Use Eve's upgrade process with an iPhone or iPad and a supported Apple Thread border router when required, then add or share the device through Matter.</td>
+        <td>Eve says the Matter migration cannot be reversed. Save the new Matter setup code.</td>
+      </tr>
+      <tr>
+        <td><strong>Eve Energy for power monitoring</strong><br />Useful for lamps, small appliances, and energy automations.</td>
+        <td>Eve announced Matter energy reporting support for Eve Energy and Home Assistant documents Eve Energy as supported.</td>
+        <td>Switching and status are local through Matter. Energy reporting support depends on firmware and platform support.</td>
+        <td>Update firmware, add through Matter, then check Home Assistant entities for power, voltage, amperage, and consumption where exposed.</td>
+        <td>Eve app graphs, historical views, schedules, and manufacturer-specific controls may not appear identically in every platform.</td>
+      </tr>
+      <tr>
+        <td><strong>Eve cameras or HomeKit-only accessories</strong><br />Examples: Eve Cam and Eve Outdoor Cam are not the same decision as Eve Matter Thread sensors.</td>
+        <td>Home Assistant's Eve Matter list is for Matter devices. HomeKit Device and HomeKit Bridge are separate Home Assistant integrations.</td>
+        <td>Camera recording, HomeKit Secure Video, remote viewing, and notifications can depend on Apple or the camera platform.</td>
+        <td>Do not treat these as Matter-over-Thread devices. Check HomeKit Device support or use the native ecosystem intentionally.</td>
+        <td>Do not promise no-cloud camera behavior without checking recording path, storage, remote access, and privacy settings.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="direct-home-assistant">Path 1: Add a New Eve Matter Device Directly to Home Assistant</h2>
+<p>Use this path when the device is new, supports Matter out of the box, and Home Assistant should be the automation brain.</p>
+<ol>
+  <li><strong>Confirm the device is Matter, not just Thread.</strong> Check the box, product page, or Eve/Home Assistant supported-device list.</li>
+  <li><strong>Make sure Thread exists.</strong> A Thread border router is required for Thread Eve devices. That can be a Home Assistant OpenThread setup, Home Assistant Yellow/Connect radio configured for Thread, Apple TV, HomePod, Nest Hub, Nest Wifi Pro, Google TV Streamer, or another compatible router.</li>
+  <li><strong>Install the Matter integration.</strong> Home Assistant OS is the supported path for the official Matter Server app. Container setups can work, but Home Assistant marks them as unsupported and at your own risk.</li>
+  <li><strong>Use the Home Assistant Companion app near the device.</strong> Matter commissioning uses the phone for Bluetooth setup, so stand near the Eve device and the Thread border router.</li>
+  <li><strong>Add it as new.</strong> Go to Settings &gt; Matter in the Home Assistant app, add a device, and scan the Matter code.</li>
+  <li><strong>Rename and test before automating.</strong> Toggle Eve Energy, trigger Eve Motion, open Eve Door &amp; Window, or verify Eve Weather values before writing rules.</li>
+</ol>
+<p>This path keeps Apple out of the ownership chain. You can still share the device to Apple Home later if the family wants Siri or the Home app.</p>
+<h2 id="apple-first">Path 2: Share an Existing Apple Home Eve Device to Home Assistant</h2>
+<p>Use this path when Eve devices already work in Apple Home and you do not want to rebuild a stable Thread network. The device must already be Matter. If it is HomeKit-only, this is not the same process.</p>
+<ol>
+  <li><strong>Open Apple Home.</strong> Press and hold the Eve accessory tile, open accessory details, and turn on pairing mode.</li>
+  <li><strong>Use the fresh setup code.</strong> Apple Home will show a new Matter sharing code. Use that code quickly.</li>
+  <li><strong>Add it in Home Assistant as already in use.</strong> In the Home Assistant app, go to Settings &gt; Matter, add a device, and choose that it is already paired to another controller.</li>
+  <li><strong>Keep Apple as a control surface if needed.</strong> Let Home Assistant run the serious local automations, and use Apple Home for family app control or Siri.</li>
+</ol>
+<p>If this fails, resist the urge to delete the device everywhere first. Check Matter integration health, Thread reachability, IPv6, phone app version, and whether the device is actually Matter.</p>
+<h2 id="apple-required">When Apple Is Still Required</h2>
+<p>You do not need Apple Home for every Eve Matter-over-Thread install. You may need Apple hardware for a very specific reason: upgrading older Eve HomeKit devices to Matter.</p>
+<p>Eve's upgrade guide says the migration from HomeKit to Matter requires an iPhone or iPad. The same guide says supported Apple home hubs, such as HomePod mini, HomePod 2nd generation, or certain Apple TV 4K models, act as Matter controllers and Thread border routers during that process. Home Assistant's Eve page repeats the practical warning: some older Eve devices need this upgrade before Home Assistant can add them through Matter.</p>
+<p>That means the buying advice is simple: if you do not own Apple hardware, buy Eve models that already ship with Matter support. Do not buy old stock hoping Home Assistant will upgrade it for you.</p>
+<h2 id="homekit-paths">Matter, HomeKit Device, and HomeKit Bridge Are Different Tools</h2>
+<p>Use <strong>Matter</strong> for Eve devices that support Matter. This is the normal path for Eve Matter-over-Thread devices in Home Assistant.</p>
+<p>Use <strong>HomeKit Device</strong> only when you have a HomeKit accessory that Home Assistant can pair with directly. Home Assistant's HomeKit Device docs warn that HomeKit devices can only be paired to one controller at a time. That is different from Matter multi-admin, where a Matter device can be shared with multiple controllers.</p>
+<p>Use <strong>HomeKit Bridge</strong> when you want Apple Home to see selected Home Assistant entities. This is for exporting from Home Assistant to Apple Home, not for adding an Eve Matter device into Home Assistant.</p>
+<h2 id="what-stays-local">What Stays Local and What Might Not</h2>
+<p>For supported Eve Matter devices, the everyday on/off, sensor, and status control path in Home Assistant is local. Home Assistant says Eve Matter devices work locally through the Matter integration. Eve's messaging for Eve Energy emphasizes no Eve cloud, no registration, and no subscription.</p>
+<p>That does not mean every feature in every app is identical. Firmware updates, Eve app graphs, historical energy views, schedules, voice assistants, remote access, Apple Home features, Google Home features, and SmartThings behavior are separate from basic local Matter control. Matter gets the device into Home Assistant. It does not guarantee that every vendor-specific screen from the Eve app appears in Home Assistant.</p>
+<h2 id="troubleshooting">If Pairing Fails, Try This Order</h2>
+<ol>
+  <li><strong>Confirm the device is Matter.</strong> If it is HomeKit-only, use the Eve upgrade path first or use HomeKit Device where appropriate.</li>
+  <li><strong>Update Home Assistant and the Companion app.</strong> The Matter integration and phone commissioning flow change over time.</li>
+  <li><strong>Check the Thread border router.</strong> Thread devices need a reachable Thread mesh. If Home Assistant owns Thread, confirm the Thread and Matter integrations are healthy. If Apple or Google owns Thread, confirm Home Assistant can reach that network.</li>
+  <li><strong>Keep the phone close.</strong> Matter setup uses Bluetooth during commissioning, so distance matters.</li>
+  <li><strong>Use the right code.</strong> New device: use the Matter QR or setup code. Already in Apple Home: create a new sharing code from Apple Home.</li>
+  <li><strong>Check IPv6, mDNS, and VLANs.</strong> Matter is local IP-based. Segmented networks can break discovery or controller-to-device reachability.</li>
+  <li><strong>Reset only after you know what you will lose.</strong> Older Eve upgrades generate a new Matter setup code. Save it before depending on a reset path.</li>
+</ol>
+<h2 id="tara-recommendation">Tara Recommendation</h2>
+<p>For a fresh no-cloud Home Assistant build, buy current Eve devices that already support Matter and pair them to Home Assistant first. That is the cleanest local-first path.</p>
+<p>For an Apple household that already has HomePods, Apple TV, and working Eve Thread devices, do not tear down the Apple network just to prove a point. Share Matter Eve devices to Home Assistant, then move the real automations into Home Assistant over time.</p>
+<p>For older Eve HomeKit-only devices, decide whether the Apple upgrade requirement is acceptable. If not, buy Matter-ready Eve replacements or choose another Home Assistant-friendly local device class such as Zigbee, Z-Wave, or a different Matter model that ships ready today.</p>
+<h2 id="related-reading">Related Tara Reading</h2>
+<ul>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to Share One Matter Device Across Home Assistant, Apple Home, Google Home, Alexa, and SmartThings</a></li>
+  <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread Border Router Should You Use with Home Assistant in 2026?</a></li>
+  <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says "Your Device Requires a Thread Border Router"</a></li>
+  <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?</a></li>
+  <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Why Home Assistant Matter Pairing Gets Stuck on "Checking Network Connectivity"</a></li>
+  <li><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">How to Pair IKEA Matter-over-Thread Devices in Home Assistant Without Cloud</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<h3 id="can-use-without-apple">Can you use Eve Matter-over-Thread devices with Home Assistant without Apple Home?</h3>
+<p>Yes, if the Eve device already supports Matter. Pair it through Home Assistant's Matter integration and make sure the home has a working Thread border router. Older HomeKit-over-Thread Eve devices may need an Apple-only Matter upgrade before Home Assistant can use them as Matter devices.</p>
+<h3 id="need-eve-hub">Do Eve devices need an Eve hub?</h3>
+<p>No Eve hub is required for Matter-over-Thread Eve devices. You need a Matter controller, such as Home Assistant, and a Thread border router, such as Home Assistant OpenThread hardware, Apple TV, HomePod, Nest Hub, or another compatible router.</p>
+<h3 id="matter-or-homekit">Should you use Matter, HomeKit Device, or HomeKit Bridge for Eve?</h3>
+<p>Use Matter for Eve devices that support Matter. Use HomeKit Device only for HomeKit accessories that are not Matter devices. Use HomeKit Bridge when you want Apple Home to see selected Home Assistant entities. The three paths solve different problems.</p>
+<h3 id="upgrade-without-apple">Can you upgrade older Eve Thread devices to Matter without Apple hardware?</h3>
+<p>For older Eve devices that need migration from HomeKit to Matter, Eve and Home Assistant document an iPhone or iPad plus an Apple Thread border router as the upgrade path. Once upgraded to Matter, Eve says the device cannot be migrated back to HomeKit.</p>
+<h3 id="energy-reporting">Does Eve Energy report power usage in Home Assistant?</h3>
+<p>Eve and Home Assistant document Eve Energy support through Matter, including energy reporting on supported firmware and platforms. App graphs, historical views, and manufacturer-specific settings can still vary by platform.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Home Assistant sources</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/eve/" target="_blank" rel="noopener noreferrer">Home Assistant Eve integration documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/04/29/eve-joins-works-with-home-assistant/" target="_blank" rel="noopener noreferrer">Home Assistant blog: Eve joins Works with Home Assistant</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Device documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge documentation</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Eve product and support sources</h3>
+              <ul>
+                <li><a href="https://www.evehome.com/en/eve-energy-works-with-home-assistant" target="_blank" rel="noopener noreferrer">Eve: Eve Energy works with Home Assistant</a></li>
+                <li><a href="https://www.evehome.com/en-us/eve-energy" target="_blank" rel="noopener noreferrer">Eve Energy product page</a></li>
+                <li><a href="https://www.evehome.com/en-us/eve-door-window" target="_blank" rel="noopener noreferrer">Eve Door &amp; Window product page</a></li>
+                <li><a href="https://www.evehome.com/en-us/eve-motion" target="_blank" rel="noopener noreferrer">Eve Motion product page</a></li>
+                <li><a href="https://www.evehome.com/en-us/hub" target="_blank" rel="noopener noreferrer">Eve: which hub is right for me?</a></li>
+                <li><a href="https://www.evehome.com/en-us/upgrade-to-matter" target="_blank" rel="noopener noreferrer">Eve: upgrade to Matter guide</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1r4oeto/how_to_start_with_ha_when_only_having_matter_over/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: starting with Home Assistant when you only have Matter-over-Thread Eve devices</a></li>
+                <li><a href="https://community.home-assistant.io/t/eve-energy-matter-can-t-add-it-home-assistant/730241" target="_blank" rel="noopener noreferrer">Home Assistant Community: Eve Energy Matter cannot add to Home Assistant</a></li>
+                <li><a href="https://community.home-assistant.io/t/add-eve-energy-to-ha/838306" target="_blank" rel="noopener noreferrer">Home Assistant Community: add Eve Energy to Home Assistant</a></li>
+                <li><a href="https://community.home-assistant.io/t/how-to-control-eve-energy-plugs-via-matter-thread-on-a-raspberry-pi-with-home-assistant/1014920" target="_blank" rel="noopener noreferrer">Home Assistant Community: controlling Eve Energy plugs via Matter/Thread on Raspberry Pi</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Related Tara guides</h3>
+              <ul>
+                <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a></li>
+                <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin sharing</a></li>
+                <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread border router choice</a></li>
+                <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit Device vs HomeKit Bridge</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Eve, Matter, Apple Home, and Home Assistant to behave like one system?</h2>
+          <p>Tara plans the Thread border router, Matter pairing order, local automations, family app handoff, and fallback controls so setup day does not become a pile of duplicate apps.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread router choice</a><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit paths</a><a href="/blog/home-assistant-thread-border-router-required/">Thread router error</a><a href="/blog/home-automation-without-cloud/">No-cloud automation</a><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">IKEA Matter Thread</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
