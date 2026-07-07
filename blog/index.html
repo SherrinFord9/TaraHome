@@ -27,7 +27,7 @@
     <style>
       :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
       * { box-sizing: border-box; }
-      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
       a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
       nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
       nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
@@ -39,7 +39,7 @@
       .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
       .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
       .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
-      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; overflow-wrap: break-word; text-wrap: balance; }
       h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
       h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
       p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
@@ -67,10 +67,11 @@
       .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
       .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
       .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card span { display: block; min-width: 0; }
       .blog-card > p { padding-bottom: 24px; }
       .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
-      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
-      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; max-width: 100%; overflow-wrap: break-word; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; max-width: 100%; overflow-wrap: break-word; }
       .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
       .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
       .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
@@ -110,8 +111,8 @@
       footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
       @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
       @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-	      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
-      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+	      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.35rem, 11vw, 3.25rem); max-width: 100%; } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } .blog-card { max-width: 100%; min-width: 0; } .blog-card h2 { max-width: 24ch; overflow-wrap: normal; } .blog-card p { max-width: 34ch; overflow-wrap: normal; word-break: normal; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .lede { font-size: 1.04rem; max-width: 28ch; text-wrap: normal; } .blog-list, .blog-card { max-width: calc(100vw - 44px); min-width: 0; width: calc(100vw - 44px); } .blog-card span, .blog-card > p { padding-left: 18px; padding-right: 18px; } .blog-card h2 { font-size: 1.28rem; line-height: 1.12; max-width: calc(100vw - 92px); overflow-wrap: normal; } .blog-card p { font-size: 0.94rem; line-height: 1.38; max-width: calc(100vw - 92px); overflow-wrap: normal; word-break: normal; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
     </style>
     <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -133,6 +134,9 @@
         "@id": "https://tarahome.ai/#organization"
       },
       "blogPost": [
+        {
+          "@id": "https://tarahome.ai/blog/where-should-smart-home-automations-live/#blogposting"
+        },
         {
           "@id": "https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/#blogposting"
         },
@@ -313,342 +317,348 @@
         {
           "@type": "ListItem",
           "position": 1,
+          "url": "https://tarahome.ai/blog/where-should-smart-home-automations-live/",
+          "name": "Where Should Your Smart Home Automations Live?"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
           "url": "https://tarahome.ai/blog/eve-matter-thread-home-assistant-without-apple-home/",
           "name": "Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home?"
         },
         {
           "@type": "ListItem",
-          "position": 2,
+          "position": 3,
           "url": "https://tarahome.ai/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/",
           "name": "How to Share One Matter Device Across Home Assistant, Apple Home, Google Home, Alexa, and SmartThings"
         },
         {
           "@type": "ListItem",
-          "position": 3,
+          "position": 4,
           "url": "https://tarahome.ai/blog/which-thread-border-router-home-assistant-2026/",
           "name": "Which Thread Border Router Should You Use with Home Assistant in 2026?"
         },
         {
           "@type": "ListItem",
-          "position": 4,
+          "position": 5,
           "url": "https://tarahome.ai/blog/do-you-need-ikea-dirigera-home-assistant/",
           "name": "Do You Still Need IKEA DIRIGERA With Home Assistant?"
         },
         {
           "@type": "ListItem",
-          "position": 5,
+          "position": 6,
           "url": "https://tarahome.ai/blog/home-assistant-ups-nut-safe-shutdown/",
           "name": "How to Keep Home Assistant Running During a Power Outage"
         },
         {
           "@type": "ListItem",
-          "position": 6,
+          "position": 7,
           "url": "https://tarahome.ai/blog/home-assistant-wont-start-yaml-safe-mode/",
           "name": "Home Assistant Won't Start After a YAML Change"
         },
         {
           "@type": "ListItem",
-          "position": 7,
+          "position": 8,
           "url": "https://tarahome.ai/blog/home-assistant-template-sensor-not-updating/",
           "name": "Why Your Home Assistant Template Sensor Is Not Updating"
         },
         {
           "@type": "ListItem",
-          "position": 8,
+          "position": 9,
           "url": "https://tarahome.ai/blog/do-you-need-mqtt-mosquitto-home-assistant/",
           "name": "Do You Need MQTT and Mosquitto for Home Assistant?"
         },
         {
           "@type": "ListItem",
-          "position": 9,
+          "position": 10,
           "url": "https://tarahome.ai/blog/home-assistant-devices-unavailable-after-restart/",
           "name": "Why Your Home Assistant Devices Are Unavailable After a Restart"
         },
         {
           "@type": "ListItem",
-          "position": 10,
+          "position": 11,
           "url": "https://tarahome.ai/blog/home-assistant-automation-runs-twice/",
           "name": "Why Your Home Assistant Automation Runs Twice"
         },
         {
           "@type": "ListItem",
-          "position": 11,
+          "position": 12,
           "url": "https://tarahome.ai/blog/home-assistant-z-wave-long-range-2026/",
           "name": "Should You Use Z-Wave Long Range With Home Assistant in 2026?"
         },
         {
           "@type": "ListItem",
-          "position": 12,
+          "position": 13,
           "url": "https://tarahome.ai/blog/home-assistant-camera-feed-delay-rtsp-webrtc/",
           "name": "Why Your Home Assistant Camera Feed Is Delayed"
         },
         {
           "@type": "ListItem",
-          "position": 13,
+          "position": 14,
           "url": "https://tarahome.ai/blog/home-assistant-notifications-delayed-not-arriving/",
           "name": "Why Home Assistant Notifications Are Delayed or Not Arriving"
         },
         {
           "@type": "ListItem",
-          "position": 14,
+          "position": 15,
           "url": "https://tarahome.ai/blog/best-doorbell-camera-home-assistant-2026/",
           "name": "Best Doorbell Cameras for Home Assistant in 2026"
         },
         {
           "@type": "ListItem",
-          "position": 15,
+          "position": 16,
           "url": "https://tarahome.ai/blog/home-assistant-wall-tablet-dashboard-stays-awake/",
           "name": "How to Set Up a Home Assistant Wall Tablet Dashboard That Stays Awake"
         },
         {
           "@type": "ListItem",
-          "position": 16,
+          "position": 17,
           "url": "https://tarahome.ai/blog/home-assistant-database-too-large-recorder-purge/",
           "name": "Why Is Your Home Assistant Database So Big?"
         },
         {
           "@type": "ListItem",
-          "position": 17,
+          "position": 18,
           "url": "https://tarahome.ai/blog/best-smart-light-switches-home-assistant-2026/",
           "name": "Best Smart Light Switches for Home Assistant in 2026"
         },
         {
           "@type": "ListItem",
-          "position": 18,
+          "position": 19,
           "url": "https://tarahome.ai/blog/home-assistant-zigbee-channel-wifi-interference/",
           "name": "What Zigbee Channel Should You Use for Home Assistant?"
         },
         {
           "@type": "ListItem",
-          "position": 19,
+          "position": 20,
           "url": "https://tarahome.ai/blog/home-assistant-automation-not-firing/",
           "name": "Why Your Home Assistant Automation Is Not Firing"
         },
         {
           "@type": "ListItem",
-          "position": 20,
+          "position": 21,
           "url": "https://tarahome.ai/blog/best-smart-plugs-home-assistant-2026/",
           "name": "Best Smart Plugs for Home Assistant in 2026"
         },
         {
           "@type": "ListItem",
-          "position": 21,
+          "position": 22,
           "url": "https://tarahome.ai/blog/best-water-leak-sensors-home-assistant-2026/",
           "name": "Best Water Leak Sensors for Home Assistant in 2026"
         },
         {
           "@type": "ListItem",
-          "position": 22,
+          "position": 23,
           "url": "https://tarahome.ai/blog/best-garage-door-opener-home-assistant-2026/",
           "name": "Best Garage Door Opener Setup for Home Assistant in 2026"
         },
         {
           "@type": "ListItem",
-          "position": 23,
+          "position": 24,
           "url": "https://tarahome.ai/blog/best-smart-thermostat-home-assistant-2026/",
           "name": "What Smart Thermostat Actually Works Well With Home Assistant in 2026?"
         },
         {
           "@type": "ListItem",
-          "position": 24,
+          "position": 25,
           "url": "https://tarahome.ai/blog/should-you-flash-shelly-with-esphome-home-assistant/",
           "name": "Should You Flash Shelly Devices with ESPHome for Home Assistant?"
         },
         {
           "@type": "ListItem",
-          "position": 25,
+          "position": 26,
           "url": "https://tarahome.ai/blog/do-you-need-nabu-casa-home-assistant/",
           "name": "Do You Need Nabu Casa for Home Assistant in 2026?"
         },
         {
           "@type": "ListItem",
-          "position": 26,
+          "position": 27,
           "url": "https://tarahome.ai/blog/home-assistant-zigbee-coordinator-migration/",
           "name": "Can You Move a Home Assistant Zigbee Network to a New Coordinator Without Re-Pairing?"
         },
         {
           "@type": "ListItem",
-          "position": 27,
+          "position": 28,
           "url": "https://tarahome.ai/blog/home-assistant-zigbee-thread-one-vs-two-radios/",
           "name": "Do You Need One or Two Radios for Zigbee and Thread in Home Assistant?"
         },
         {
           "@type": "ListItem",
-          "position": 28,
+          "position": 29,
           "url": "https://tarahome.ai/blog/best-smart-lock-home-assistant-2026/",
           "name": "Best Smart Lock Setup for Home Assistant in 2026"
         },
         {
           "@type": "ListItem",
-          "position": 29,
+          "position": 30,
           "url": "https://tarahome.ai/blog/zwave-js-vs-zwave-js-ui-home-assistant/",
           "name": "Z-Wave JS vs Z-Wave JS UI in Home Assistant: Which Should You Use in 2026?"
         },
         {
           "@type": "ListItem",
-          "position": 30,
+          "position": 31,
           "url": "https://tarahome.ai/blog/home-assistant-matter-checking-network-connectivity/",
           "name": "Why Home Assistant Matter Pairing Gets Stuck on \"Checking Network Connectivity\""
         },
         {
           "@type": "ListItem",
-          "position": 31,
+          "position": 32,
           "url": "https://tarahome.ai/blog/can-home-assistant-use-homekit-secure-video/",
           "name": "Can Home Assistant Use HomeKit Secure Video?"
         },
         {
           "@type": "ListItem",
-          "position": 32,
+          "position": 33,
           "url": "https://tarahome.ai/blog/home-assistant-thread-border-router-required/",
           "name": "Why Home Assistant Says \"Your Device Requires a Thread Border Router\""
         },
         {
           "@type": "ListItem",
-          "position": 33,
+          "position": 34,
           "url": "https://tarahome.ai/blog/home-assistant-person-not-updating/",
           "name": "Why Your Home Assistant Person Entity Is Stuck at Home or Away"
         },
         {
           "@type": "ListItem",
-          "position": 34,
+          "position": 35,
           "url": "https://tarahome.ai/blog/pair-matter-devices-home-assistant-or-apple-google-first/",
           "name": "Should You Pair Matter Devices to Home Assistant or Apple/Google First?"
         },
         {
           "@type": "ListItem",
-          "position": 35,
+          "position": 36,
           "url": "https://tarahome.ai/blog/home-assistant-energy-dashboard-sensor-not-showing/",
           "name": "Why Your Sensor Won't Show Up in Home Assistant Energy Dashboard"
         },
         {
           "@type": "ListItem",
-          "position": 36,
+          "position": 37,
           "url": "https://tarahome.ai/blog/homekit-device-vs-homekit-bridge-home-assistant/",
           "name": "Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?"
         },
         {
           "@type": "ListItem",
-          "position": 37,
+          "position": 38,
           "url": "https://tarahome.ai/blog/home-assistant-infrared-control-without-cloud/",
           "name": "How to Add Infrared Remote Control to Home Assistant Without Cloud"
         },
         {
           "@type": "ListItem",
-          "position": 38,
+          "position": 39,
           "url": "https://tarahome.ai/blog/apple-tv-homepod-thread-border-router-home-assistant/",
           "name": "Can Apple TV or HomePod Be Your Thread Border Router for Home Assistant?"
         },
         {
           "@type": "ListItem",
-          "position": 39,
+          "position": 40,
           "url": "https://tarahome.ai/blog/home-assistant-os-vs-docker/",
           "name": "Home Assistant OS vs Docker: Which Should You Use in 2026?"
         },
         {
           "@type": "ListItem",
-          "position": 40,
+          "position": 41,
           "url": "https://tarahome.ai/blog/how-to-back-up-home-assistant/",
           "name": "How to Back Up Home Assistant So You Can Actually Restore It"
         },
         {
           "@type": "ListItem",
-          "position": 41,
+          "position": 42,
           "url": "https://tarahome.ai/blog/home-assistant-main-lan-vs-iot-vlan/",
           "name": "Should Home Assistant Live on Your Main Network or IoT VLAN?"
         },
         {
           "@type": "ListItem",
-          "position": 42,
+          "position": 43,
           "url": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/",
           "name": "Home Assistant Bluetooth Proxy: When You Need One and How to Add It"
         },
         {
           "@type": "ListItem",
-          "position": 43,
+          "position": 44,
           "url": "https://tarahome.ai/blog/how-to-update-home-assistant-safely/",
           "name": "How to Update Home Assistant Safely Without Breaking Your House"
         },
         {
           "@type": "ListItem",
-          "position": 44,
+          "position": 45,
           "url": "https://tarahome.ai/blog/zha-vs-zigbee2mqtt-home-assistant/",
           "name": "ZHA vs Zigbee2MQTT: Which Should You Use in Home Assistant?"
         },
         {
           "@type": "ListItem",
-          "position": 45,
+          "position": 46,
           "url": "https://tarahome.ai/blog/move-home-assistant-to-new-hardware/",
           "name": "How to Move Home Assistant to New Hardware"
         },
         {
           "@type": "ListItem",
-          "position": 46,
+          "position": 47,
           "url": "https://tarahome.ai/blog/home-assistant-remote-access-without-port-forwarding/",
           "name": "How to Access Home Assistant Remotely Without Port Forwarding"
         },
         {
           "@type": "ListItem",
-          "position": 47,
+          "position": 48,
           "url": "https://tarahome.ai/blog/best-home-assistant-hardware-2026/",
           "name": "Best Home Assistant Hardware in 2026"
         },
         {
           "@type": "ListItem",
-          "position": 48,
+          "position": 49,
           "url": "https://tarahome.ai/blog/how-to-use-ai-with-home-assistant/",
           "name": "How to Use AI with Home Assistant"
         },
         {
           "@type": "ListItem",
-          "position": 49,
+          "position": 50,
           "url": "https://tarahome.ai/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/",
           "name": "How to Pair IKEA Matter-over-Thread Devices in Home Assistant Without Cloud"
         },
         {
           "@type": "ListItem",
-          "position": 50,
+          "position": 51,
           "url": "https://tarahome.ai/blog/home-assistant-local-voice-assistant-no-cloud/",
           "name": "How to Set Up a Fully Local Voice Assistant in Home Assistant"
         },
         {
           "@type": "ListItem",
-          "position": 51,
+          "position": 52,
           "url": "https://tarahome.ai/blog/mmwave-matter-thread-presence-sensor-home-assistant/",
           "name": "How to Add mmWave Presence Sensors to Home Assistant via Matter & Thread"
         },
         {
           "@type": "ListItem",
-          "position": 52,
+          "position": 53,
           "url": "https://tarahome.ai/blog/what-is-smart-home-hub/",
           "name": "What Is a Smart Home Hub & Why You Need One"
         },
         {
           "@type": "ListItem",
-          "position": 53,
+          "position": 54,
           "url": "https://tarahome.ai/blog/how-to-set-up-smart-lighting/",
           "name": "How to Set Up Smart Lighting in Every Room"
         },
         {
           "@type": "ListItem",
-          "position": 54,
+          "position": 55,
           "url": "https://tarahome.ai/blog/matter-protocol-explained/",
           "name": "Matter Protocol Explained: The Future of Smart Homes"
         },
         {
           "@type": "ListItem",
-          "position": 55,
+          "position": 56,
           "url": "https://tarahome.ai/blog/home-automation-without-cloud/",
           "name": "How to Run Your Smart Home Without the Cloud"
         },
         {
           "@type": "ListItem",
-          "position": 56,
+          "position": 57,
           "url": "https://tarahome.ai/blog/presence-detection-smart-home/",
           "name": "Presence Detection: The Missing Piece of Smart Homes"
         },
         {
           "@type": "ListItem",
-          "position": 57,
+          "position": 58,
           "url": "https://tarahome.ai/blog/smart-home-security-basics/",
           "name": "Smart Home Security: Protect Your Connected Home"
         }
@@ -675,6 +685,17 @@
       </header>
       <section class="block">
         <div class="blog-list">
+          <a class="blog-card" href="/blog/where-should-smart-home-automations-live/">
+            <figure class="blog-card-image">
+              <img src="/assets/generated/blog/where-should-smart-home-automations-live/cover.png" alt="Where Should Your Smart Home Automations Live? cover image" loading="lazy" />
+            </figure>
+            <span>
+              <p class="kicker">Automation Source of Truth</p>
+              <h2>Where Should Your Smart Home Automations Live?</h2>
+              <p>Use one automation brain.<br />Keep Apple Home, Alexa, Google,<br />SmartThings, Matter, and HomeKit<br />for voice and selected controls.</p>
+            </span>
+            <p>July 7, 2026 &middot; 10 min read</p>
+          </a>
           <a class="blog-card" href="/blog/eve-matter-thread-home-assistant-without-apple-home/">
             <figure class="blog-card-image">
               <img src="/assets/generated/blog/eve-matter-thread-home-assistant-without-apple-home/cover.png" alt="Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home? cover image" loading="lazy" />

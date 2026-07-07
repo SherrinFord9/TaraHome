@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Where Should Smart Home Automations Live? Home Assistant, Alexa, Google, Apple Home | Tara Guides</title>
+    <meta name="description" content="Choose where automations should live in a mixed smart home with Home Assistant, Apple Home, Alexa, Google Home, SmartThings, Matter, and HomeKit paths." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/where-should-smart-home-automations-live/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/where-should-smart-home-automations-live/" />
+    <meta property="og:title" content="Where Should Smart Home Automations Live? Home Assistant, Alexa, Google, Apple Home | Tara Guides" />
+    <meta property="og:description" content="Choose where automations should live in a mixed smart home with Home Assistant, Apple Home, Alexa, Google Home, SmartThings, Matter, and HomeKit paths." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/where-should-smart-home-automations-live/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Where Should Smart Home Automations Live? Home Assistant, Alexa, Google, Apple Home | Tara Guides" />
+    <meta name="twitter:description" content="Choose where automations should live in a mixed smart home with Home Assistant, Apple Home, Alexa, Google Home, SmartThings, Matter, and HomeKit paths." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/where-should-smart-home-automations-live/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 900px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } }
+      @media (max-width: 520px) { html, body { max-width: 100%; overflow-x: hidden; width: 100%; } nav, main, footer { max-width: 100%; width: 100%; } nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 346px; overflow-wrap: break-word; text-wrap: wrap; width: 100%; } .article .lede, .article-hero > div, .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol, .article-body .comparison-table { max-width: 346px; min-width: 0; overflow-wrap: break-word; width: 100%; } .article-cover img { max-width: 100%; } .article-body table { min-width: 720px; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr ul { max-width: 100%; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/where-should-smart-home-automations-live/#blogposting",
+      "headline": "Where Should Your Smart Home Automations Live?",
+      "description": "Choose where automations should live in a mixed smart home with Home Assistant, Apple Home, Alexa, Google Home, SmartThings, Matter, and HomeKit paths.",
+      "image": "https://tarahome.ai/assets/generated/blog/where-should-smart-home-automations-live/cover.png",
+      "datePublished": "2026-07-07",
+      "dateModified": "2026-07-07",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/where-should-smart-home-automations-live/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/",
+        "https://www.home-assistant.io/docs/automation/basics/",
+        "https://www.home-assistant.io/docs/automation/trigger/",
+        "https://www.home-assistant.io/integrations/homekit/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/blog/2022/02/02/release-20222/",
+        "https://support.nabucasa.com/hc/en-us/articles/25619363899677-Configuring-Amazon-Alexa-to-work-with-Home-Assistant",
+        "https://support.nabucasa.com/hc/en-us/articles/25619376817053-Google-Assistant",
+        "https://support.apple.com/en-us/102313",
+        "https://developers.home.google.com/automations/starters-conditions-and-actions",
+        "https://www.amazon.com/gp/help/customer/display.html?nodeId=G2PYLKJN3XVZ55EQ",
+        "https://support.smartthings.com/hc/en-us/articles/360051931952-Routines-in-SmartThings",
+        "https://developer.smartthings.com/docs/devices/hub-connected/get-started",
+        "https://www.reddit.com/r/homeassistant/comments/1itjca6/strategy_behind_duplicated_devices_in_alexa/",
+        "https://www.reddit.com/r/homeassistant/comments/1qe87hs/input_button_helpers_no_longer_work_with_alexa/",
+        "https://community.home-assistant.io/t/can-i-trigger-automations-locally-using-alexa-or-google-home/185252",
+        "https://community.home-assistant.io/t/was-using-alexa-new-to-home-assistant/463262",
+        "https://www.reddit.com/r/homeassistant/comments/1mkpntp/i_have_a_lot_of_smart_stuff_what_advantage_would/",
+        "https://community.home-assistant.io/t/whats-the-point-of-matter-bridge-add-on/955979",
+        "https://github.com/t0bst4r/home-assistant-matter-hub"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/where-should-smart-home-automations-live/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Where Should Your Smart Home Automations Live?",
+          "item": "https://tarahome.ai/blog/where-should-smart-home-automations-live/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/where-should-smart-home-automations-live/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should Home Assistant or Alexa run my automations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use Home Assistant for automations that should keep working locally and need conditions from several devices. Use Alexa routines for simple voice convenience, announcements, or Alexa-only features, not as the hidden brain for the house."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Alexa or Google trigger Home Assistant automations locally?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not in the normal supported voice-assistant flow. Alexa and Google voice processing depend on their services. You can expose Home Assistant entities through Home Assistant Cloud or manual integrations, but the serious logic should still run in Home Assistant."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should Apple Home or Home Assistant run automations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use Home Assistant when the automation depends on non-Apple devices, detailed conditions, traces, or local hub ownership. Use Apple Home for simple family-facing scenes, Siri convenience, and Apple-only devices when that is the cleanest supported path."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Matter replace Home Assistant Cloud for Alexa or Google?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Matter can help share Matter devices across ecosystems, but official Home Assistant does not turn every Home Assistant entity into a Matter device. Community Matter bridge projects exist, but they are advanced paths with support caveats."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What works during an internet outage?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Home Assistant automations can keep running if Home Assistant, the router, Wi-Fi, and the controlled devices are powered and local. Alexa and Google voice routines should be treated as internet-dependent. SmartThings local behavior depends on hub-connected devices and Edge support."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Automation Source of Truth</span><span>July 7, 2026</span><span>10 min read</span></p>
+            <h1>Where Should Your Smart Home Automations Live?</h1>
+            <p class="lede">Put dependable house logic in Home Assistant, then use Apple Home, Alexa, Google Home, and SmartThings as family control surfaces unless one platform has a specific job.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/where-should-smart-home-automations-live/cover.png" alt="Local smart home hub and control panel showing that automations should have one owner" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> Put reliable house automations in Home Assistant whenever they involve more than one brand, need conditions, or should keep working without the internet.</li>
+    <li><strong>Best next step:</strong> Pick one automation owner, then expose only the devices, scenes, or helper buttons that Apple Home, Alexa, Google Home, or SmartThings actually need for family control.</li>
+    <li><strong>What to avoid:</strong> Do not build the same motion, schedule, lock, garage, or lighting rule in several apps. Duplicate routines make the home feel random.</li>
+    <li><strong>Main caveat:</strong> Local control means the rule runs in your house; it still depends on local power, Wi-Fi, radios, and whether each device integration is local or cloud-backed.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: One Brain, Several Control Surfaces</h2>
+<p>The cleanest mixed smart home has <strong>one automation brain</strong>. For a Home Assistant house, that brain should usually be Home Assistant. That is where timed rules, presence logic, sensor conditions, safety guardrails, and multi-brand scenes belong. Apple Home, Alexa, Google Home, and SmartThings can still be useful, but they should mostly be <strong>control surfaces</strong>: apps, voice assistants, family dashboards, and simple scenes that send a command to the same underlying devices.</p>
+<p><strong>Local control</strong> means the automation logic runs on hardware in your home instead of waiting for a vendor server. Home Assistant is built around that local-first idea, but the actual result depends on the devices you choose. A local Zigbee motion sensor turning on a local light can keep working during an internet outage. A cloud-only Wi-Fi bulb or an Alexa routine may not.</p>
+<p>The practical rule is simple: use Home Assistant for the rules that would annoy, confuse, or worry you if they failed. Use Apple Home, Alexa, Google Home, and SmartThings for voice commands, simple family scenes, and ecosystem-specific features. When Matter or HomeKit sharing is involved, decide which platform owns the rule before you add the same device everywhere.</p>
+<div class="callout">
+  <p><strong>Tara's rule:</strong> a device can appear in several apps, but the automation should have one owner. Shared control is useful. Shared responsibility is where homes get messy.</p>
+</div>
+<h2 id="why-this-question">Why This Question Keeps Coming Up</h2>
+<p>The demand signal is coming from real mixed homes. Reddit r/homeassistant threads ask about duplicated Alexa devices, Matter Hub strategies, and whether Apple Home should just be the front end while Home Assistant runs the logic. A recent Alexa helper thread shows the fragility of building Home Assistant workflows around how another platform classifies a helper this month. Home Assistant Community threads ask whether Alexa or Google can trigger automations locally, and migration threads keep landing on the same advice: move the serious routines into Home Assistant, then expose selected controls outward.</p>
+<p>This is not a Home Assistant-only problem. A normal 2026 home may have an iPhone household using Apple Home, an Echo in the kitchen, Google displays in bedrooms, SmartThings appliances, Matter plugs, HomeKit accessories, and a Home Assistant hub. The question is no longer "can all the apps see the device?" The better question is "which system is allowed to decide what happens?"</p>
+<h2 id="terms">The Terms That Matter in the House</h2>
+<p><strong>Automation brain</strong> means the system that decides: if this happens, and these conditions are true, do that. Home Assistant's automation docs describe this as triggers, optional conditions, and actions. In plain English: something wakes the rule up, Home Assistant checks the situation, then it acts.</p>
+<p><strong>Control surface</strong> means a place a person presses a button or speaks a command. Apple Home, Alexa, Google Home, SmartThings, dashboards, wall tablets, and voice assistants can all be control surfaces without owning the main logic.</p>
+<p><strong>Cloud routine</strong> means the rule depends on a platform service outside the house. Google explicitly warns that Google Home Routines can depend on internet, Wi-Fi, and third-party service availability and should not be used for safety-critical behavior. Alexa routines and many voice flows should be treated with the same caution.</p>
+<p><strong>Matter</strong> is a local smart-home standard for compatible devices. It can let several ecosystems control the same Matter device, but Home Assistant's official Matter integration is a controller, not a bridge that turns every Home Assistant entity into a Matter device.</p>
+<p><strong>HomeKit Bridge</strong> is Home Assistant's official way to expose selected Home Assistant entities to Apple Home as HomeKit accessories. It is different from HomeKit Device, which brings a HomeKit accessory into Home Assistant, and different from Matter multi-admin, which shares a Matter device with another Matter controller.</p>
+<h2 id="decision-table">Where Each Platform Fits</h2>
+<p>This table separates official support, local behavior, cloud dependency, Matter/HomeKit paths, and community caveats so the decision is not just a brand preference.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Best role</th>
+        <th>Official support path</th>
+        <th>Local and cloud behavior</th>
+        <th>Main caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Home Assistant</strong></td>
+        <td>Primary automation brain for local, multi-brand, condition-heavy rules.</td>
+        <td>Native automations, scripts, helper buttons, troubleshooting history, integrations, Matter controller, HomeKit Bridge, and HomeKit Device.</td>
+        <td>Automation logic runs on your Home Assistant hardware. The result is strongest when the devices and integrations are also local.</td>
+        <td>Home Assistant can expose selected devices outward, but official Matter does not make Home Assistant a Matter bridge for all existing entities.</td>
+      </tr>
+      <tr>
+        <td><strong>Apple Home</strong></td>
+        <td>Family app, Siri, simple Apple-first scenes, and Apple-only accessories.</td>
+        <td>Apple documents scenes and automations in the Home app and says a home hub is required before creating automations.</td>
+        <td>Good fit inside an Apple household. Remote access, hub selection, Apple-only features, and HomeKit Secure Video remain Apple ecosystem concerns.</td>
+        <td>Use HomeKit Bridge from Home Assistant to Apple Home when Apple should see Home Assistant entities. Do not duplicate Home Assistant's real rules in Apple Home.</td>
+      </tr>
+      <tr>
+        <td><strong>Alexa</strong></td>
+        <td>Voice convenience, announcements, Echo screens, and simple household routines.</td>
+        <td>Nabu Casa documents the supported Home Assistant Cloud path for exposing selected Home Assistant entities to Alexa.</td>
+        <td>Good voice layer, but routine and voice behavior should be treated as cloud-service behavior. Home Assistant should hold the dependable logic.</td>
+        <td>Community reports show helper-button and device behavior can change. Use Alexa routines for convenience, not for hidden lock, garage, alarm, heating/cooling, or leak logic.</td>
+      </tr>
+      <tr>
+        <td><strong>Google Home</strong></td>
+        <td>Google household control, Nest displays, voice, and simple Google Home routines.</td>
+        <td>Nabu Casa documents exposing Home Assistant entities to Google Assistant; Google documents advanced Home automations and routine limitations.</td>
+        <td>Google's own docs warn routines can depend on internet, Wi-Fi, and third-party services. Treat Google routines as convenience, not your outage plan.</td>
+        <td>Manual Google Assistant setup exists, but the easy UI path is Home Assistant Cloud. Keep critical logic in Home Assistant either way.</td>
+      </tr>
+      <tr>
+        <td><strong>SmartThings</strong></td>
+        <td>Samsung appliances, SmartThings hub-connected devices, and family control for an existing SmartThings home.</td>
+        <td>SmartThings documents Routines and Edge hub-connected devices for Matter, Zigbee, Z-Wave, and LAN paths.</td>
+        <td>Some hub-connected SmartThings devices can run locally through Edge. App, account, service, device, and integration behavior still vary.</td>
+        <td>Do not assume every SmartThings automation is local. Check whether the devices, drivers, hub, and routine path support local execution.</td>
+      </tr>
+      <tr>
+        <td><strong>Community Matter bridge projects</strong></td>
+        <td>Advanced local sharing from Home Assistant to Matter-capable ecosystems when official paths do not fit.</td>
+        <td>Community projects can simulate a Matter bridge, but this is not the same as Home Assistant Core's official Matter controller support.</td>
+        <td>Can reduce cloud exposure for some voice/control paths when it works, but support depends on the project and fork.</td>
+        <td>The original Home-Assistant-Matter-Hub repository says it stopped active maintenance in January 2026 and was archived on March 11, 2026. Treat this as an advanced caveat, not a default homeowner path.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="recommended-pattern">The Recommended Pattern</h2>
+<p>Use Home Assistant as the source of truth. Bring devices into Home Assistant through their best local path first. <strong>Zigbee</strong> and <strong>Z-Wave</strong> are local low-power radio networks. <strong>Matter</strong> and <strong>HomeKit Device</strong> are local smart-home pairing paths for compatible devices. <strong>MQTT</strong>, <strong>ESPHome</strong>, Shelly local control, and Hue local integration are Home Assistant-friendly ways to keep supported devices talking inside the house. Then expose only what the family actually needs outward.</p>
+<p>For Apple Home, use Home Assistant's HomeKit Bridge when the Home app should show selected Home Assistant lights, switches, covers, thermostats, scenes, or sensors. This keeps Home Assistant in charge while Apple stays a friendly family interface.</p>
+<p>For Alexa and Google Home, the supported easy path is Home Assistant Cloud from Nabu Casa. Expose a curated list of <strong>entities</strong>, which are the individual lights, switches, sensors, scenes, or helper buttons Home Assistant can show to another app. Do not expose every sensor and diagnostic object. If a routine just says "good night" and calls one Home Assistant scene, that is reasonable. If the routine contains the actual security, heating/cooling, or leak logic, move that logic back to Home Assistant.</p>
+<p>For Matter devices, use Matter multi-admin when the same physical Matter device should appear in more than one platform. That is different from exposing all of Home Assistant as Matter. It is usually fine for a Matter plug to be visible in Home Assistant and Apple Home. It is not fine for both systems to run competing motion schedules for that plug.</p>
+<h2 id="when-to-keep-routines-outside-home-assistant">When It Is Fine to Keep a Routine Outside Home Assistant</h2>
+<p>Not every rule needs to be moved. Keep a routine in Apple Home, Alexa, Google Home, or SmartThings when the action is harmless, platform-specific, and obvious to the family.</p>
+<ul>
+  <li><strong>Voice announcements:</strong> Alexa or Google can announce school pickup reminders, bedtime cues, or calendar prompts.</li>
+  <li><strong>Speaker and media behavior:</strong> music, timers, alarms, and display behavior often belong in the voice ecosystem.</li>
+  <li><strong>Family scenes:</strong> a simple "movie night" scene in Apple Home can be fine if it only calls a Home Assistant scene or controls a few non-critical lights.</li>
+  <li><strong>SmartThings-only appliances:</strong> if a washer, refrigerator, TV, or appliance feature only exists cleanly in SmartThings, leave that narrow routine there and document it.</li>
+  <li><strong>Vendor maintenance:</strong> firmware updates, meaning device software updates, calibration, and special settings may stay in the vendor app even when daily automations live in Home Assistant.</li>
+</ul>
+<h2 id="what-to-move-into-home-assistant">What to Move Into Home Assistant</h2>
+<p>Move a routine into Home Assistant when it needs multiple conditions, several device brands, repeatable troubleshooting, or local behavior during an internet outage.</p>
+<ul>
+  <li><strong>Lighting with presence:</strong> motion or presence, time of day, illuminance, sleep mode, and manual override all in one place.</li>
+  <li><strong>Locks and garage doors:</strong> one authority, clear notifications, manual fallback, and no duplicate unlock or open rules in voice platforms.</li>
+  <li><strong>Heating, cooling, and comfort:</strong> occupancy, windows, weather, utility rates, and temperature limits should be traceable and easy to disable.</li>
+  <li><strong>Water leaks and shutoffs:</strong> use local sensors where possible, keep manual shutoff clear, and test alerts before relying on automation.</li>
+  <li><strong>Cameras and privacy:</strong> decide where recording, detection, notifications, and retention happen. Do not let three apps define three different privacy policies.</li>
+  <li><strong>Presence and away mode:</strong> combine phones, sensors, locks, and schedules in one system so the home does not arm, disarm, or turn lights off from conflicting rules.</li>
+</ul>
+<h2 id="migration-plan">A Safe Migration Plan</h2>
+<ol>
+  <li><strong>List every routine by app.</strong> Write down Apple Home automations, Alexa routines, Google Home routines, SmartThings routines, vendor app schedules, and Home Assistant automations.</li>
+  <li><strong>Mark the risky ones.</strong> Locks, garage doors, alarms, cameras, heating/cooling, water, exterior lighting, and anything that affects safety or privacy go first.</li>
+  <li><strong>Choose the owner.</strong> For a Tara-style local setup, Home Assistant owns the real rule unless a platform-specific reason says otherwise.</li>
+  <li><strong>Create the Home Assistant version.</strong> Use clear names, areas, helpers, and traces. Test it manually before disabling the old routine.</li>
+  <li><strong>Disable duplicates, do not delete immediately.</strong> Turn off the old Alexa, Apple, Google, SmartThings, or vendor routine for a week so rollback is easy.</li>
+  <li><strong>Expose only the final controls.</strong> Share scenes, buttons, switches, or selected entities outward after the rule works in Home Assistant.</li>
+  <li><strong>Test outage behavior.</strong> Unplug internet from the modem, not power from the whole rack, and verify which local automations still work. Keep manual controls available.</li>
+</ol>
+<h2 id="cloud-and-outage-expectations">What Works When the Internet Is Down?</h2>
+<p>Home Assistant can keep running without internet if the hub, router, Wi-Fi, radios, and devices still have power and the involved integrations are local. That is why a UPS for the hub and network gear matters more than another app shortcut.</p>
+<p>Alexa and Google voice routines should be treated as internet-dependent. Even if a device command eventually lands on a local Matter device, spoken voice recognition, routine evaluation, account state, and assistant behavior are not a local-only Tara-style foundation.</p>
+<p>Apple Home can be strong inside an Apple household, but Apple automations still depend on a properly set up home hub and Apple ecosystem behavior. SmartThings can run some hub-connected devices locally through Edge, but the local answer changes by device, driver, hub, region, and routine type. For both, the homeowner-safe answer is the same: test the actual automation you depend on.</p>
+<h2 id="matter-homekit-and-bridge-caveats">Matter, HomeKit, and Bridge Caveats</h2>
+<p>Use <strong>Matter multi-admin</strong> when one Matter device should be controlled by multiple Matter ecosystems. For example, a Matter plug can be added to Home Assistant and then shared to Apple Home or Google Home so the family sees it in a familiar app.</p>
+<p>Use <strong>HomeKit Bridge</strong> when Apple Home should see selected Home Assistant entities. This is often the cleanest Apple-family path because Home Assistant stays the automation owner while Apple Home gets switches, lights, thermostats, covers, scenes, or helpers.</p>
+<p>Use <strong>Home Assistant Cloud</strong> for the easiest supported Alexa and Google exposure. Manual configurations and community local bridges can be useful for advanced users, but they should not become an undocumented dependency in a homeowner handoff.</p>
+<p>Be especially careful with community Matter bridge projects. The idea is attractive: publish Home Assistant entities to Matter so Alexa, Apple Home, or Google Home can see them locally. The caveat is support. Home Assistant's official Matter docs say Home Assistant is not a bridge for existing entities, and the original Home-Assistant-Matter-Hub repository is now archived. Use maintained forks only when you are comfortable owning that support burden.</p>
+<h2 id="tara-recommendation">Tara Recommendation</h2>
+<p>For a normal homeowner, start with this policy: <strong>Home Assistant runs the house; family apps control the house.</strong> That gives you local logic, cleaner troubleshooting, fewer duplicate routines, and a handoff that another person can understand later.</p>
+<p>Keep Alexa and Google for voice, announcements, displays, and quick commands. Keep Apple Home for the family Home app, Siri, and Apple-first accessories. Keep SmartThings where Samsung or hub-connected devices make it useful. Keep vendor apps for firmware and special settings. But do not let each of those apps quietly become another automation brain.</p>
+<p>If you are planning a fresh install, decide this before pairing the first devices. It is much easier to expose a clean Home Assistant setup outward than to untangle five years of routines after the lights start doing three different things.</p>
+<h2 id="related-reading">Related Tara Reading</h2>
+<ul>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to Share One Matter Device Across Home Assistant, Apple Home, Google Home, Alexa, and SmartThings</a></li>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?</a></li>
+  <li><a href="/blog/do-you-need-nabu-casa-home-assistant/">Do You Need Nabu Casa for Home Assistant in 2026?</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/blog/home-assistant-automation-runs-twice/">Why Your Home Assistant Automation Runs Twice</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<h3 id="ha-or-alexa">Should Home Assistant or Alexa run my automations?</h3>
+<p>Use Home Assistant for automations that should keep working locally and need conditions from several devices. Use Alexa routines for simple voice convenience, announcements, or Alexa-only features, not as the hidden brain for the house.</p>
+<h3 id="local-alexa-google">Can Alexa or Google trigger Home Assistant automations locally?</h3>
+<p>Not in the normal supported voice-assistant flow. Alexa and Google voice processing depend on their services. You can expose Home Assistant entities through Home Assistant Cloud or manual integrations, but the serious logic should still run in Home Assistant.</p>
+<h3 id="apple-or-ha">Should Apple Home or Home Assistant run automations?</h3>
+<p>Use Home Assistant when the automation depends on non-Apple devices, detailed conditions, traces, or local hub ownership. Use Apple Home for simple family-facing scenes, Siri convenience, and Apple-only devices when that is the cleanest supported path.</p>
+<h3 id="matter-replace-cloud">Does Matter replace Home Assistant Cloud for Alexa or Google?</h3>
+<p>No, not by itself. Matter can help share Matter devices across ecosystems, but official Home Assistant does not turn every Home Assistant entity into a Matter device. Community Matter bridge projects exist, but they are advanced paths with support caveats.</p>
+<h3 id="internet-outage">What works during an internet outage?</h3>
+<p>Home Assistant automations can keep running if Home Assistant, the router, Wi-Fi, and the controlled devices are powered and local. Alexa and Google voice routines should be treated as internet-dependent. SmartThings local behavior depends on hub-connected devices and Edge support.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Home Assistant sources</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/" target="_blank" rel="noopener noreferrer">Home Assistant: local control and privacy first</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/basics/" target="_blank" rel="noopener noreferrer">Home Assistant automation basics</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/trigger/" target="_blank" rel="noopener noreferrer">Home Assistant automation triggers</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2022/02/02/release-20222/" target="_blank" rel="noopener noreferrer">Home Assistant 2022.2 release: button helpers for Alexa, Google, and HomeKit</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Platform docs</h3>
+              <ul>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/25619363899677-Configuring-Amazon-Alexa-to-work-with-Home-Assistant" target="_blank" rel="noopener noreferrer">Nabu Casa: configuring Amazon Alexa with Home Assistant</a></li>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/25619376817053-Google-Assistant" target="_blank" rel="noopener noreferrer">Nabu Casa: Google Assistant with Home Assistant</a></li>
+                <li><a href="https://support.apple.com/en-us/102313" target="_blank" rel="noopener noreferrer">Apple Support: create scenes and automations with the Home app</a></li>
+                <li><a href="https://developers.home.google.com/automations/starters-conditions-and-actions" target="_blank" rel="noopener noreferrer">Google Home automations supported starters, conditions, actions, and safety note</a></li>
+                <li><a href="https://www.amazon.com/gp/help/customer/display.html?nodeId=G2PYLKJN3XVZ55EQ" target="_blank" rel="noopener noreferrer">Amazon Customer Service: create an Alexa Routine</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/360051931952-Routines-in-SmartThings" target="_blank" rel="noopener noreferrer">SmartThings Routines support</a></li>
+                <li><a href="https://developer.smartthings.com/docs/devices/hub-connected/get-started" target="_blank" rel="noopener noreferrer">SmartThings Edge hub-connected device documentation</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1itjca6/strategy_behind_duplicated_devices_in_alexa/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: strategy behind duplicated devices in Alexa</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qe87hs/input_button_helpers_no_longer_work_with_alexa/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: input button helpers no longer work with Alexa</a></li>
+                <li><a href="https://community.home-assistant.io/t/can-i-trigger-automations-locally-using-alexa-or-google-home/185252" target="_blank" rel="noopener noreferrer">Home Assistant Community: local Alexa or Google triggers</a></li>
+                <li><a href="https://community.home-assistant.io/t/was-using-alexa-new-to-home-assistant/463262" target="_blank" rel="noopener noreferrer">Home Assistant Community: migrating from Alexa to Home Assistant</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1mkpntp/i_have_a_lot_of_smart_stuff_what_advantage_would/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Home Assistant advantages in an existing smart home</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Bridge caveats and related Tara guides</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/whats-the-point-of-matter-bridge-add-on/955979" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter bridge add-on discussion</a></li>
+                <li><a href="https://github.com/t0bst4r/home-assistant-matter-hub" target="_blank" rel="noopener noreferrer">GitHub: archived Home-Assistant-Matter-Hub project</a></li>
+                <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Tara: Matter multi-admin sharing</a></li>
+                <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Tara: HomeKit Device vs HomeKit Bridge</a></li>
+                <li><a href="/blog/do-you-need-nabu-casa-home-assistant/">Tara: whether you need Nabu Casa</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want one automation brain instead of five competing apps?</h2>
+          <p>Tara plans the hub, radios, pairing order, exposed entities, family app handoff, and local automation rules so the home is understandable after setup day.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit paths</a><a href="/blog/do-you-need-nabu-casa-home-assistant/">Nabu Casa choice</a><a href="/blog/home-automation-without-cloud/">No-cloud automation</a><a href="/blog/home-assistant-automation-runs-twice/">Duplicate automations</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
