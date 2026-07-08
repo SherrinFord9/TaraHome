@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can You Use Aqara Matter-over-Thread Devices With Home Assistant Without an Aqara Hub? | Tara Guides</title>
+    <meta name="description" content="Decide when Aqara P2, FP300, and W100 Matter-over-Thread devices can pair directly to Home Assistant, when an Aqara hub helps, and which setup path to use." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/aqara-matter-thread-home-assistant-without-aqara-hub/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/aqara-matter-thread-home-assistant-without-aqara-hub/" />
+    <meta property="og:title" content="Can You Use Aqara Matter-over-Thread Devices With Home Assistant Without an Aqara Hub? | Tara Guides" />
+    <meta property="og:description" content="Decide when Aqara P2, FP300, and W100 Matter-over-Thread devices can pair directly to Home Assistant, when an Aqara hub helps, and which setup path to use." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/aqara-matter-thread-home-assistant-without-aqara-hub/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can You Use Aqara Matter-over-Thread Devices With Home Assistant Without an Aqara Hub? | Tara Guides" />
+    <meta name="twitter:description" content="Decide when Aqara P2, FP300, and W100 Matter-over-Thread devices can pair directly to Home Assistant, when an Aqara hub helps, and which setup path to use." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/aqara-matter-thread-home-assistant-without-aqara-hub/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/aqara-matter-thread-home-assistant-without-aqara-hub/#blogposting",
+      "headline": "Can You Use Aqara Matter-over-Thread Devices With Home Assistant Without an Aqara Hub?",
+      "description": "Decide when Aqara P2, FP300, and W100 Matter-over-Thread devices can pair directly to Home Assistant, when an Aqara hub helps, and which setup path to use.",
+      "image": "https://tarahome.ai/assets/generated/blog/aqara-matter-thread-home-assistant-without-aqara-hub/cover.png",
+      "datePublished": "2026-07-07",
+      "dateModified": "2026-07-07",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/aqara-matter-thread-home-assistant-without-aqara-hub/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/aqara/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://www.aqara.com/us/product/door-and-window-sensor-p2/",
+        "https://www.aqara.com/us/product/motion-and-light-sensor-p2/",
+        "https://www.aqara.com/us/product/presence-multi-sensor-fp300/",
+        "https://eu.aqara.com/products/aqara-climate-sensor-w100",
+        "https://www.aqara.com/us/product/hub-m100/",
+        "https://www.aqara.com/us/news-us-2/aqara-unveils-hub-m3-a-multi-protocol-matter-controller-with-edge-capabilities/",
+        "https://support.apple.com/en-us/102135",
+        "https://support.google.com/googlehome/answer/12391458?hl=en",
+        "https://community.home-assistant.io/t/im-having-trouble-connecting-my-aqara-matter-thread-devices-to-home-assistant/950061",
+        "https://community.home-assistant.io/t/trouble-pairing-with-aqara-p2-matter-motion-and-light/982204",
+        "https://community.home-assistant.io/t/what-am-i-doing-wrong-with-this-setup-why-is-my-aqara-p2-sensor-not-connecting-to-ha/836730",
+        "https://www.reddit.com/r/homeassistant/comments/1bzqmqz/i_tested_the_new_aqara_p2_thread_motionlight/",
+        "https://www.reddit.com/r/homeassistant/comments/1kf5b9u/cannot_readd_aqara_p2_matter_over_thread_device/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/aqara-matter-thread-home-assistant-without-aqara-hub/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Can You Use Aqara Matter-over-Thread Devices With Home Assistant Without an Aqara Hub?",
+          "item": "https://tarahome.ai/blog/aqara-matter-thread-home-assistant-without-aqara-hub/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/aqara-matter-thread-home-assistant-without-aqara-hub/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need an Aqara hub for Aqara Door and Window Sensor P2 or Motion and Light Sensor P2 in Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. These are Matter-over-Thread devices, so Home Assistant can add them directly through the Matter integration if you have a working Thread border router and the setup phone has the right Thread credentials."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I still use an Aqara Hub M3, M100, or another Aqara Matter hub?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use an Aqara hub when the Aqara Home app, Aqara-guided firmware updates, Zigbee mode, Aqara-specific settings, or a family-facing Aqara control surface matter more than keeping Home Assistant as the only controller."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does an Aqara device paired to Aqara Home not automatically appear in Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Matter controllers use separate secure fabrics. If the device was added to Aqara Home first, use the Aqara app or hub sharing flow to generate a fresh Matter setup code, then add that shared device to Home Assistant."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the direct Aqara Matter path cloud-free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Normal Home Assistant control over Matter is local. Aqara app features, remote app behavior, some firmware workflows, notifications, and advanced vendor settings may still need Aqara software or an Aqara account."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use Thread/Matter or Zigbee for Aqara FP300 and W100?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use Thread/Matter when you want cross-platform local control without an Aqara hub. Use Zigbee through an Aqara hub or a Home Assistant Zigbee setup when you need the Aqara-specific tuning or Zigbee behavior that the Matter path does not expose."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter &amp; Thread</span><span>July 7, 2026</span><span>11 min read</span></p>
+            <h1>Can You Use Aqara Matter-over-Thread Devices With Home Assistant Without an Aqara Hub?</h1>
+            <p class="lede">Aqara's native Matter-over-Thread sensors can pair directly to Home Assistant, but the right answer depends on Thread ownership, Aqara-only features, and whether the device started life in another app.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/aqara-matter-thread-home-assistant-without-aqara-hub/cover.png" alt="Aqara Matter-over-Thread sensors and a local Home Assistant hub arranged for direct local control" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> yes, many Aqara Matter-over-Thread devices can work in Home Assistant without an Aqara hub. You still need Home Assistant Matter, a Thread border router, and the right Thread credentials on the phone used for setup.</li>
+    <li><strong>Best next step:</strong> pair directly to Home Assistant when Home Assistant will run the automations. Use an Aqara Hub M3, M100, or another officially supported Aqara Matter hub only when you need Aqara Home app features, Zigbee mode, vendor-guided updates, or an Aqara family app.</li>
+    <li><strong>What to avoid:</strong> do not assume a P2, FP300, or W100 added to Aqara Home will automatically appear in Home Assistant. Matter sharing needs a fresh multi-admin setup code.</li>
+    <li><strong>Main caveat:</strong> direct Matter is local and clean, but it may expose fewer Aqara-specific settings than the Aqara app or Zigbee path. Test one exact model before buying a houseful.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: The Hub Is Optional for Native Aqara Matter Devices</h2>
+<p><strong>If the Aqara device is a native Matter-over-Thread device, you do not need an Aqara hub just to use it in Home Assistant.</strong> Examples include <strong>Aqara Door and Window Sensor P2</strong>, <strong>Aqara Motion and Light Sensor P2</strong>, <strong>Aqara Presence Multi-Sensor FP300 in Thread mode</strong>, and <strong>Aqara Climate Sensor W100 in Thread mode</strong>. In plain English, Matter is the shared smart-home language, Thread is the low-power wireless mesh those battery sensors use, and Home Assistant can be the controller that owns the device.</p>
+<p>A Thread border router is still required. That is the small always-on radio bridge that lets Thread devices reach your normal home network. It can be Home Assistant Connect ZBT-2, Connect ZBT-1, Home Assistant Yellow, Apple TV 4K, HomePod mini, Nest Hub, Nest Wifi Pro, Google TV Streamer, or an Aqara hub with Thread, as long as the setup phone knows the correct Thread network credentials during pairing.</p>
+<p>The practical requirement is not an Aqara box. It is a working setup chain: Home Assistant's Matter integration, the chosen Thread border router, and a phone that can commission the device onto that Thread network.</p>
+<p>Use the Aqara hub path when you want the Aqara Home app, Aqara-specific device settings, Zigbee mode, Aqara-guided firmware updates, or a separate family-facing control surface. Do not use it because someone said Matter cannot work locally. Home Assistant's own Aqara page says Aqara Matter devices integrate through Home Assistant's Matter integration and communicate locally.</p>
+<div class="callout">
+  <p><strong>Tara's rule:</strong> buy Aqara Thread devices for Home Assistant only after you decide who owns the Thread network. The sensor is not the hard part. The phone credentials and controller path are.</p>
+</div>
+<h2 id="why-demand-is-high">Why This Question Is Active Now</h2>
+<p>This is not an abstract Matter question. On <strong>November 11, 2025</strong>, a Home Assistant Community user asked whether Aqara was forcing an Aqara hub because P2 Motion and Light and P2 Door and Window sensors kept trying to connect to an <strong>AqaraHome-bee</strong> Thread network instead of the user's intended Home Assistant path. The follow-up said a different phone solved the setup, which points to phone credential state as much as device compatibility.</p>
+<p>On <strong>February 2, 2026</strong>, another Home Assistant Community thread asked why an Aqara P2 Motion and Light sensor would not stay available after an Apple Home first setup. A January 2025 thread shows a different common mistake: the user expected a P2 Door and Window Sensor paired to Aqara Hub M3 to automatically become a Home Assistant device. A forum reply correctly reframed the issue as Matter fabrics: Aqara and Home Assistant are separate controllers, so the device must be shared.</p>
+<p>Reddit demand is similar but less formal. r/homeassistant posts around Aqara P2 sensors discuss local Thread operation, missing settings compared with Zigbee versions, re-adding failed P2 devices, and whether Thread border-router topology is causing delays. Those threads are demand signals, not the source of truth for setup instructions. The technical source of truth is still Home Assistant, Aqara, and the platform docs.</p>
+<h2 id="which-aqara-devices">Which Aqara Devices Fit This Advice?</h2>
+<p>Start by separating <strong>native Matter-over-Thread</strong> devices from older <strong>Zigbee</strong> Aqara devices. Matter is the cross-platform smart-home control standard. Thread is the low-power wireless mesh used by many battery Matter devices. Zigbee is a different low-power mesh that can be excellent in Home Assistant, but it is not the same radio and not the same setup path.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Aqara example</th>
+        <th>Best Home Assistant path</th>
+        <th>Local control</th>
+        <th>Cloud or app dependency</th>
+        <th>Main caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Door and Window Sensor P2</strong><br />Native Matter over Thread contact sensor.</td>
+        <td>Pair directly to Home Assistant Matter when your Thread network is ready, or share from Aqara/Apple/Google with Matter multi-admin.</td>
+        <td>Local Matter control in Home Assistant.</td>
+        <td>No Aqara cloud needed for normal Home Assistant state and automations. Aqara app features and updates may still matter to some owners.</td>
+        <td>Aqara's page requires a Matter-compatible Thread border router for each ecosystem. Do not confuse that with requiring an Aqara hub.</td>
+      </tr>
+      <tr>
+        <td><strong>Motion and Light Sensor P2</strong><br />Native Matter over Thread motion and illuminance sensor.</td>
+        <td>Direct Home Assistant Matter pairing is the clean local path. Apple or Google first can be practical if that ecosystem already owns the Thread network.</td>
+        <td>Local Matter control once commissioned correctly.</td>
+        <td>No vendor cloud for ordinary Home Assistant automations. Feature depth depends on what the Matter firmware exposes.</td>
+        <td>Community testing reports fewer tuning settings than some Zigbee Aqara sensors. Test motion timing and light entities before buying many.</td>
+      </tr>
+      <tr>
+        <td><strong>Presence Multi-Sensor FP300</strong><br />Can use Thread/Matter or Zigbee depending on mode.</td>
+        <td>Use Thread/Matter for cross-platform local control. Use Zigbee when Aqara app settings or Zigbee behavior are more important.</td>
+        <td>Thread mode can integrate with Home Assistant as a Matter controller. Zigbee can be local through a Home Assistant Zigbee network or an Aqara hub path.</td>
+        <td>Aqara says Zigbee mode unlocks exclusive Aqara Home app features. Thread mode avoids the hub but may expose a different feature set.</td>
+        <td>Do not assume Thread and Zigbee run simultaneously. Choose the mode for the room and support path.</td>
+      </tr>
+      <tr>
+        <td><strong>Climate Sensor W100</strong><br />Matter-over-Thread or Zigbee temperature/humidity display.</td>
+        <td>Use Matter-over-Thread for Apple, Google, Alexa, and Home Assistant style interoperability. Use Zigbee with an Aqara hub for Aqara-specific extras.</td>
+        <td>Local control is possible through Matter when the Thread path is healthy.</td>
+        <td>Aqara's product copy points Zigbee users back to an Aqara hub for exclusive features and enhanced performance.</td>
+        <td>Regional availability and firmware behavior can vary. Verify exact entities in Home Assistant before standardizing on it.</td>
+      </tr>
+      <tr>
+        <td><strong>Older Aqara Zigbee sensors</strong><br />Water leak, contact, temperature, vibration, buttons, and many pre-Matter devices.</td>
+        <td>Use an Aqara hub, HomeKit Device path, ZHA, or Zigbee2MQTT depending on the install.</td>
+        <td>Direct Zigbee to Home Assistant can be local. Aqara hub paths vary by model and bridge behavior.</td>
+        <td>Aqara app and hub may be part of the official support path. Direct Home Assistant Zigbee is common community practice, not the same as Matter certification.</td>
+        <td>Do not buy older Zigbee Aqara gear expecting native Matter-over-Thread behavior.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="path-table">The Four Real Setup Paths</h2>
+<p>Use this table before resetting devices or buying another hub. It separates official support, local control, cloud dependency, Matter/HomeKit paths, and community caveats.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Official support</th>
+        <th>Local control and cloud dependency</th>
+        <th>Matter / HomeKit path</th>
+        <th>Choose or avoid</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Pair Aqara Matter device directly to Home Assistant</strong></td>
+        <td>Home Assistant documents Aqara as a Works with Home Assistant partner for Matter products, and its Aqara page says Aqara Matter devices work locally through the Matter integration.</td>
+        <td>Best local-first path. Home Assistant controls the Matter device inside the home. Internet is not required for normal local automations after setup.</td>
+        <td>Use the Home Assistant companion app to add the Matter device. For Thread devices, the phone must know the intended Thread network credentials.</td>
+        <td>Choose when Home Assistant is the automation brain. Avoid if you do not have a stable Thread border router, IPv6/mDNS basics, or a supportable phone setup path.</td>
+      </tr>
+      <tr>
+        <td><strong>Pair to Aqara Home first through Aqara hub</strong><br />Examples: Hub M3 or Hub M100 where supported by exact model and firmware.</td>
+        <td>Aqara Hub M100 product material describes Thread border-router, local automation, and Matter bridge roles. Aqara's M3 announcement describes a multi-protocol Matter controller with edge capabilities.</td>
+        <td>Some Aqara automations can run locally on newer hubs, but Aqara app setup, remote access, notifications, updates, and account behavior are separate from Home Assistant.</td>
+        <td>After adding the device to Aqara Home, generate a fresh Matter sharing code and add that device to Home Assistant as another Matter controller.</td>
+        <td>Choose for Aqara-specific settings, Zigbee mode, firmware convenience, or a family Aqara app. Avoid expecting Aqara-paired Thread devices to auto-import into Home Assistant.</td>
+      </tr>
+      <tr>
+        <td><strong>Pair to Apple Home or Google Home first</strong></td>
+        <td>Apple's May 7, 2026 Matter support page documents adding and sharing Matter accessories and says Thread accessories need a Thread-enabled home hub or compatible border router. Google's Matter docs list Matter hubs and Thread border routers.</td>
+        <td>Matter commands can be local, but Apple or Google app features, voice assistants, accounts, remote access, and notifications remain ecosystem features.</td>
+        <td>Add to Apple or Google when that is the working Thread network, then share to Home Assistant with Matter multi-admin.</td>
+        <td>Choose when the household already lives in Apple or Google. Avoid duplicate automations and remember Home Assistant OTA updates for Thread devices have limits when only Apple border routers are present.</td>
+      </tr>
+      <tr>
+        <td><strong>Use Aqara Zigbee directly or through a bridge</strong></td>
+        <td>Aqara's official app-and-hub path supports many Zigbee products. Home Assistant community users also commonly pair Aqara Zigbee devices through ZHA or Zigbee2MQTT.</td>
+        <td>Direct Zigbee to Home Assistant is local. Aqara hub bridging may still be useful for family control, firmware, or Aqara-specific settings.</td>
+        <td>HomeKit Device, Matter bridge, ZHA, and Zigbee2MQTT are different paths. Pick one deliberately.</td>
+        <td>Choose for older Aqara sensors or when Zigbee is more mature in the home. Avoid mixing this advice with native Matter-over-Thread devices.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="direct-home-assistant-setup">Direct Home Assistant Setup: The Order That Wastes the Least Time</h2>
+<ol>
+  <li><strong>Confirm the exact model and protocol.</strong> P2 Door and Window and P2 Motion and Light are Matter-over-Thread. FP300 and W100 can be Thread/Matter or Zigbee depending on mode. Older Aqara sensors are often Zigbee, not Matter.</li>
+  <li><strong>Make sure Home Assistant Matter is current.</strong> Home Assistant's June 23, 2026 Matter upgrade focused on stability, faster startup and recovery, and better network visibility. Use current Home Assistant Core, Matter Server, OTBR, and companion apps before judging the device.</li>
+  <li><strong>Choose the Thread border router.</strong> Home Assistant-owned Thread is cleanest for a local install. Apple, Google, SmartThings, Alexa/eero, or Aqara Thread can also work when that ecosystem already owns the working network.</li>
+  <li><strong>Sync or import Thread credentials to the phone.</strong> Home Assistant's Thread docs are clear: the phone is part of commissioning. Home Assistant can see a Thread network without knowing its credentials.</li>
+  <li><strong>Pair one test device.</strong> Add a contact sensor or motion sensor before buying many. Keep the phone close to the device and border router during commissioning.</li>
+  <li><strong>Put serious automations in one place.</strong> Share the device to family apps if needed, but do not create the same light, HVAC, or security automation in Aqara, Apple, Google, Alexa, and Home Assistant.</li>
+</ol>
+<h2 id="aqara-home-bee">What If Home Assistant Mentions an AqaraHome Thread Network?</h2>
+<p>An <strong>AqaraHome-...</strong> Thread network name during setup does not prove the sensor requires an Aqara hub. It can mean the setup phone, vendor app, or previous pairing attempt still knows an Aqara-created Thread network. Home Assistant's Thread docs explain that different vendors can create separate Thread networks with separate credentials, and the preferred-network behavior is not completely implemented in every companion-app flow.</p>
+<p>Before buying a hub out of frustration, check the boring causes first: remove stale Matter accessories from the phone's Matter settings, reboot the phone, sync Thread credentials again, try a different phone if available, and confirm Home Assistant has the credentials for the Thread network you intend to use. The November 2025 community thread where a different phone solved the Aqara pairing problem is a useful warning: the phone can be the bad state, not the sensor.</p>
+<h2 id="when-aqara-hub-helps">When the Aqara Hub Is Actually the Right Answer</h2>
+<p>An Aqara hub is not a failure. It is just a different owner. Use one when the homeowner wants Aqara Home as a first-class app, when an installer needs Aqara's guided update path, when a device exposes important settings only in Aqara's app, or when dual-protocol products such as FP300 and W100 make more sense in Zigbee mode for that room.</p>
+<p>The important nuance is that adding the device to Aqara Home first does not automatically make it a Home Assistant device. Matter uses separate controller fabrics. In plain English, Aqara Home and Home Assistant each need their own secure invitation. Use the Aqara app or hub to share the Matter device and generate a new setup code, then add that shared device to Home Assistant.</p>
+<h2 id="local-cloud-boundary">What Stays Local, and What May Still Need Cloud or Vendor Apps</h2>
+<p><strong>Direct Matter control in Home Assistant is local.</strong> Home Assistant talks to the Matter device over your LAN and Thread border router. The device state and automations do not need to bounce through Aqara cloud servers.</p>
+<p>That does not mean every part of ownership is cloud-free. Aqara app account features, remote push notifications, support diagnostics, some firmware workflows, and Aqara-specific configuration screens can still belong to Aqara. Apple, Google, Alexa, and SmartThings voice or remote features also involve their own ecosystems. Treat Matter as the local control layer, not as a promise that every vendor app feature disappears.</p>
+<h2 id="safety-privacy">Safety and Privacy Guardrails</h2>
+<p>For sensors, start with low-risk rooms and noncritical automations. A contact sensor turning on a pantry light is a good test. A Thread lock, alarm, water shutoff, garage door, or HVAC safety rule is not the place to discover that the phone used the wrong Thread network. For locks and security devices, keep a physical key or manual fallback, avoid remote-unlock automations unless you understand the risk, and test notification delays before relying on them.</p>
+<p>For privacy, keep cameras, voice assistants, and household presence logic out of Aqara/Apple/Google/Alexa routines unless the household has agreed to that app owning those events. If Home Assistant is the private automation brain, let it stay the brain.</p>
+<h2 id="tara-recommendation">Tara's Recommendation</h2>
+<p>For a Tara-style Home Assistant home, I would use <strong>direct Home Assistant Matter</strong> for Aqara P2 contact and motion sensors when the Home Assistant Thread network is healthy. I would test <strong>FP300</strong> and <strong>W100</strong> one room at a time because their Thread/Matter and Zigbee paths can expose different settings. I would keep or add an <strong>Aqara hub</strong> only when the homeowner wants Aqara Home features, Zigbee mode, vendor-guided updates, or a fallback app the family actually understands.</p>
+<p>The simple rule is this: <strong>Home Assistant first for local automations, Aqara first for Aqara-specific ownership, Apple/Google first only when that ecosystem already owns the working Thread network.</strong> Anything else creates duplicate networks and duplicate automations.</p>
+<h2 id="related-reading">Related Tara Reading</h2>
+<ul>
+  <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread Border Router Should You Use with Home Assistant in 2026?</a></li>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to Share One Matter Device Across Home Assistant, Apple Home, Google Home, Alexa, and SmartThings</a></li>
+  <li><a href="/blog/eve-matter-thread-home-assistant-without-apple-home/">Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home?</a></li>
+  <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says "Your Device Requires a Thread Border Router"</a></li>
+  <li><a href="/blog/mmwave-matter-thread-presence-sensor-home-assistant/">How to Add mmWave Presence Sensors to Home Assistant via Matter &amp; Thread</a></li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<h3 id="need-aqara-hub-p2">Do I need an Aqara hub for Aqara Door and Window Sensor P2 or Motion and Light Sensor P2 in Home Assistant?</h3>
+<p>No. These are Matter-over-Thread devices, so Home Assistant can add them directly through the Matter integration if you have a working Thread border router and the setup phone has the right Thread credentials.</p>
+<h3 id="when-use-aqara-hub">When should I still use an Aqara Hub M3, M100, or another Aqara Matter hub?</h3>
+<p>Use an Aqara hub when the Aqara Home app, Aqara-guided firmware updates, Zigbee mode, Aqara-specific settings, or a family-facing Aqara control surface matter more than keeping Home Assistant as the only controller.</p>
+<h3 id="why-not-automatic">Why does an Aqara device paired to Aqara Home not automatically appear in Home Assistant?</h3>
+<p>Matter controllers use separate secure fabrics. If the device was added to Aqara Home first, use the Aqara app or hub sharing flow to generate a fresh Matter setup code, then add that shared device to Home Assistant.</p>
+<h3 id="cloud-free">Is the direct Aqara Matter path cloud-free?</h3>
+<p>Normal Home Assistant control over Matter is local. Aqara app features, remote app behavior, some firmware workflows, notifications, and advanced vendor settings may still need Aqara software or an Aqara account.</p>
+<h3 id="thread-or-zigbee">Should I use Thread/Matter or Zigbee for Aqara FP300 and W100?</h3>
+<p>Use Thread/Matter when you want cross-platform local control without an Aqara hub. Use Zigbee through an Aqara hub or a Home Assistant Zigbee setup when you need the Aqara-specific tuning or Zigbee behavior that the Matter path does not expose.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Home Assistant and platform docs</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/aqara/" target="_blank" rel="noopener noreferrer">Home Assistant Aqara integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant Matter upgrade - June 23, 2026</a></li>
+                <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple Support: pair and manage Matter accessories</a></li>
+                <li><a href="https://support.google.com/googlehome/answer/12391458?hl=en" target="_blank" rel="noopener noreferrer">Google Home: prepare your smart home for Matter</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Aqara product sources</h3>
+              <ul>
+                <li><a href="https://www.aqara.com/us/product/door-and-window-sensor-p2/" target="_blank" rel="noopener noreferrer">Aqara Door and Window Sensor P2</a></li>
+                <li><a href="https://www.aqara.com/us/product/motion-and-light-sensor-p2/" target="_blank" rel="noopener noreferrer">Aqara Motion and Light Sensor P2</a></li>
+                <li><a href="https://www.aqara.com/us/product/presence-multi-sensor-fp300/" target="_blank" rel="noopener noreferrer">Aqara Presence Multi-Sensor FP300</a></li>
+                <li><a href="https://eu.aqara.com/products/aqara-climate-sensor-w100" target="_blank" rel="noopener noreferrer">Aqara Climate Sensor W100</a></li>
+                <li><a href="https://www.aqara.com/us/product/hub-m100/" target="_blank" rel="noopener noreferrer">Aqara Hub M100</a></li>
+                <li><a href="https://www.aqara.com/us/news-us-2/aqara-unveils-hub-m3-a-multi-protocol-matter-controller-with-edge-capabilities/" target="_blank" rel="noopener noreferrer">Aqara Hub M3 announcement</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/im-having-trouble-connecting-my-aqara-matter-thread-devices-to-home-assistant/950061" target="_blank" rel="noopener noreferrer">Home Assistant Community: Aqara Matter/Thread devices and AqaraHome Thread network</a></li>
+                <li><a href="https://community.home-assistant.io/t/trouble-pairing-with-aqara-p2-matter-motion-and-light/982204" target="_blank" rel="noopener noreferrer">Home Assistant Community: trouble pairing Aqara P2 Motion and Light</a></li>
+                <li><a href="https://community.home-assistant.io/t/what-am-i-doing-wrong-with-this-setup-why-is-my-aqara-p2-sensor-not-connecting-to-ha/836730" target="_blank" rel="noopener noreferrer">Home Assistant Community: Aqara P2 behind Hub M3 not appearing in Home Assistant</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1bzqmqz/i_tested_the_new_aqara_p2_thread_motionlight/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Aqara P2 Motion/Light Thread testing</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1kf5b9u/cannot_readd_aqara_p2_matter_over_thread_device/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: cannot re-add Aqara P2 Matter over Thread device</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Aqara sensors without another hidden support path?</h2>
+          <p>Tara packages the hub, Thread radio plan, Matter pairing order, and local automation defaults so Aqara devices do not become a second smart-home stack by accident.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread border router guide</a><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/mmwave-matter-thread-presence-sensor-home-assistant/">mmWave Thread sensors</a><a href="/blog/eve-matter-thread-home-assistant-without-apple-home/">Eve Thread guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
