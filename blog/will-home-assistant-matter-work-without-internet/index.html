@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Will Home Assistant and Matter Work Without Internet? | Tara Guides</title>
+    <meta name="description" content="Home Assistant and Matter can keep lights, sensors, and automations local during an internet outage, but Alexa, Google, Apple Home, SmartThings, remote access, voice, and cloud integrations need planning." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/will-home-assistant-matter-work-without-internet/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/will-home-assistant-matter-work-without-internet/" />
+    <meta property="og:title" content="Will Home Assistant and Matter Work Without Internet? | Tara Guides" />
+    <meta property="og:description" content="Home Assistant and Matter can keep lights, sensors, and automations local during an internet outage, but Alexa, Google, Apple Home, SmartThings, remote access, voice, and cloud integrations need planning." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/will-home-assistant-matter-work-without-internet/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Will Home Assistant and Matter Work Without Internet? | Tara Guides" />
+    <meta name="twitter:description" content="Home Assistant and Matter can keep lights, sensors, and automations local during an internet outage, but Alexa, Google, Apple Home, SmartThings, remote access, voice, and cloud integrations need planning." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/will-home-assistant-matter-work-without-internet/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 960px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.95rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 960px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/will-home-assistant-matter-work-without-internet/#blogposting",
+      "headline": "Will Home Assistant and Matter Work Without Internet?",
+      "description": "Home Assistant and Matter can keep lights, sensors, and automations local during an internet outage, but Alexa, Google, Apple Home, SmartThings, remote access, voice, and cloud integrations need planning.",
+      "image": "https://tarahome.ai/assets/generated/blog/will-home-assistant-matter-work-without-internet/cover.png",
+      "datePublished": "2026-07-08",
+      "dateModified": "2026-07-08",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/will-home-assistant-matter-work-without-internet/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/cloud/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://developers.home-assistant.io/docs/creating_integration_manifest/",
+        "https://www.home-assistant.io/blog/2025/03/10/matter-certification/",
+        "https://support.apple.com/en-us/102056",
+        "https://support.apple.com/en-afri/102557",
+        "https://support.google.com/googlehome/answer/12391458?hl=en",
+        "https://home.google.com/get-inspired/matter-and-thread/",
+        "https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html",
+        "https://developer.amazon.com/en-US/docs/alexa/smarthome/understand-the-smart-home-skill-api.html",
+        "https://developer.smartthings.com/devices/hub-connected",
+        "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+        "https://csa-iot.org/newsroom/matter-1-6-enables-more-intuitive-setup-multi-ecosystem-experiences-and-context-driven-control/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/will-home-assistant-matter-work-without-internet/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Will Home Assistant and Matter Work Without Internet?",
+          "item": "https://tarahome.ai/blog/will-home-assistant-matter-work-without-internet/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/will-home-assistant-matter-work-without-internet/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will Home Assistant keep working if the internet is down?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, for local integrations and local automations, as long as the Home Assistant hub, router, Wi-Fi access point, and radios still have power. Cloud integrations, remote access, push notifications, and voice assistant paths may fail or degrade."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do Matter devices need the internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Matter device control is designed to be local. Home Assistant's Matter docs say Matter products can be controlled without internet or cloud services, but setup, vendor apps, certificates, firmware updates, and platform extras can still require internet at specific moments."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will Alexa, Google Home, Apple Home, and SmartThings work offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Some Matter and hub-connected paths can work locally, but do not assume every voice command, routine, remote app, cloud-to-cloud device, notification, or account feature will work. Test each platform by unplugging the outside internet feed before relying on it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should run the important automations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Put important house automations in one local system, usually Home Assistant, and use Apple Home, Google Home, Alexa, or SmartThings as family control surfaces where useful. Keep manual fallback for locks, garage doors, alarms, HVAC, and cameras."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>No-Cloud Smart Home</span><span>July 8, 2026</span><span>10 min read</span></p>
+            <h1>Will Home Assistant and Matter Work Without Internet?</h1>
+            <p class="lede">Yes, if the device path is local and your home network is still powered. The hard part is knowing which parts are local, which parts are cloud-backed, and which family apps only look local until the outside internet cable is unplugged.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/will-home-assistant-matter-work-without-internet/cover.png" alt="Local smart home router, hub, and server hardware for internet outage planning" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> Home Assistant and Matter can keep local lights, sensors, and automations working without internet if the hub, router, Wi-Fi, and radios still have power.</li>
+    <li><strong>Best next step:</strong> Move important automations into Home Assistant, then test them by unplugging the modem's outside internet cable, not by guessing from brand names.</li>
+    <li><strong>What to avoid:</strong> Do not rely on cloud integrations, phone push alerts, remote access, Alexa/Google voice, or camera cloud recordings as your outage plan.</li>
+    <li><strong>Main caveat:</strong> Matter control is local, but setup, firmware updates, vendor apps, Thread credentials, voice assistants, and remote control can still need internet at specific moments.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Local Control Survives, Cloud Convenience Does Not</h2>
+<p><strong>Home Assistant can keep working without internet</strong> when the automation, device integration, and network path are local. An <strong>automation</strong> is the rule that makes something happen, and an <strong>integration</strong> is the software path Home Assistant uses to talk to a device or service. <strong>Local control</strong> means the command stays inside the house instead of going through a vendor server first. A local Zigbee, Z-Wave, ESPHome, Shelly, MQTT, or Matter path should keep working after setup if the Home Assistant hub, router, Wi-Fi, and radios still have power.</p>
+<p><strong>Matter is also designed for local control</strong>, and Home Assistant's official Matter docs say Matter products can be controlled without internet or cloud services. The caveat is everything around Matter: some vendors need an account before enabling Matter, Thread devices need a powered Thread border router, and voice assistants, remote access, phone notifications, cloud cameras, firmware updates (device software updates), and cloud-polling integrations that ask a vendor cloud for status can still stop or degrade.</p>
+<p>The homeowner rule is simple: <strong>local automations in Home Assistant first, family apps second, cloud features optional</strong>.</p>
+
+<div class="callout">
+  <p><strong>Safe outage planning:</strong> never make locks, garage doors, alarms, cameras, HVAC, or medical-adjacent automations depend only on a smart-home app. Keep physical keys, wall controls, local sirens, manual garage release knowledge, and ordinary thermostat access.</p>
+</div>
+
+<h2 id="why-people-ask">Why This Question Is Hot Right Now</h2>
+<p>This is not a theory question. In a Reddit r/homeassistant internet-outage thread, users separated cloud Wi-Fi switches from local Shelly relays because the local Wi-Fi network can still exist while the internet is gone. Another recent Reddit thread asked for an "offline mode" while Home Assistant still works. On the Home Assistant Community forum, a May 2026 Matter thread reported an outage where Hue continued working but Matter devices failed after a restart because a beta Matter Server path appeared to need downloads. A separate Home Assistant Community post asked how to move an Alexa-centered home toward offline use.</p>
+<p>The confusion is understandable. People use "Wi-Fi" to mean "internet," but they are not the same thing. Wi-Fi is the local radio network inside the house. Internet is the outside connection from the modem or fiber box. A Wi-Fi device can be fully local, fully cloud-dependent, or both, depending on its integration.</p>
+<p>That is why Tara treats internet-outage planning as an architecture question, not a brand question. You need to know where each command goes, which hub owns the automation, and whether the device has a real local path.</p>
+
+<h2 id="what-still-works">What Still Works Without Internet?</h2>
+<p>Use this table as a practical map. It separates official support, local control, cloud dependency, Matter or HomeKit paths, and community caveats. <strong>Cloud polling</strong> means Home Assistant asks a vendor cloud service for state or control. <strong>Cloud push</strong> means the cloud sends updates to Home Assistant. Both can need internet. <strong>Local polling</strong> and <strong>local push</strong> talk directly inside the home.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Official support</th>
+        <th>Local control and cloud dependency</th>
+        <th>Matter, HomeKit, and ecosystem path</th>
+        <th>Community caveats</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Home Assistant local integrations</strong><br />Examples: Zigbee through ZHA, Z-Wave JS, ESPHome native API, Shelly local, MQTT on a local broker.</td>
+        <td>Home Assistant documents integration IoT classes, meaning labels for how an integration talks, such as local push, local polling, cloud push, and cloud polling.</td>
+        <td>Local integrations can keep working when the outside internet is down, if the Home Assistant box, router, Wi-Fi, switches, and radio adapters still have power.</td>
+        <td>HomeKit Device and HomeKit Bridge can be local paths in the right setup, but they solve different jobs from Matter multi-admin.</td>
+        <td>Local does not mean indestructible. A dead router, failed USB radio, bad DHCP lease, broken local discovery traffic called mDNS, or rebooting add-on can still take devices offline.</td>
+      </tr>
+      <tr>
+        <td><strong>Home Assistant Matter devices</strong><br />Examples: Matter plugs, bulbs, locks, thermostats, bridges, and Thread sensors already commissioned to Home Assistant.</td>
+        <td>Home Assistant says Matter products run locally and do not need internet or cloud services for device control.</td>
+        <td>Control should be local after setup. Adding the device to a controller, vendor account setup, Matter certificate checks, add-on updates, and firmware updates can still involve internet.</td>
+        <td>Matter over Wi-Fi uses the home network. Matter over Thread also needs a powered Thread border router and reachable Thread credentials.</td>
+        <td>Recent forum demand shows offline Matter can still be tripped by beta server behavior, VLAN rules that split the house into network zones, IPv6 network addressing, mDNS local discovery, or restarting services during an outage.</td>
+      </tr>
+      <tr>
+        <td><strong>Apple Home</strong><br />Examples: HomePod mini, HomePod, Apple TV, Apple Home Matter accessories, Thread-enabled Matter accessories.</td>
+        <td>Apple says a home hub is required to add Matter accessories to Home, and Thread accessories require a Thread-enabled home hub or compatible border router.</td>
+        <td>Same-home control can be local in the right Home hub setup. Remote control, sharing, some Siri/account behavior, and iCloud-backed features need the Apple ecosystem path to be healthy.</td>
+        <td>Apple can be the first Matter controller, or Home Assistant can pair first and share outward. HomeKit Device is a separate Home Assistant path for HomeKit accessories.</td>
+        <td>If several manufacturers stop responding, Apple tells users to check the same Wi-Fi network, home hubs, bridges, Thread accessories, modem, router, and VPN/security software.</td>
+      </tr>
+      <tr>
+        <td><strong>Google Home</strong><br />Examples: Nest Hub, Nest Mini, Google Home Matter hub, Google Home app controls.</td>
+        <td>Google says Matter is designed to work locally over Ethernet, Wi-Fi, and Thread, and Google Matter-enabled devices can act as hubs.</td>
+        <td>Matter device control can be local on supported hubs. Works with Google Home cloud-to-cloud devices, remote features, voice processing, and account services are separate questions.</td>
+        <td>Google Home can pair Matter devices first, then share to Home Assistant, or receive devices shared from another Matter controller.</td>
+        <td>Do not treat "Google Home can see it" as proof that your exact routine, voice command, or non-Matter device will work during an internet outage. Test it.</td>
+      </tr>
+      <tr>
+        <td><strong>Amazon Alexa</strong><br />Examples: Echo and eero Matter controllers, Thread-enabled Echo or eero border routers, Alexa smart home skills.</td>
+        <td>Amazon says Alexa can discover and control Matter devices over local Wi-Fi or Thread, and skill-connected devices can add Matter for local control during internet outages.</td>
+        <td>Direct Matter paths can be local. Traditional Alexa smart-home skills often use cloud infrastructure, and some Amazon-managed device programs can include cloud services.</td>
+        <td>Alexa can join Matter devices through multi-admin and can be useful for family voice control after Home Assistant owns the automation.</td>
+        <td>Assume Alexa routines and voice are cloud-risky until tested. Keep critical automations in Home Assistant if the goal is outage resilience.</td>
+      </tr>
+      <tr>
+        <td><strong>Samsung SmartThings</strong><br />Examples: SmartThings compatible hubs, Edge Drivers, Matter Wi-Fi, Matter Thread, Zigbee, Z-Wave.</td>
+        <td>SmartThings developer docs say hub-connected Matter, Zigbee, Z-Wave, and some Wi-Fi devices using Edge Drivers, the hub's local device software, run locally.</td>
+        <td>Hub-connected local devices can keep working locally. Cloud-connected devices, app services, remote control, and some automations can still require SmartThings cloud paths.</td>
+        <td>SmartThings supports Matter controllers and can share Matter devices with other ecosystems where device type and platform support allow it.</td>
+        <td>Check whether the exact device and routine show local execution. Community reports still separate "Edge driver is local" from "every automation involving it is local."</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="outage-test">The Outage Test That Actually Answers the Question</h2>
+<p>Do not wait for a storm or ISP outage. Test the house on purpose during a calm hour.</p>
+<ol>
+  <li><strong>Keep the local network powered.</strong> Put the Home Assistant hub, router, Wi-Fi access point, network switch, Thread border router, Zigbee coordinator, and Z-Wave stick on a UPS if outage behavior matters. If the router is off, "local control" has nowhere to travel.</li>
+  <li><strong>Disconnect the outside internet, not the home network.</strong> Unplug the modem's internet feed or the router's internet port. Do not turn off the router or Wi-Fi. The point is to simulate no outside internet while the home network stays up.</li>
+  <li><strong>Open Home Assistant locally.</strong> Use the local URL or app while your phone is on home Wi-Fi. If you only know the remote URL, fix that before you call the system outage-ready.</li>
+  <li><strong>Trigger real automations.</strong> Walk past a motion sensor, press a wall button, open a contact sensor, change a thermostat mode, and run a lighting scene. Watch whether the automation fires without cloud delay.</li>
+  <li><strong>Check the integration class.</strong> In Home Assistant docs, local push and local polling are the friendlier outage paths. Cloud push and cloud polling need internet for the integration path.</li>
+  <li><strong>Test family apps honestly.</strong> Try Apple Home, Google Home, Alexa, and SmartThings separately. Touchscreen/app control, voice control, routines, and remote control can behave differently.</li>
+  <li><strong>Record failures by cause.</strong> Mark each failure as power, home network, radio, local discovery or network addressing, cloud integration, voice assistant, remote access, notification, camera cloud, or firmware/update path. That turns a vague outage into a fixable list.</li>
+</ol>
+
+<h2 id="matter-details">The Matter Details Homeowners Need</h2>
+<p>Matter is the shared smart-home language used by many newer devices and ecosystems. It can run over Wi-Fi, Ethernet, and Thread. Thread is a low-power wireless mesh for small devices such as sensors, plugs, bulbs, and locks. A Thread border router is the bridge between that Thread mesh and the normal home network.</p>
+<p>The good news: Matter control is local at the protocol level, and Home Assistant's Matter implementation is officially certified. The caveat: local control does not remove every internet touchpoint. A device may still use a vendor app for setup or firmware updates. A controller may need Matter certificate checks when adding a device. A mobile phone may hold the Thread credentials needed to add a device. A cloud voice assistant may be the convenient interface even though the device itself is local.</p>
+<p>That means Matter is a strong outage ingredient, not a complete outage plan. A Matter plug paired to Home Assistant can be local. A Matter plug paired to Google Home and shared to Home Assistant can also be local for device control. But if the only way the family uses it is "Hey Google, turn off the lamp," you must test whether that command still works when the internet is down.</p>
+
+<h2 id="what-breaks">What Usually Breaks During an Internet Outage</h2>
+<h3 id="cloud-integrations">Cloud integrations</h3>
+<p>Cloud integrations are the obvious failure point. If a switch, thermostat, camera, appliance, or bridge only talks through a vendor account, Home Assistant may lose control even though the device is physically on the same Wi-Fi. Home Assistant's IoT class labels are the first place to check.</p>
+
+<h3 id="voice-assistants">Voice assistants</h3>
+<p>Alexa, Google Assistant, and Siri can be useful family interfaces, but voice is not the same as local automation. A Home Assistant automation can run locally while a voice command fails because speech recognition, account routing, or cloud skill fulfillment is unavailable. Treat voice as convenience unless you have tested the exact local path.</p>
+
+<h3 id="remote-access">Remote access and notifications</h3>
+<p>If the home has no internet, you are not going to reach it from outside through Nabu Casa, VPN, Tailscale, reverse proxy, or a vendor app unless there is another outside internet path, such as cellular backup. Phone push notifications can also depend on Apple, Google, Home Assistant Cloud, or vendor cloud messaging. Local sirens, dashboards, wall tablets, and SMS through a separate cellular device are different designs.</p>
+
+<h3 id="cameras">Cameras and recordings</h3>
+<p>Cloud cameras are often the first disappointment in an outage. A camera can still have power and Wi-Fi but lose cloud recording, cloud alerts, thumbnails, or app access. If recording matters during internet outages, use local camera standards such as RTSP or ONVIF, a local NVR (network video recorder), or another documented local recording path. For privacy, do not create hidden recording behavior that household members do not understand.</p>
+
+<h3 id="updates-and-reboots">Updates, firmware, and reboots</h3>
+<p>A system that controls devices locally while running can still need internet during setup, updates, add-on startup, certificate checks, or firmware downloads. The May 2026 Home Assistant Community Matter thread is a good warning: do not assume a beta add-on restart during an outage behaves the same as a stable already-running local controller. If outage reliability matters, test a controlled restart without outside internet after updates.</p>
+
+<h2 id="where-automations-live">Where Should Important Automations Live?</h2>
+<p>Put important automations in one local system. For most Tara-style homes, that means Home Assistant. Apple Home, Google Home, Alexa, and SmartThings can still be useful for family dashboards, voice shortcuts, and platform-specific devices. They should not each run their own version of the same motion light, lock routine, water shutoff, or garage alert.</p>
+<p>Keeping automations local does not help if the integration underneath them is cloud-only. Check both layers: where the rule runs and how Home Assistant reaches the device.</p>
+<p>For safety devices, make the automation helpful but not the only line of defense. A leak sensor should have a local alarm or visible dashboard state. A lock should have a physical key or keypad fallback. A garage door should keep its ordinary wall button and manual release. A thermostat should still be usable from the wall. A camera plan should distinguish local recording from cloud notifications.</p>
+
+<h2 id="best-setup">The Best Practical Setup</h2>
+<p>If you want the home to feel normal during an internet outage, build it this way:</p>
+<ol>
+  <li><strong>Use Home Assistant as the local automation brain.</strong> Keep lights, sensors, leak response, occupancy, basic climate logic, and security-adjacent alerts in one place.</li>
+  <li><strong>Prefer local device paths.</strong> Zigbee, Z-Wave, ESPHome, Matter, local LAN device interfaces, HomeKit Device, and local MQTT can all be good when configured plainly.</li>
+  <li><strong>Keep the network alive.</strong> A small UPS for the hub, router, access point, switches, and radio bridges matters more than another app.</li>
+  <li><strong>Use family apps as control surfaces.</strong> Share Matter devices or selected Home Assistant entities to Apple Home, Google Home, Alexa, or SmartThings only where they make the house easier to use.</li>
+  <li><strong>Document cloud dependencies.</strong> Write down which devices lose remote access, voice, firmware updates, cloud recordings, push notifications, or account features when internet is gone.</li>
+  <li><strong>Run a quarterly outage drill.</strong> Unplug the outside internet feed, test the top 10 automations, then fix one weak path at a time.</li>
+</ol>
+
+<h2 id="tara-interpretation">Tara's Interpretation</h2>
+<p>The internet outage question is really a trust question. A homeowner does not care whether a device is Wi-Fi, Thread, Zigbee, Z-Wave, HomeKit, Matter, or cloud polling. They care whether the hallway light turns on, the leak alert happens, the thermostat is usable, and the house does not become confusing when Comcast, fiber, or a vendor cloud has a bad day.</p>
+<p>Tara's bias is boring local control: Home Assistant owns the important automations, the network and radios stay powered, family apps get only the surfaces they need, and every cloud feature is treated as convenience. Matter helps because it gives modern devices a local cross-ecosystem path. It does not remove the need for a plan.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>These guides cover the setup decisions that usually decide whether outage mode is calm or confusing.</p>
+<ul>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/blog/where-should-smart-home-automations-live/">Where Should Your Smart Home Automations Live?</a></li>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter Multi-Admin with Home Assistant, Apple, Google, Alexa, and SmartThings</a></li>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread Border Router Should You Use with Home Assistant?</a></li>
+  <li><a href="/blog/home-assistant-ups-nut-safe-shutdown/">How to Keep Home Assistant Running During a Power Outage</a></li>
+  <li><a href="/blog/do-you-need-nabu-casa-home-assistant/">Do You Need Nabu Casa for Home Assistant?</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="faq-home-assistant">Will Home Assistant keep working if the internet is down?</h3>
+<p>Yes, for local integrations and local automations, as long as your Home Assistant hub and local network are still powered. Cloud integrations, remote access, push notifications, cloud speech, cloud cameras, and voice assistant paths may fail or degrade.</p>
+
+<h3 id="faq-matter">Do Matter devices need the internet?</h3>
+<p>Matter device control is local. However, setup, vendor app enrollment, certificates, firmware updates, Thread credential sharing, remote access, and platform features can still need internet. Test the exact device after setup.</p>
+
+<h3 id="faq-thread">Will Thread devices work without internet?</h3>
+<p>Thread devices can keep working locally if the Thread border router, home network, and controller are powered and reachable. Thread does not remove the need for a router, IPv6, local discovery traffic called mDNS, and a healthy controller.</p>
+
+<h3 id="faq-alexa-google">Will Alexa or Google Home still control my lights?</h3>
+<p>Sometimes, especially with supported Matter paths, but do not assume it. Non-Matter cloud skills, voice processing, routines, and remote features can still depend on cloud services. If the light must work, put the core automation in Home Assistant and test the voice path separately.</p>
+
+<h3 id="faq-test">How do I test safely?</h3>
+<p>Keep power on, unplug only the outside internet feed from the modem or router, then test local dashboards, automations, wall switches, Matter devices, Thread devices, family apps, and cameras one by one. Do not test by cutting power to the whole network unless you are specifically testing UPS behavior.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Home Assistant and Matter sources</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/cloud/" target="_blank" rel="noopener noreferrer">Home Assistant Cloud documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration docs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread integration docs</a></li>
+                <li><a href="https://developers.home-assistant.io/docs/creating_integration_manifest/" target="_blank" rel="noopener noreferrer">Home Assistant developer docs: integration IoT classes</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/03/10/matter-certification/" target="_blank" rel="noopener noreferrer">Home Assistant blog: Matter certification, March 10, 2025</a></li>
+                <li><a href="https://csa-iot.org/newsroom/matter-1-6-enables-more-intuitive-setup-multi-ecosystem-experiences-and-context-driven-control/" target="_blank" rel="noopener noreferrer">CSA: Matter 1.6 and Joint Fabric, June 2026</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Apple, Google, Amazon, and SmartThings</h3>
+              <ul>
+                <li><a href="https://support.apple.com/en-us/102056" target="_blank" rel="noopener noreferrer">Apple Support: if HomeKit or Matter accessories are not responding</a></li>
+                <li><a href="https://support.apple.com/en-afri/102557" target="_blank" rel="noopener noreferrer">Apple Support: HomePod, HomePod mini, or Apple TV as a home hub</a></li>
+                <li><a href="https://support.google.com/googlehome/answer/12391458?hl=en" target="_blank" rel="noopener noreferrer">Google Home Help: prepare your smart home for Matter</a></li>
+                <li><a href="https://home.google.com/get-inspired/matter-and-thread/" target="_blank" rel="noopener noreferrer">Google Home: Matter and Thread overview</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html" target="_blank" rel="noopener noreferrer">Amazon Alexa Matter support docs</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/understand-the-smart-home-skill-api.html" target="_blank" rel="noopener noreferrer">Amazon Alexa smart home skill API docs</a></li>
+                <li><a href="https://developer.smartthings.com/devices/hub-connected" target="_blank" rel="noopener noreferrer">SmartThings developer docs: hub-connected local devices</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings Matter integration support</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1mwhymi/internet_outage/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: internet outage and local vs cloud devices</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1sm4e8p/can_i_have_an_offline_mode_for_when_my_internet/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: offline mode when Home Assistant still works</a></li>
+                <li><a href="https://community.home-assistant.io/t/want-to-improve-my-home-automation-for-offline-use-create-new-setup/862960" target="_blank" rel="noopener noreferrer">Home Assistant Community: moving from Alexa toward offline use</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-is-supposed-be-local-first-ha-matter-server-beta-appears-to-be-internet-first/1011140" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter local-first outage report, May 2026</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Network caveats</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/configuring-openwrt-for-wifi-matter-devices-on-an-offline-vlan/966441" target="_blank" rel="noopener noreferrer">Home Assistant Community: Wi-Fi Matter devices on an offline VLAN</a></li>
+                <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Tara: main LAN vs IoT VLAN for Home Assistant</a></li>
+                <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Tara: Matter pairing stuck on checking network connectivity</a></li>
+                <li><a href="/blog/home-assistant-ups-nut-safe-shutdown/">Tara: UPS and safe shutdown for Home Assistant</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want the house to keep working when the internet does not?</h2>
+          <p>Tara packages the Home Assistant hub, local radios, outage-tested automations, family app handoff, and documentation so cloud convenience does not become the only control path.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/no-subscription-smart-home/">No subscription smart home</a><a href="/blog/home-automation-without-cloud/">No-cloud smart home</a><a href="/blog/where-should-smart-home-automations-live/">Automation ownership</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/home-assistant-ups-nut-safe-shutdown/">UPS guide</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
