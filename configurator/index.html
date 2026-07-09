@@ -14,9 +14,14 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Plan Your Smart Home Kit | Tara Configurator" />
     <meta name="twitter:description" content="Get a recommended Tara smart home scope and review every count before sending." />
-    <meta name="theme-color" content="#eef1ed" />
+    <meta name="theme-color" content="#f7f1df" />
     <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
     <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <script>
+      try {
+        if (window.localStorage.getItem('tara-theme') === 'dark') document.documentElement.dataset.taraTheme = 'dark';
+      } catch (_) {}
+    </script>
     <style>
       @font-face {
         font-family: 'Tara Avenir';
@@ -28,40 +33,57 @@
 
       :root {
         color-scheme: light;
-        --cfg-bg: #eef1ed;
-        --cfg-surface: #ffffff;
-        --cfg-ink: #102b24;
-        --cfg-muted: #5c6f68;
-        --cfg-line: #d5ddd7;
-        --cfg-line-strong: #aebdb4;
-        --cfg-accent: #2d8658;
-        --cfg-blue-soft: #e5eef0;
-        --cfg-blue: #476b76;
+        --cfg-bg: oklch(0.965 0.025 90);
+        --cfg-bg-2: oklch(0.91 0.03 96);
+        --cfg-surface: oklch(0.99 0.014 95 / 0.92);
+        --cfg-ink: oklch(0.21 0.047 170);
+        --cfg-muted: oklch(0.5 0.035 160);
+        --cfg-line: oklch(0.73 0.04 104 / 0.5);
+        --cfg-line-strong: oklch(0.58 0.055 132 / 0.65);
+        --cfg-accent: oklch(0.64 0.13 153);
+        --cfg-blue-soft: color-mix(in oklch, oklch(0.73 0.13 47) 12%, var(--cfg-surface));
+        --cfg-blue: oklch(0.62 0.13 47);
+        --cfg-shadow: color-mix(in oklch, var(--cfg-ink) 11%, transparent);
+      }
+
+      html[data-tara-theme='dark'] {
+        color-scheme: dark;
+        --cfg-bg: oklch(0.16 0.04 169);
+        --cfg-bg-2: oklch(0.22 0.042 166);
+        --cfg-surface: oklch(0.24 0.048 166 / 0.92);
+        --cfg-ink: oklch(0.95 0.025 96);
+        --cfg-muted: oklch(0.68 0.026 118);
+        --cfg-line: oklch(0.74 0.055 142 / 0.24);
+        --cfg-line-strong: oklch(0.74 0.055 142 / 0.5);
+        --cfg-accent: oklch(0.69 0.13 153);
+        --cfg-blue: oklch(0.78 0.12 47);
+        --cfg-blue-soft: color-mix(in oklch, oklch(0.73 0.13 47) 14%, var(--cfg-surface));
+        --cfg-shadow: color-mix(in oklch, black 24%, transparent);
       }
 
       * { box-sizing: border-box; letter-spacing: 0; }
       html, body, #root { margin: 0; min-height: 100%; }
-      body { background: var(--cfg-bg); color: var(--cfg-ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; }
+      body { background: var(--cfg-bg); color: var(--cfg-ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-size: 18px; }
       button { color: inherit; font: inherit; }
-      .tara-configurator { background: var(--cfg-bg); min-height: 100dvh; }
-      .tara-cfg-topbar { border-bottom: 1px solid var(--cfg-line); }
-      .tara-cfg-topbar-inner { align-items: center; display: grid; grid-template-columns: 1fr auto 1fr; height: 4.5rem; margin: 0 auto; max-width: 78rem; padding: 0 1.5rem; }
+      .tara-configurator { background: radial-gradient(circle at 12% 6%, color-mix(in oklch, var(--cfg-accent) 16%, transparent), transparent 28rem), radial-gradient(circle at 82% 18%, color-mix(in oklch, oklch(0.73 0.13 47) 16%, transparent), transparent 30rem), linear-gradient(180deg, var(--cfg-bg), var(--cfg-bg-2)); min-height: 100dvh; }
+      .tara-cfg-topbar { padding: 1rem 1rem 0; }
+      .tara-cfg-topbar-inner { align-items: center; backdrop-filter: blur(24px); background: color-mix(in oklch, var(--cfg-surface) 84%, transparent); border: 1px solid var(--cfg-line); border-radius: 999px; box-shadow: 0 1.4rem 5rem var(--cfg-shadow); display: grid; grid-template-columns: 1fr auto 1fr; height: 4.5rem; margin: 0 auto; max-width: 78rem; padding: 0 1.5rem; }
       .tara-cfg-brand { color: var(--cfg-ink); font-size: 1.25rem; font-weight: 800; text-decoration: none; }
       .tara-cfg-topbar-actions { justify-self: end; }
       .tara-cfg-static-theme { background: transparent; border: 1px solid var(--cfg-line); border-radius: 6px; height: 2.5rem; width: 2.5rem; }
       .tara-cfg-static-theme::before { border-radius: 50%; box-shadow: inset -0.2rem -0.08rem 0 var(--cfg-ink); content: ''; display: block; height: 0.9rem; margin: auto; transform: rotate(-12deg); width: 0.9rem; }
       .tara-cfg-main { margin: 0 auto; max-width: 78rem; padding: 2rem 1.5rem 5rem; }
       .tara-cfg-progress { margin-bottom: 1.75rem; position: relative; }
-      .tara-cfg-progress ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; position: relative; }
-      .tara-cfg-progress li { color: var(--cfg-muted); font-size: 0.78rem; font-weight: 700; }
-      .tara-cfg-progress li > span { align-items: center; background: var(--cfg-bg); border: 1px solid var(--cfg-line-strong); border-radius: 50%; display: inline-flex; height: 2rem; justify-content: center; margin-right: 0.55rem; width: 2rem; }
+      .tara-cfg-progress ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; position: relative; z-index: 1; }
+      .tara-cfg-progress li { color: var(--cfg-muted); display: grid; font-size: 0.78rem; font-weight: 700; gap: 0.35rem; justify-items: center; text-align: center; }
+      .tara-cfg-progress li > span { align-items: center; background: var(--cfg-surface); border: 1px solid var(--cfg-line-strong); border-radius: 50%; display: inline-flex; height: 2rem; justify-content: center; width: 2rem; }
       .tara-cfg-progress li:first-child { color: var(--cfg-ink); }
       .tara-cfg-progress li:first-child > span { background: var(--cfg-ink); border-color: var(--cfg-ink); color: #ffffff; }
-      .tara-cfg-progress::before { background: var(--cfg-line); content: ''; height: 1px; left: 1rem; position: absolute; right: calc(20% - 1rem); top: 1rem; }
+      .tara-cfg-progress::before { background: var(--cfg-line); content: ''; height: 1px; left: 10%; position: absolute; right: 10%; top: 1rem; }
       .tara-cfg-layout { align-items: start; display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr) 20rem; }
-      .tara-cfg-stage { background: var(--cfg-surface); border: 1px solid var(--cfg-line); border-radius: 8px; min-height: 38rem; padding: 3rem; }
+      .tara-cfg-stage { backdrop-filter: blur(18px); background: color-mix(in oklch, var(--cfg-surface) 90%, transparent); border: 1px solid var(--cfg-line); border-radius: 8px; box-shadow: 0 1rem 3rem var(--cfg-shadow); min-height: 38rem; padding: 3rem; }
       .tara-cfg-stage-head { margin-bottom: 2rem; max-width: 43rem; }
-      .tara-cfg-stage-head p { color: #17653f; font-size: 0.76rem; font-weight: 800; margin: 0 0 0.75rem; text-transform: uppercase; }
+      .tara-cfg-stage-head p { color: var(--cfg-accent); font-size: 0.76rem; font-weight: 800; margin: 0 0 0.75rem; text-transform: uppercase; }
       .tara-cfg-stage-head h1 { font-size: 2.8rem; line-height: 1.02; margin: 0; max-width: 16ch; }
       .tara-cfg-stage-head div { color: var(--cfg-muted); font-size: 1.05rem; line-height: 1.55; margin-top: 1rem; max-width: 61ch; }
       .tara-cfg-choice-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -90,12 +112,10 @@
       .tara-cfg-preview-empty { color: var(--cfg-muted) !important; font-size: 0.84rem !important; font-weight: 400 !important; line-height: 1.5; text-transform: none !important; }
       @media (max-width: 960px) { .tara-cfg-layout { grid-template-columns: 1fr; } .tara-cfg-plan-preview { display: none; } }
       @media (max-width: 700px) {
+        .tara-cfg-topbar { padding: 0.65rem 0.75rem 0; }
         .tara-cfg-topbar-inner { grid-template-columns: 1fr auto; height: 4rem; padding: 0 1rem; }
         .tara-cfg-main { padding: 1.25rem 0 5rem; }
         .tara-cfg-progress { margin: 0 1rem 1rem; }
-        .tara-cfg-progress li { text-align: center; }
-        .tara-cfg-progress li > span { display: flex; margin: 0 auto 0.35rem; }
-        .tara-cfg-progress::before { left: 10%; right: 10%; }
         .tara-cfg-stage { border-left: 0; border-radius: 0; border-right: 0; min-height: 34rem; padding: 2rem 1.25rem; }
         .tara-cfg-stage-head h1 { font-size: 2.1rem; }
         .tara-cfg-stage-head div { font-size: 0.95rem; }
@@ -143,10 +163,10 @@
         }, {once: true});
       })();
     </script>
-    <script type="module" crossorigin src="/assets/configurator-De4z0y2h.js"></script>
+    <script type="module" crossorigin src="/assets/configurator-CWNkvMHh.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/analytics-Dc9sdc97.js">
-    <link rel="modulepreload" crossorigin href="/assets/ConfiguratorPage-CW8u_TnC.js">
-    <link rel="stylesheet" crossorigin href="/assets/ConfiguratorPage-UAUKqN8H.css">
+    <link rel="modulepreload" crossorigin href="/assets/ConfiguratorPage-DBj7IqNF.js">
+    <link rel="stylesheet" crossorigin href="/assets/ConfiguratorPage-CU82lYDz.css">
   </head>
   <body>
     <div id="root">
@@ -186,7 +206,7 @@
                 <div class="tara-cfg-counter"><span class="tara-cfg-counter-copy"><strong>Levels</strong><small>Count finished floors in the plan.</small></span><span class="tara-cfg-counter-control"><span>−</span><span>1</span><span>+</span></span></div>
               </div>
               <p class="tara-cfg-required-note">Choose a home type to continue.</p>
-              <div class="tara-cfg-stage-actions"><button class="tara-cfg-button tara-cfg-button--primary" type="button" disabled>Continue →</button></div>
+              <div class="tara-cfg-stage-actions"><span></span><button class="tara-cfg-button tara-cfg-button--primary" type="button" disabled>Continue →</button></div>
             </section>
             <aside class="tara-cfg-plan-preview">
               <p>Current plan</p>
