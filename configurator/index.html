@@ -1,177 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3NPM15GXKZ');
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Preconfigured Smart Home Kit & Home Automation Kit | Tara</title>
-    <meta name="description" content="Tara is a preconfigured smart home kit with a local PC hub, presence detection, smart doorbell, door and window sensors, phone app, thermostat, smart lights, and optional exterior cameras with no required subscription." />
+    <title>Plan Your Smart Home Kit | Tara Configurator</title>
+    <meta name="description" content="Plan a preconfigured Tara smart home kit in about two minutes. Get a recommended device scope for your home, then review every count before sending." />
     <link rel="canonical" href="https://tarahome.ai/configurator/" />
-    <meta property="og:title" content="Preconfigured Smart Home Kit & Home Automation Kit | Tara" />
-    <meta property="og:description" content="Enter your windows, doors, rooms, lights, thermostat, and camera zones. Tara configures the whole smart home kit and ships it ready to mount." />
+    <meta property="og:title" content="Plan Your Smart Home Kit | Tara Configurator" />
+    <meta property="og:description" content="Answer a few focused questions, review Tara's recommended device scope, and send the plan for a no-commitment review." />
     <meta property="og:url" content="https://tarahome.ai/configurator/" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/assets/images/og-image.png" />
-    <meta name="twitter:title" content="Preconfigured Smart Home Kit & Home Automation Kit | Tara" />
-    <meta name="twitter:description" content="A configured home automation kit with a local PC hub, presence detection, smart doorbell, window sensors, door sensors, phone app, thermostat, lights, and optional exterior cameras." />
+    <meta property="og:image" content="https://tarahome.ai/assets/images/og-image.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#060504" />
+    <meta name="twitter:title" content="Plan Your Smart Home Kit | Tara Configurator" />
+    <meta name="twitter:description" content="Get a recommended Tara smart home scope and review every count before sending." />
+    <meta name="theme-color" content="#eef1ed" />
     <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
     <style>
-      .seo-static-fallback {
-        background: #f4ead7;
-        color: #15352f;
-        font-family: system-ui, sans-serif;
-        line-height: 1.5;
-        margin: 0 auto;
-        max-width: 68rem;
-        padding: 4rem 1.25rem;
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
       }
 
-      .seo-static-fallback h1,
-      .seo-static-fallback h2 {
-        line-height: 1.05;
-        margin: 0 0 1rem;
+      :root {
+        color-scheme: light;
+        --cfg-bg: #eef1ed;
+        --cfg-surface: #ffffff;
+        --cfg-ink: #102b24;
+        --cfg-muted: #5c6f68;
+        --cfg-line: #d5ddd7;
+        --cfg-line-strong: #aebdb4;
+        --cfg-accent: #2d8658;
+        --cfg-blue-soft: #e5eef0;
+        --cfg-blue: #476b76;
       }
 
-      .seo-static-fallback h1 {
-        font-size: clamp(2.25rem, 8vw, 5rem);
-      }
-
-      .seo-static-fallback h2 {
-        font-size: clamp(1.6rem, 4vw, 2.75rem);
-        margin-top: 3rem;
-      }
-
-      .seo-static-fallback p,
-      .seo-static-fallback li {
-        font-size: 1.125rem;
+      * { box-sizing: border-box; letter-spacing: 0; }
+      html, body, #root { margin: 0; min-height: 100%; }
+      body { background: var(--cfg-bg); color: var(--cfg-ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; }
+      button { color: inherit; font: inherit; }
+      .tara-configurator { background: var(--cfg-bg); min-height: 100dvh; }
+      .tara-cfg-topbar { border-bottom: 1px solid var(--cfg-line); }
+      .tara-cfg-topbar-inner { align-items: center; display: grid; grid-template-columns: 1fr auto 1fr; height: 4.5rem; margin: 0 auto; max-width: 78rem; padding: 0 1.5rem; }
+      .tara-cfg-brand { color: var(--cfg-ink); font-size: 1.25rem; font-weight: 800; text-decoration: none; }
+      .tara-cfg-topbar-actions { justify-self: end; }
+      .tara-cfg-static-theme { background: transparent; border: 1px solid var(--cfg-line); border-radius: 6px; height: 2.5rem; width: 2.5rem; }
+      .tara-cfg-static-theme::before { border-radius: 50%; box-shadow: inset -0.2rem -0.08rem 0 var(--cfg-ink); content: ''; display: block; height: 0.9rem; margin: auto; transform: rotate(-12deg); width: 0.9rem; }
+      .tara-cfg-main { margin: 0 auto; max-width: 78rem; padding: 2rem 1.5rem 5rem; }
+      .tara-cfg-progress { margin-bottom: 1.75rem; position: relative; }
+      .tara-cfg-progress ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; position: relative; }
+      .tara-cfg-progress li { color: var(--cfg-muted); font-size: 0.78rem; font-weight: 700; }
+      .tara-cfg-progress li > span { align-items: center; background: var(--cfg-bg); border: 1px solid var(--cfg-line-strong); border-radius: 50%; display: inline-flex; height: 2rem; justify-content: center; margin-right: 0.55rem; width: 2rem; }
+      .tara-cfg-progress li:first-child { color: var(--cfg-ink); }
+      .tara-cfg-progress li:first-child > span { background: var(--cfg-ink); border-color: var(--cfg-ink); color: #ffffff; }
+      .tara-cfg-progress::before { background: var(--cfg-line); content: ''; height: 1px; left: 1rem; position: absolute; right: calc(20% - 1rem); top: 1rem; }
+      .tara-cfg-layout { align-items: start; display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 1fr) 20rem; }
+      .tara-cfg-stage { background: var(--cfg-surface); border: 1px solid var(--cfg-line); border-radius: 8px; min-height: 38rem; padding: 3rem; }
+      .tara-cfg-stage-head { margin-bottom: 2rem; max-width: 43rem; }
+      .tara-cfg-stage-head p { color: #17653f; font-size: 0.76rem; font-weight: 800; margin: 0 0 0.75rem; text-transform: uppercase; }
+      .tara-cfg-stage-head h1 { font-size: 2.8rem; line-height: 1.02; margin: 0; max-width: 16ch; }
+      .tara-cfg-stage-head div { color: var(--cfg-muted); font-size: 1.05rem; line-height: 1.55; margin-top: 1rem; max-width: 61ch; }
+      .tara-cfg-choice-grid { display: grid; gap: 0.75rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tara-cfg-choice { align-items: flex-start; background: var(--cfg-surface); border: 1px solid var(--cfg-line); border-radius: 6px; display: grid; gap: 0.8rem; grid-template-columns: 2.25rem minmax(0, 1fr) 1.25rem; min-height: 7rem; padding: 1rem; text-align: left; }
+      .tara-cfg-choice-icon { background: var(--cfg-blue-soft); border-radius: 6px; display: block; height: 2.25rem; width: 2.25rem; }
+      .tara-cfg-choice-copy strong { display: block; font-size: 0.98rem; line-height: 1.2; }
+      .tara-cfg-choice-copy small { color: var(--cfg-muted); display: block; font-size: 0.78rem; line-height: 1.42; margin-top: 0.42rem; }
+      .tara-cfg-choice-state { border: 1px solid var(--cfg-line-strong); border-radius: 50%; height: 1.2rem; width: 1.2rem; }
+      .tara-cfg-profile-counts { border-bottom: 1px solid var(--cfg-line); border-top: 1px solid var(--cfg-line); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.5rem; }
+      .tara-cfg-counter { align-items: center; display: flex; justify-content: space-between; min-height: 5.25rem; }
+      .tara-cfg-counter:first-child { border-right: 1px solid var(--cfg-line); padding-right: 1.25rem; }
+      .tara-cfg-counter:last-child { padding-left: 1.25rem; }
+      .tara-cfg-counter-copy strong { display: block; font-size: 0.92rem; }
+      .tara-cfg-counter-copy small { color: var(--cfg-muted); display: block; font-size: 0.72rem; margin-top: 0.25rem; }
+      .tara-cfg-counter-control { border: 1px solid var(--cfg-line-strong); border-radius: 6px; display: grid; grid-template-columns: 2.5rem 3rem 2.5rem; height: 2.75rem; overflow: hidden; }
+      .tara-cfg-counter-control span { align-items: center; display: flex; justify-content: center; }
+      .tara-cfg-counter-control span:nth-child(2) { border-left: 1px solid var(--cfg-line); border-right: 1px solid var(--cfg-line); font-weight: 800; }
+      .tara-cfg-required-note { color: var(--cfg-muted); font-size: 0.78rem; }
+      .tara-cfg-stage-actions { border-top: 1px solid var(--cfg-line); display: flex; justify-content: flex-end; margin-top: 2rem; padding-top: 1.25rem; }
+      .tara-cfg-button { align-items: center; border: 0; border-radius: 6px; display: inline-flex; font-size: 0.88rem; font-weight: 800; min-height: 2.9rem; padding: 0 1.15rem; }
+      .tara-cfg-button--primary { background: var(--cfg-accent); color: #ffffff; }
+      .tara-cfg-button--primary:disabled { opacity: 0.42; }
+      .tara-cfg-plan-preview { border-top: 3px solid var(--cfg-accent); padding-top: 1.4rem; }
+      .tara-cfg-plan-preview p { color: var(--cfg-muted); font-size: 0.7rem; font-weight: 800; margin: 0; text-transform: uppercase; }
+      .tara-cfg-plan-preview h2 { font-size: 1.5rem; line-height: 1.1; margin: 0.4rem 0 1.2rem; }
+      .tara-cfg-preview-empty { color: var(--cfg-muted) !important; font-size: 0.84rem !important; font-weight: 400 !important; line-height: 1.5; text-transform: none !important; }
+      @media (max-width: 960px) { .tara-cfg-layout { grid-template-columns: 1fr; } .tara-cfg-plan-preview { display: none; } }
+      @media (max-width: 700px) {
+        .tara-cfg-topbar-inner { grid-template-columns: 1fr auto; height: 4rem; padding: 0 1rem; }
+        .tara-cfg-main { padding: 1.25rem 0 5rem; }
+        .tara-cfg-progress { margin: 0 1rem 1rem; }
+        .tara-cfg-progress li { text-align: center; }
+        .tara-cfg-progress li > span { display: flex; margin: 0 auto 0.35rem; }
+        .tara-cfg-progress::before { left: 10%; right: 10%; }
+        .tara-cfg-stage { border-left: 0; border-radius: 0; border-right: 0; min-height: 34rem; padding: 2rem 1.25rem; }
+        .tara-cfg-stage-head h1 { font-size: 2.1rem; }
+        .tara-cfg-stage-head div { font-size: 0.95rem; }
+        .tara-cfg-choice-grid, .tara-cfg-profile-counts { grid-template-columns: 1fr; }
+        .tara-cfg-choice { min-height: 5.8rem; }
+        .tara-cfg-counter:first-child { border-bottom: 1px solid var(--cfg-line); border-right: 0; padding-right: 0; }
+        .tara-cfg-counter:last-child { padding-left: 0; }
       }
     </style>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Organization",
-            "@id": "https://tarahome.ai/#organization",
-            "name": "Tara Home",
-            "url": "https://tarahome.ai/",
-            "logo": "https://tarahome.ai/assets/logo/logo.png"
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://tarahome.ai/#website",
-            "url": "https://tarahome.ai/",
-            "name": "Tara Home",
-            "publisher": {
-              "@id": "https://tarahome.ai/#organization"
-            }
-          },
-          {
-            "@type": "WebPage",
-            "@id": "https://tarahome.ai/#webpage",
-            "url": "https://tarahome.ai/",
-            "name": "Preconfigured Smart Home Kit & Home Automation Kit",
-            "description": "A preconfigured smart home kit with a local PC hub, presence detection, smart doorbell, door and window sensors, phone app, smart thermostat, lights, and optional exterior cameras.",
-            "isPartOf": {
-              "@id": "https://tarahome.ai/#website"
-            },
-            "about": [
-              {"@type": "Thing", "name": "home automation kit"},
-              {"@type": "Thing", "name": "smart home kit"},
-              {"@type": "Thing", "name": "smart home starter kit"},
-              {"@type": "Thing", "name": "no subscription smart home security"},
-              {"@type": "Thing", "name": "presence detection smart home"}
-            ]
-          },
-          {
-            "@type": "Service",
-            "@id": "https://tarahome.ai/#configured-smart-home-kit",
-            "name": "Preconfigured smart home kit",
-            "serviceType": "Home automation kit configuration and self-install smart home hardware",
-            "provider": {
-              "@id": "https://tarahome.ai/#organization"
-            },
-            "areaServed": {
-              "@type": "Country",
-              "name": "United States"
-            },
-            "description": "Tara configures a home automation kit around the home's windows, doors, rooms, lights, thermostat zones, doorbell, phone app, and optional exterior cameras before shipping."
-          },
-          {
-            "@type": "ItemList",
-            "@id": "https://tarahome.ai/#kit-features",
-            "name": "Included smart home kit features",
-            "itemListElement": [
-              {"@type": "ListItem", "position": 1, "name": "Local PC hub"},
-              {"@type": "ListItem", "position": 2, "name": "Presence detection sensors"},
-              {"@type": "ListItem", "position": 3, "name": "Smart doorbell"},
-              {"@type": "ListItem", "position": 4, "name": "Window sensors"},
-              {"@type": "ListItem", "position": 5, "name": "Door sensors"},
-              {"@type": "ListItem", "position": 6, "name": "Phone app"},
-              {"@type": "ListItem", "position": 7, "name": "Smart thermostat"},
-              {"@type": "ListItem", "position": 8, "name": "Smart lights"},
-              {"@type": "ListItem", "position": 9, "name": "Optional exterior cameras"}
-            ]
-          }
-        ]
+        "@type": "WebPage",
+        "name": "Tara Smart Home Kit Configurator",
+        "url": "https://tarahome.ai/configurator/",
+        "description": "A focused planner that recommends a starting smart home kit scope from the home profile and homeowner priorities.",
+        "isPartOf": {"@type": "WebSite", "name": "Tara Home", "url": "https://tarahome.ai/"}
       }
     </script>
-    <script type="module" crossorigin src="/assets/index-Div4DJJS.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Dc62EqRX.css">
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', 'G-3NPM15GXKZ');
+      (function () {
+        var loaded = false;
+        var timer;
+        function loadAnalytics() {
+          if (loaded) return;
+          loaded = true;
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ';
+          document.head.appendChild(script);
+        }
+        function scheduleAnalytics() {
+          if (loaded || timer) return;
+          timer = window.setTimeout(loadAnalytics, 600);
+        }
+        ['pointerdown', 'keydown', 'touchstart'].forEach(function (name) {
+          window.addEventListener(name, scheduleAnalytics, {once: true, passive: true});
+        });
+        window.addEventListener('load', function () {
+          timer = window.setTimeout(loadAnalytics, 4500);
+        }, {once: true});
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/configurator-De4z0y2h.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/analytics-Dc9sdc97.js">
+    <link rel="modulepreload" crossorigin href="/assets/ConfiguratorPage-CW8u_TnC.js">
+    <link rel="stylesheet" crossorigin href="/assets/ConfiguratorPage-UAUKqN8H.css">
   </head>
   <body>
     <div id="root">
-      <main class="seo-static-fallback" aria-label="Tara smart home kit summary">
-        <h1>Preconfigured smart home kit and home automation kit</h1>
-        <p>Tara configures a smart home kit around your windows, doors, rooms, lights, thermostat, doorbell, phone app, and optional exterior camera zones before shipping. You mount the devices and download the app.</p>
-
-        <section>
-          <h2>Smart home kit features</h2>
-          <ul>
-            <li>Local PC hub</li>
-            <li>Connect robot vacuums, smart lawn mowers, smart TVs, speakers, and other smart devices</li>
-            <li>Presence detection sensors</li>
-            <li>Smart doorbell</li>
-            <li>Window sensors and door sensors</li>
-            <li>Phone app</li>
-            <li>Smart thermostat and smart lights</li>
-            <li>Optional exterior cameras for safety</li>
-            <li>No required monthly subscription for core routines</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>How it works</h2>
-          <p>Enter the number of windows, exterior doors, rooms, smart lights, thermostats, doorbells, presence zones, and camera zones. Tara labels and configures the kit, ships it ready, and you mount everything using the room-by-room checklist.</p>
-        </section>
-
-        <section>
-          <h2>Smart home searches Tara covers</h2>
-          <ul>
-            <li><a href="/smart-home/">Smart home</a></li>
-            <li><a href="/smart-home-kit/">Smart home kit</a></li>
-            <li><a href="/home-automation-kit/">Home automation kit</a></li>
-            <li><a href="/smart-home-starter-kit/">Smart home starter kit</a></li>
-            <li><a href="/local-smart-home-hub/">Local smart home hub</a></li>
-            <li><a href="/smart-lighting-kit/">Smart lighting kit</a></li>
-            <li><a href="/smart-thermostat-kit/">Smart thermostat kit</a></li>
-            <li><a href="/smart-doorbell-kit/">Smart doorbell kit</a></li>
-            <li><a href="/door-window-sensors/">Door and window sensors</a></li>
-            <li><a href="/presence-detection-smart-home/">Presence detection smart home</a></li>
-            <li><a href="/camera-kit/">Camera kit</a></li>
-            <li><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a></li>
-          </ul>
-        </section>
-      </main>
+      <div class="tara-configurator">
+        <header class="tara-cfg-topbar">
+          <div class="tara-cfg-topbar-inner">
+            <a class="tara-cfg-brand" href="/">Tara</a>
+            <span></span>
+            <div class="tara-cfg-topbar-actions"><button class="tara-cfg-static-theme" type="button" aria-label="Use dark theme"></button></div>
+          </div>
+        </header>
+        <main class="tara-cfg-main">
+          <nav class="tara-cfg-progress" aria-label="Home plan progress">
+            <ol>
+              <li><span>1</span>Home</li>
+              <li><span>2</span>Goals</li>
+              <li><span>3</span>Scope</li>
+              <li><span>4</span>Review</li>
+              <li><span>5</span>Send</li>
+            </ol>
+          </nav>
+          <div class="tara-cfg-layout">
+            <section class="tara-cfg-stage">
+              <header class="tara-cfg-stage-head">
+                <p>Step 1 of 5 · About 2 minutes</p>
+                <h1>What kind of home are we planning?</h1>
+                <div>This gives Tara a useful first estimate. You can correct every device count before sending it.</div>
+              </header>
+              <div class="tara-cfg-choice-grid">
+                <button class="tara-cfg-choice" type="button"><span class="tara-cfg-choice-icon"></span><span class="tara-cfg-choice-copy"><strong>Apartment or condo</strong><small>One unit in a shared building.</small></span><span class="tara-cfg-choice-state"></span></button>
+                <button class="tara-cfg-choice" type="button"><span class="tara-cfg-choice-icon"></span><span class="tara-cfg-choice-copy"><strong>Townhouse</strong><small>Attached home with its own entries.</small></span><span class="tara-cfg-choice-state"></span></button>
+                <button class="tara-cfg-choice" type="button"><span class="tara-cfg-choice-icon"></span><span class="tara-cfg-choice-copy"><strong>Single-family home</strong><small>Detached home with private exterior.</small></span><span class="tara-cfg-choice-state"></span></button>
+                <button class="tara-cfg-choice" type="button"><span class="tara-cfg-choice-icon"></span><span class="tara-cfg-choice-copy"><strong>Something else</strong><small>Cabin, ADU, duplex, or another layout.</small></span><span class="tara-cfg-choice-state"></span></button>
+              </div>
+              <div class="tara-cfg-profile-counts">
+                <div class="tara-cfg-counter"><span class="tara-cfg-counter-copy"><strong>Bedrooms</strong><small>Studios can use 0.</small></span><span class="tara-cfg-counter-control"><span>−</span><span>3</span><span>+</span></span></div>
+                <div class="tara-cfg-counter"><span class="tara-cfg-counter-copy"><strong>Levels</strong><small>Count finished floors in the plan.</small></span><span class="tara-cfg-counter-control"><span>−</span><span>1</span><span>+</span></span></div>
+              </div>
+              <p class="tara-cfg-required-note">Choose a home type to continue.</p>
+              <div class="tara-cfg-stage-actions"><button class="tara-cfg-button tara-cfg-button--primary" type="button" disabled>Continue →</button></div>
+            </section>
+            <aside class="tara-cfg-plan-preview">
+              <p>Current plan</p>
+              <h2>Start with the home</h2>
+              <p class="tara-cfg-preview-empty">Choose the home shape and Tara will estimate a practical first scope.</p>
+            </aside>
+          </div>
+        </main>
+      </div>
     </div>
+    <noscript>This planner needs JavaScript to calculate and send your home plan. Email hello@tarahome.ai for help.</noscript>
   </body>
 </html>

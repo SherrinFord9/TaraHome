@@ -1,29 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3NPM15GXKZ');
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function(){ window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', 'G-3NPM15GXKZ');
+      (function () {
+        var loaded = false;
+        var timer;
+        function loadAnalytics() {
+          if (loaded) return;
+          loaded = true;
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ';
+          document.head.appendChild(script);
+        }
+        function scheduleAnalytics() {
+          if (loaded || timer) return;
+          timer = window.setTimeout(loadAnalytics, 600);
+        }
+        ['pointerdown', 'keydown', 'touchstart'].forEach(function (name) {
+          window.addEventListener(name, scheduleAnalytics, {once: true, passive: true});
+        });
+        window.addEventListener('load', function () {
+          timer = window.setTimeout(loadAnalytics, 4500);
+        }, {once: true});
+      })();
+    </script>
     <title>Preconfigured Smart Home Kit & Home Automation Kit | Tara</title>
     <meta name="description" content="Tara ships a preconfigured smart home kit with a local hub, sensors, thermostat, lights, doorbell, app handoff, and optional cameras." />
     <link rel="canonical" href="https://tarahome.ai/" />
     <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
-    <link rel="preload" as="style" href="/assets/index-Dc62EqRX.css" crossorigin />
+    <link rel="preload" as="style" href="/assets/main-BPt6CJ6t.css" crossorigin />
     <link rel="preload" as="image" href="/assets/images/real/real-living-room-fireplace-900.webp" imagesrcset="/assets/images/real/real-living-room-fireplace-900.webp 900w, /assets/images/real/real-living-room-fireplace-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
     <meta property="og:title" content="Preconfigured Smart Home Kit & Home Automation Kit | Tara" />
-    <meta property="og:description" content="Enter your windows, doors, rooms, lights, thermostat, and camera zones. Tara configures the whole smart home kit and ships it ready to mount." />
+    <meta property="og:description" content="Answer a few focused questions, review Tara's recommended smart home scope, and send the plan before any devices are selected or shipped." />
     <meta property="og:url" content="https://tarahome.ai/" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/assets/images/og-image.png" />
     <meta name="twitter:title" content="Preconfigured Smart Home Kit & Home Automation Kit | Tara" />
-    <meta name="twitter:description" content="Enter your windows, doors, rooms, lights, thermostat, and camera zones. Tara configures the whole smart home kit and ships it ready to mount." />
+    <meta name="twitter:description" content="Answer a few focused questions and review Tara's recommended smart home scope before sending the plan." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#060504" />
     <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
@@ -42,13 +62,13 @@
         font-family: "Tara Avenir";
         src: url("/fonts/Avenir_Book.woff2") format("woff2"),
              url("/fonts/Avenir_Book.ttf") format("truetype");
-        font-weight: 400;
+        font-weight: 400 800;
         font-style: normal;
         font-display: optional;
       }
 
       * { box-sizing: border-box; }
-      html { background: var(--seo-paper); scroll-behavior: smooth; }
+      html { background: var(--seo-paper); font-size: 18px; scroll-behavior: smooth; }
       body { background: var(--seo-paper); color: var(--seo-ink); font-family: var(--font-tara); margin: 0; overflow-x: hidden; text-rendering: geometricPrecision; }
       body, #root, .seo-static-fallback, .tara-rx { font-family: var(--font-tara) !important; }
       a { color: inherit; }
@@ -180,7 +200,7 @@
           if (document.querySelector('link[data-tara-app-css]')) return;
           var link = document.createElement('link');
           link.rel = 'stylesheet';
-          link.href = '/assets/index-Dc62EqRX.css';
+          link.href = '/assets/main-BPt6CJ6t.css';
           link.crossOrigin = '';
           link.setAttribute('data-tara-app-css', 'true');
           document.head.appendChild(link);
@@ -189,7 +209,7 @@
           if (loaded) return;
           loaded = true;
           loadStyles();
-          import('/assets/index-Div4DJJS.js').catch(function () {});
+          import('/assets/main-CBjOYDri.js').catch(function () {});
         }
         ['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(function (eventName) {
           window.addEventListener(eventName, loadApp, {once: true, passive: true});
@@ -283,7 +303,7 @@
         <section id="how-it-works" class="seo-section">
           <p class="seo-kicker">How it works</p>
           <h2>Count the home, then ship the plan.</h2>
-          <p>Enter the number of windows, exterior doors, rooms, smart lights, thermostats, doorbells, presence zones, and optional camera zones. Tara reviews the scope, configures the local server and devices, then ships a labeled self-install kit.</p>
+          <p>Choose the home type, bedrooms, levels, and priorities. Tara recommends a practical device scope, you review every count, and then send the plan before any products are selected or shipped.</p>
         </section>
 
         <section class="seo-section">
