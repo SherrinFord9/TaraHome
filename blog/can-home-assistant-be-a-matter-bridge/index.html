@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can Home Assistant Be a Matter Bridge for Apple Home, Google, Alexa, or SmartThings? | Tara Guides</title>
+    <meta name="description" content="Home Assistant can control Matter devices, but it is not an official outbound Matter bridge. Use HomeKit Bridge, Home Assistant Cloud, Matter multi-admin, or community Matter Hub paths carefully." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/can-home-assistant-be-a-matter-bridge/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/can-home-assistant-be-a-matter-bridge/" />
+    <meta property="og:title" content="Can Home Assistant Be a Matter Bridge for Apple Home, Google, Alexa, or SmartThings? | Tara Guides" />
+    <meta property="og:description" content="Home Assistant can control Matter devices, but it is not an official outbound Matter bridge. Use HomeKit Bridge, Home Assistant Cloud, Matter multi-admin, or community Matter Hub paths carefully." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/can-home-assistant-be-a-matter-bridge/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can Home Assistant Be a Matter Bridge for Apple Home, Google, Alexa, or SmartThings? | Tara Guides" />
+    <meta name="twitter:description" content="Home Assistant can control Matter devices, but it is not an official outbound Matter bridge. Use HomeKit Bridge, Home Assistant Cloud, Matter multi-admin, or community Matter Hub paths carefully." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/can-home-assistant-be-a-matter-bridge/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 980px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 860px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/can-home-assistant-be-a-matter-bridge/#blogposting",
+      "headline": "Can Home Assistant Be a Matter Bridge for Apple Home, Google Home, Alexa, or SmartThings?",
+      "description": "Home Assistant can control Matter devices, but it is not an official outbound Matter bridge. Use HomeKit Bridge, Home Assistant Cloud, Matter multi-admin, or community Matter Hub paths carefully.",
+      "image": "https://tarahome.ai/assets/generated/blog/can-home-assistant-be-a-matter-bridge/cover.png",
+      "datePublished": "2026-07-09",
+      "dateModified": "2026-07-09",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/can-home-assistant-be-a-matter-bridge/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/homekit/",
+        "https://www.home-assistant.io/integrations/homekit_controller/",
+        "https://www.home-assistant.io/integrations/alexa.smart_home/",
+        "https://www.home-assistant.io/integrations/google_assistant/",
+        "https://www.home-assistant.io/integrations/smartthings/",
+        "https://support.nabucasa.com/hc/en-us/articles/25619363899677-Configuring-Amazon-Alexa-to-work-with-Home-Assistant",
+        "https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html",
+        "https://developer.amazon.com/en-US/docs/alexa/smarthome/supported-matter-device-categories.html",
+        "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+        "https://csa-iot.org/developer-resource/matter-multi-admin-video/",
+        "https://github.com/t0bst4r/home-assistant-matter-hub",
+        "https://riddix.github.io/home-assistant-matter-hub/",
+        "https://community.home-assistant.io/t/matter-hub-simple-setup-to-link-google-home-alexa-and-siri-to-home-assistant/792902",
+        "https://community.home-assistant.io/t/whats-the-point-of-matter-bridge-add-on/955979",
+        "https://community.home-assistant.io/t/new-home-assistant-entities-not-appearing-in-alexa-discovery-existing-entities-work-fine/1015695",
+        "https://www.reddit.com/r/homeassistant/comments/1mgi82l/ha_matter_hub_addon_rocks/",
+        "https://www.reddit.com/r/homeassistant/comments/1rcb12r/homeassistantmatterhub_developer_uxriddixx/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/can-home-assistant-be-a-matter-bridge/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Can Home Assistant Be a Matter Bridge for Apple Home, Google Home, Alexa, or SmartThings?",
+          "item": "https://tarahome.ai/blog/can-home-assistant-be-a-matter-bridge/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/can-home-assistant-be-a-matter-bridge/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant officially act as a Matter bridge?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant's official Matter integration lets Home Assistant control Matter devices and share Matter devices it already controls, but the docs say Home Assistant is not a Matter bridge and cannot turn existing Home Assistant devices into Matter-compatible devices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should Apple Home users use instead?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use HomeKit Bridge when you want selected Home Assistant entities in Apple Home. Use HomeKit Device when you want a HomeKit accessory controlled by Home Assistant. Use Matter multi-admin only when the physical device already speaks Matter."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should Alexa and Google Home users use instead?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use Home Assistant Cloud for the easiest supported Alexa and Google exposure path, or the manual Alexa and Google Assistant integrations if you accept the extra cloud, certificate, and developer-console setup. Community Matter Hub paths can be local, but they are not the official Home Assistant Core path."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are Home Assistant Matter Hub add-ons safe to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They can be useful for advanced users, but treat them as community-supported. Test with non-critical lights, plugs, helpers, and sensors first, keep backups, and avoid relying on them first for locks, alarms, garage doors, water shutoffs, HVAC, or cameras."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Matter multi-admin expose every Home Assistant entity?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Matter multi-admin shares a Matter device with another Matter controller. It does not publish every Home Assistant entity as a Matter device. That outbound publishing behavior is what community Matter bridge projects try to provide."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter bridge decisions</span><span>July 9, 2026</span><span>10 min read</span></p>
+            <h1>Can Home Assistant Be a Matter Bridge for Apple Home, Google Home, Alexa, or SmartThings?</h1>
+            <p class="lede">Officially, no: Home Assistant controls Matter devices, but it does not turn every Home Assistant device, helper, or control into a Matter accessory. The practical answer is to choose the right export path for each ecosystem.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/can-home-assistant-be-a-matter-bridge/cover.png" alt="Local Home Assistant hub hardware in a warm home cabinet for a Matter bridge decision guide" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> Home Assistant is not an official outbound Matter bridge. It can control Matter devices and share real Matter devices, but it does not officially publish all Home Assistant devices, helpers, and controls as Matter devices.</li>
+    <li><strong>Use this instead:</strong> For Apple Home, use HomeKit Bridge. For Alexa or Google Home, use Home Assistant Cloud or the official manual integrations. For real Matter devices, use Matter multi-admin.</li>
+    <li><strong>Community option:</strong> Home Assistant Matter Hub and similar projects can expose selected Home Assistant controls as Matter, but treat them as advanced, community-supported tools.</li>
+    <li><strong>What to avoid:</strong> Do not expose every device or duplicate the same automation in Home Assistant, Apple Home, Google Home, Alexa, and SmartThings.</li>
+    <li><strong>Main caveat:</strong> Cloud dependency depends on the path. HomeKit Bridge works inside the home for Apple Home, Home Assistant Cloud uses a cloud relay, Matter control can stay local, and community bridges need careful testing.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Not Officially as an Outbound Matter Bridge</h2>
+<p>No, Home Assistant should not be described as an official Matter bridge for Apple Home, Google Home, Alexa, or SmartThings. Matter is the cross-platform smart-home standard, and Home Assistant's Matter integration is an official way for Home Assistant to control those devices. It can also share a Matter device it already controls with another Matter platform. But the Home Assistant Matter docs say Home Assistant is not a bridge itself and cannot turn existing Home Assistant devices into Matter-compatible devices.</p>
+<p>That does not mean you are stuck. It means the right path depends on what you are trying to share. If you want Home Assistant lights, switches, helpers, or sensors to appear in Apple Home, use <a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">HomeKit Bridge</a>. If you want Alexa or Google Home to control selected Home Assistant entities, the supported route is Home Assistant Cloud or the official manual Alexa and Google integrations. If the physical device already speaks Matter, use Matter multi-admin to share that device between Home Assistant and the other platform.</p>
+<p>The confusing part is the community option. Projects such as Home Assistant Matter Hub simulate Matter bridges so Apple Home, Google Home, Alexa, or SmartThings can see selected Home Assistant entities as Matter devices. That can be useful, especially for people trying to keep voice control local. It is still a community-supported path, not the official Home Assistant Core answer. Test it with simple lights, plugs, helpers, and sensors before trusting it with locks, alarms, garage doors, water shutoffs, HVAC, or cameras.</p>
+<div class="callout">
+  <p><strong>Tara's rule:</strong> use Home Assistant as the automation brain, then expose only the controls your family actually needs. A bridge should simplify the house, not make five apps responsible for the same device.</p>
+</div>
+<h2 id="why-people-ask">Why People Are Asking This Now</h2>
+<p>This is a high-demand question because Matter has changed what homeowners expect from smart-home hubs. People have Home Assistant for local automations, Apple Home for family phones, Google Home or Alexa for voice, SmartThings for appliances or a legacy hub, and Matter devices arriving from IKEA, Aqara, Eve, Nanoleaf, TP-Link, Philips Hue, SwitchBot, and other brands. The natural question is simple: can Home Assistant publish everything back out as Matter so the other apps can see it?</p>
+<p>Community demand is visible in Home Assistant Community threads about Matter Hub, Alexa alternatives, and cloudless exposure. Reddit r/homeassistant threads ask why Home Assistant Matter Server and Home Assistant Matter Hub are not the same thing. GitHub activity around the original Home Assistant Matter Hub project and the active RiDDiX community fork shows that advanced users want this bridge-like behavior.</p>
+<p>The demand is real, but the answer must stay precise. Home Assistant's official Matter role is controller, not outbound bridge. Community Matter Hub projects try to fill the gap. Apple Home, Google Home, Alexa, and SmartThings each have their own official and unofficial ways to receive devices from Home Assistant.</p>
+<h2 id="definitions">The Four Terms That Prevent Most Mistakes</h2>
+<p><strong>Entity</strong> is Home Assistant's word for one visible thing you can read or control, such as a light, switch, sensor, scene, helper toggle, thermostat mode, or battery reading. <strong>Integration</strong> means the Home Assistant connection that talks to a device, app, cloud service, or protocol.</p>
+<p><strong>Local control</strong> means a command can work inside the house without waiting for a vendor cloud. It does not mean every app feature, voice assistant, remote-access feature, or firmware update is cloud-free.</p>
+<p><strong>Matter controller</strong> means the app or hub that controls a Matter device. Home Assistant, Apple Home, Google Home, Alexa, and SmartThings can all be Matter controllers in different setups.</p>
+<p><strong>Matter bridge</strong> means a bridge that exposes non-Matter devices as Matter devices. Home Assistant's docs list examples such as SwitchBot Hub 2, Aqara Hub M2, IKEA DIRIGERA, and Philips Hue Bridge. Those are devices you can add into Home Assistant through Matter. That is the opposite direction from making Home Assistant itself publish all of its entities as Matter.</p>
+<p><strong>Matter multi-admin</strong> means one real Matter device can be joined to more than one controller. If a Matter plug is in Home Assistant, Home Assistant can generate a sharing code so Apple Home or Google Home can also add that same plug. Multi-admin shares Matter devices. It does not export every Home Assistant entity.</p>
+<p><strong>HomeKit Bridge</strong> and <strong>HomeKit Device</strong> are Home Assistant's Apple paths. HomeKit Bridge sends selected Home Assistant entities to Apple Home. HomeKit Device brings a HomeKit accessory into Home Assistant. They are not Matter, but they often solve Apple households' real problem better than forcing Matter into the middle.</p>
+<h2 id="decision-table">Which Path Should You Use?</h2>
+<p>The table below separates official support, local control, cloud dependency, Matter and HomeKit paths, and community caveats. That separation matters more than the protocol label.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Goal</th>
+        <th>Recommended path</th>
+        <th>Official support</th>
+        <th>Local control and cloud dependency</th>
+        <th>Caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Control a Matter device in Home Assistant</strong></td>
+        <td>Use the official Home Assistant Matter integration.</td>
+        <td>Official Home Assistant support. Home Assistant OS with the Matter server app is the supported path.</td>
+        <td>Matter commands can be local. Thread devices still need a Thread border router and working phone commissioning path.</td>
+        <td>Native Home Assistant integrations can expose richer features than Matter for some brands, such as Philips Hue.</td>
+      </tr>
+      <tr>
+        <td><strong>Share a real Matter device from Home Assistant to Apple Home or Google Home</strong></td>
+        <td>Use Home Assistant's Matter &quot;Share device&quot; flow.</td>
+        <td>Official Home Assistant Matter multi-admin flow for devices already added to Home Assistant.</td>
+        <td>Matter device control can be local, but Apple, Google, Amazon, Samsung, and vendor app features may still use accounts or cloud services.</td>
+        <td>This shares the Matter device only. It does not publish unrelated Home Assistant entities as Matter accessories.</td>
+      </tr>
+      <tr>
+        <td><strong>Expose Home Assistant entities to Apple Home</strong></td>
+        <td>Use Home Assistant HomeKit Bridge.</td>
+        <td>Official Home Assistant integration.</td>
+        <td>Local HomeKit path on the home network. Apple remote access and Siri features depend on Apple Home infrastructure.</td>
+        <td>Use include filters. Do not expose every diagnostic sensor, helper, automation, and duplicate device.</td>
+      </tr>
+      <tr>
+        <td><strong>Bring a HomeKit accessory into Home Assistant</strong></td>
+        <td>Use HomeKit Device.</td>
+        <td>Official Home Assistant integration.</td>
+        <td>Local control for supported HomeKit accessories. Some onboarding paths still need the vendor or Apple app first.</td>
+        <td>HomeKit-only accessories are usually paired to one controller at a time. Matter devices are different because they support multi-admin.</td>
+      </tr>
+      <tr>
+        <td><strong>Expose Home Assistant entities to Alexa</strong></td>
+        <td>Use Home Assistant Cloud for the easiest supported path, or the official manual Alexa Smart Home skill setup.</td>
+        <td>Supported by Nabu Casa/Home Assistant Cloud and Home Assistant's Alexa Smart Home documentation.</td>
+        <td>Cloud path. Manual setup still requires internet-reachable Home Assistant, certificates, and Amazon developer configuration.</td>
+        <td>Entity sync and supported domains matter. Keep sensitive devices restricted and test discovery before depending on voice control.</td>
+      </tr>
+      <tr>
+        <td><strong>Expose Home Assistant entities to Google Home</strong></td>
+        <td>Use Home Assistant Cloud or the official manual Google Assistant integration.</td>
+        <td>Official Home Assistant Google Assistant integration.</td>
+        <td>Cloud path for setup and Assistant features. Local fulfillment can improve local command speed, but Google devices still use the internet for some parts of the flow.</td>
+        <td>Manual setup is more work than most homeowners expect. Nabu Casa is usually the practical supported choice.</td>
+      </tr>
+      <tr>
+        <td><strong>Expose Home Assistant entities to SmartThings</strong></td>
+        <td>Be careful. Use official SmartThings integration for bringing SmartThings devices into Home Assistant; outbound Home Assistant-to-SmartThings sharing is not the same official path.</td>
+        <td>Home Assistant officially supports SmartThings integration as an inbound integration. SmartThings officially supports Matter devices and multi-admin for Matter devices.</td>
+        <td>SmartThings account, app, hub firmware, and remote access are ecosystem dependencies. Matter devices can be shared where supported.</td>
+        <td>If you want SmartThings to see Home Assistant entities as Matter, you are in community bridge territory.</td>
+      </tr>
+      <tr>
+        <td><strong>Expose selected Home Assistant entities as Matter to several ecosystems</strong></td>
+        <td>Consider Home Assistant Matter Hub or similar community Matter bridge projects.</td>
+        <td>Community-supported, not the official Home Assistant Matter integration.</td>
+        <td>Designed for local Matter-style control, but reliability depends on the add-on, controller support, device type support, and your network.</td>
+        <td>Start with a small allowlist. Avoid critical locks, alarms, HVAC, cameras, garage doors, and water shutoffs until you have proven behavior and fallbacks.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="apple-home">Apple Home: Usually Use HomeKit Bridge, Not Matter Hub</h2>
+<p>If your goal is &quot;I want Apple Home and Siri to control a few Home Assistant devices,&quot; the clean answer is HomeKit Bridge. It is an official Home Assistant integration, it runs locally, and it is made for this exact direction: Home Assistant entities going out to Apple Home.</p>
+<p>Use a tight include list. Expose the family-facing lights, fans, switches, scenes, and simple sensors. Leave out raw diagnostics, duplicate native Apple devices, test helpers, and entities that only make sense inside Home Assistant. For a homeowner, Apple Home should feel like a tidy remote control, not a database dump.</p>
+<p>Use HomeKit Device for the opposite direction. If you have a HomeKit accessory that you want Home Assistant to control directly, HomeKit Device is the official inbound path. If the accessory already supports Matter, consider Matter multi-admin instead because Matter is designed for multiple controllers.</p>
+<h2 id="alexa-google">Alexa and Google Home: Supported Paths Are Cloud Paths</h2>
+<p>For most households, the supported Alexa and Google Home path is Home Assistant Cloud from Nabu Casa. It lets you pick which Home Assistant entities to expose without managing public URLs, SSL certificates, custom OAuth, or developer-console projects. Nabu Casa's Alexa documentation walks through enabling Alexa and exposing selected entities from the Voice Assistant settings.</p>
+<p>The manual Alexa Smart Home and Google Assistant integrations exist, but they are not the no-cloud shortcut many people hope for. Home Assistant's Google Assistant docs say manual setup requires external access with a hostname and SSL certificate. The Alexa Smart Home documentation includes filtering, supported platforms, and skill setup details. Those are workable for advanced users, but not the simplest homeowner path.</p>
+<p>Google local fulfillment can reduce latency for some commands, and Alexa can control Matter devices locally when the device is connected to a compatible Matter-enabled Echo or eero. That is not the same as Home Assistant officially exporting all entities as Matter. If your actual goal is local voice control, look at Home Assistant's local voice direction separately instead of assuming Matter bridge is the only answer.</p>
+<h2 id="smartthings">SmartThings: Keep the Direction Straight</h2>
+<p>SmartThings can be a Matter controller, and SmartThings support documents explain Matter devices, Matter controllers, Thread border routers, and sharing Matter devices with other services. Home Assistant also has an official SmartThings integration, but its normal use is bringing SmartThings devices into Home Assistant, not making SmartThings a full mirror of all Home Assistant entities.</p>
+<p>If a device is a real Matter device, use Matter multi-admin between SmartThings and Home Assistant. If a device is a Home Assistant-only entity and you want SmartThings to control it, you are not using Home Assistant's official Matter integration. You are considering a community bridge or another workaround.</p>
+<p>This distinction matters because SmartThings households often also have Samsung appliances, TVs, Aeotec hubs, Zigbee devices, Z-Wave devices, and cloud-tied services. Matter can help with supported Matter devices, but it does not erase every platform boundary.</p>
+<h2 id="community-matter-hub">Where Community Matter Hub Fits</h2>
+<p>Home Assistant Matter Hub and similar projects exist because the community wants a local way to publish Home Assistant entities to Matter-compatible controllers. The original t0bst4r project describes publishing Home Assistant entities to controllers such as Alexa, Apple Home, and Google Home. The RiDDiX fork says it continues development after the original project was discontinued in January 2026, and its docs list known issues and limitations.</p>
+<p>That is promising, but it is not the same risk profile as an official integration. Device type support is not universal. Controllers vary. Alexa has pairing limits and needs Matter-capable hardware. Google Home and Apple Home can behave differently by device category. GitHub issues and Home Assistant Community threads show breakage, discovery problems, and controller-specific caveats after updates.</p>
+<p>A reasonable advanced setup is to create a dedicated Matter Hub bridge, expose only a small allowlist, and test a few non-critical entities first:</p>
+<ul>
+  <li>Good first tests: lamps, smart plugs, input booleans, simple switches, contact sensors, occupancy sensors, and helper-driven scenes.</li>
+  <li>Use caution: covers, thermostats, fans, robot vacuums, and anything with unusual states or modes.</li>
+  <li>Avoid as first deployment: locks, alarms, garage doors, water shutoffs, cameras, security devices, and HVAC controls that protect the home.</li>
+</ul>
+<h2 id="what-still-needs-cloud">What Still Needs Cloud?</h2>
+<p>There is no single answer because each path is different.</p>
+<ul>
+  <li><strong>HomeKit Bridge to Apple Home:</strong> local for in-home HomeKit control. Apple remote access, Siri away from home, and Apple Home features depend on Apple home hub and account infrastructure.</li>
+  <li><strong>Home Assistant Cloud to Alexa or Google:</strong> intentionally uses Nabu Casa as the supported relay and account-linking path.</li>
+  <li><strong>Manual Alexa or Google integrations:</strong> still use Amazon or Google cloud services and require an internet-reachable Home Assistant setup.</li>
+  <li><strong>Real Matter devices:</strong> local control is one of Matter's strengths, but setup, voice assistants, remote access, app accounts, firmware updates, and vendor features may still need internet.</li>
+  <li><strong>Community Matter bridge add-ons:</strong> can keep the control path local in many cases, but they depend on local network health, controller compatibility, add-on maintenance, and Matter device-type support.</li>
+</ul>
+<h2 id="clean-setup">A Clean Setup Order for Homeowners</h2>
+<ol>
+  <li><strong>Pick the automation brain.</strong> In a Tara-style home, Home Assistant should run the serious local automations.</li>
+  <li><strong>Choose family surfaces.</strong> Apple Home, Google Home, Alexa, and SmartThings should get the controls people actually use.</li>
+  <li><strong>Separate real Matter devices from Home Assistant entities.</strong> Share real Matter devices with multi-admin. Export Home Assistant entities through the right ecosystem bridge.</li>
+  <li><strong>Use official paths first.</strong> HomeKit Bridge for Apple, Home Assistant Cloud for Alexa and Google, Matter multi-admin for Matter devices.</li>
+  <li><strong>Try community Matter bridging only when it solves a real problem.</strong> Keep the entity list small and reversible.</li>
+  <li><strong>Do not duplicate automations.</strong> If Home Assistant turns on the hallway lights, do not build the same routine in Apple Home, Alexa, Google Home, and SmartThings.</li>
+  <li><strong>Document what owns what.</strong> Write down which system owns automations, voice, remote access, firmware updates, and safety devices.</li>
+</ol>
+<h2 id="recommended-patterns">Recommended Patterns</h2>
+<h3 id="iphone-family">iPhone Family With Home Assistant</h3>
+<p>Use Home Assistant as the automation brain. Use HomeKit Bridge to expose selected lights, fans, switches, scenes, and safe sensors to Apple Home. Use Matter multi-admin only for real Matter devices that need to appear in both Home Assistant and Apple Home. Keep HomeKit Secure Video, Apple-specific camera features, and Apple account features separate from the Home Assistant bridge conversation.</p>
+<h3 id="voice-heavy-home">Alexa or Google Voice-Heavy Home</h3>
+<p>Use Home Assistant Cloud if you want the supported homeowner path. Expose a curated set of voice-friendly entities. Keep serious logic in Home Assistant. If you are trying to avoid cloud for voice, evaluate local Home Assistant voice or a small community Matter Hub experiment, but do not pretend the supported Alexa and Google integrations are no-cloud.</p>
+<h3 id="smartthings-home">SmartThings Household</h3>
+<p>Use SmartThings where it is already strong: appliances, existing SmartThings hubs, family app familiarity, and real Matter devices shared through multi-admin. Bring SmartThings devices into Home Assistant when local automation matters. Be cautious about trying to mirror all Home Assistant entities back into SmartThings through community Matter bridges.</p>
+<h3 id="experimenter">Advanced Local-Control Experimenter</h3>
+<p>Community Matter Hub can be worth testing if you understand the maintenance cost. Keep it on a small allowlist, back up the configuration, and review release notes before updating. Treat it as a bridge for convenience, not as the only control path for critical devices.</p>
+<h2 id="related-reading">Related Tara Reading</h2>
+<p>These Tara guides cover the adjacent decisions that usually come up with this question.</p>
+<ul>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to Share One Matter Device Across Home Assistant, Apple Home, Google Home, Alexa, and SmartThings</a></li>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?</a></li>
+  <li><a href="/blog/do-you-need-nabu-casa-home-assistant/">Do You Need Nabu Casa for Home Assistant in 2026?</a></li>
+  <li><a href="/blog/will-home-assistant-matter-work-without-internet/">Will Home Assistant and Matter Work Without Internet?</a></li>
+  <li><a href="/blog/where-should-smart-home-automations-live/">Where Should Your Smart Home Automations Live?</a></li>
+  <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread Border Router Should You Use with Home Assistant in 2026?</a></li>
+  <li><a href="/blog/home-assistant-local-voice-assistant-no-cloud/">How to Set Up a Fully Local Voice Assistant in Home Assistant</a></li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<h3 id="official-matter-bridge">Can Home Assistant officially act as a Matter bridge?</h3>
+<p>No. Home Assistant's official Matter integration lets Home Assistant control Matter devices and share real Matter devices with other platforms. Home Assistant's own Matter docs say Home Assistant is not a bridge itself and cannot turn existing devices within Home Assistant into Matter-compatible devices.</p>
+<h3 id="homekit-bridge-same">Is HomeKit Bridge the same as a Matter bridge?</h3>
+<p>No. HomeKit Bridge exposes selected Home Assistant entities to Apple Home as HomeKit accessories. A Matter bridge exposes non-Matter devices as Matter devices. They may look similar in a family app, but they are different protocols and different support paths.</p>
+<h3 id="google-alexa-local">Can I expose Home Assistant to Google Home or Alexa locally through Matter?</h3>
+<p>Not through the official Home Assistant Matter integration. Community Matter Hub projects can expose selected Home Assistant entities to Matter-compatible controllers, and that can keep many commands local. Treat that as a community path with testing and limitations. The supported Home Assistant Cloud, Alexa, and Google Assistant paths are cloud paths.</p>
+<h3 id="smartthings-matter">Can SmartThings see Home Assistant entities through Matter?</h3>
+<p>Not officially from Home Assistant Core. SmartThings can control supported Matter devices and can share Matter devices through multi-admin. Home Assistant can integrate SmartThings devices. But publishing arbitrary Home Assistant entities to SmartThings as Matter is a community bridge or workaround decision.</p>
+<h3 id="what-avoid">What should I avoid exposing first?</h3>
+<p>Do not start with locks, alarms, garage doors, cameras, water shutoffs, or HVAC. Prove the path with lights, plugs, helpers, and simple sensors. Once you trust discovery, state updates, permissions, and recovery after restart, decide whether a more important device deserves that path.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Home Assistant sources</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Device documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/alexa.smart_home/" target="_blank" rel="noopener noreferrer">Home Assistant Alexa Smart Home documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/google_assistant/" target="_blank" rel="noopener noreferrer">Home Assistant Google Assistant documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/smartthings/" target="_blank" rel="noopener noreferrer">Home Assistant SmartThings documentation</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Platform and standards docs</h3>
+              <ul>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/25619363899677-Configuring-Amazon-Alexa-to-work-with-Home-Assistant" target="_blank" rel="noopener noreferrer">Nabu Casa: configuring Amazon Alexa</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html" target="_blank" rel="noopener noreferrer">Amazon Alexa Matter support</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/supported-matter-device-categories.html" target="_blank" rel="noopener noreferrer">Amazon Alexa supported Matter device categories</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings Matter integration support</a></li>
+                <li><a href="https://csa-iot.org/developer-resource/matter-multi-admin-video/" target="_blank" rel="noopener noreferrer">CSA: Matter Multi-Admin overview</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community Matter bridge references</h3>
+              <ul>
+                <li><a href="https://github.com/t0bst4r/home-assistant-matter-hub" target="_blank" rel="noopener noreferrer">t0bst4r Home Assistant Matter Hub repository</a></li>
+                <li><a href="https://riddix.github.io/home-assistant-matter-hub/" target="_blank" rel="noopener noreferrer">RiDDiX Home Assistant Matter Hub community fork docs</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-hub-simple-setup-to-link-google-home-alexa-and-siri-to-home-assistant/792902" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter Hub setup discussion</a></li>
+                <li><a href="https://community.home-assistant.io/t/whats-the-point-of-matter-bridge-add-on/955979" target="_blank" rel="noopener noreferrer">Home Assistant Community: why use a Matter bridge add-on?</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Demand and caveat signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1mgi82l/ha_matter_hub_addon_rocks/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: HA Matter Hub add-on discussion</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1rcb12r/homeassistantmatterhub_developer_uxriddixx/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Home Assistant Matter Hub developer thread</a></li>
+                <li><a href="https://community.home-assistant.io/t/new-home-assistant-entities-not-appearing-in-alexa-discovery-existing-entities-work-fine/1015695" target="_blank" rel="noopener noreferrer">Home Assistant Community: Alexa entity discovery issue</a></li>
+                <li><a href="https://community.home-assistant.io/c/configuration/matter-thread/59" target="_blank" rel="noopener noreferrer">Home Assistant Community Matter &amp; Thread category</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want one smart-home brain instead of five competing apps?</h2>
+          <p>Tara plans the Home Assistant hub, family app handoff, Matter sharing order, voice exposure, and local automations so Apple Home, Google Home, Alexa, and SmartThings stay useful without becoming duplicate automation brains.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit paths</a><a href="/blog/do-you-need-nabu-casa-home-assistant/">Nabu Casa decision</a><a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a><a href="/blog/where-should-smart-home-automations-live/">Automation source of truth</a><a href="/blog/home-assistant-local-voice-assistant-no-cloud/">Local voice</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
