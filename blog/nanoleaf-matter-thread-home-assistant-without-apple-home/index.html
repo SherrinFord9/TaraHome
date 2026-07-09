@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can You Use Nanoleaf Matter and Thread Lights With Home Assistant Without Apple Home? | Tara Guides</title>
+    <meta name="description" content="Use newer Nanoleaf Matter-over-Thread or Matter-over-Wi-Fi lights with Home Assistant, avoid older HomeKit-only traps, and know when the Nanoleaf app or a Thread border router is still needed." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/" />
+    <meta property="og:title" content="Can You Use Nanoleaf Matter and Thread Lights With Home Assistant Without Apple Home? | Tara Guides" />
+    <meta property="og:description" content="Use newer Nanoleaf Matter-over-Thread or Matter-over-Wi-Fi lights with Home Assistant, avoid older HomeKit-only traps, and know when the Nanoleaf app or a Thread border router is still needed." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can You Use Nanoleaf Matter and Thread Lights With Home Assistant Without Apple Home? | Tara Guides" />
+    <meta name="twitter:description" content="Use newer Nanoleaf Matter-over-Thread or Matter-over-Wi-Fi lights with Home Assistant, avoid older HomeKit-only traps, and know when the Nanoleaf app or a Thread border router is still needed." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <style>
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: Avenir, Inter, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 900px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } main.article { max-width: 100vw; overflow-x: hidden; padding-left: 22px; padding-right: 22px; width: 100vw; } .article-hero, .article-hero > div, .article-cover, .article-body, .article-body .tldr, .article-body .comparison-table { max-width: calc(100vw - 44px); width: calc(100vw - 44px); } .article h1 { font-size: clamp(1.74rem, 8.2vw, 2.08rem); line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; text-wrap: normal; } .article .lede { font-size: 1rem; line-height: 1.35; max-width: 100%; overflow-wrap: anywhere; text-wrap: normal; } .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .comparison-table { overflow-x: auto; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: anywhere; word-break: normal; } }
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/#blogposting",
+      "headline": "Can You Use Nanoleaf Matter and Thread Lights With Home Assistant Without Apple Home?",
+      "description": "Use newer Nanoleaf Matter-over-Thread or Matter-over-Wi-Fi lights with Home Assistant, avoid older HomeKit-only traps, and know when the Nanoleaf app or a Thread border router is still needed.",
+      "image": "https://tarahome.ai/assets/generated/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/cover.png",
+      "datePublished": "2026-07-09",
+      "dateModified": "2026-07-09",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/nanoleaf/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/integrations/homekit_controller/",
+        "https://nanoleaf.me/en-US/products/essentials/bulbs/",
+        "https://nanoleaf.me/en-US/products/essentials/bulbs/get-started/before-pair-matter/",
+        "https://nanoleaf.me/en-US/products/essentials/bulbs/br30-or-e26-br-bulb-kit-each/",
+        "https://nanoleaf.me/en-US/products/essentials/bulbs/matter-wifi-a19-smart-bulb-2-pack/",
+        "https://nanoleaf.me/en-US/products/essentials/lightstrips/matter-lightstrip-197-starter-kit-5m-each/",
+        "https://community.home-assistant.io/c/configuration/matter-thread/59",
+        "https://community.home-assistant.io/t/solved-nanoleaf-essentials-nl45-homekit-over-thread-home-assistant/1016532",
+        "https://community.home-assistant.io/t/2-google-tbr-and-newly-added-nanoleaf-tbr-cause-troubles-on-matter-devices/915890",
+        "https://www.reddit.com/r/homeassistant/comments/1gqsm4x/nanoleaf_matter_essentials/",
+        "https://www.reddit.com/r/homeassistant/comments/1ajfr1w/i_tested_the_new_nanoleaf_matteroverthread/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Can You Use Nanoleaf Matter and Thread Lights With Home Assistant Without Apple Home?", "item": "https://tarahome.ai/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do you need Apple Home to use Nanoleaf Matter lights with Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Nanoleaf Matter-over-Thread and Matter-over-Wi-Fi lights can be added to Home Assistant through the Matter integration when the Home Assistant Matter setup, phone app, and required network path are ready. Apple Home is only one possible controller." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the Home Assistant Nanoleaf integration not find Nanoleaf Essentials bulbs?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant's Nanoleaf integration supports Nanoleaf Light Panels, Canvas, Shapes, Elements, and Lines, but not Nanoleaf Essentials lights. Use Matter for Matter models, or HomeKit Device for older HomeKit-over-Thread Essentials where supported." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should you buy Nanoleaf Matter-over-Thread or Matter-over-Wi-Fi lights?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Matter-over-Thread is a good fit when you already have a healthy Thread border router plan. Matter-over-Wi-Fi is simpler if you want to avoid Thread entirely. Either way, check the exact product page and box for Matter plus the transport: Thread or Wi-Fi." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Nanoleaf Shapes, Lines, or Elements be the Thread border router for Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Nanoleaf lists Shapes, Lines, and Elements controllers as Thread border routers on supported firmware, but Home Assistant users report mixed multi-router behavior when Nanoleaf border routers share a Thread environment with other brands. Treat them as possible existing routers, not the default Home Assistant Thread plan." }
+        },
+        {
+          "@type": "Question",
+          "name": "What if a Nanoleaf light is already paired to Apple Home or Google Home?",
+          "acceptedAnswer": { "@type": "Answer", "text": "If it is a Matter device, generate a new Matter sharing code from the existing controller and add it to Home Assistant as an already-paired Matter device. If it is an older HomeKit-only Essentials bulb, use the HomeKit Device path instead of Matter." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Nanoleaf Matter &amp; Thread</span><span>July 9, 2026</span><span>11 min read</span></p>
+            <h1>Can You Use Nanoleaf Matter and Thread Lights With Home Assistant Without Apple Home?</h1>
+            <p class="lede">Yes, but the right setup depends on whether the light is Matter-over-Thread, Matter-over-Wi-Fi, or an older HomeKit-over-Thread Essentials model.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/cover.png" alt="Nanoleaf-style smart lights and a Home Assistant hub in a warm local-control lighting setup" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Direct answer:</strong> Yes. Newer Nanoleaf Matter lights can work with Home Assistant without Apple Home when your Matter setup and network path are ready.</li>
+    <li><strong>Best next step:</strong> For Matter-over-Thread models, confirm a Thread border router and phone Thread credentials first. For Matter-over-Wi-Fi models, skip Thread and add them through Home Assistant Matter over Wi-Fi.</li>
+    <li><strong>What to avoid:</strong> Do not buy a Nanoleaf light just because the box says Thread. Check whether it says Matter, HomeKit, Thread, Wi-Fi, or only Nanoleaf app control.</li>
+    <li><strong>Main caveat:</strong> Older Nanoleaf Essentials HomeKit-over-Thread lights usually belong on the HomeKit Device path, not the Home Assistant Nanoleaf integration or Matter path.</li>
+    <li><strong>Practical warning:</strong> Keep the Nanoleaf app available for firmware and effects, and do not rely on Nanoleaf panels as your only Home Assistant Thread plan until you have tested stability.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Yes, But Pick the Right Nanoleaf Path</h2>
+<p>You can use Nanoleaf Matter lights with Home Assistant without making Apple Home the owner. For a current <strong>Nanoleaf Essentials Matter-over-Thread bulb, BR30 bulb, downlight, or Matter lightstrip</strong>, the normal path is Home Assistant's Matter integration plus a working Thread border router. For a current <strong>Nanoleaf Matter-over-Wi-Fi A19 bulb</strong>, the normal path is Home Assistant's Matter integration over Wi-Fi, with no Thread border router required for the light itself.</p>
+<p>The confusing part is older Nanoleaf Essentials hardware. Home Assistant's official Nanoleaf integration controls Nanoleaf Light Panels, Canvas, Shapes, Elements, and Lines. It explicitly does not support Essentials lights. Home Assistant says Essentials lights can be controlled through the HomeKit Device integration over Thread or Bluetooth, which is a different path from Matter.</p>
+<p>In plain English: <strong>Thread is the low-power mesh radio. Matter and HomeKit are control languages.</strong> A Thread Nanoleaf light is not automatically a Matter Nanoleaf light. Before you buy or reset anything, identify the exact generation and protocol on the product page, box, QR code, and app.</p>
+<div class="callout">
+  <p><strong>Tara's rule:</strong> let Home Assistant own the lighting automations. Use Apple Home, Google Home, Alexa, SmartThings, or the Nanoleaf app for family control, firmware, voice, or special scenes only when they add something useful.</p>
+</div>
+<h2 id="why-this-question">Why Homeowners Are Asking This Now</h2>
+<p>Nanoleaf now sells both Matter-over-Thread and Matter-over-Wi-Fi lighting, while many homes still have older Essentials bulbs that were bought as HomeKit-over-Thread lights. That creates three very similar-looking products with different setup rules.</p>
+<p>The demand signal is current. On <strong>July 7, 2026</strong>, a Home Assistant Community user posted a solved thread about moving a <strong>Nanoleaf Essentials NL45 HomeKit-over-Thread</strong> bulb into Home Assistant. The broader Matter/Thread category was also active that week with Thread border router and commissioning issues. Reddit r/homeassistant has separate posts about Nanoleaf Matter Essentials pairing, Nanoleaf Matter-over-Thread downlights, and older A19 Thread bulbs that only make sense once you separate Matter from HomeKit.</p>
+<p>The question is not "does Nanoleaf work?" The homeowner question is "which app should I pair first, which integration should I use, and what still depends on Nanoleaf, Apple, Google, or Thread?"</p>
+<h2 id="decision-table">Nanoleaf Paths Compared</h2>
+<p>This table separates official support, local control, cloud dependency, Matter/HomeKit paths, and the community caveats that matter before you buy or reset lights.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Nanoleaf setup</th>
+        <th>Official support</th>
+        <th>Local control and cloud dependency</th>
+        <th>Matter or HomeKit path</th>
+        <th>Choose or avoid</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Nanoleaf Essentials Matter-over-Thread lights</strong><br />Examples: Matter Thread BR30/E26 bulb, Matter lightstrip, newer Essentials Matter bulbs, and Matter Thread downlights where sold.</td>
+        <td>Nanoleaf product pages describe Matter-over-Thread lights as needing a Matter-compatible hub, Thread border router, current firmware, and a compatible phone OS. Home Assistant's Matter docs support local Matter over Thread.</td>
+        <td>Daily Matter control is local in Home Assistant. The Nanoleaf app may still be useful for firmware, scenes, Circadian Lighting, screen mirroring, or product-specific settings.</td>
+        <td>Use Home Assistant Matter. Commission with the Home Assistant Companion app after the Thread border router and phone Thread credentials are ready.</td>
+        <td>Choose when you already have a healthy Thread plan. Avoid if your home has no Thread border router and you do not want to manage Thread.</td>
+      </tr>
+      <tr>
+        <td><strong>Nanoleaf Matter-over-Wi-Fi lights</strong><br />Example: Nanoleaf Matter Wi-Fi A19 Smart Bulb.</td>
+        <td>Nanoleaf sells Matter-over-Wi-Fi bulbs, and Home Assistant Matter supports devices on local Wi-Fi as well as Thread.</td>
+        <td>Daily Matter control can be local. Wi-Fi quality now matters more than Thread mesh quality. Firmware and some Nanoleaf effects may still use the Nanoleaf app.</td>
+        <td>Use Home Assistant Matter over Wi-Fi. You do not need a Thread border router for a Wi-Fi Matter bulb.</td>
+        <td>Choose when you want the simpler no-Thread path. Avoid overloading weak 2.4 GHz Wi-Fi with too many bulbs.</td>
+      </tr>
+      <tr>
+        <td><strong>Older Nanoleaf Essentials HomeKit-over-Thread or HomeKit-only lights</strong><br />Example: older Essentials A19/NL45-style bulbs that show HomeKit/Thread behavior instead of Matter.</td>
+        <td>Home Assistant's Nanoleaf integration does not support Essentials lights, but the HomeKit Device documentation covers HomeKit accessories over Bluetooth and Thread.</td>
+        <td>Home Assistant can control supported HomeKit lights locally through HomeKit Device after pairing. Apple Home may be needed to get some lights onto an Apple Thread network first.</td>
+        <td>Use HomeKit Device, not Matter, unless the device has a real Matter upgrade path. Do not confuse this with HomeKit Bridge.</td>
+        <td>Keep if you already own them and they are stable. Avoid buying old stock if you want a clean Matter setup.</td>
+      </tr>
+      <tr>
+        <td><strong>Already paired to Apple Home, Google Home, Alexa, or SmartThings</strong><br />Common when a household started with voice assistants before Home Assistant.</td>
+        <td>Matter supports multi-admin sharing, and Home Assistant can add already-commissioned Matter devices. HomeKit-only devices are different.</td>
+        <td>Matter control can remain local, but the original ecosystem may still handle voice, remote access, and app-specific features.</td>
+        <td>If it is Matter, generate a new sharing code from the existing controller and add it to Home Assistant. If it is HomeKit-only, use HomeKit Device rules.</td>
+        <td>Choose sharing when the current Thread network is stable. Avoid factory-resetting first unless you know what setup code and network credentials you will lose.</td>
+      </tr>
+      <tr>
+        <td><strong>Nanoleaf Shapes, Lines, Elements, Blocks, Skylight, or panels</strong><br />These are not the same as Essentials bulbs.</td>
+        <td>Home Assistant's Nanoleaf integration supports Light Panels, Canvas, Shapes, Elements, and Lines. Nanoleaf also lists some controllers as Thread border routers on supported firmware.</td>
+        <td>Panel control can be local through the Nanoleaf integration once configured. Thread border router behavior depends on firmware and the rest of the Thread network.</td>
+        <td>Use the Nanoleaf integration for supported panels. Treat their Thread border router role as separate from controlling the panel itself.</td>
+        <td>Choose for decorative panel lighting. Avoid making a Nanoleaf panel your only Home Assistant Thread plan until you have tested it with your other border routers.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="how-to-identify">Step 1: Identify the Exact Nanoleaf Light</h2>
+<p>Do this before you pair, reset, or buy more bulbs. Look for the words on the box and in the product page:</p>
+<ul>
+  <li><strong>Matter over Thread:</strong> you need Home Assistant Matter plus a Thread border router.</li>
+  <li><strong>Matter over Wi-Fi:</strong> you need Home Assistant Matter and a stable 2.4 GHz Wi-Fi network, but not Thread for that light.</li>
+  <li><strong>HomeKit over Thread:</strong> you are probably looking at the HomeKit Device path, not the Matter path.</li>
+  <li><strong>Nanoleaf app over Bluetooth:</strong> useful for first contact, updates, and features, but not the same as full local Home Assistant control.</li>
+  <li><strong>Shapes, Lines, Elements, Canvas, or panels:</strong> use the Nanoleaf integration for panel control; do not treat these as Essentials bulbs.</li>
+</ul>
+<p>Current examples worth checking by exact product page include <strong>Nanoleaf Matter Thread BR30/E26 Smart Bulbs</strong>, <strong>Nanoleaf Essentials Matter lightstrips</strong>, <strong>Nanoleaf Matter Wi-Fi A19 Smart Bulbs</strong>, and older <strong>Nanoleaf Essentials HomeKit-over-Thread A19/NL45-style bulbs</strong>. The names are close enough that the protocol label matters more than the marketing family name.</p>
+<h2 id="direct-matter-thread">Path 1: Add a Nanoleaf Matter-over-Thread Light Directly to Home Assistant</h2>
+<p>Use this path when the light clearly supports Matter-over-Thread and Home Assistant should run the automations.</p>
+<ol>
+  <li><strong>Confirm the Matter logo and Thread transport.</strong> Do not use this path for HomeKit-only Essentials lights.</li>
+  <li><strong>Prepare the Thread network.</strong> Home Assistant's Thread docs say your Thread network should be known and preferred before adding Matter-over-Thread devices.</li>
+  <li><strong>Sync Thread credentials to the phone.</strong> Android users use the Home Assistant Companion app's Sync Thread credentials flow. iPhone users use the Thread integration's Send credentials to phone action.</li>
+  <li><strong>Update firmware if practical.</strong> Nanoleaf recommends pairing in the Nanoleaf app first for extra features, and Reddit users repeatedly report firmware updates changing pairing behavior. If you use the app first, know how to reset or share afterward.</li>
+  <li><strong>Add the light through Home Assistant Matter.</strong> Use the Home Assistant Companion app near the light and scan the Matter code.</li>
+  <li><strong>Test simple control before scenes.</strong> Verify on, off, brightness, color temperature, and color before you build automations.</li>
+</ol>
+<p>If pairing fails at the network step, do not assume the bulb is bad. In many Matter-over-Thread failures, the missing piece is phone Thread credentials, an unhealthy border router, IPv6 reachability, or a stale setup state.</p>
+<h2 id="direct-matter-wifi">Path 2: Add a Nanoleaf Matter-over-Wi-Fi Light</h2>
+<p>Use this path when the product page or box says Matter over Wi-Fi. The Nanoleaf Matter Wi-Fi A19 bulb is the clean example.</p>
+<ol>
+  <li><strong>Put the phone on the same local network as Home Assistant.</strong> Avoid guest Wi-Fi and isolated IoT VLANs during commissioning.</li>
+  <li><strong>Make sure the bulb is on a stable 2.4 GHz Wi-Fi network.</strong> A weak access point will feel like a Matter problem even when the Matter stack is fine.</li>
+  <li><strong>Add through Home Assistant Matter.</strong> Scan the Matter code from the Home Assistant Companion app.</li>
+  <li><strong>Keep Nanoleaf firmware current.</strong> Use the Nanoleaf app if the bulb needs updates or vendor-specific lighting effects.</li>
+</ol>
+<p>This is the calmer choice for many homeowners. It avoids Thread credentials and border router selection, but it puts more devices on Wi-Fi. If you plan dozens of bulbs, consider whether smart switches, Zigbee lighting, or a smaller number of Wi-Fi Matter lights would be more reliable.</p>
+<h2 id="homekit-essentials">Path 3: Add Older Essentials Through HomeKit Device</h2>
+<p>Use this path for older Nanoleaf Essentials bulbs or lightstrips that are HomeKit-over-Thread rather than Matter. This is the path behind many old forum and Reddit instructions that say to add the bulb to Apple Home first, remove it without resetting, then pair it with Home Assistant.</p>
+<p>Home Assistant's HomeKit Device docs explain the reason: HomeKit accessories can only be paired to one controller at a time. Removing the accessory from Apple Home can leave it on the Thread network while opening it for Home Assistant pairing. For HomeKit-over-Thread devices, Home Assistant can also provision preferred Thread credentials once the device is paired.</p>
+<ol>
+  <li><strong>Save the HomeKit code.</strong> If you lose it, recovery can be manufacturer-specific.</li>
+  <li><strong>Make sure Home Assistant can see the accessory.</strong> Bluetooth may require a proxy if the hub is far from the bulb.</li>
+  <li><strong>Pair with HomeKit Device.</strong> This is the Home Assistant integration formerly known to many users as HomeKit Controller.</li>
+  <li><strong>Provision Thread if needed.</strong> In the device page, use the Thread controls when Home Assistant offers them.</li>
+  <li><strong>Export back to Apple only if needed.</strong> If the family still wants Siri or Apple Home controls, use HomeKit Bridge from Home Assistant after Home Assistant owns the device.</li>
+</ol>
+<p>This path is workable, but it is not the cleanest path for new purchases in 2026. If you are buying today and want local Home Assistant lighting, buy a product that plainly says Matter-over-Thread, Matter-over-Wi-Fi, Zigbee, Z-Wave, or another Home Assistant-friendly path you actually plan to run.</p>
+<h2 id="nanoleaf-app">What the Nanoleaf App Still Does</h2>
+<p>Matter gets basic light control into Home Assistant. It does not guarantee every Nanoleaf-specific feature appears in Home Assistant. Nanoleaf's own pages separate Nanoleaf app features from smart-home ecosystem features, including richer scenes, custom palettes, Circadian Lighting, screen mirroring, and some firmware-related behavior.</p>
+<p>The practical homeowner answer is to keep the Nanoleaf app available for maintenance, even if Home Assistant runs the daily automations. That does not mean the Nanoleaf cloud should own your lighting logic. It means firmware, effects, and vendor diagnostics may still live in the vendor app.</p>
+<h2 id="thread-border-router">Should Nanoleaf Panels Be Your Thread Border Router?</h2>
+<p>Nanoleaf says Shapes, Lines, and Elements controllers can act as Thread border routers on supported firmware, and Nanoleaf lists Apple, Google, Amazon, and SmartThings hub examples too. That is useful information, but it is not the same as saying every mixed Thread network will be simple.</p>
+<p>Home Assistant Community users have reported unstable mixed Thread environments involving Nanoleaf border routers alongside Google or Alexa border routers. That does not prove every Nanoleaf panel will break every home. It does mean a homeowner should not buy a decorative panel solely to be the Thread foundation for Home Assistant.</p>
+<p>For a new Home Assistant-centered setup, use a deliberate Thread plan: Home Assistant Yellow, Home Assistant Connect ZBT-1 or ZBT-2 configured for Thread, or an existing Apple/Google/Amazon/eero/SmartThings Thread network that you already know is stable. Then add Nanoleaf lights into that plan instead of letting every ecosystem create its own island.</p>
+<h2 id="pairing-order">Which App Should Pair First?</h2>
+<p>For a fresh Home Assistant-first home, pair a Nanoleaf Matter light to Home Assistant first when the Matter and network setup is ready. Share it to Apple Home, Google Home, Alexa, or SmartThings later only if the household needs those controls.</p>
+<p>For an Apple or Google home that already has a stable Thread network, do not reset everything just to change the story. If the Nanoleaf device is Matter, generate a fresh Matter sharing code from the existing app and add it to Home Assistant as an already-paired device. If it is HomeKit-only, follow the HomeKit Device path instead.</p>
+<p>For a light that needs firmware before it behaves, use the Nanoleaf app intentionally, update it, then decide whether to reset, share, or commission into Home Assistant. The app is a tool, not the automation brain.</p>
+<h2 id="troubleshooting">Troubleshooting Checklist</h2>
+<ol>
+  <li><strong>The Nanoleaf integration does not find my bulb.</strong> That is expected for Essentials lights. Use Matter for Matter models or HomeKit Device for HomeKit Essentials.</li>
+  <li><strong>Home Assistant says I need a Thread border router.</strong> Check that your phone has the right Thread credentials. Home Assistant's Thread docs put this before adding Matter-over-Thread devices.</li>
+  <li><strong>The light fails after Bluetooth commissioning.</strong> Look at Thread reachability, IPv6, mDNS, VLANs, and whether the device is Matter-over-Thread or HomeKit-over-Thread.</li>
+  <li><strong>The Nanoleaf app sees the bulb but Home Assistant does not.</strong> Update firmware, verify the protocol, and avoid assuming Bluetooth app control means Matter control is ready.</li>
+  <li><strong>Everything works until another border router appears.</strong> Mixed Thread border routers can still be rough. Reduce variables, avoid duplicate Thread islands, and test one router family at a time.</li>
+  <li><strong>Transitions or effects are not as smooth as the Nanoleaf app.</strong> Matter may expose only basic light entities and settings. Vendor effects can remain app-specific.</li>
+  <li><strong>You are about to factory reset.</strong> Save setup codes, understand which controller currently owns the device, and know whether you are resetting a Matter device or a HomeKit-only device.</li>
+</ol>
+<h2 id="tara-recommendation">Tara Recommendation</h2>
+<p>If you are buying Nanoleaf lights for a Home Assistant home in 2026, choose based on your network:</p>
+<ul>
+  <li><strong>Choose Matter-over-Wi-Fi</strong> when you want the easiest Home Assistant path and only need a modest number of bulbs.</li>
+  <li><strong>Choose Matter-over-Thread</strong> when you already have a deliberate Thread border router plan and want low-power mesh lighting.</li>
+  <li><strong>Keep older HomeKit-over-Thread Essentials</strong> if you own them and can pair them through HomeKit Device, but do not buy old stock for a new local-first setup.</li>
+  <li><strong>Use Nanoleaf panels for panel lighting</strong>, not as the cornerstone of a Home Assistant Thread network unless your exact setup has been tested.</li>
+</ul>
+<p>For automations, keep one source of truth. Let Home Assistant decide when lights turn on, dim, or follow presence. Let family apps and voice assistants be user interfaces. Let the Nanoleaf app handle firmware and special effects when needed.</p>
+<h2 id="related-reading">Related Tara Reading</h2>
+<ul>
+  <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to Share One Matter Device Across Home Assistant, Apple Home, Google Home, Alexa, and SmartThings</a></li>
+  <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread Border Router Should You Use with Home Assistant in 2026?</a></li>
+  <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says "Your Device Requires a Thread Border Router"</a></li>
+  <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Home Assistant HomeKit Device vs HomeKit Bridge: Which Should You Use?</a></li>
+  <li><a href="/blog/eve-matter-thread-home-assistant-without-apple-home/">Can You Use Eve Matter-over-Thread Devices With Home Assistant Without Apple Home?</a></li>
+  <li><a href="/blog/aqara-matter-thread-home-assistant-without-aqara-hub/">Can Aqara Matter-over-Thread Devices Work Without an Aqara Hub?</a></li>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<h3 id="need-apple">Do you need Apple Home to use Nanoleaf Matter lights with Home Assistant?</h3>
+<p>No. Nanoleaf Matter-over-Thread and Matter-over-Wi-Fi lights can be added to Home Assistant through the Matter integration when the Home Assistant Matter setup, phone app, and required network path are ready. Apple Home is only one possible controller.</p>
+<h3 id="nanoleaf-integration">Why does the Home Assistant Nanoleaf integration not find Nanoleaf Essentials bulbs?</h3>
+<p>Home Assistant's Nanoleaf integration supports Nanoleaf Light Panels, Canvas, Shapes, Elements, and Lines, but not Nanoleaf Essentials lights. Use Matter for Matter models, or HomeKit Device for older HomeKit-over-Thread Essentials where supported.</p>
+<h3 id="thread-or-wifi">Should you buy Nanoleaf Matter-over-Thread or Matter-over-Wi-Fi lights?</h3>
+<p>Matter-over-Thread is a good fit when you already have a healthy Thread border router plan. Matter-over-Wi-Fi is simpler if you want to avoid Thread entirely. Either way, check the exact product page and box for Matter plus the transport: Thread or Wi-Fi.</p>
+<h3 id="panel-border-router">Can Nanoleaf Shapes, Lines, or Elements be the Thread border router for Home Assistant?</h3>
+<p>Nanoleaf lists Shapes, Lines, and Elements controllers as Thread border routers on supported firmware, but Home Assistant users report mixed multi-router behavior when Nanoleaf border routers share a Thread environment with other brands. Treat them as possible existing routers, not the default Home Assistant Thread plan.</p>
+<h3 id="already-paired">What if a Nanoleaf light is already paired to Apple Home or Google Home?</h3>
+<p>If it is a Matter device, generate a new Matter sharing code from the existing controller and add it to Home Assistant as an already-paired Matter device. If it is an older HomeKit-only Essentials bulb, use the HomeKit Device path instead of Matter.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Home Assistant sources</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/nanoleaf/" target="_blank" rel="noopener noreferrer">Home Assistant Nanoleaf integration documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Device documentation</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Nanoleaf product sources</h3>
+              <ul>
+                <li><a href="https://nanoleaf.me/en-US/products/essentials/bulbs/" target="_blank" rel="noopener noreferrer">Nanoleaf Essentials bulbs product page</a></li>
+                <li><a href="https://nanoleaf.me/en-US/products/essentials/bulbs/get-started/before-pair-matter/" target="_blank" rel="noopener noreferrer">Nanoleaf Essentials Matter setup guide</a></li>
+                <li><a href="https://nanoleaf.me/en-US/products/essentials/bulbs/br30-or-e26-br-bulb-kit-each/" target="_blank" rel="noopener noreferrer">Nanoleaf Matter Thread BR30/E26 bulb page</a></li>
+                <li><a href="https://nanoleaf.me/en-US/products/essentials/bulbs/matter-wifi-a19-smart-bulb-2-pack/" target="_blank" rel="noopener noreferrer">Nanoleaf Matter Wi-Fi A19 bulb page</a></li>
+                <li><a href="https://nanoleaf.me/en-US/products/essentials/lightstrips/matter-lightstrip-197-starter-kit-5m-each/" target="_blank" rel="noopener noreferrer">Nanoleaf Matter lightstrip page</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/c/configuration/matter-thread/59" target="_blank" rel="noopener noreferrer">Home Assistant Community Matter/Thread category activity</a></li>
+                <li><a href="https://community.home-assistant.io/t/solved-nanoleaf-essentials-nl45-homekit-over-thread-home-assistant/1016532" target="_blank" rel="noopener noreferrer">Home Assistant Community: Nanoleaf Essentials NL45 HomeKit-over-Thread to Home Assistant</a></li>
+                <li><a href="https://community.home-assistant.io/t/2-google-tbr-and-newly-added-nanoleaf-tbr-cause-troubles-on-matter-devices/915890" target="_blank" rel="noopener noreferrer">Home Assistant Community: Nanoleaf border router and mixed Thread caveats</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1gqsm4x/nanoleaf_matter_essentials/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Nanoleaf Matter Essentials pairing experience</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ajfr1w/i_tested_the_new_nanoleaf_matteroverthread/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Nanoleaf Matter-over-Thread downlight with Home Assistant</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Related Tara guides</h3>
+              <ul>
+                <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a></li>
+                <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin sharing</a></li>
+                <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread border router choice</a></li>
+                <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit Device vs HomeKit Bridge</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want Nanoleaf, Matter, Thread, and Home Assistant to behave like one lighting system?</h2>
+          <p>Tara plans the Thread border router, pairing order, local lighting automations, family app handoff, and fallback controls so the lights are not split across three competing apps.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread router choice</a><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit paths</a><a href="/blog/home-assistant-thread-border-router-required/">Thread router error</a><a href="/blog/home-automation-without-cloud/">No-cloud automation</a><a href="/blog/eve-matter-thread-home-assistant-without-apple-home/">Eve Matter Thread</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
