@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Read Home Assistant Matter Server 9's Thread and Wi-Fi Network Map | Tara Guides</title>
+    <meta name="description" content="Open Home Assistant's Matter network map, decode node and line colors, refresh stale data, and troubleshoot offline Thread or Wi-Fi devices safely." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-matter-network-map-offline-devices/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-matter-network-map-offline-devices/" />
+    <meta property="og:title" content="How to Read Home Assistant Matter Server 9's Thread and Wi-Fi Network Map | Tara Guides" />
+    <meta property="og:description" content="Open Home Assistant's Matter network map, decode node and line colors, refresh stale data, and troubleshoot offline Thread or Wi-Fi devices safely." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-network-map-offline-devices/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Read Home Assistant Matter Server 9's Thread and Wi-Fi Network Map | Tara Guides" />
+    <meta name="twitter:description" content="Open Home Assistant's Matter network map, decode node and line colors, refresh stale data, and troubleshoot offline Thread or Wi-Fi devices safely." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-network-map-offline-devices/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.48); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article { max-width: 1160px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede, .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-network-map-offline-devices/#blogposting",
+          "headline": "How to Read Home Assistant Matter Server 9's Thread and Wi-Fi Network Map",
+          "description": "Open Home Assistant's Matter network map, decode node and line colors, refresh stale data, and troubleshoot offline Thread or Wi-Fi devices safely.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-matter-network-map-offline-devices/cover.png",
+          "datePublished": "2026-07-10",
+          "dateModified": "2026-07-10",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-matter-network-map-offline-devices/" },
+          "citation": [
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md",
+            "https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/README.md#network-visualization",
+            "https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/src/pages/network/thread-graph.ts",
+            "https://github.com/matter-js/matterjs-server/issues/334#issuecomment-3991422462",
+            "https://www.reddit.com/r/homeassistant/comments/1udbyot/new_release_of_the_matter_server_in_home_assistant/",
+            "https://www.reddit.com/r/homeassistant/comments/1qxzwxv/decoding_the_new_thread_network_mesh/",
+            "https://community.home-assistant.io/t/the-matter-upgrade-you-ve-been-waiting-for/1014865",
+            "https://community.home-assistant.io/t/understanding-has-matter-server-network-mesh/981648"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-network-map-offline-devices/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "How to Read Home Assistant Matter Server 9's Thread and Wi-Fi Network Map", "item": "https://tarahome.ai/blog/home-assistant-matter-network-map-offline-devices/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-network-map-offline-devices/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Where is the Matter Server 9 network map in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "On Home Assistant OS, open Settings, Apps, Matter Server, Open Web UI, then choose Thread or WiFi. This is the Matter Server dashboard, not the Thread integration or OpenThread Border Router dashboard." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does a red line mean a Matter device is offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. A red device node means Matter Server considers the device offline. A red connection line means the reported link is weak. The device can still be online through that link or another route." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does the Thread map show an Unknown or External device?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It can be a device on another Matter fabric, a HomeKit-only Thread device, a border router, a range extender, or a stale neighbor entry. Apple and Aqara border routers can also appear twice when their radio address changes. Unknown does not automatically mean broken or unsafe." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is a Matter device missing from the map?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A device may be absent if it is not commissioned to this Matter Server, is not classified as a Thread or Wi-Fi Matter device, or uses Thread without Matter. If the node appears but has few or no connections, the product may not expose the needed network diagnostics." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I factory-reset a device because the map looks wrong?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Refresh the selected node and its neighbors, test actual control, check power and the shared network path, and save diagnostics first. The map can contain incomplete or stale information." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter network map</span><span>July 10, 2026</span><span>11 min read</span></p>
+            <h1>How to Read Home Assistant Matter Server 9's Thread and Wi-Fi Network Map</h1>
+            <p class="lede">Open the right dashboard, separate device status from link quality, refresh the evidence, and troubleshoot without turning one odd icon into a house-wide reset.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-matter-network-map-offline-devices/cover.png" alt="Homeowner checking a smart plug and door sensor beside a laptop in a warm living room" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Open the right page:</strong> Go to <strong>Settings &gt; Apps &gt; Matter Server &gt; Open Web UI</strong>, then choose <strong>Thread</strong> or <strong>WiFi</strong>. This is not the Thread integration or the OpenThread Border Router page.</li>
+              <li><strong>Read nodes and lines separately:</strong> A red node means Matter Server considers that device offline. A red line means the reported radio link is weak; the device may still be online.</li>
+              <li><strong>Refresh before changing anything:</strong> Select the device, update its connection data, include online neighbors when useful, and test actual control. The map is a snapshot built from device reports.</li>
+              <li><strong>Avoid unnecessary resets:</strong> Orange Unknown nodes may be other platforms or infrastructure; dashed or missing links may be one-way or stale; a Zzz badge usually means a battery device is sleeping. The main caveat is that this is a troubleshooting clue, not a complete live map of the house.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Open Matter Server, Then Check the Device and Its Link</h2>
+          <p>On Home Assistant OS, open <strong>Settings &gt; Apps &gt; Matter Server</strong>, select <strong>Open Web UI</strong>, and choose <strong>Thread</strong> or <strong>WiFi</strong>. Matter Server is Home Assistant's local controller app for <strong>Matter</strong>, the common smart-home standard. If a tab is missing, confirm that at least one Matter device of that type is already added, or <strong>commissioned</strong>. A Thread border router—the powered bridge between Thread's low-power mesh and the home network—can exist without being a Matter accessory on this map.</p>
+          <p>Start with one rule: <strong>the color of the device shape describes device status, while the color of a connection describes the reported link</strong>. A red device is considered offline. A red connection is weak. Those are not the same diagnosis. Click the affected device, refresh its connection data, test whether Home Assistant can control it, and compare what its online neighbors report before moving or resetting anything.</p>
+          <p>Thread's powered routers choose and change paths automatically. The Wi-Fi view includes commissioned Matter-over-Wi-Fi devices, while link details depend on what each device reports. The map narrows the search; it does not prove that every missing line is a broken route. This guide decodes that evidence. Use Tara's <a href="/blog/extend-thread-range-home-assistant-without-second-network/">Thread range guide</a> for placement changes and the <a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server 9 recovery guide</a> when the app itself will not stay online.</p>
+
+          <div class="callout">
+            <p><strong>Version note:</strong> This guide was checked on July 10, 2026 against the official Matter Server app 9.0.4, which bundles matterjs-server 1.1.7. Later versions may refine labels or refresh behavior, so keep the node-versus-link distinction and check the current legend.</p>
+          </div>
+
+          <h2 id="node-colors">What the Device Colors Mean</h2>
+          <p>The official dashboard calls each device or discovered participant a <strong>node</strong>. That simply means one item on the map. Its main color answers “what does Matter Server know about this item?”</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Node color</th><th>Plain-English meaning</th><th>What to do</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Gray</strong></td><td>Online and commissioned—meaning added—to Home Assistant's Matter fabric. A fabric is the secure controller relationship between Matter Server and the device.</td><td>No action from color alone. Inspect its connections only if control is slow or unreliable.</td></tr>
+                <tr><td><strong>Blue</strong></td><td>The node you selected in the dashboard.</td><td>Use the detail panel to read its role, neighbors, signal, and refresh controls.</td></tr>
+                <tr><td><strong>Red</strong></td><td>Matter Server currently considers the commissioned device offline or not responding.</td><td>Refresh, test the device, check power or battery, and look for a shared failed path before resetting it.</td></tr>
+                <tr><td><strong>Orange</strong></td><td>Unknown or external to Home Assistant's Matter fabric, but seen in Thread neighbor data.</td><td>Do not remove anything. Identify whether it belongs to Apple, Google, HomeKit, a border router, or stale data.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Orange does not mean intruder, defective device, or failed pairing.</strong> It means this Matter controller cannot fully query that node. One Thread mesh can carry devices controlled by several Matter fabrics, plus Thread infrastructure that is not a Matter accessory at all.</p>
+
+          <h2 id="connection-lines">What the Connection Lines Mean</h2>
+          <p>For Thread, line color is based on <strong>Link Quality Indicator (LQI)</strong>, a small radio-quality score. For Wi-Fi, it uses <strong>RSSI</strong>, a signal measurement in decibels; a number closer to zero is stronger. Do not compare a Thread LQI number directly with a Wi-Fi RSSI number.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Map evidence</th><th>Thread meaning</th><th>Wi-Fi meaning</th><th>Homeowner takeaway</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Green line</strong></td><td>Strong reported link, normally LQI 3.</td><td>Reported RSSI stronger than -70 dBm.</td><td>Good signal evidence, but not proof that the device software or controller is healthy.</td></tr>
+                <tr><td><strong>Orange line</strong></td><td>Medium reported link, LQI 2.</td><td>Reported RSSI from -70 to -85 dBm. The current view can also show unknown RSSI as orange and label it <em>RSSI: Unknown</em>.</td><td>Watch for repeated failures before changing placement; an orange Wi-Fi line may mean the signal value is missing.</td></tr>
+                <tr><td><strong>Red line</strong></td><td>Weak reported link, LQI 1.</td><td>Reported RSSI at or below -85 dBm.</td><td>Check placement, interference, and alternate routes. A red line is not the same as a red device.</td></tr>
+                <tr><td><strong>Gray or no usable line</strong></td><td>LQI 0 means stale, dead, or unusable neighbor data. In the current stable graph, some LQI-0 edges are omitted instead of drawn.</td><td>Gray is not a normal Wi-Fi link color in the current stable view. A device that reports no access-point ID may have no access-point edge.</td><td>A missing line alone does not prove the device is offline.</td></tr>
+                <tr><td><strong>Dashed line</strong></td><td>One endpoint is offline or external, or only one side reports a usable link.</td><td>The commissioned Wi-Fi Matter node is offline.</td><td>Refresh the online Thread endpoints or troubleshoot the offline Wi-Fi node; look for a pattern, not one snapshot.</td></tr>
+                <tr><td><strong>Arrow</strong></td><td>Only one side reports seeing the other; the arrow points from the reporting node.</td><td>Not the normal Wi-Fi star view.</td><td>Possible range imbalance or stale table. No arrow usually means both Thread nodes report each other.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Clicking a Thread connection can expose signal and routing details. <strong>Cost</strong> is a cumulative path score: lower is generally preferable, while extra hops or weaker links can raise it. <strong>Bidir</strong> is the quality seen in both directions for router links. One measurement is not a service history, so refresh and compare it with actual device behavior.</p>
+
+          <h2 id="thread-badges">What the Thread Role Badges Mean</h2>
+          <ul>
+            <li><strong>Amber crown — Leader:</strong> the router currently coordinating Thread network decisions. This is not the same as Home Assistant “owning” the device, and another router can become Leader later.</li>
+            <li><strong>Blue swap arrows — Router:</strong> an always-listening Thread node forwarding traffic for other devices.</li>
+            <li><strong>Small dot — End Device or REED:</strong> an end device, or a router-eligible end device that Thread may promote if the mesh needs it.</li>
+            <li><strong>Zzz — Sleepy End Device:</strong> usually a battery sensor, button, or lock whose radio sleeps to save power. Sleeping is normal; it is not an offline warning by itself.</li>
+            <li><strong>No badge:</strong> the role is unspecified or cannot be queried, especially for an external node.</li>
+          </ul>
+          <p>A known Thread border router uses a crown when it is also Leader or a wireless-router icon when it is not. A teal star marks the primary Backbone Border Router, an internal role that coordinates Thread traffic across the home-network backbone. It is separate from the Leader role, and the star alone requires no homeowner action. None of these icons tells you where automations live or whether an Apple, Google, Alexa, SmartThings, or vendor feature needs cloud service.</p>
+
+          <h2 id="symptom-table">Use the Map as Evidence, Then Take One Safe Step</h2>
+          <div class="callout">
+            <p><strong>Protect essential devices first.</strong> For locks, garage doors, alarms, HVAC, leak shutoffs, and plugs powering critical equipment, keep manual control available and use a maintenance window. Do not power-cycle, remove, or reset a safety-relevant device merely to improve the map.</p>
+          </div>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>What you see</th><th>What it may mean</th><th>Safe next step</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>One red node</strong></td><td>That device is not responding to Matter Server; power, battery, device software (firmware), or its current route may be the cause.</td><td>Refresh it, test control, and safely wake or power-cycle only that device if its manual allows. To save a report, open <strong>Settings &gt; Devices &amp; services &gt; Matter</strong>, open the menu, and select <strong>Download diagnostics</strong>.</td></tr>
+                <tr><td><strong>Several red nodes behind the same area or router</strong></td><td>A shared powered Thread router, border router, access point, or network path may be down.</td><td>Check the common powered equipment before touching the battery devices.</td></tr>
+                <tr><td><strong>Online node with a red or one-way link</strong></td><td>The device still works, but one reported path is weak or asymmetric.</td><td>Refresh with connected neighbors, observe whether Thread chooses another route, then change placement only if failures repeat.</td></tr>
+                <tr><td><strong>Zzz device with old-looking data</strong></td><td>A sleepy battery device has not checked in recently.</td><td>Test its real sensor or button action. Wake it according to the manual only if needed; do not expect constant radio traffic.</td></tr>
+                <tr><td><strong>Orange Unknown or External node</strong></td><td>Another Matter fabric, HomeKit-only device, border router, range extender, changing radio address, or stale neighbor entry.</td><td>Refresh and compare network names or known hubs. Do not factory-reset a working ecosystem to make the map prettier.</td></tr>
+                <tr><td><strong>Expected device is missing</strong></td><td>It may not be commissioned to this Matter Server, may not be classified as a Thread or Wi-Fi Matter device, or may use Thread without Matter. Missing diagnostics normally causes sparse connections, not a missing commissioned node.</td><td>In the same Matter Server Web UI, open <strong>Nodes</strong>. Then check <strong>Settings &gt; Devices &amp; services &gt; Matter &gt; Devices</strong> before re-pairing anything.</td></tr>
+                <tr><td><strong>Thread map looks fragmented</strong></td><td>Neighbor reports can be incomplete, stale, or different from an OpenThread Border Router's own topology.</td><td>Refresh online nodes and compare actual failures. A sparse drawing is not proof of separate Thread networks.</td></tr>
+                <tr><td><strong>Every Thread device is red, Wi-Fi Matter works</strong></td><td>The shared Thread border router, Thread mesh, local IPv6 addressing, or multicast discovery traffic is more likely than many simultaneous device failures.</td><td>Check border-router power and the intended Thread network; use Tara's Thread and connectivity guides before resetting devices.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="refresh">How to Refresh Without Fooling Yourself</h2>
+          <ol>
+            <li><strong>Select the affected node.</strong> Save a screenshot and note the time so you can compare rather than rely on memory.</li>
+            <li><strong>Use Update connection data.</strong> For an online Thread device, the dashboard re-reads its neighbor and route tables.</li>
+            <li><strong>Include connected online neighbors when useful.</strong> This asks the nearby reporting devices what they see from their side.</li>
+            <li><strong>For an offline or external node, refresh through online neighbors.</strong> The unavailable node cannot answer directly, so its neighbors are the evidence source.</li>
+            <li><strong>Test the real device.</strong> Trigger the sensor, operate the light, or read its latest timestamp. A map change without a real symptom is not a repair.</li>
+            <li><strong>Make one reversible change.</strong> Restore power to one router, move one plug, or simplify one network rule, then refresh again.</li>
+          </ol>
+          <p>The map is not documented as a continuously polling live monitor. Thread neighbor entries and border-router discovery can linger after a reboot or removal, and some products report slowly. Give the mesh time to settle. Repeatedly resetting devices can erase the evidence and commission them onto the wrong Thread network.</p>
+
+          <h2 id="unknown-devices">Why Apple, Aqara, and Other Hubs Can Appear Twice</h2>
+          <p>An orange external router can be perfectly normal. Matter Server learns about border routers through local <strong>mDNS</strong>, the announcement traffic devices use to advertise themselves, and also sees radio addresses in Thread neighbor tables. Some Apple and Aqara border routers use a stable discovery identifier but a different Thread radio address that can change after reboot. The dashboard may therefore show the known border router and a second external router that is actually the same physical box.</p>
+          <p>The current Matter Server documentation says there is no protocol-level cross-reference that lets the dashboard merge those two identities reliably. A stale radio address can also remain until neighbor tables age it out. Refresh first and compare the Thread network name. Do not delete an Apple Home, reset an Aqara hub, or clear phone credentials solely because the drawing has an extra question mark.</p>
+
+          <h2 id="limitations">What the Matter Network Map Cannot Tell You</h2>
+          <ul>
+            <li><strong>It is not every device in the house.</strong> The Wi-Fi view covers commissioned Matter-over-Wi-Fi devices, not all Wi-Fi clients. The Thread view starts with diagnostics from Matter devices on this server and best-effort border-router discovery.</li>
+            <li><strong>It is not a live packet route.</strong> Thread can choose a different path after the snapshot.</li>
+            <li><strong>It is not a history chart.</strong> One red link does not say how long it was weak or whether it caused yesterday's failure.</li>
+            <li><strong>It is not a radio interference scanner.</strong> Wi-Fi, Bluetooth, Zigbee, walls, appliances, and device firmware can still matter.</li>
+            <li><strong>It is not the Thread network-password page.</strong> Use Home Assistant's Thread integration to inspect networks and their preferred credentials, which are the saved network passwords. The map does not merge separate meshes.</li>
+            <li><strong>It cannot fully inspect another Matter fabric.</strong> A device controlled only by Apple Home, Google Home, Alexa, or another controller may remain external even on the same Thread mesh.</li>
+            <li><strong>It does not identify cloud dependency.</strong> Matter control may be local while voice, remote access, firmware, accounts, or vendor-only features still use a cloud service.</li>
+          </ul>
+
+          <h2 id="local-boundary">The Local-Control Boundary</h2>
+          <p>The map's data collection and ordinary Matter control are local to the home, although you can view the dashboard remotely if you have configured a secure Home Assistant remote-access path. Thread devices talk across the low-power mesh; a <strong>Thread border router</strong> forwards their encrypted traffic onto the home network; Matter Server controls devices over that local path. Supported models and configurations of Apple TV, HomePod, Google Nest, Alexa/Echo, SmartThings, DIRIGERA, or a Home Assistant OpenThread Border Router can be part of the transport story without automatically becoming the automation brain.</p>
+          <p>That distinction is useful when the map shows an external device. It may belong to another controller but still share the same Thread radio mesh. Matter's multi-admin feature can let more than one platform control one accessory, but it does not merge Thread credentials or duplicate the device onto another radio network. Keep important automations in one place so a signal investigation does not get mixed up with duplicate platform routines.</p>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p><strong>Use the map to choose the next check, not to justify the next reset.</strong> First separate node status from link quality. Then refresh the selected device and its online neighbors, test the real device, and look for a shared failure pattern. A single weak link suggests placement or interference. Many Thread failures together suggest the border-router or local-network path. One stubborn model on a healthy map suggests firmware or device behavior.</p>
+          <p>For a supportable home, keep one known Thread network, stable powered routers, simple local networking, saved Matter setup codes, and a short record of which platform commissioned each device. That makes the new map useful evidence instead of another screen full of unexplained icons.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/extend-thread-range-home-assistant-without-second-network/">How to extend Thread range without creating a second network</a></li>
+            <li><a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server 9 stuck on Starting or Offline</a></li>
+            <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Why Matter pairing gets stuck on Checking network connectivity</a></li>
+            <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread border router should you use?</a></li>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How Matter multi-admin works across platforms</a></li>
+            <li><a href="/blog/will-home-assistant-matter-work-without-internet/">Will Home Assistant and Matter work without internet?</a></li>
+          </ul>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="where-map">Where is the Matter Server 9 network map in Home Assistant?</h3>
+          <p>On Home Assistant OS, open <strong>Settings &gt; Apps &gt; Matter Server &gt; Open Web UI</strong>, then choose <strong>Thread</strong> or <strong>WiFi</strong>. Do not open the Thread integration or OpenThread Border Router dashboard by mistake.</p>
+          <h3 id="red-line-offline">Does a red line mean the Matter device is offline?</h3>
+          <p>No. A <strong>red node</strong> means Matter Server considers that device offline. A <strong>red line</strong> means the reported link is weak. The device can remain online through that link or another route.</p>
+          <h3 id="unknown-external">Why does the Thread map show an Unknown or External device?</h3>
+          <p>It can be a device on another Matter fabric, a HomeKit-only Thread device, a border router, a range extender, or a stale neighbor entry. Some Apple and Aqara border routers can appear twice after their radio address changes. Unknown is not automatically a fault.</p>
+          <h3 id="missing-device">Why is my Matter device missing from the map?</h3>
+          <p>It may not be commissioned to this Matter Server, may not be classified as a Thread or Wi-Fi Matter device, or may use Thread without Matter. If the node appears but has few or no connections, the product may not expose the network details the map needs. Check <strong>Nodes</strong> in the Matter Server Web UI and <strong>Settings &gt; Devices &amp; services &gt; Matter &gt; Devices</strong> first.</p>
+          <h3 id="reset-map">Should I factory-reset a device because the map looks wrong?</h3>
+          <p>No. Refresh the node and its neighbors, test actual control, check power and shared infrastructure, and save diagnostics. Reset only when the device-specific recovery path requires it and the Matter setup code is safely recorded.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: the Matter Server 9 upgrade and network visualization</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration and troubleshooting</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread networks and preferred credentials</a></li>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Official Matter Server app changelog</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Matter Server implementation documentation</h3>
+              <ul>
+                <li><a href="https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/README.md#network-visualization" target="_blank" rel="noopener noreferrer">Matter Server 1.1.7 dashboard legend and limitations</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/src/pages/network/thread-graph.ts" target="_blank" rel="noopener noreferrer">Matter Server 1.1.7 Thread graph implementation</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/issues/334#issuecomment-3991422462" target="_blank" rel="noopener noreferrer">Maintainer explanation of Matter and OTBR topology differences</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/issues/631" target="_blank" rel="noopener noreferrer">Apple border-router duplicate identity example</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1udbyot/new_release_of_the_matter_server_in_home_assistant/" target="_blank" rel="noopener noreferrer">r/homeassistant: Matter Server 9 release discussion</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qxzwxv/decoding_the_new_thread_network_mesh/" target="_blank" rel="noopener noreferrer">r/homeassistant: decoding Unknown routers and stale topology</a></li>
+                <li><a href="https://community.home-assistant.io/t/the-matter-upgrade-you-ve-been-waiting-for/1014865" target="_blank" rel="noopener noreferrer">Home Assistant Community: accessing and reading the new map</a></li>
+                <li><a href="https://community.home-assistant.io/t/understanding-has-matter-server-network-mesh/981648" target="_blank" rel="noopener noreferrer">Home Assistant Community: duplicate and question-mark nodes</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Make the network supportable</p>
+          <h2>Want a smart home that is easier to diagnose?</h2>
+          <p>Tara plans the local hub, Thread coverage, network boundaries, setup-code record, backups, and family handoff so one weak device does not become a house-wide mystery.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/extend-thread-range-home-assistant-without-second-network/">Extend Thread range</a><a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server recovery</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread router choice</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
