@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How Do You Extend Thread Range in Home Assistant Without Creating a Second Network? | Tara Guides</title>
+    <meta name="description" content="Extend Home Assistant Thread range with powered devices on the same mesh, verify them in Matter Server 9, and avoid accidental second networks." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/extend-thread-range-home-assistant-without-second-network/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/extend-thread-range-home-assistant-without-second-network/" />
+    <meta property="og:title" content="How Do You Extend Thread Range in Home Assistant Without Creating a Second Network? | Tara Guides" />
+    <meta property="og:description" content="Extend Home Assistant Thread range with powered devices on the same mesh, verify them in Matter Server 9, and avoid accidental second networks." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How Do You Extend Thread Range in Home Assistant Without Creating a Second Network? | Tara Guides" />
+    <meta name="twitter:description" content="Extend Home Assistant Thread range with powered devices on the same mesh, verify them in Matter Server 9, and avoid accidental second networks." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-copy { display: grid; gap: 18px; }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1.12rem, 1.38vw, 1.42rem); font-weight: 850; line-height: 1.2; max-width: 31ch; text-wrap: balance; }
+      .grid { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .hero + section.block { padding-top: clamp(30px, 4vw, 48px); }
+      .list { display: grid; gap: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; margin: 0; padding: 0; }
+      .list li { border-top: 1px solid var(--line); color: var(--ink); font-size: 1.08rem; font-weight: 800; padding: 16px 18px 16px 0; }
+      .card { background: color-mix(in srgb, var(--surface) 84%, transparent); border: 1px solid var(--line); border-radius: 28px; padding: 28px; }
+      .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
+      .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
+      .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 900; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 850; }
+      .faq p { margin-top: 10px; }
+      .related { border-bottom: 1px solid var(--line); padding-bottom: clamp(36px, 4.5vw, 54px); }
+      .related h2 { margin-bottom: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; display: inline-flex; font-weight: 850; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .cta { background: var(--accent); color: #061f18; margin-top: 24px; }
+      .blog-list { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .blog-card { align-content: space-between; background: rgba(255, 250, 240, 0.52); border: 1px solid var(--line); border-radius: 22px; display: grid; gap: 18px; min-height: 340px; overflow: hidden; padding: 0; text-decoration: none; }
+      .blog-card:hover { background: rgba(65, 168, 103, 0.1); border-color: rgba(65, 168, 103, 0.42); }
+      .blog-card span, .blog-card > p { padding-left: 24px; padding-right: 24px; }
+      .blog-card > p { padding-bottom: 24px; }
+      .blog-card-image { aspect-ratio: 16 / 9; border-bottom: 1px solid var(--line); margin: 0; overflow: hidden; }
+      .blog-card h2 { font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.05; margin: 0 0 14px; }
+      .blog-card p { font-size: 0.98rem; line-height: 1.35; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article .lede { font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-child { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body a { text-decoration-color: rgba(65, 168, 103, 0.62); }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.35; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .source-grid a { text-decoration-color: rgba(65, 168, 103, 0.55); }
+      .legal { max-width: 860px; }
+      .legal p, .legal li { color: var(--muted); font-size: 1.06rem; font-weight: 650; }
+      .legal section { border-top: 1px solid var(--line); padding: 24px 0; }
+      .legal ul { margin: 10px 0 0; padding-left: 1.2rem; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
+
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      @media (max-width: 520px) { .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/extend-thread-range-home-assistant-without-second-network/#blogposting",
+      "headline": "How Do You Extend Thread Range in Home Assistant Without Creating a Second Network?",
+      "description": "Extend Home Assistant Thread range with powered devices on the same mesh, verify them in Matter Server 9, and avoid accidental second networks.",
+      "image": "https://tarahome.ai/assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover.png",
+      "datePublished": "2026-07-09",
+      "dateModified": "2026-07-09",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/extend-thread-range-home-assistant-without-second-network/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://threadgroup.org/Newsroom/Blog/what-is-a-thread-border-router-and-how-is-it-different-from-a-hub-or-a-bridge",
+        "https://threadgroup.org/Newsroom/Blog/Multiple-Thread-Networks-and-The-Seamless-Interconnectivity-of-IP",
+        "https://openthread.io/guides/thread-primer/node-roles-and-types",
+        "https://openthread.io/guides/thread-primer/router-selection",
+        "https://www.ikea.com/us/en/p/grillplats-plug-smart-70624740/",
+        "https://csa-iot.org/csa_product/grillplats-plug-20/",
+        "https://www.reddit.com/r/homeassistant/comments/1up0o3k/which_devices_to_extend_thread_matter_coverage/",
+        "https://www.reddit.com/r/homeassistant/comments/1u38gcd/ikea_grillplats_matter_over_thread/",
+        "https://community.home-assistant.io/t/help-with-thread-network-range-and-setup/984201",
+        "https://community.home-assistant.io/t/add-a-second-border-router-to-a-existing-thread-network/736863/11",
+        "https://community.home-assistant.io/t/matter-devices-suddenly-unavailable/1006018",
+        "https://github.com/home-assistant/core/issues/134231"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/extend-thread-range-home-assistant-without-second-network/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How Do You Extend Thread Range in Home Assistant Without Creating a Second Network?",
+          "item": "https://tarahome.ai/blog/extend-thread-range-home-assistant-without-second-network/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/extend-thread-range-home-assistant-without-second-network/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can battery-powered Thread sensors extend the mesh?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Battery sensors, buttons, and most locks are sleepy end devices. They wake briefly to communicate with a parent router and do not forward traffic for other devices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will a Nest Hub, HomePod, Echo, Apple TV, or DIRIGERA extend the Home Assistant Thread network?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only if that border router joins the same Thread network and uses the same network password, called its credentials. If it creates a separate Thread network, it does not extend the radio mesh used by devices on the Home Assistant network."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Matter multi-admin merge two Thread networks?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Matter multi-admin shares control of a device between controllers such as Home Assistant and Apple Home. It does not copy the device onto another Thread mesh or merge Thread network passwords."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is an always-powered Thread plug guaranteed to become a router?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. A router-eligible device can be promoted or downgraded as Thread reorganizes itself. Add the device to the existing mesh, keep it powered, and verify its actual role in the Matter Server network visualization."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I factory-reset offline Matter-over-Thread devices first?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Usually no. Update the Matter Server, inspect the mesh, confirm the correct Thread network, check powered routers, IPv6, multicast, and channel interference, and save the Matter setup code before considering a reset."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant Thread Range</span><span>July 9, 2026</span><span>11 min read</span></p>
+            <h1>How Do You Extend Thread Range in Home Assistant Without Creating a Second Network?</h1>
+            <p class="lede">Extend the Thread mesh you already have with powered routing devices. A second border router helps only when it joins the same Thread network password; a separate mesh does not extend the first one.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover.png" alt="Homeowner adding an always-powered Thread smart plug midway through a warm home" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>What to do:</strong> Add one or more always-powered Matter-over-Thread plugs or bulbs to the Thread network that already serves the weak area, then confirm their routing role in the Matter Server map.</li>
+    <li><strong>What will not help:</strong> Battery sensors and buttons do not repeat Thread, and Matter sharing does not merge two Thread networks.</li>
+    <li><strong>Before buying another hub:</strong> A HomePod, Nest Hub, Echo, Apple TV, or DIRIGERA extends your existing mesh only if it uses the same Thread network password, called its credentials.</li>
+    <li><strong>What to avoid:</strong> Do not make a wall-switched bulb the only path to a lock, leak sensor, or alarm, and do not factory-reset devices before saving their Matter setup codes.</li>
+    <li><strong>Main caveat:</strong> Weak radio coverage is only one cause of an unavailable device; device software, local-network settings, radio interference, and Matter Server problems can look the same.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Short Answer: Extend the Mesh You Already Have</h2>
+<p><strong>Thread</strong> is the low-power local radio network used by many smart-home sensors, and its <strong>mesh</strong> lets powered devices relay messages for one another. <strong>Matter</strong> is the common smart-home control standard that many newer Thread devices use. To extend Thread range in Home Assistant, add an <strong>always-powered Thread device</strong>—usually a Matter-over-Thread plug or bulb—between the healthy part of the mesh and the room with weak coverage. Pair it to the <strong>same Thread network</strong>, leave it powered, and use the Matter Server map to check whether it is routing or is eligible to become a router.</p>
+<p>Do not start by buying another smart speaker or hub. A <strong>Thread border router</strong> connects a Thread mesh to your normal Ethernet or Wi-Fi network. It can add coverage and resilience only when it joins the same Thread network and shares the same password-like credentials. If a Nest Hub, HomePod, Echo, Apple TV, DIRIGERA, or Home Assistant radio creates a second network, that second mesh does not strengthen the first one.</p>
+<p>Battery sensors, remotes, and most locks cannot repeat traffic because they sleep to save power. Matter multi-admin can share control of one device between Home Assistant, Apple Home, Google Home, Alexa, or SmartThings, but it does not merge their Thread networks. The practical fix is one known mesh, enough stable powered routing devices, and evidence from the map before you reset anything.</p>
+<div class="callout">
+  <p><strong>Tara's rule:</strong> fill a real gap on one Thread mesh. Do not add a second ecosystem network just because another box has a Thread logo.</p>
+</div>
+<h2 id="why-this-question-is-current">Why This Question Is Active Right Now</h2>
+<p>On <strong>July 6, 2026</strong>, an r/homeassistant user asked the exact question behind this guide: would a Google Nest hub or Echo Show extend an existing Home Assistant Thread network, or start another one? The replies quickly exposed the confusion between a border router, a normal Thread router, a sleepy battery device, and a separate vendor-created mesh.</p>
+<p>The same demand appears in Home Assistant Community posts about reaching sensors outside the house, improving range across multiple floors, and adding a second border router without rebuilding the network. IKEA's new Matter-over-Thread range made the question especially practical. Homeowners now have inexpensive plugs, bulbs, buttons, and sensors, but the boxes do not explain which devices strengthen the mesh and which only use it.</p>
+<p>Home Assistant also changed the troubleshooting workflow on <strong>June 23, 2026</strong>. Matter Server app 9.0 moved Home Assistant to the matter.js server, improved recovery, and added a network visualization that shows Thread leaders, routers, sleepy devices, hops, and connection quality. That means the best first step is now to look at the mesh rather than guess.</p>
+<h2 id="plain-english-roles">Border Router, Mesh Router, and Battery Sensor in Plain English</h2>
+<p><strong>Thread</strong> is a low-power local mesh network. <strong>Matter</strong> is a control standard that can run over Thread, Wi-Fi, or Ethernet. <strong>Local control</strong> means commands can stay inside the house instead of waiting for a vendor cloud service. These layers are related, but they do different jobs.</p>
+<p><strong>Official support boundary:</strong> Home Assistant officially documents its own OpenThread Border Router and the credential-import path for existing Apple or Google Thread networks. The Thread Group documents powered mesh extenders and the difference between shared and separate credentials. IKEA's official page confirms that GRILLPLATS uses Matter over Thread, but it does not certify a Home Assistant-specific routing result. The placement and reliability examples from Reddit and the Home Assistant forum remain community experience, not product certification.</p>
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Thing in the house</th>
+        <th>What it actually does</th>
+        <th>Does it extend this Thread mesh?</th>
+        <th>Local, cloud, Matter, and Apple Home path</th>
+        <th>Main caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Powered Thread device</strong><br />Plug or bulb on the existing network</td>
+        <td>Can forward Thread traffic inside the mesh. Thread may show it as a Router, Routing End Device, or router-eligible device.</td>
+        <td><strong>Yes, when it is on the same network and Thread assigns it a routing role.</strong></td>
+        <td>Routing is local. When Home Assistant supports the device's Matter type, it can control it locally and share it to Apple Home or another Matter controller separately.</td>
+        <td>Its role can change. A bulb loses power when someone flips the wall switch.</td>
+      </tr>
+      <tr>
+        <td><strong>Thread border router on the same credentials</strong><br />Home Assistant OTBR, Apple, Google, or another compatible path</td>
+        <td>Connects that Thread mesh to Ethernet or Wi-Fi and provides another way out of the mesh.</td>
+        <td><strong>Yes.</strong> Multiple border routers on one network can improve coverage and remove a single point of failure.</td>
+        <td>Border routing is local. Voice, remote access, account setup, and vendor app features may still use Apple, Google, Amazon, IKEA, or another cloud.</td>
+        <td>The onboarding method is ecosystem-specific. Verify that it joined the same network instead of assuming.</td>
+      </tr>
+      <tr>
+        <td><strong>Thread border router on different credentials</strong></td>
+        <td>Creates or serves another Thread mesh in the same house.</td>
+        <td><strong>No.</strong> Its radio does not repeat packets for devices on the first mesh.</td>
+        <td>Matter controllers may still reach devices over the home's IP network, so control can work even while the radio meshes remain separate.</td>
+        <td>Two working meshes can look like one system in an app, which hides the coverage problem.</td>
+      </tr>
+      <tr>
+        <td><strong>Battery sensor, button, or most locks</strong></td>
+        <td>Uses a parent router, sleeps, wakes briefly, and reports state.</td>
+        <td><strong>No.</strong> A sleepy end device does not forward traffic for neighbors.</td>
+        <td>The device can still be local and Matter-controlled; battery saving is the reason it does not repeat.</td>
+        <td>Adding more battery devices can increase demand without adding routing capacity.</td>
+      </tr>
+      <tr>
+        <td><strong>Matter multi-admin sharing, including Apple Home</strong></td>
+        <td>Adds another controller relationship so more than one app can control the device.</td>
+        <td><strong>No.</strong> It shares control, not Thread radio credentials.</td>
+        <td>Useful for Home Assistant plus Apple Home, Google Home, Alexa, or SmartThings. Each platform's remote and voice features may use its cloud.</td>
+        <td>Sharing a device is not the same as moving it to another Thread network.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<h2 id="step-by-step">The Setup Order That Avoids a Second Network</h2>
+<h3 id="update-first">1. Update Home Assistant and Matter Server first</h3>
+<p>Install current Home Assistant updates and update the <strong>Matter Server app to 9.0 or later</strong>. Home Assistant says the 9.0 server migrates existing data automatically, reconnects devices faster, and adds the network view used in the next steps. Fixing range with an older server means giving up the clearest diagnostic evidence now available.</p>
+<h3 id="identify-network">2. Identify the Thread network you are extending</h3>
+<p>In Home Assistant, open <strong>Settings &gt; Devices &amp; services &gt; Thread</strong>, then select <strong>Configure</strong>. Write down the preferred network and the border routers grouped under it. Home Assistant can discover another vendor's network without knowing its credentials, so seeing a name on this page does not prove Home Assistant can join or commission devices onto it.</p>
+<p>If Apple or Google already owns the stable network, follow Home Assistant's documented credential-import flow before adding a Home Assistant <strong>OpenThread Border Router (OTBR)</strong>. If Home Assistant already owns the network, sync its credentials to the phone used for <strong>commissioning</strong>, which simply means adding a device. Do not press buttons until you can name the one network you intend to strengthen.</p>
+<h3 id="open-map">3. Open the Matter Server network visualization</h3>
+<p>Go to <strong>Settings &gt; Apps &gt; Matter Server &gt; Open Web UI</strong>, then open the network visualization. The exact labels can move between versions, but the useful evidence is consistent: device role, parent-child relationships, hops, and link colors. Home Assistant describes green as strong, orange as medium, red as weak, and gray as no signal.</p>
+<p>The map is not a perfect survey tool. It is built from commissioned Matter devices, and Home Assistant says border routers are shown where possible. A HomeKit-only Thread device or an ecosystem-owned node may not appear with every detail. Use the map as evidence, not as a complete floor plan.</p>
+<h3 id="place-powered-device">4. Put a powered device midway through the real gap</h3>
+<p>Place an always-powered Matter-over-Thread plug or bulb where it can hear both the healthy mesh and the weak room. A hallway outlet between floors is often more useful than another device beside the existing border router. Keep it away from metal cabinets, dense masonry, large appliances, and a crowded equipment rack when possible.</p>
+<p>A plug can be good infrastructure because nobody needs to switch it off. A bulb can also route, but it is a poor critical link if a wall switch removes power. Do not use a decorative lamp that guests unplug as the only route to a lock, leak detector, freeze sensor, or alarm-related device.</p>
+<h3 id="let-thread-choose">5. Let Thread choose the routing role, then verify</h3>
+<p>Thread organizes itself. OpenThread documents that a router-eligible device can promote itself to Router when coverage or path diversity needs it, and can later downgrade when the mesh no longer needs that role. Adding one plug does not let you manually assign every child to it.</p>
+<p>Give the mesh time to settle, reopen the map, and confirm the new device's actual role and links. The goal is not to collect the most router icons. The goal is a connected set of stable routes with more than one reasonable path through the weak area.</p>
+<h3 id="second-border-router">6. Add another border router only when it can join the same network</h3>
+<p>A second border router can be valuable in a large or multi-floor home, but only if it uses the same Thread credentials. Home Assistant's current Thread docs provide a supported path for adding its OTBR to an existing Apple or Google network: import that network's credentials, make it preferred, and then enable the Home Assistant border router.</p>
+<p>Do not assume that buying another Nest Hub, HomePod, Echo, Apple TV, or DIRIGERA will automatically join the network Home Assistant already uses. Ecosystem support and Thread version vary. If the vendor does not document credential sharing or joining, treat the new box as a likely separate network until the Thread page proves otherwise.</p>
+<h2 id="current-example">A Current Concrete Example: IKEA GRILLPLATS</h2>
+<p>IKEA's current US page identifies <strong>GRILLPLATS plug, article 706.247.40</strong>, as a <strong>Matter-over-Thread</strong> smart plug compatible with Amazon, Apple, Google, Homey, and Samsung systems. That makes it a timely example of the right category: an always-powered Thread device that can sit between rooms while also functioning as a controllable plug.</p>
+<p>That is not a promise that every GRILLPLATS will immediately become the parent of a distant sensor, nor is IKEA's page an official Home Assistant support listing. IKEA documents the protocol and named ecosystems; Thread decides the live routing role, while Home Assistant support depends on the Matter device type and exposed features. Pair it to the intended network, keep it powered, and verify the role in the Matter Server map. Also check the electrical rating for the appliance you connect. A spare plug may be left unloaded if its only job is mesh placement.</p>
+<p>This guide is not a product ranking. Other always-powered Matter-over-Thread plugs and bulbs can serve the same architectural role. The important facts are the exact transport, the network it joins, whether it stays powered, and what the map shows after installation.</p>
+<h2 id="what-does-not-work">Five Things That Do Not Extend the Existing Mesh</h2>
+<ul>
+  <li><strong>Adding more battery sensors:</strong> they add sleepy end devices, not repeaters.</li>
+  <li><strong>Sharing a Matter device to another app:</strong> multi-admin adds another controller relationship; it does not merge Thread networks.</li>
+  <li><strong>Buying a Wi-Fi extender:</strong> better Wi-Fi may help phones or a Wi-Fi-connected border router, but it does not repeat Thread's separate low-power radio signal.</li>
+  <li><strong>Adding a border router that creates its own credentials:</strong> it serves a separate mesh, even if Home Assistant can still control devices on both through IP.</li>
+  <li><strong>Repeated factory resets:</strong> they erase useful state and can move a device onto the wrong phone-preferred network without fixing the original gap.</li>
+</ul>
+<h2 id="when-more-routing-will-not-help">When More Powered Devices Will Not Fix It</h2>
+<p>An unavailable Matter-over-Thread device does not automatically mean weak radio coverage. Home Assistant Community reports in 2026 show several different patterns: one powered router dropping before its sleepy children, devices with apparently strong alternate routes failing to reattach, and otherwise healthy homes disrupted by <strong>IPv6</strong> (the local network addressing Thread uses), <strong>multicast</strong> (local discovery traffic), separate network segments called VLANs, or a broken device-to-controller connection. These are demand signals and diagnostic examples, not proof that any one brand is universally defective.</p>
+<ul>
+  <li><strong>Several children fail right after one powered device:</strong> inspect that parent router and its <strong>firmware</strong>, meaning the software stored on the device, before buying more.</li>
+  <li><strong>Every Thread device disappears together:</strong> inspect the border router, Matter Server, host networking, and local IPv6 path.</li>
+  <li><strong>The map is strong but one model stays offline:</strong> suspect device firmware or reattachment behavior and preserve diagnostics for the vendor.</li>
+  <li><strong>OTBR logs repeatedly show ChannelAccessFailure:</strong> follow Home Assistant's channel-interference guidance. Thread shares 2.4 GHz airspace with Wi-Fi and Bluetooth.</li>
+  <li><strong>NoAck appears for a sleepy battery device:</strong> occasional messages can be normal because the radio sleeps. The same pattern from an always-powered device deserves investigation.</li>
+</ul>
+<p>Home Assistant's Thread docs currently explain channel changes and note that channels 25 or 26 can reduce Wi-Fi overlap in some homes. Do not change channels casually on a working network. Read the current procedure, allow the scheduled change to finish, and avoid restarting the border router during the transition.</p>
+<p>A long-running Home Assistant Core issue about Matter-over-Thread devices dropping off is useful as a historical symptom record, but it is closed as not planned and mixes several causes. Do not cite it as proof of a current Home Assistant bug. Capture Matter diagnostics, the mesh view, timestamps, and the affected parent-child relationships before opening a new report.</p>
+<h2 id="local-cloud-and-sharing">What Stays Local, and What May Still Need Cloud</h2>
+<p>The Thread mesh and border-router forwarding happen locally in the home. Direct Matter control from Home Assistant can also stay local. If the internet goes down, those local paths can continue as long as Home Assistant, the home network, its IPv6 addressing, the border router, and the device remain healthy.</p>
+<p>Apple Home, Google Home, Alexa, SmartThings, IKEA Home smart, and vendor apps can add useful voice, remote access, firmware, account, or guided setup features. Those extras may depend on the vendor's cloud even when the underlying Thread packets stay local. Separate the question <em>does the mesh route locally?</em> from <em>does this app feature work without internet?</em></p>
+<p>Matter sharing is also separate. Use multi-admin when the family wants the same device in Home Assistant and Apple Home or another platform. Keep serious automations in one place to avoid duplicate triggers, but do not expect the sharing flow to strengthen the radio mesh.</p>
+<p><strong>HomeKit-over-Thread is a different control path.</strong> A HomeKit-only Thread accessory normally enters Home Assistant through the HomeKit Device integration, while a Matter-over-Thread accessory uses the Matter integration. The Thread logo describes the radio network; it does not turn a HomeKit-only product into a Matter product.</p>
+<h2 id="safety">Safety and Recovery Boundaries</h2>
+<ul>
+  <li>Use a smart plug only within its documented voltage, current, motor, and environmental ratings. Do not remove GFCI protection or improvise outdoor electrical work for better signal.</li>
+  <li>Do not make a movable plug or switched bulb the only route for a door lock, water leak alert, freeze alarm, smoke/CO system, or shutoff automation.</li>
+  <li>Before resetting a Matter device, photograph and securely store its QR code and numeric setup code. Home Assistant warns that commissioning after a reset is impossible without one of them.</li>
+  <li>Test manual control and the failure behavior of safety-relevant devices. Thread coverage is not a substitute for a device's local alarm, physical key, or manual shutoff.</li>
+</ul>
+<h2 id="tara-recommendation">Tara's Recommendation</h2>
+<p>For a calm Home Assistant Thread install, use one preferred network, place stable powered Thread devices through the house before relying on distant battery sensors, and keep a record of which platform owns the credentials. Use the Matter Server map after every meaningful change.</p>
+<p>Add a second border router only when its same-network path is documented and verifiable. Use Apple Home, Google Home, Alexa, or SmartThings for family-facing control when useful, while keeping important automations in one local brain. That design is easier to diagnose, easier to hand off, and less likely to turn every new IKEA sensor into a fresh networking experiment.</p>
+<h2 id="related-reading">Related Tara Reading</h2>
+<ul>
+  <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread border router should you use with Home Assistant?</a></li>
+  <li><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">How to pair IKEA Matter-over-Thread devices without DIRIGERA or cloud</a></li>
+  <li><a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Do you still need IKEA DIRIGERA with Home Assistant?</a></li>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to share one Matter device across multiple platforms</a></li>
+  <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant says a device requires a Thread border router</a></li>
+  <li><a href="/blog/will-home-assistant-matter-work-without-internet/">Will Home Assistant and Matter work without internet?</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant devices use the main LAN or an IoT VLAN?</a></li>
+</ul>
+<h2 id="faq">FAQ</h2>
+<h3 id="battery-extend">Can battery-powered Thread sensors extend the mesh?</h3>
+<p>No. Battery sensors, buttons, and most locks are sleepy end devices. They wake briefly to communicate with one parent router and do not forward traffic for other devices.</p>
+<h3 id="ecosystem-border-router">Will a Nest Hub, HomePod, Echo, Apple TV, or DIRIGERA extend the Home Assistant Thread network?</h3>
+<p>Only if it joins the same Thread network and uses the same credentials. If it creates a separate mesh, it does not extend the radio path used by devices on Home Assistant's network.</p>
+<h3 id="multi-admin-merge">Does Matter multi-admin merge two Thread networks?</h3>
+<p>No. Multi-admin shares control of one Matter device between controllers. It does not merge Thread credentials or move the device onto a second radio mesh.</p>
+<h3 id="plug-guaranteed-router">Is an always-powered Thread plug guaranteed to become a router?</h3>
+<p>No. A router-eligible device can be promoted or downgraded as Thread reorganizes itself. Add it to the existing mesh, keep it powered, and verify the actual role and links in the Matter Server visualization.</p>
+<h3 id="reset-first">Should I factory-reset offline Matter-over-Thread devices first?</h3>
+<p>Usually no. Update Matter Server, inspect the mesh, confirm the right network, check powered routers, IPv6, multicast, and channel interference, and save the Matter setup code before considering a reset.</p></div>
+        <section class="block source-list">
+          <p class="kicker">Sources and community references</p>
+          <h2>References used.</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Home Assistant sources</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread documentation</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9.0 and the new network view</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Thread and product sources</h3>
+              <ul>
+                <li><a href="https://threadgroup.org/Newsroom/Blog/what-is-a-thread-border-router-and-how-is-it-different-from-a-hub-or-a-bridge" target="_blank" rel="noopener noreferrer">Thread Group: border routers and powered mesh extenders</a></li>
+                <li><a href="https://threadgroup.org/Newsroom/Blog/Multiple-Thread-Networks-and-The-Seamless-Interconnectivity-of-IP" target="_blank" rel="noopener noreferrer">Thread Group: same credentials versus separate meshes</a></li>
+                <li><a href="https://openthread.io/guides/thread-primer/node-roles-and-types" target="_blank" rel="noopener noreferrer">OpenThread: router, end-device, and sleepy-device roles</a></li>
+                <li><a href="https://openthread.io/guides/thread-primer/router-selection" target="_blank" rel="noopener noreferrer">OpenThread: dynamic router selection</a></li>
+                <li><a href="https://www.ikea.com/us/en/p/grillplats-plug-smart-70624740/" target="_blank" rel="noopener noreferrer">IKEA GRILLPLATS official product page</a></li>
+                <li><a href="https://csa-iot.org/csa_product/grillplats-plug-20/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: GRILLPLATS certification</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community demand signals</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1up0o3k/which_devices_to_extend_thread_matter_coverage/" target="_blank" rel="noopener noreferrer">Reddit: which devices extend Thread coverage?</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1u38gcd/ikea_grillplats_matter_over_thread/" target="_blank" rel="noopener noreferrer">Reddit: IKEA GRILLPLATS for distant Thread sensors</a></li>
+                <li><a href="https://community.home-assistant.io/t/help-with-thread-network-range-and-setup/984201" target="_blank" rel="noopener noreferrer">Home Assistant Community: Thread range and setup</a></li>
+                <li><a href="https://community.home-assistant.io/t/add-a-second-border-router-to-a-existing-thread-network/736863/11" target="_blank" rel="noopener noreferrer">Home Assistant Community: adding a border router to an existing network</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-devices-suddenly-unavailable/1006018" target="_blank" rel="noopener noreferrer">Home Assistant Community: grouped Matter-over-Thread drop-offs</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/134231" target="_blank" rel="noopener noreferrer">GitHub: historical Matter-over-Thread drop-off reports</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want one Thread mesh that reaches the whole house?</h2>
+          <p>Tara packages the hub, radios, powered routing plan, local defaults, setup-code record, and family handoff so range problems stay diagnosable.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread router choice</a><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">IKEA Matter &amp; Thread</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/home-assistant-thread-border-router-required/">Thread router error</a><a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
