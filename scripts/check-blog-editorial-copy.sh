@@ -1,50 +1,44 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$repo"
+REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+declare -a files=()
 
-declare -a pages=()
-if (( $# > 0 )); then
-  pages=("$@")
-else
-  while IFS= read -r page; do
-    [[ -n "$page" ]] && pages+=("$page")
-  done < <(
-    {
-      git diff --name-only --diff-filter=ACMR HEAD -- 'blog/*/index.html'
-      git ls-files --others --exclude-standard -- 'blog/*/index.html'
-    } | sort -u
-  )
-fi
-
-if (( ${#pages[@]} == 0 )); then
-  echo "Editorial copy check: no changed article pages to check."
-  exit 0
-fi
-
-failed=0
-for page in "${pages[@]}"; do
-  [[ -f "$page" ]] || continue
-
-  if ! grep -Fq '<p class="kicker">Sources</p>' "$page"; then
-    echo "Editorial copy FAIL: $page must use the source kicker 'Sources'." >&2
-    failed=1
-  fi
-
-  if ! grep -Fq '<h2>Documentation and further reading</h2>' "$page"; then
-    echo "Editorial copy FAIL: $page must use the source heading 'Documentation and further reading'." >&2
-    failed=1
-  fi
-
-  if grep -Eiq 'Sources and community references|References used|Demand came from|research notes|source dump|<h[1-6][^>]*>[^<]*demand' "$page"; then
-    echo "Editorial copy FAIL: $page exposes internal research/source-workflow language." >&2
-    failed=1
+for section in blog guides; do
+  if [[ -d "$REPO/$section" ]]; then
+    while IFS= read -r -d '' file; do
+      files+=("$file")
+    done < <(find "$REPO/$section" -mindepth 2 -maxdepth 2 -name index.html -print0)
+  elif [[ -d "$REPO/public/$section" ]]; then
+    while IFS= read -r -d '' file; do
+      files+=("$file")
+    done < <(find "$REPO/public/$section" -mindepth 2 -maxdepth 2 -name index.html -print0)
   fi
 done
 
-if (( failed )); then
+if ((${#files[@]} == 0)); then
+  echo "Editorial copy check FAIL: no article or guide pages found." >&2
   exit 1
 fi
 
-echo "Editorial copy PASS: ${#pages[@]} changed article page(s) use customer-facing source labels."
+status=0
+for file in "${files[@]}"; do
+  if rg -n -i 'Sources and community references|References used\.|<h3>[^<]*demand[^<]*</h3>|Demand came from|research notes|source dump' "$file"; then
+    echo "Editorial copy check FAIL: internal workflow language appears in ${file#$REPO/}." >&2
+    status=1
+  fi
+
+  if rg -q 'class="block source-list"' "$file"; then
+    if ! rg -q '<p class="kicker">Sources</p>' "$file" ||
+       ! rg -q '<h2>Documentation and further reading</h2>' "$file"; then
+      echo "Editorial copy check FAIL: source labels are not standardized in ${file#$REPO/}." >&2
+      status=1
+    fi
+  fi
+done
+
+if ((status != 0)); then
+  exit 1
+fi
+
+echo "Editorial copy check PASS: ${#files[@]} article and guide pages checked."
