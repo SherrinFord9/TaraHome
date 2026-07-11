@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>What Thread Channel Should You Use With Home Assistant? | Tara Guides</title>
+    <meta name="description" content="Choose Thread channel 25 or 26 in Home Assistant, change it safely, avoid needless resets, and know when Apple or Google owns the setting." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-thread-channel-change-without-repairing/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-thread-channel-change-without-repairing/" />
+    <meta property="og:title" content="What Thread Channel Should You Use With Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Leave a stable Thread mesh alone. When interference is real, use Home Assistant's coordinated channel change and normally keep every device paired." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-thread-channel-change-without-repairing/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="What Thread Channel Should You Use With Home Assistant? | Tara Guides" />
+    <meta name="twitter:description" content="Leave a stable Thread mesh alone. When interference is real, use Home Assistant's coordinated channel change and normally keep every device paired." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-thread-channel-change-without-repairing/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-thread-channel-change-without-repairing/#blogposting",
+      "headline": "What Thread Channel Should You Use With Home Assistant—and Can You Change It Without Re-Pairing?",
+      "description": "How to choose Thread channel 25 or 26, confirm radio interference, use Home Assistant's coordinated channel change, and keep Matter-over-Thread devices paired.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-thread-channel-change-without-repairing/cover.png",
+      "datePublished": "2026-07-11",
+      "dateModified": "2026-07-11",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-thread-channel-change-without-repairing/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://openthread.io/reference/group/api-channel-manager",
+        "https://openthread.io/reference/cli/concepts/dataset",
+        "https://docs.silabs.com/openthread/3.0.1/multiprotocol-wifi-coexistence-fundamentals/02-wi-fi-impact-on-bluetooth-and-802-15-4-radios",
+        "https://support.apple.com/en-us/102557",
+        "https://support.google.com/googlehome/answer/13127223?hl=en-GB",
+        "https://developer.amazon.com/en-GB/docs/alexa/smarthome/matter-support.html",
+        "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+        "https://www.reddit.com/r/homeassistant/comments/1r4svtp/what_fixed_the_new_matter_ikea_devices_for_me/",
+        "https://www.reddit.com/r/homeassistant/comments/1q6u4t5/yes_another_matter_over_thread_question_channels/",
+        "https://community.home-assistant.io/t/channel-access-failure/772589",
+        "https://community.home-assistant.io/t/how-to-change-thread-channel-von-ha-2026-2/986613",
+        "https://github.com/home-assistant/frontend/pull/51608"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-thread-channel-change-without-repairing/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Home Assistant Thread channel", "item": "https://tarahome.ai/blog/home-assistant-thread-channel-change-without-repairing/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-thread-channel-change-without-repairing/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is Thread channel 25 or 26 better for Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Leave a stable channel alone. When Wi-Fi interference is the proven problem, Home Assistant says channel 26 is least likely to overlap Wi-Fi and channel 25 can also help. Channel 25 may fit a particular Zigbee and Wi-Fi plan better, while some radios can use less transmit power on the upper channels." }
+        },
+        {
+          "@type": "Question",
+          "name": "Will changing the Thread channel make me re-pair every device?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Normally no when you use Home Assistant's supported Thread setting. Home Assistant schedules a coordinated switch about five minutes later so devices learn the new channel before the move. Expect a temporary outage and verify every device afterward." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does nothing happen after I change the Thread channel?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The quiet wait is intentional. Home Assistant keeps the mesh on the current channel while it announces a pending change, then switches roughly five minutes later. Keep the border router powered and do not restart or submit another change during that window." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant change the Thread channel on Apple TV, HomePod, or Google Nest?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Do not assume so. Home Assistant can discover and use third-party Thread border routers, but its configuration controls require a manageable OpenThread border router interface. If Home Assistant does not offer the channel action, use the platform that owns the Thread network instead of forcing a command-line change." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does ChannelAccessFailure always mean the Thread channel is bad?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant says occasional ChannelAccessFailure messages are normal. Frequent messages several times per minute, especially with repeated pairing failures or dropouts, are a stronger reason to test another channel." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Thread channel &amp; interference</span><span>July 11, 2026</span><span>12 min read</span></p>
+            <h1>What Thread Channel Should You Use With Home Assistant&mdash;and Can You Change It Without Re-Pairing?</h1>
+            <p class="lede">Leave a stable Thread network alone. If repeated dropouts and log messages saying the radio channel is busy point to interference, channel 26 is the usual first test and 25 is a practical alternative. Home Assistant can schedule the move without rebuilding the network.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-thread-channel-change-without-repairing/cover.png" alt="A homeowner moving a Thread radio adapter away from a Wi-Fi router on a warm oak console" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>What to do:</strong> Leave a Thread network alone when it is reliable. A channel chart is not a reason to disturb a working house.</li>
+              <li><strong>When to change:</strong> If devices repeatedly fail to pair, drop offline, and Home Assistant's Thread logs show <code>ChannelAccessFailure</code> several times per minute&mdash;meaning the radio keeps finding the channel too busy&mdash;try channel 26 first or 25 when it better fits your Wi-Fi and Zigbee plan.</li>
+              <li><strong>How to avoid re-pairing:</strong> Use Home Assistant's Thread settings. It schedules a coordinated move about five minutes later, and devices normally keep their pairing.</li>
+              <li><strong>What to avoid:</strong> Do not restart the Thread border router&mdash;the device linking Thread to your home network&mdash;submit another channel change, use a raw command-line shortcut, or factory-reset devices during the five-minute move.</li>
+              <li><strong>Main caveat:</strong> Home Assistant may use an Apple, Google, Amazon, SmartThings, eero, or another vendor-managed Thread network without being able to change that network's channel.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Keep a Stable Channel; Change a Busy One Through Home Assistant</h2>
+          <p><strong>If your Thread devices pair, respond, and stay online, keep the current channel.</strong> A Thread channel is simply the small slice of the 2.4 GHz radio band used by the low-power network, where powered Thread devices can relay messages for nearby devices. There is no universal best number for every house. When repeated pairing failures, dropouts, and frequent <code>ChannelAccessFailure</code> messages point to real radio congestion, current <a href="https://www.home-assistant.io/integrations/thread/#changing-the-thread-channel" target="_blank" rel="noopener noreferrer">Home Assistant Thread documentation</a> says channel <strong>26</strong> is least likely to suffer Wi-Fi interference and channel <strong>25</strong> can also help.</p>
+          <p><strong>You normally do not need to re-pair Matter-over-Thread devices after a supported Home Assistant channel change.</strong> Home Assistant schedules a network-wide move for roughly five minutes later. That delay gives routers and sleepy battery devices time to learn the new channel while the old one still works. Expect a brief interruption, leave the border router powered, and test every device after the move.</p>
+          <p>The boundary matters: this supported flow is for a Thread network that Home Assistant can manage through its OpenThread Border Router app. In plain English, that app manages the hub or USB radio adapter connecting Thread devices to the regular home network. Seeing an Apple, Google, Amazon, SmartThings, eero, or another vendor-managed network in Home Assistant does not automatically give Home Assistant permission to retune it. If the channel action is missing, do not create a second Thread network or force a terminal command just to reach a favorite number.</p>
+
+          <div class="callout">
+            <p><strong>The practical recommendation:</strong> use channel 26 as the first interference test on a Home Assistant-managed mesh, use 25 when it fits the rest of the radio plan better, and keep another clear channel when measurements and real device behavior say it works better. The house decides; the chart only narrows the test.</p>
+          </div>
+
+          <h2 id="prove-interference">First Prove That Radio Interference Is the Problem</h2>
+          <p>Thread is the low-power local network. Matter or HomeKit is the control language riding on top of it. A failed Matter setup can come from the Thread radio, but it can also come from the wrong Thread network key saved on the phone, broken local addressing between devices, blocked messages that let devices find one another, an expired pairing window, or a problem in Home Assistant's Matter service. A channel change only addresses the radio part.</p>
+          <p>Home Assistant's docs make one log distinction especially useful. <code>ChannelAccessFailure</code> means the radio listened before transmitting and found the channel busy too many times. An occasional message is normal. Several per minute, together with real dropouts or pairing failures, is actionable. <code>NoAck</code> is different: a sleeping battery sensor may not answer immediately by design, so that message alone does not prove interference.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>What you see</th>
+                  <th>Is a channel change the next step?</th>
+                  <th>Check first</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Devices are reliable and logs are quiet</td>
+                  <td><strong>No.</strong> Keep the current channel.</td>
+                  <td>Nothing. Document the working setup and enjoy it.</td>
+                </tr>
+                <tr>
+                  <td>Repeated <code>ChannelAccessFailure</code>, pairing failures, and several devices dropping together</td>
+                  <td><strong>Reasonable to test.</strong></td>
+                  <td>Radio placement, nearby Wi-Fi access points, USB 3 equipment, and the Zigbee channel.</td>
+                </tr>
+                <tr>
+                  <td>Occasional <code>ChannelAccessFailure</code> with no household symptom</td>
+                  <td><strong>Usually no.</strong></td>
+                  <td>Watch the trend instead of reacting to one alarming log line.</td>
+                </tr>
+                <tr>
+                  <td><code>NoAck</code> from a battery button or sensor</td>
+                  <td><strong>Not from that message alone.</strong></td>
+                  <td>Wake interval, battery, range, powered Thread routers, and actual response time.</td>
+                </tr>
+                <tr>
+                  <td>Matter pairing stalls at network checks</td>
+                  <td><strong>Only after the basics.</strong></td>
+                  <td>The Thread network key saved on the phone, local addressing between devices, local device-discovery traffic, the default Thread network, and whether Home Assistant can reach the border router.</td>
+                </tr>
+                <tr>
+                  <td>One model stays unavailable while the rest of the mesh is healthy</td>
+                  <td><strong>Probably not first.</strong></td>
+                  <td>That device's software (firmware), battery, placement, and known model-specific issues.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>For the full pairing checklist, use Tara's guide to <a href="/blog/home-assistant-matter-checking-network-connectivity/">Matter setup stuck on checking network connectivity</a>. If range rather than congestion is the problem, start with <a href="/blog/extend-thread-range-home-assistant-without-second-network/">extending Thread range without creating a second mesh</a>.</p>
+
+          <h2 id="shared-air">Thread, Zigbee, and Wi-Fi Share the Same Air</h2>
+          <p>Thread and Zigbee use the same low-power 2.4 GHz radio standard, called IEEE 802.15.4, with narrow channels numbered 11 through 26. In practical terms, Thread channel 15 and Zigbee channel 15 occupy the same part of the air and compete directly. Wi-Fi also uses 2.4 GHz, but its channel numbers describe much wider slices. Wi-Fi channel 11 is not the same frequency as Thread channel 11.</p>
+          <p>That is why one copied rule such as “always use 25” can fail. A house may have several Wi-Fi access points on channels 1, 6, and 11, a Zigbee mesh near the upper end, neighbors using wide or automatic Wi-Fi channels, and a Thread radio tucked beside a USB 3 drive. The best Thread channel has to leave useful space around the radios that actually exist.</p>
+          <p>Physical placement still matters after channel planning. Put a USB Thread radio on its extension cable, away from the computer, USB 3 ports and drives, metal cabinets, and the Wi-Fi router. A cleaner channel cannot rescue an antenna buried in a noisy equipment stack.</p>
+
+          <h2 id="channel-choice">Channel 25 or 26? Use This Decision</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Choice</th>
+                  <th>When it makes sense</th>
+                  <th>Main caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Keep the current channel</strong></td>
+                  <td>The mesh is stable, devices respond, and logs do not show repeated busy-channel failures.</td>
+                  <td>Do not optimize a number at the cost of a working home.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thread channel 26</strong></td>
+                  <td>The first test when heavy Wi-Fi activity is the likely problem. Home Assistant says it is least likely to experience Wi-Fi interference.</td>
+                  <td>It can still compete with an upper-channel Zigbee mesh. Some 802.15.4 hardware also uses lower transmit power on channels 25 and 26 under regional rules, so verify range.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thread channel 25</strong></td>
+                  <td>A practical second test, especially when 26 performs poorly or the rest of the home's radio plan leaves 25 clearer.</td>
+                  <td>It can partly overlap some wide or high 2.4 GHz Wi-Fi arrangements. It is not a universal IKEA fix.</td>
+                </tr>
+                <tr>
+                  <td><strong>Another measured-clear channel</strong></td>
+                  <td>Your Zigbee plan occupies the upper channels, or real testing shows a channel such as 20 is calmer in this house.</td>
+                  <td>Channels 11 through 24 have more potential Wi-Fi overlap, so choose from real symptoms and a full radio plan.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Silicon Labs' radio documentation explains the tradeoff behind the table: Wi-Fi is much wider and stronger than an 802.15.4 signal, while some North American implementations reduce transmit power on channels 25 and 26. Home Assistant still recommends 26 as the cleanest Wi-Fi candidate. The sensible conclusion is to test response and range, not to call any channel magic.</p>
+
+          <h2 id="safe-change">How to Change a Home Assistant Thread Channel Without Starting Over</h2>
+          <ol>
+            <li><strong>Choose a calm maintenance window.</strong> Do not start before leaving home or while a lock, leak shutoff, alarm, heater, or other safety-sensitive automation is depending on the mesh. Keep a manual fallback.</li>
+            <li><strong>Make a current Home Assistant backup and save Matter setup codes.</strong> A channel change should not require them, but maintenance is the wrong time to discover that a code or recovery copy is missing.</li>
+            <li><strong>Write down the current network and channel.</strong> Open <strong>Settings &gt; Devices &amp; services &gt; Thread</strong>, choose <strong>Configure</strong>, and confirm which network is preferred&mdash;the default for adding new Thread devices&mdash;and which border router Home Assistant can manage.</li>
+            <li><strong>Fix obvious placement first.</strong> Move the radio away from the Wi-Fi router, computer, USB 3 devices, and metal. If that fixes the problem, keep the channel.</li>
+            <li><strong>Review the OpenThread Border Router logs.</strong> Look for frequent <code>ChannelAccessFailure</code> messages tied to real device trouble. Do not treat an occasional line or a sleepy-device <code>NoAck</code> as proof.</li>
+            <li><strong>Use the Thread integration's channel action.</strong> Choose the new channel, usually 26 as the first Wi-Fi-interference test or 25 when the rest of your plan favors it. UI labels can vary slightly by Home Assistant version and border router.</li>
+            <li><strong>Leave everything powered and untouched for at least five minutes.</strong> The network keeps using the old channel while it announces the pending move. The screen may appear to do nothing. Do not restart the border router or submit another change.</li>
+            <li><strong>Verify the house after the switch.</strong> Test a powered Thread router, each important battery sensor, buttons, lights, locks, and automations. Wake sleepy devices physically when the product supports it, then give them time to report.</li>
+          </ol>
+          <p>OpenThread calls the shared network settings an <strong>Operational Dataset</strong>. Home Assistant's safe flow writes a pending update so the mesh can move together. A raw command that changes only the radio's immediate channel can skip that coordinated handoff and strand devices. For a homeowner, the right rule is simple: use the supported Home Assistant control and let it finish.</p>
+
+          <h2 id="after-change">How to Tell Whether the Move Worked</h2>
+          <ul>
+            <li><strong>Confirm the displayed channel after the wait.</strong> Do not judge the first minute; the delayed change is intentional.</li>
+            <li><strong>Test actual control.</strong> Turn a light or plug on and off, press a button, and open a contact sensor. A pretty settings screen is not the goal.</li>
+            <li><strong>Check important battery devices again later.</strong> Sleepy devices conserve power and may take longer to show that they moved cleanly.</li>
+            <li><strong>Watch the log pattern, not one line.</strong> Occasional contention is normal. You want fewer repeated failures and fewer real dropouts over several days.</li>
+            <li><strong>Use the Matter Server network map carefully.</strong> It can show device status and reported link quality, but it is not a Wi-Fi spectrum analyzer and cannot prove the channel is clean.</li>
+          </ul>
+          <p>If several devices stay behind, do not immediately factory-reset them. Keep the border router on, allow more time, wake the devices, and confirm the migration completed. If the managed channel control is missing or the result remains split, stop and check the exact border-router path before doing anything destructive.</p>
+
+          <h2 id="ecosystem-boundary">Who Actually Controls the Channel?</h2>
+          <p>A <strong>Thread border router</strong> joins the low-power Thread mesh to the normal local network. Home Assistant can discover several brands and can import Apple or Google Thread credentials, but discovery, credentials, preferred status, and administrative control are not the same thing.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Thread network path</th>
+                  <th>Official control boundary</th>
+                  <th>Local control and cloud dependency</th>
+                  <th>Matter or HomeKit path</th>
+                  <th>Practical caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home Assistant OpenThread</strong><br />Examples: Home Assistant Yellow, Connect ZBT-1, Connect ZBT-2, or a supported adapter running the OpenThread Border Router app.</td>
+                  <td>Home Assistant can manage a compatible OpenThread border router that exposes the required interface, including the documented channel-change flow.</td>
+                  <td>Thread routing and normal Matter control are local. Home Assistant Cloud is optional for remote access and voice; it is not required to change the Thread channel.</td>
+                  <td>Matter-over-Thread and HomeKit-over-Thread can both use the mesh. Changing the channel does not convert one protocol into the other.</td>
+                  <td>This is the clearest path when you want local ownership and channel control. Keep the radio well placed and the network documented.</td>
+                </tr>
+                <tr>
+                  <td><strong>Apple-owned Thread</strong><br />Examples: supported Apple TV 4K and HomePod models.</td>
+                  <td>Home Assistant can discover Apple border routers and can import credentials in supported flows. Do not assume it can directly retune Apple hardware.</td>
+                  <td>Thread transport is local. Apple Home remote access, Siri, account setup, and other ecosystem features remain Apple services.</td>
+                  <td>Matter devices can be shared to Home Assistant as another controller. HomeKit-only devices use Home Assistant's HomeKit Device path instead.</td>
+                  <td>If Home Assistant does not offer a managed channel action, keep Apple as the network owner. Do not create a second mesh only for a different number.</td>
+                </tr>
+                <tr>
+                  <td><strong>Google-owned Thread</strong><br />Examples: Nest Hub 2nd gen, Nest Hub Max, Nest Wifi Pro, and Google TV Streamer.</td>
+                  <td>Home Assistant can import a Google Thread dataset with the supported phone flow. That does not guarantee channel administration of every Google router.</td>
+                  <td>Thread and supported Matter commands can stay local, while Google Home setup, remote control, voice, notifications, and accounts are Google ecosystem features.</td>
+                  <td>Pair in Google Home and share to Home Assistant, or use the imported network from Home Assistant where the supported setup permits.</td>
+                  <td>A Preferred badge means Home Assistant knows which network to use; it does not turn a Nest device into Home Assistant-managed hardware.</td>
+                </tr>
+                <tr>
+                  <td><strong>Amazon, eero, SmartThings, or another vendor-owned Thread network</strong><br />Examples include selected Echo and eero models plus current SmartThings or Aeotec hubs.</td>
+                  <td>The vendor owns its border-router settings unless it exposes a compatible management interface to Home Assistant.</td>
+                  <td>Thread transport is local, but app setup, voice, remote access, firmware, and account features can still depend on the vendor's services.</td>
+                  <td>Matter multi-admin can share a supported device between controllers. Sharing a Matter device does not merge or retune separate Thread networks.</td>
+                  <td>Check the exact model, firmware, region, and app. If Home Assistant only sees the network, use the owner's supported controls rather than terminal workarounds.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="what-does-not-change">A Thread Channel Change Does Not Move Your Matter Fabric</h2>
+          <p><strong>Matter</strong> is the control standard; <strong>Thread</strong> is the local network carrying the packets. A <strong>Matter fabric</strong> is the secure trust relationship between a device and a controller such as Home Assistant or Apple Home. Changing the Thread radio channel does not intentionally delete that trust, rename the device, move the automation, or add another controller.</p>
+          <p>That is why supported channel migration and factory resetting are very different operations. The first updates how the existing network uses the air. The second erases device state and can force a new pairing process. Never use a reset as the first response to interference.</p>
+          <p>Matter multi-admin is separate again. Sharing a device with Apple Home, Google Home, Alexa, or SmartThings adds another controller fabric; it does not make those platforms share one Thread channel automatically. Use Tara's <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin guide</a> when the problem is app sharing rather than radio congestion.</p>
+
+          <h2 id="recommendation">The Tara Recommendation</h2>
+          <p><strong>For a working house, keep the current Thread channel.</strong> Reliability is more valuable than a theoretically perfect diagram. For a new Home Assistant-managed network in busy 2.4 GHz air, plan Wi-Fi, Zigbee, and Thread together before pairing devices; channel 26 is the official first candidate for Wi-Fi separation, with 25 as a practical alternative.</p>
+          <p><strong>For a troubled IKEA or other Matter-over-Thread setup, use channel change as a measured fix, not a ritual.</strong> Confirm repeated radio-busy errors, improve placement, use Home Assistant's coordinated move, wait untouched, and verify the real devices. A channel change cannot repair the wrong network key, broken local addressing, bad device software, a weak Thread network, or a separate vendor-owned network.</p>
+          <p>For an installed Tara home, the handoff should state which platform owns Thread, which channel it uses, where the radio sits, which app holds credentials, and where backups and Matter codes live. That small note prevents the next homeowner from rebuilding a working network just to understand it.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-25-or-26">Is Thread channel 25 or 26 better for Home Assistant?</h3>
+          <p>Leave a stable channel alone. When Wi-Fi interference is the proven problem, Home Assistant says channel 26 is least likely to overlap Wi-Fi and 25 can also help. Channel 25 may fit a particular Zigbee and Wi-Fi plan better, while some radios can use less transmit power on the upper channels. Test the real house.</p>
+
+          <h3 id="faq-repair">Will changing the Thread channel make me re-pair every device?</h3>
+          <p>Normally no when you use Home Assistant's supported Thread setting. Home Assistant schedules a coordinated switch about five minutes later so devices learn the new channel before the move. Expect a temporary outage and verify every device afterward.</p>
+
+          <h3 id="faq-wait">Why does nothing happen after I change the Thread channel?</h3>
+          <p>The quiet wait is intentional. Home Assistant keeps the mesh on the current channel while it announces a pending change, then switches roughly five minutes later. Keep the border router powered and do not restart or submit another change during that window.</p>
+
+          <h3 id="faq-vendor-router">Can Home Assistant change the Thread channel on Apple TV, HomePod, or Google Nest?</h3>
+          <p>Do not assume so. Home Assistant can discover and use third-party Thread border routers, but its configuration controls require a manageable OpenThread border router interface. If Home Assistant does not offer the channel action, use the platform that owns the Thread network instead of forcing a command-line change.</p>
+
+          <h3 id="faq-log">Does ChannelAccessFailure always mean the Thread channel is bad?</h3>
+          <p>No. Home Assistant says occasional messages are normal. Frequent messages several times per minute, especially with repeated pairing failures or dropouts, are a stronger reason to test another channel.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread integration: networks, channels, logs, and border routers</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration documentation</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: the 2026 Matter Server and Thread 1.4 upgrade</a></li>
+              <li><a href="https://openthread.io/reference/group/api-channel-manager" target="_blank" rel="noopener noreferrer">OpenThread Channel Manager API</a></li>
+              <li><a href="https://openthread.io/reference/cli/concepts/dataset" target="_blank" rel="noopener noreferrer">OpenThread Operational Dataset concepts</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Product and platform documentation</h3>
+            <ul>
+              <li><a href="https://docs.silabs.com/openthread/3.0.1/multiprotocol-wifi-coexistence-fundamentals/02-wi-fi-impact-on-bluetooth-and-802-15-4-radios" target="_blank" rel="noopener noreferrer">Silicon Labs: Wi-Fi impact on Bluetooth and 802.15.4 radios</a></li>
+              <li><a href="https://docs.silabs.com/wifi-application-notes/latest/wifi-siwg917-soc-pta-coexist-wifi-zigbee/wifi-impact" target="_blank" rel="noopener noreferrer">Silicon Labs: Wi-Fi and 802.15.4 channel mapping</a></li>
+              <li><a href="https://support.apple.com/en-us/102557" target="_blank" rel="noopener noreferrer">Apple: Thread-enabled home hubs and Matter accessories</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en-GB" target="_blank" rel="noopener noreferrer">Google: local and remote Matter control over Wi-Fi or Thread</a></li>
+              <li><a href="https://developer.amazon.com/en-GB/docs/alexa/smarthome/matter-support.html" target="_blank" rel="noopener noreferrer">Amazon: Matter support and Thread-enabled Echo and eero devices</a></li>
+              <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings: Matter controllers and Thread border routers</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1r4svtp/what_fixed_the_new_matter_ikea_devices_for_me/" target="_blank" rel="noopener noreferrer">r/homeassistant: IKEA Matter devices and a channel 25 result</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1q6u4t5/yes_another_matter_over_thread_question_channels/" target="_blank" rel="noopener noreferrer">r/homeassistant: changing a Thread channel without re-pairing</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1udpztu/dont_be_dumb_like_me_check_your_radio_channels/" target="_blank" rel="noopener noreferrer">r/homeassistant: checking Wi-Fi, Zigbee, and Thread channel overlap</a></li>
+              <li><a href="https://community.home-assistant.io/t/channel-access-failure/772589" target="_blank" rel="noopener noreferrer">Home Assistant Community: interpreting ChannelAccessFailure</a></li>
+              <li><a href="https://community.home-assistant.io/t/how-to-change-thread-channel-von-ha-2026-2/986613" target="_blank" rel="noopener noreferrer">Home Assistant Community: locating the channel action</a></li>
+              <li><a href="https://community.home-assistant.io/t/changing-google-nest-thread-channels/727785" target="_blank" rel="noopener noreferrer">Home Assistant Community: Google-owned Thread channel limitations</a></li>
+              <li><a href="https://github.com/home-assistant/frontend/pull/51608" target="_blank" rel="noopener noreferrer">Home Assistant frontend discussion: pending channel-migration status</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Tara local setup</p>
+        <h2>Plan the radio layout before the house depends on it.</h2>
+        <p>Tara packages a local smart-home hub, a documented Thread and Zigbee plan, tested automations, backup paths, and a homeowner handoff instead of leaving a pile of mystery networks behind.</p>
+        <a class="cta" href="/configurator/">Plan your Tara kit</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related Tara guides</p>
+        <div class="links"><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">IKEA Matter without DIRIGERA</a><a href="/blog/home-assistant-matter-checking-network-connectivity/">Matter pairing network checks</a><a href="/blog/extend-thread-range-home-assistant-without-second-network/">Extend Thread range</a><a href="/blog/home-assistant-matter-network-map-offline-devices/">Read the Matter network map</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread border router</a><a href="/blog/home-assistant-zigbee-channel-wifi-interference/">Plan the Zigbee channel</a><a href="/blog/replace-thread-border-router-without-repairing-matter-devices/">Replace a Thread border router</a><a href="/configurator/">Configurator</a></div>
+      </section>
+    </main>
+    <footer>
+      <span>&copy; 2026 Tara. A local-first smart home, designed to stay yours.</span>
+      <span><a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></span>
+    </footer>
+  </body>
+</html>
