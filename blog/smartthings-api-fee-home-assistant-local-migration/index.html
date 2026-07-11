@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartThings $4.99 API Fee: What Home Assistant Users Should Move | Tara Guides</title>
+    <meta name="description" content="Samsung plans to start phasing out free SmartThings API access in October 2026. See what can move locally to Home Assistant and what may stay in the cloud." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/smartthings-api-fee-home-assistant-local-migration/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/smartthings-api-fee-home-assistant-local-migration/" />
+    <meta property="og:title" content="SmartThings $4.99 API Fee: What Home Assistant Users Should Move | Tara Guides" />
+    <meta property="og:description" content="Samsung plans to start phasing out free SmartThings API access in October 2026. See what can move locally to Home Assistant and what may stay in the cloud." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/smartthings-api-fee-home-assistant-local-migration/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SmartThings $4.99 API Fee: What Home Assistant Users Should Move | Tara Guides" />
+    <meta name="twitter:description" content="Samsung plans to start phasing out free SmartThings API access in October 2026. See what can move locally to Home Assistant and what may stay in the cloud." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/smartthings-api-fee-home-assistant-local-migration/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 860px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/smartthings-api-fee-home-assistant-local-migration/#blogposting",
+      "headline": "Will SmartThings Cost $4.99 a Month With Home Assistant? What to Move Before October 2026",
+      "description": "Samsung plans to start phasing out free SmartThings API access in October 2026. See what can move locally to Home Assistant and what may stay in the cloud.",
+      "image": "https://tarahome.ai/assets/generated/blog/smartthings-api-fee-home-assistant-local-migration/cover.png",
+      "datePublished": "2026-07-10",
+      "dateModified": "2026-07-10",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/smartthings-api-fee-home-assistant-local-migration/"
+      },
+      "citation": [
+        "https://blog.smartthings.com/smartthings-updates/a-new-enhanced-smartthings-api-experience/",
+        "https://www.home-assistant.io/integrations/smartthings/",
+        "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/zha/",
+        "https://www.home-assistant.io/integrations/zwave_js/",
+        "https://www.home-assistant.io/integrations/hue/",
+        "https://www.home-assistant.io/integrations/shelly/",
+        "https://www.home-assistant.io/integrations/samsungtv/",
+        "https://www.home-assistant.io/integrations/homekit/",
+        "https://www.home-assistant.io/connect/zbt-2/",
+        "https://www.home-assistant.io/connect/zwa-2/",
+        "https://community.home-assistant.io/t/smartthings-implementing-fees-developers/1014926",
+        "https://www.reddit.com/r/homeassistant/comments/1ug9897/samsung_to_charge_users_5_per_month_for_api/",
+        "https://www.reddit.com/r/homeassistant/comments/1ujn1l8/would_this_ease_transition_from_smartthings_to_ha/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/smartthings-api-fee-home-assistant-local-migration/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Will SmartThings Cost $4.99 a Month With Home Assistant? What to Move Before October 2026",
+          "item": "https://tarahome.ai/blog/smartthings-api-fee-home-assistant-local-migration/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/smartthings-api-fee-home-assistant-local-migration/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will Home Assistant users have to pay $4.99 a month for SmartThings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Under Samsung's announced plan and Home Assistant's current documentation, keeping the SmartThings API integration after the October 2026 transition will require Samsung's $4.99-per-month Personal Plan. The ordinary SmartThings app is not affected."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I keep using the SmartThings app without paying the API fee?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Samsung says SmartThings app users and Works with SmartThings partner-device users are not affected. The fee concerns API access used by connections such as the Home Assistant SmartThings integration."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant import SmartThings Zigbee and Z-Wave devices without re-pairing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Generally no. A Zigbee device normally needs a factory reset before joining Home Assistant's Zigbee network. A Z-Wave device must be excluded from its old network and then included in Home Assistant's Z-Wave network."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a Matter device stay in SmartThings and also join Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Often yes. SmartThings documents a multi-admin sharing flow that creates a fresh setup code for another Matter controller. The option applies only to actual Matter devices and depends on the device and controller supporting the needed features."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should I do with Samsung appliances that only work through SmartThings?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Keep them in the SmartThings app while you test what Home Assistant can control. If no suitable local connection exists, choose between paying for API access, using the SmartThings app without those controls in Home Assistant, or giving up those cloud-only features."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>SmartThings &amp; Local Migration</span><span>July 10, 2026</span><span>13 min read</span></p>
+            <h1>Will SmartThings Cost $4.99 a Month With Home Assistant? What to Move Before October 2026</h1>
+            <p class="lede">If Home Assistant still connects through the SmartThings API, Samsung's announced Personal Plan is the decision point. Move devices with a real local path first, leave cloud-only appliances alone until tested, and do not reset the whole house in one weekend.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/smartthings-api-fee-home-assistant-local-migration/cover.png" alt="Homeowner planning a careful move from a cloud smart-home hub to a local Home Assistant system" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>What changes:</strong> Samsung plans to start phasing out free SmartThings API access—the online link Home Assistant uses to reach SmartThings—in October 2026. Home Assistant says that connection will require the $4.99/month Personal Plan.</li>
+    <li><strong>What to do:</strong> Keep SmartThings running while you first move devices Home Assistant can control directly inside the home—Philips Hue Bridge, Shelly, compatible Samsung TVs, and Matter devices built for cross-brand sharing.</li>
+    <li><strong>What needs re-pairing:</strong> Zigbee devices joined to a SmartThings hub usually need a factory reset. Z-Wave devices must be removed from the old hub before you add them to the Home Assistant adapter.</li>
+    <li><strong>What to avoid:</strong> Do not delete the SmartThings connection or batch-move locks, garage doors, alarms, heating and air-conditioning, or leak protection before each replacement path works.</li>
+    <li><strong>Main caveat:</strong> Samsung washers, dryers, refrigerators, and other appliance features may have no equivalent local path, so some homes must choose between the fee, app-only control, or losing those controls inside Home Assistant.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: The Fee Is for the API Connection, Not the SmartThings App</h2>
+<p><strong>Under Samsung's announced plan, a Home Assistant household that keeps using the SmartThings integration—its software connector to Samsung—should expect to need the $4.99-per-month Personal Plan starting with the October 2026 transition.</strong> Home Assistant now places that warning directly on its SmartThings page. Samsung says free access to its API, the online link used by outside software, continues through the third quarter of 2026 and calls October its target; it also says more transition details are still coming.</p>
+<p>The normal SmartThings app is different. Samsung says SmartThings app users and people using Works with SmartThings partner devices are not affected by this API change. In plain English, you can keep controlling devices in the SmartThings app without automatically owing $4.99. The fee matters when another system—here, Home Assistant—uses Samsung's developer API to read and control SmartThings devices.</p>
+<p>Do not react by removing SmartThings today. First sort every device into one of three groups: <strong>already local</strong>, <strong>movable to local control</strong>, or <strong>still dependent on SmartThings cloud</strong>. Local control means the ordinary command stays inside your home instead of needing a company server. That turns a frustrating subscription decision into a safe, room-by-room migration.</p>
+
+<div class="callout">
+  <p><strong>Tara's recommendation:</strong> build the local replacement in parallel, test it, then retire the old path. Home Assistant receives SmartThings updates through Samsung's cloud; deleting that connection first does not make the underlying devices local.</p>
+</div>
+
+<h2 id="what-changes">What Actually Changes in October 2026</h2>
+<p>Samsung announced the new API plans on June 23, 2026. The company describes the $4.99 monthly tier as a Personal Plan for non-commercial individual developers. Its examples include API access to Samsung televisions, refrigerators, device state and control, device health, and the wider mix of Wi-Fi, Zigbee, Z-Wave, Thread, and Matter products represented in SmartThings.</p>
+<p>Zigbee and Z-Wave are the low-power radio systems used by many hub-connected sensors, switches, and locks. Thread is another low-power home network used by many Matter devices. Matter is the shared smart-home standard that can let one compatible device join more than one platform.</p>
+<p>Home Assistant's official documentation makes the consequence unusually direct: free SmartThings API access is being phased out, and users will need the paid Personal Plan to continue using the integration. Home Assistant also suggests migrating suitable Zigbee and Z-Wave devices to local integrations as an alternative.</p>
+<p>Two details are still unsettled. Samsung calls October 2026 a target rather than publishing a day-by-day cutoff schedule, and says it will provide more migration information. Also, paying for the API does not guarantee that every function visible in the SmartThings app appears in Home Assistant. Home Assistant already warns that some capabilities are app-only or are not exposed by Samsung's API.</p>
+
+<h2 id="decision-table">What Can Move Locally—and What May Not</h2>
+<p>This table separates the five questions that usually get mixed together: official Home Assistant support, whether control stays in the house, whether Samsung's cloud is still required, whether Matter or Apple Home can share the result, and what can go wrong during the move.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Device or path</th>
+        <th>Official Home Assistant support</th>
+        <th>Local control and cloud dependency</th>
+        <th>Matter and HomeKit path</th>
+        <th>Migration action and caveat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Samsung washer, dryer, refrigerator, air conditioner, or other SmartThings-only appliance</strong></td>
+        <td>The SmartThings integration lists many appliance capabilities, but says not every SmartThings feature is exposed.</td>
+        <td>Home Assistant receives these updates through Samsung's cloud and needs API access. The SmartThings app can remain available without the Home Assistant connection.</td>
+        <td>Do not assume a SmartThings appliance is a Matter device. HomeKit Bridge can share a control with Apple Home only after that control works in Home Assistant.</td>
+        <td>Leave it in SmartThings while testing. If no local integration exists, choose the paid API, app-only use, or loss of the Home Assistant feature.</td>
+      </tr>
+      <tr>
+        <td><strong>Philips Hue Bridge v2</strong> with Hue bulbs and accessories</td>
+        <td>Official Hue integration; the square v2 bridge is discovered on the network and sends updates directly inside the home.</td>
+        <td>Local Home Assistant control through the Hue Bridge. The Hue cloud is not required for ordinary local control.</td>
+        <td>Home Assistant can share Hue controls with Apple Home through HomeKit Bridge. Hue's Matter bridge is optional; Home Assistant notes that the native Hue connection keeps richer features.</td>
+        <td>Add the Hue integration without resetting bulbs. Keep the bridge, names, rooms, and reliable lighting network in place.</td>
+      </tr>
+      <tr>
+        <td><strong>Shelly 2PM Gen3</strong> and other supported Shelly Wi-Fi devices</td>
+        <td>Official Shelly integration supports all Shelly generations and communicates directly with devices.</td>
+        <td>Local; Shelly Cloud is not required. Current generations communicate directly with Home Assistant inside the home.</td>
+        <td>HomeKit Bridge can share the Home Assistant controls with Apple Home. Matter depends on the exact Shelly model and its software version, not the SmartThings listing.</td>
+        <td>Add the native Shelly integration while the device stays installed. For mains wiring, use a qualified electrician; this migration does not require rewiring a working relay.</td>
+      </tr>
+      <tr>
+        <td><strong>Samsung Tizen TV on the same normal home network</strong></td>
+        <td>Official Samsung Smart TV integration supports direct control for compatible models when the TV and Home Assistant are on the same subnet. In a normal home, that means neither one should be on guest Wi-Fi or another isolated network.</td>
+        <td>Basic Home Assistant media control stays on the home network. SmartThings-only television features may not have a local replacement.</td>
+        <td>HomeKit Bridge can share the Home Assistant media controls with Apple Home. A TV appearing in SmartThings does not make it a Matter accessory.</td>
+        <td>Add the native TV connection and compare controls before removing the SmartThings version. Keep whichever path supplies the features your household actually uses.</td>
+      </tr>
+      <tr>
+        <td><strong>An actual Matter device already paired to SmartThings</strong></td>
+        <td>Home Assistant officially supports Matter; SmartThings officially documents sharing a Matter device with another service.</td>
+        <td>After you add the device, Home Assistant's Matter control stays inside the home. Remote app and voice features can still add cloud dependencies.</td>
+        <td>In SmartThings, open the Matter device, choose <em>Share with other services</em>, and use the newly generated code in Home Assistant. That is Matter multi-admin.</td>
+        <td>Share before resetting. The option applies only to Matter devices, can have controller limits, and may not expose vendor-specific extras.</td>
+      </tr>
+      <tr>
+        <td><strong>Zigbee sensor, plug, bulb, or switch on a SmartThings/Aeotec hub</strong></td>
+        <td>ZHA, Home Assistant's built-in Zigbee connection, supports a local Zigbee network. Connect ZBT-2 is a current official radio example and must be dedicated to Zigbee or Thread, not both.</td>
+        <td>Local after the device joins Home Assistant's Zigbee network. No SmartThings cloud is needed for that device.</td>
+        <td>Zigbee is not Matter or HomeKit. Home Assistant can later share selected controls with Apple Home through HomeKit Bridge.</td>
+        <td>Record the model, factory-reset it using the manufacturer's instructions, then add it to ZHA. A device on another Zigbee network normally needs that reset.</td>
+      </tr>
+      <tr>
+        <td><strong>Z-Wave lock, sensor, switch, or plug on SmartThings</strong></td>
+        <td>Official Z-Wave JS connection; Connect ZWA-2 is Home Assistant's current official 800-series adapter example.</td>
+        <td>Local after inclusion in Home Assistant's Z-Wave network. No SmartThings cloud is needed for that device.</td>
+        <td>Z-Wave is not Matter or HomeKit. Home Assistant can share suitable controls with Apple Home after they work locally.</td>
+        <td>Remove the device from its old Z-Wave network, then add it to Home Assistant. If it has a security number (DSK) or QR code, save it first. Move locks and access devices only with a tested physical fallback.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="migration-plan">A Safe Room-by-Room Migration Plan</h2>
+<p>The best transition is deliberately boring. Keep both systems available, move one device class at a time, and give each automation—an automatic rule such as “motion turns on the light”—only one owner.</p>
+
+<h3 id="inventory">1. Make an inventory before changing anything</h3>
+<p>List each device's brand, model, room, SmartThings name, and current job. Note whether it connects through a Hue Bridge, Wi-Fi, Matter, Zigbee, Z-Wave, or a Samsung account. Screenshot important SmartThings routines and write down which voice commands family members actually use. If the protocol is unclear, look up the exact model instead of guessing from the app icon.</p>
+<p>Mark safety-related devices separately: door locks, garage doors, alarms, smoke or carbon-monoxide systems, thermostats, powered valves, and leak shutoffs. Confirm manual control and a physical key, switch, or other fallback before touching any of them.</p>
+
+<h3 id="prepare-home-assistant">2. Prepare Home Assistant and the right radios</h3>
+<p>Create a fresh Home Assistant backup. For Zigbee, use one supported radio, also called a coordinator, and one Zigbee connection in Home Assistant. Connect ZBT-2 is a current official option, but it can run <strong>either Zigbee or Thread at one time</strong>. For Z-Wave, Home Assistant recommends compatible 800-series adapters and lists Connect ZWA-2 as its official example. Place radios as their documentation recommends and finish basic setup before removing devices from SmartThings.</p>
+<p>If you already use Home Assistant for Matter-over-Thread, do not repurpose its only Thread radio for Zigbee. A separate dedicated radio—or an existing compatible Thread border router, the device that joins Thread to your normal home network—is the cleaner path.</p>
+
+<h3 id="add-native">3. Add native local integrations first</h3>
+<p>Start with devices that do not need a reset. Add the Philips Hue Bridge through Home Assistant's official Hue connection. Let Home Assistant discover supported Shelly devices. Add a compatible Samsung TV through the official Samsung Smart TV connection. Compare names and controls with SmartThings for several days.</p>
+<p>This is the lowest-risk win because the old path still works while the new local one is tested. When two copies of the same device appear, rename them clearly—such as “Living Room TV local” and “Living Room TV SmartThings”—until the final cutover.</p>
+
+<h3 id="share-matter">4. Share Matter devices instead of resetting them</h3>
+<p>For a device that is genuinely Matter-certified and already in SmartThings, try multi-admin first. SmartThings says to open the device, select the menu, choose <strong>Share with other services</strong>, and generate a fresh setup code. In the Home Assistant companion app, add a Matter device that is already in use and enter or scan that new code.</p>
+<p>This lets SmartThings and Home Assistant remain separate Matter controllers for the same device. It does not convert an older SmartThings Zigbee or Z-Wave device into Matter, and it does not guarantee that vendor-only scenes, energy details, or special buttons appear everywhere.</p>
+
+<h3 id="move-zigbee">5. Move Zigbee devices one room at a time</h3>
+<p>Zigbee devices belong to one Zigbee network at a time. A SmartThings Zigbee sensor cannot simply be discovered by ZHA while it is still joined to the SmartThings hub. Follow the device maker's reset instructions, place ZHA in pairing mode, and confirm the device reports correctly in Home Assistant.</p>
+<p>Start with a low-risk room. Move powered Zigbee plugs, bulbs, and wired switches thoughtfully because many repeat the Zigbee signal for nearby battery sensors. Do not remove every signal-repeating device from the old SmartThings network before the remaining sensors are ready to move.</p>
+
+<h3 id="move-zwave">6. Remove Z-Wave devices from SmartThings, then add them to Home Assistant</h3>
+<p>A Z-Wave device will not join the new Home Assistant network while it still believes it belongs to the old one. Use SmartThings removal when it is working, or use Home Assistant's <strong>exclusion</strong> step to remove it from the old network. Then use <strong>inclusion</strong> to add it to Home Assistant. Follow the device maker's secure-pairing directions without moving the installed Home Assistant adapter. If the device has a security number (DSK) or QR label, have it available.</p>
+<p>Do a plug or non-critical sensor first. Leave locks, garage access, alarm interfaces, and heating or air-conditioning control until the process is familiar and someone can test the physical fallback immediately.</p>
+
+<h3 id="rebuild-automations">7. Rebuild automations, voice access, and dashboards</h3>
+<p>Re-create one routine in Home Assistant, test it, then disable the SmartThings version. If both systems respond to the same motion or button event, lights can flicker, notifications can duplicate, and troubleshooting becomes guesswork.</p>
+<p>For Apple households, Home Assistant's official HomeKit Bridge shares selected controls locally with Apple Home; Siri and remote access may still use Apple services. Google Home and Alexa connections are useful family surfaces too, but remote voice and account linking generally bring cloud services back into the path. Keep the actual automation in one place even when several apps can control it.</p>
+
+<h3 id="decide-holdouts">8. Decide what to do with cloud-only holdouts</h3>
+<p>After the easy devices are local, review what remains in the SmartThings connection. A Samsung appliance may justify $4.99 per month if its Home Assistant controls drive useful energy or cycle-completion automations. A cloud-reported appliance status should never be the home's only safety layer. The same appliance may not justify the fee if the family only checks it in the SmartThings app twice a month.</p>
+<p>Your choices are legitimate and simple:</p>
+<ul>
+  <li><strong>Pay for API access</strong> and keep those SmartThings controls in Home Assistant.</li>
+  <li><strong>Use the free SmartThings app only</strong> for the appliances that have no good local path.</li>
+  <li><strong>Give up the cloud-only Home Assistant features</strong> and keep the rest of the home local.</li>
+</ul>
+<p>Only remove the Home Assistant SmartThings integration after that list is empty or every remaining loss is understood.</p>
+
+<h2 id="cloud-matter-homekit">Local, Cloud, Matter, and HomeKit Are Different Paths</h2>
+<p><strong>Local control</strong> means Home Assistant can send the ordinary command inside your home. Hue through its bridge, Shelly through its native integration, ZHA, Z-Wave JS, Matter, and compatible Samsung TV control can all provide local paths. Internet access may still be needed for initial setup, device software updates, remote notifications, or optional accounts.</p>
+<p><strong>SmartThings API control</strong> is a cloud path. Even if the physical device uses Zigbee or Z-Wave to talk locally to a SmartThings hub, Home Assistant's official SmartThings integration talks through Samsung's API. The radio between the device and hub does not make the Home Assistant connection local.</p>
+<p><strong>Matter multi-admin</strong> lets an actual Matter device belong to more than one controller. It is the cleanest way to keep a device in SmartThings while adding local Matter control in Home Assistant, but it does not apply to every product displayed in SmartThings.</p>
+<p><strong>HomeKit Bridge</strong> is Home Assistant's path for showing its device controls in Apple Home. It can make a local Zigbee or Z-Wave device available to Siri after Home Assistant owns it. That sharing does not turn the device itself into Matter, and it does not restore SmartThings-only features.</p>
+
+<h2 id="what-not-to-do">What Not to Do</h2>
+<ul>
+  <li><strong>Do not buy radios before identifying protocols.</strong> A Zigbee radio cannot take over Z-Wave devices, and Connect ZBT-2 cannot run Zigbee and Thread simultaneously.</li>
+  <li><strong>Do not assume every SmartThings device is Matter.</strong> Multi-admin works for actual Matter devices, not for an older device merely shown in the SmartThings app.</li>
+  <li><strong>Do not reset a whole house at once.</strong> You need the old setup available to compare names, routines, device behavior, and family expectations.</li>
+  <li><strong>Do not move safety and access devices first.</strong> Preserve keys, manual switches, manufacturer apps, and professional monitoring requirements.</li>
+  <li><strong>Do not count “visible in Home Assistant” as complete.</strong> Test state updates, commands, automations, restart recovery, and an internet outage where local operation matters.</li>
+</ul>
+
+<h2 id="recommendation">The Practical Recommendation</h2>
+<p>If SmartThings mainly holds ordinary Zigbee, Z-Wave, Hue, Shelly, Matter, and television devices, use the remaining free period to move those devices to documented local paths. That lowers the number of cloud dependencies and leaves the October decision focused on the few things that genuinely need Samsung's API.</p>
+<p>If the value of your setup is Samsung appliances, do not pretend every feature has a local replacement. Keep SmartThings, test the app-only option, and price the Personal Plan against the automations you would lose. A mixed system—local Home Assistant for the house, SmartThings app for a refrigerator or washer—is often more sensible than either paying out of habit or deleting useful features in anger.</p>
+<p>The goal is not a dramatic “SmartThings versus Home Assistant” weekend. It is a supported home where each device has a known owner, critical controls have a fallback, and the cloud bill is attached only to features that earn it.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<ul>
+  <li><a href="/blog/home-automation-without-cloud/">How to Run Your Smart Home Without the Cloud</a></li>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to Share One Matter Device Across Smart-Home Platforms</a></li>
+  <li><a href="/blog/where-should-smart-home-automations-live/">Where Should Your Smart Home Automations Live?</a></li>
+  <li><a href="/blog/philips-hue-home-assistant-bridge-matter-zigbee/">Philips Hue in Home Assistant: Bridge, Matter, or Zigbee?</a></li>
+  <li><a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">ZHA or Zigbee2MQTT for Home Assistant?</a></li>
+  <li><a href="/blog/zwave-js-vs-zwave-js-ui-home-assistant/">Z-Wave JS or Z-Wave JS UI for Home Assistant?</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="will-ha-users-pay">Will Home Assistant users have to pay $4.99 a month for SmartThings?</h3>
+<p>Under Samsung's announced plan and Home Assistant's current documentation, keeping the SmartThings API integration after the October 2026 transition will require Samsung's $4.99-per-month Personal Plan. Samsung calls October its target and says more transition details are coming.</p>
+
+<h3 id="smartthings-app-free">Can I keep using the SmartThings app without paying the API fee?</h3>
+<p>Yes. Samsung says ordinary SmartThings app users and Works with SmartThings partner-device users are not affected. The fee concerns API access used by outside connections such as Home Assistant's SmartThings integration.</p>
+
+<h3 id="import-without-repairing">Can Home Assistant import SmartThings Zigbee and Z-Wave devices without re-pairing?</h3>
+<p>Generally no. A Zigbee device normally needs a factory reset before joining Home Assistant's Zigbee network. A Z-Wave device must be excluded from its old network and then included in Home Assistant's Z-Wave network.</p>
+
+<h3 id="matter-stay-smartthings">Can a Matter device stay in SmartThings and also join Home Assistant?</h3>
+<p>Often yes. SmartThings documents a multi-admin sharing flow that creates a fresh setup code for another Matter controller. The option applies only to actual Matter devices, and the device and controller must support the needed Matter features.</p>
+
+<h3 id="samsung-appliances">What should I do with Samsung appliances that only work through SmartThings?</h3>
+<p>Keep them in SmartThings while you test what Home Assistant can control. If there is no suitable local connection, choose between paying for API access, using the SmartThings app without those controls in Home Assistant, or giving up those cloud-only features.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official SmartThings documentation</h3>
+              <ul>
+                <li><a href="https://blog.smartthings.com/smartthings-updates/a-new-enhanced-smartthings-api-experience/" target="_blank" rel="noopener noreferrer">SmartThings: A new enhanced API experience</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings Matter integration and multi-admin sharing</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/360052390111-Devices-in-SmartThings" target="_blank" rel="noopener noreferrer">SmartThings device management and removal</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Home Assistant documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/smartthings/" target="_blank" rel="noopener noreferrer">Home Assistant SmartThings integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zha/" target="_blank" rel="noopener noreferrer">Home Assistant ZHA integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zwave_js/" target="_blank" rel="noopener noreferrer">Home Assistant Z-Wave integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Local device and radio documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/hue/" target="_blank" rel="noopener noreferrer">Home Assistant Philips Hue integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/shelly/" target="_blank" rel="noopener noreferrer">Home Assistant Shelly integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/samsungtv/" target="_blank" rel="noopener noreferrer">Home Assistant Samsung Smart TV integration</a></li>
+                <li><a href="https://www.home-assistant.io/connect/zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZBT-2</a></li>
+                <li><a href="https://www.home-assistant.io/connect/zwa-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZWA-2</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ug9897/samsung_to_charge_users_5_per_month_for_api/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: SmartThings API plan discussion</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ujn1l8/would_this_ease_transition_from_smartthings_to_ha/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: gradual SmartThings migration</a></li>
+                <li><a href="https://community.home-assistant.io/t/smartthings-implementing-fees-developers/1014926" target="_blank" rel="noopener noreferrer">Home Assistant Community: SmartThings API fee questions</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want to replace cloud dependencies without breaking the house?</h2>
+          <p>Tara plans the Home Assistant hub, dedicated radios, local integrations, migration order, and family handoff so each device has one clear owner and critical controls keep a fallback.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/no-subscription-smart-home/">No subscription smart home</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/blog/home-automation-without-cloud/">No-cloud guide</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/where-should-smart-home-automations-live/">Automation ownership</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
