@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can Home Assistant Pair Matter Devices Without a Phone? | Tara Guides</title>
+    <meta name="description" content="Home Assistant can experimentally pair Matter devices without a phone through an ESPHome Bluetooth proxy. Learn the 2026 setup, limits, and Thread caveat." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/" />
+    <meta property="og:title" content="Can Home Assistant Pair Matter Devices Without a Phone? | Tara Guides" />
+    <meta property="og:description" content="Matter Server 9 can commission through Home Assistant's Bluetooth stack, including ESPHome proxies—but the path is experimental and does not replace Thread." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can Home Assistant Pair Matter Devices Without a Phone? | Tara Guides" />
+    <meta name="twitter:description" content="Use a nearby ESPHome Bluetooth proxy for experimental no-phone Matter commissioning, while keeping the correct Wi-Fi or Thread path in place." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/#blogposting",
+      "headline": "Can Home Assistant Pair Matter Devices Without a Phone?",
+      "description": "How to use Home Assistant Core 2026.6 or later, Matter Server 9, and an active ESPHome Bluetooth proxy for experimental no-phone Matter commissioning.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/cover.png",
+      "datePublished": "2026-07-11",
+      "dateModified": "2026-07-11",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/bluetooth/",
+        "https://esphome.io/components/bluetooth_proxy/",
+        "https://github.com/home-assistant/addons/blob/master/matter_server/DOCS.md",
+        "https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md",
+        "https://github.com/home-assistant/core/pull/171384",
+        "https://github.com/matter-js/matterjs-server/pull/662",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://www.reddit.com/r/homeassistant/comments/1q90xi4/why_is_matter_commissioning_so_complicated_how_to/",
+        "https://community.home-assistant.io/t/perform-a-matter-ble-onboarding-through-an-esp32-bluetooth-proxy/461360",
+        "https://community.home-assistant.io/t/bluetooth-proxy-to-connect-to-matterjs-server-ble-endpoint-configuration-problems/1011942"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Matter without a phone", "item": "https://tarahome.ai/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant add a new Matter device without a phone?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, experimentally. Home Assistant Core 2026.6 or later and Matter Server 9 can route Matter's Bluetooth setup traffic through Home Assistant's Bluetooth stack, including an active ESPHome proxy. You start commissioning from the Matter Server dashboard. The Companion app remains the normal documented route." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a Bluetooth proxy replace a Thread border router?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. The Bluetooth proxy only carries the short-range setup conversation. A Matter-over-Thread device still needs a Thread border router and the correct Thread network credentials for normal operation." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a Shelly Bluetooth proxy commission Matter devices?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Not through Home Assistant's current proxy path. Home Assistant documents Shelly Gen2+ remote adapters as advertisement listeners without active Bluetooth connections. Matter commissioning needs an active two-way Bluetooth connection." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Bluetooth still needed after a Matter device is paired?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Normally no. Bluetooth is used to give the new device its Wi-Fi or Thread network information during commissioning. After that, Matter control travels over Wi-Fi, Ethernet, or Thread, depending on the product." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is no-phone Matter commissioning completely cloud-free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The Bluetooth proxy transport and normal Matter control can stay local. However, device certificate and revocation data, firmware checks, and vendor-only setup steps can still involve internet services. Treat local control and fully air-gapped setup as separate promises." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter commissioning &amp; Bluetooth</span><span>July 11, 2026</span><span>11 min read</span></p>
+            <h1>Can Home Assistant Pair Matter Devices Without a Phone?</h1>
+            <p class="lede">Yes&mdash;experimentally. Matter Server 9 can use Home Assistant's Bluetooth stack, including a nearby ESPHome proxy, to set up a new Matter device from the server dashboard. The proxy carries only the short setup conversation; it does not replace Wi-Fi, Thread, or a Thread border router.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-pair-matter-without-phone-bluetooth-proxy/cover.png" alt="A homeowner placing a small Bluetooth proxy beside a smart bulb and door sensor while a phone rests unused" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Direct answer:</strong> Home Assistant Core 2026.6 or later plus Matter Server 9 can pair a new Matter device without a phone by using Home Assistant's Bluetooth stack and the Matter Server dashboard.</li>
+              <li><strong>Best use:</strong> Put an active ESPHome Bluetooth proxy&mdash;a small remote radio Home Assistant can use&mdash;near the new device when the main server lives in a rack, basement, VM host, or another room.</li>
+              <li><strong>What to avoid:</strong> Do not assume every Bluetooth proxy can do this. Matter needs an active two-way connection; Shelly Gen2+ proxies are documented as listen-only.</li>
+              <li><strong>What it does not replace:</strong> Bluetooth is only the setup handoff. Matter-over-Thread still needs a Thread border router&mdash;the device linking Thread to the home network&mdash;and Wi-Fi Matter still needs the right local network.</li>
+              <li><strong>Main caveat:</strong> Home Assistant still labels this proxy route experimental. Use the Companion app for the calmest default setup, and do not beta-test it on your only working door lock.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Yes, but It Is the Experimental Route</h2>
+          <p>As of <strong>July 11, 2026</strong>, Home Assistant can commission&mdash;the Matter word for pairing&mdash;a new device without borrowing Bluetooth from an Android phone or iPhone. Support arrived in <strong>Home Assistant Core 2026.6</strong>, and the stable <strong>Matter Server app 9</strong> can expose a Bluetooth-proxy option. Home Assistant then carries the setup conversation through its own Bluetooth integration, which can use a directly attached adapter or a nearby <strong>ESPHome Bluetooth proxy</strong>.</p>
+          <p>The important qualifier is <strong>experimental</strong>. Home Assistant's main Matter instructions still prepare an Android phone or iPhone and the Companion app. The no-phone route starts from the <strong>Matter Server dashboard</strong>, not the ordinary Add Device flow, and some devices or custom container setups can still fail. For a normal one-device setup, the phone remains the easier first choice.</p>
+          <p>A proxy also solves only the first few minutes. It gives the accessory its network information over Bluetooth. After that, the device communicates over <strong>Wi-Fi or Thread</strong>. If the product says Matter over Thread, you still need a working Thread border router and the right Thread credentials, which act much like that network's Wi-Fi password.</p>
+
+          <div class="callout">
+            <p><strong>Plain-English version:</strong> the proxy is a temporary local courier, not a new smart-home hub.</p>
+          </div>
+
+          <h2 id="what-changed">What Changed in June 2026</h2>
+          <p>Home Assistant merged Bluetooth-proxy support for Matter on <strong>May 26, 2026</strong>. The change lets Matter Server delegate Bluetooth scanning and two-way communication to Home Assistant's Bluetooth system, including ESPHome remote adapters. Matter Server's matching implementation says the proxy can carry the full sequence from finding the device through secure commissioning and normal Matter setup.</p>
+          <p>The first app version to expose the option was Matter Server 8.5, paired with the then-beta JavaScript server. That path is now obsolete for an ordinary installation. <strong>Matter Server 9.0</strong> moved the new matter.js server into the stable app on <strong>June 23, 2026</strong>. Its changelog still calls Bluetooth-proxy commissioning experimental, but you no longer need to enable the app's Beta switch just to reach it.</p>
+          <p>That distinction matters. If an old tutorial tells you to install a beta server, stop and update the stable Matter Server app instead. Home Assistant's app documentation also says the Beta setting can survive the 9.0 migration, so turn it off unless you deliberately want pre-release builds.</p>
+
+          <h2 id="which-route">Choose the Setup Route Before You Change Anything</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Setup route</th><th>Phone needed?</th><th>Support level in July 2026</th><th>Cloud and ecosystem boundary</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Home Assistant Companion app</strong></td><td>Yes</td><td>Normal documented route</td><td>Matter control is local afterward. Android commissioning uses Google Play Matter components; iPhone uses Apple's system flow.</td></tr>
+                <tr><td><strong>Matter Server dashboard + Home Assistant Bluetooth proxy</strong></td><td>No</td><td>Shipped in stable Matter Server 9, but explicitly experimental</td><td>The Bluetooth Low Energy (BLE) handoff stays local. Device identity checks, firmware, or vendor-only preparation may still need internet or a vendor app.</td></tr>
+                <tr><td><strong>Share an already-paired device from Apple Home or Google Home</strong></td><td>Usually yes, for the ecosystem app</td><td>Official Matter multi-admin route</td><td>Apple or Google remains a separate Matter controller. Sharing does not make Home Assistant use their cloud for local commands.</td></tr>
+                <tr><td><strong>Direct <code>bluetooth_adapter_id</code> setting</strong></td><td>No</td><td>Deprecated in Matter Server 9</td><td>Local, but tied to one adapter on the server. Use <code>ble_proxy</code> instead; the two settings are mutually exclusive.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="requirements">What You Need for the No-Phone Path</h2>
+          <ul>
+            <li><strong>Home Assistant Core 2026.6 or later.</strong></li>
+            <li><strong>Matter Server app 9.0 or later</strong> on the supported Home Assistant OS path.</li>
+            <li>The <strong>Matter integration</strong> and <strong>Bluetooth integration</strong> loaded in Home Assistant.</li>
+            <li>A Bluetooth adapter or proxy that supports an <strong>active connection</strong>, meaning it can talk both ways instead of only hearing broadcasts.</li>
+            <li>The accessory's original Matter QR label or numeric setup code and the manufacturer's reset or pairing instructions.</li>
+            <li>For Matter over Thread, a working <strong>Thread border router</strong>, a known Thread network, and the correct credentials. For Matter over Wi-Fi, the correct local Wi-Fi network.</li>
+          </ul>
+          <p>These steps target <strong>Home Assistant OS</strong>. Home Assistant calls that the supported Matter installation. A standalone Matter Server container is an advanced, unsupported path with extra Bluetooth, IPv6 local addressing, host-network, and mDNS local-discovery requirements. Do not treat a custom Docker recipe as equivalent to the app screens below.</p>
+
+          <h2 id="proxy-check">First, Confirm the Proxy Can Make Active Connections</h2>
+          <p>Go to <strong>Settings &gt; Bluetooth &gt; Adapters</strong>. Your ESPHome proxy should appear as a remote adapter. Open it and confirm it is available before touching the Matter device.</p>
+          <p>ESPHome's current Bluetooth Proxy documentation says active connections are enabled by default. A normal configuration includes <code>bluetooth_proxy:</code>, and older or deliberately restricted configurations may show <code>active: false</code>. Matter commissioning will not work through a listen-only proxy because the setup exchange needs repeated two-way Bluetooth messages.</p>
+
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Bluetooth path</th><th>Can it carry Matter commissioning?</th><th>Practical note</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>ESPHome ESP32 proxy with active connections</strong></td><td>Yes, experimentally</td><td>Place it near the accessory. Home Assistant documents support for active ESPHome connections going back to 2022-era firmware, but current ESPHome is the sensible target.</td></tr>
+                <tr><td><strong>Ethernet ESPHome proxy</strong></td><td>Yes, experimentally</td><td>Home Assistant ranks a current Ethernet proxy among its most reliable remote-adapter paths. The Olimex ESP32-POE-ISO-EA is its named development example.</td></tr>
+                <tr><td><strong>Wi-Fi ESPHome proxy</strong></td><td>Yes, experimentally</td><td>Usually fine when signal is strong. Do not tune aggressive scan intervals unless you have measured a problem.</td></tr>
+                <tr><td><strong>Shelly Gen2+ Bluetooth proxy</strong></td><td><strong>No</strong></td><td>Home Assistant lists Shelly Gen2+ remote adapters as advertisement listeners without active connections.</td></tr>
+                <tr><td><strong>Local adapter visible to Home Assistant Bluetooth</strong></td><td>Yes, experimentally</td><td>The same Home Assistant Bluetooth layer can use a local adapter. The proxy feature is still useful because it replaces the deprecated direct-adapter setting.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="setup">How to Try No-Phone Matter Commissioning</h2>
+          <h3 id="update">1. Back Up, Then Update the Stable Components</h3>
+          <p>Create a Home Assistant backup before a major Matter Server migration. Update Home Assistant Core to 2026.6 or later and Matter Server to version 9 or later. Wait for the Matter Server app to finish its first migration and return to Running. Leave the Beta switch off unless you consciously test pre-release software.</p>
+
+          <h3 id="verify-bluetooth">2. Verify Bluetooth Before Opening the Matter Device</h3>
+          <p>In <strong>Settings &gt; Bluetooth</strong>, confirm the intended adapter or ESPHome proxy is online. Place the proxy in the same room as the accessory. Bluetooth commissioning is intentionally short-range; a proxy behind several walls defeats the point.</p>
+
+          <h3 id="enable-proxy">3. Enable Matter Server's BLE Proxy Option</h3>
+          <p>Open <strong>Settings &gt; Apps &gt; Matter Server &gt; Configuration</strong>. Enable <code>ble_proxy</code>. If the deprecated <code>bluetooth_adapter_id</code> field has a value, clear it because the two modes cannot run together. Save the configuration and restart only the Matter Server app.</p>
+          <p>If the option is missing, do not paste experimental command-line flags into Home Assistant OS. Update the Matter Server app and Home Assistant Core first.</p>
+
+          <h3 id="commission">4. Put One Device in Pairing Mode</h3>
+          <p>Save a photo of the original Matter label, then follow the manufacturer's instructions to open the pairing window. Open the <strong>Matter Server app dashboard</strong>, choose <strong>Commission device</strong>, and enter the numeric Matter setup code. Follow the dashboard prompts and select the intended network if it asks.</p>
+          <p>Try one accessory at a time. Keep the proxy close, the accessory powered, and the Matter Server dashboard open until the operation finishes.</p>
+
+          <h3 id="verify">5. Verify Normal Control, Then Stop Thinking About Bluetooth</h3>
+          <p>After commissioning, open <strong>Settings &gt; Matter &gt; Devices</strong>. Rename the device, assign its area, and test its controls. A Thread device should now communicate through its Thread mesh and border router; a Wi-Fi device should use the LAN. The Bluetooth proxy is not in that normal control path.</p>
+
+          <div class="callout">
+            <p><strong>For locks and safety devices:</strong> keep a physical key, manual control, or another working access path. Do not factory-reset the only working entry lock merely to test an experimental commissioning screen.</p>
+          </div>
+
+          <h2 id="troubleshooting">If It Fails, Read the Stage of Failure</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>What you see</th><th>What it usually points to</th><th>Next safe step</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>ble_proxy</code> option is absent</td><td>Old Matter Server app or Home Assistant Core</td><td>Update the stable app and Core; do not enable Beta as a shortcut.</td></tr>
+                <tr><td><code>BLE proxy client did not connect</code></td><td>Matter Server exposed the endpoint, but Home Assistant's Matter integration did not bridge Bluetooth to it</td><td>Confirm the Matter integration and Bluetooth adapter are loaded, then restart Matter Server and reload the integration.</td></tr>
+                <tr><td>No commissionable device is discovered</td><td>Pairing window expired, proxy is too far away, or the adapter cannot make active connections</td><td>Reopen pairing mode, move the proxy closer, and verify active support. Do not factory-reset repeatedly.</td></tr>
+                <tr><td>Bluetooth starts, then setup stalls on the network</td><td>BLE did its job; Wi-Fi, Thread credentials, IPv6 local addressing, or the border-router path failed next</td><td>Use Tara's <a href="/blog/home-assistant-matter-checking-network-connectivity/">Matter network-connectivity guide</a>.</td></tr>
+                <tr><td>The device pairs but is unavailable afterward</td><td>Normal Matter traffic cannot reach the device</td><td>Check the device's network type, Matter Server diagnostics, and Thread or Wi-Fi path. The proxy is no longer the transport.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Early community tests found failures with particular ESP32 firmware branches, custom rootless Docker layouts, and specific accessories. Those reports explain why the label is still experimental. They are not a reason to install a random beta or copy one person's low-level workaround into a stable house.</p>
+
+          <h2 id="not-a-border-router">A Bluetooth Proxy Is Not a Thread Border Router</h2>
+          <p>This is the easiest mistake to make. <strong>Bluetooth</strong> introduces the accessory and hands over network information. <strong>Thread</strong> is the low-power mesh some Matter devices use after setup. A <strong>Thread border router</strong> connects that mesh to the home's Ethernet or Wi-Fi network. <strong>Matter Server</strong> is Home Assistant's controller.</p>
+          <p>One box can perform more than one role, but the roles remain separate. An ESPHome Bluetooth proxy does not create a Thread network. A HomePod, Apple TV, Nest Hub, or Home Assistant Thread radio does not automatically give a distant Home Assistant server Bluetooth reach. Buy or configure the missing role, not another generic hub.</p>
+
+          <h2 id="apple-google">What About Apple Home, Google Home, Alexa, and SmartThings?</h2>
+          <p>If a Matter device is already working in Apple Home, Google Home, Alexa, or SmartThings, do not factory-reset it just to use the proxy path. Open a fresh Matter sharing window in the platform that already controls it, then add it to Home Assistant as an <strong>already in use</strong> device. That is Matter multi-admin, and it preserves the first controller.</p>
+          <p>The Bluetooth proxy also does not convert a HomeKit-only Thread accessory into Matter. Look for the Matter logo and a Matter setup code. For a true Matter device, each ecosystem gets its own secure controller relationship, while the physical device and its Wi-Fi or Thread network stay the same.</p>
+
+          <h2 id="local-control">Local Control Is Not the Same as an Air-Gapped Setup</h2>
+          <p>The proxy connection stays inside the home, and Home Assistant's Matter commands run locally after commissioning. That avoids sending ordinary light, sensor, or switch commands through a vendor cloud.</p>
+          <p>Still, Home Assistant's newer Matter Server checks device certification and certificate-revocation information during setup. Firmware discovery, vendor calibration, account-gated bridge modes, remote access, and voice assistants may also use internet services. The honest promise is <strong>local device control</strong>, not that every brand can be introduced, updated, and supported forever with the internet physically disconnected.</p>
+
+          <h2 id="recommendation">Tara's Practical Recommendation</h2>
+          <p>Use the Companion app when it works. It is the documented path, it already has a camera for the QR code, and it guides the Thread credential handoff. Use the Bluetooth-proxy route when it solves a real physical problem: the Home Assistant computer is far from the device, the phone cannot run the required commissioning stack, or you already maintain reliable ESPHome proxies around the house.</p>
+          <p>For an installed home, treat experimental commissioning as a service tool, not the family's daily workflow. Document which proxy was used, save every Matter setup code, keep the stable app channel, and verify the device's real Wi-Fi or Thread path before handoff.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/home-assistant-bluetooth-proxy-guide/">Home Assistant Bluetooth Proxy: When You Need One and How to Add It</a></li>
+            <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Why Matter Pairing Gets Stuck on Checking Network Connectivity</a></li>
+            <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says Your Device Requires a Thread Border Router</a></li>
+            <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+            <li><a href="/blog/lost-matter-qr-code-home-assistant/">Lost Your Matter QR Code? What Home Assistant Can Recover</a></li>
+          </ul>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-no-phone">Can Home Assistant add a new Matter device without a phone?</h3>
+          <p>Yes, experimentally. Use Home Assistant Core 2026.6 or later, Matter Server 9, the <code>ble_proxy</code> option, an active Home Assistant Bluetooth adapter or ESPHome proxy, and the Matter Server dashboard. The Companion app remains the normal documented route.</p>
+          <h3 id="faq-thread-router">Does a Bluetooth proxy replace a Thread border router?</h3>
+          <p>No. Bluetooth carries setup. A Matter-over-Thread accessory still needs a Thread border router and correct Thread network credentials for normal operation.</p>
+          <h3 id="faq-shelly">Can a Shelly Bluetooth proxy commission Matter devices?</h3>
+          <p>Not through Home Assistant's current path. Home Assistant documents Shelly Gen2+ remote adapters as advertisement listeners without active Bluetooth connections. Matter commissioning needs an active, two-way connection.</p>
+          <h3 id="faq-after-setup">Is Bluetooth still needed after setup?</h3>
+          <p>Normally no. Once commissioned, Matter uses Wi-Fi, Ethernet, or Thread. Keep the proxy only for future setup jobs or other Bluetooth devices.</p>
+          <h3 id="faq-cloud">Is this completely cloud-free?</h3>
+          <p>The Bluetooth handoff and normal Matter control can stay local. Certification data, firmware, vendor-only setup, remote access, and voice services may still use the internet.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant and ESPHome documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/">Home Assistant Matter integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/bluetooth/">Home Assistant Bluetooth integration and remote-adapter capabilities</a></li>
+                <li><a href="https://esphome.io/components/bluetooth_proxy/">ESPHome Bluetooth Proxy documentation</a></li>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/matter_server/DOCS.md">Matter Server app configuration</a></li>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md">Matter Server app changelog</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/">Home Assistant's Matter Server 9 announcement, June 23, 2026</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Implementation and community caveats</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/pull/171384">Home Assistant Core pull request adding Matter BLE-proxy support</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/pull/662">Matter Server end-to-end BLE-proxy implementation</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1q90xi4/why_is_matter_commissioning_so_complicated_how_to/">r/homeassistant: commissioning Matter without a phone</a></li>
+                <li><a href="https://community.home-assistant.io/t/perform-a-matter-ble-onboarding-through-an-esp32-bluetooth-proxy/461360">Home Assistant Community: long-running ESP32 proxy request</a></li>
+                <li><a href="https://community.home-assistant.io/t/bluetooth-proxy-to-connect-to-matterjs-server-ble-endpoint-configuration-problems/1011942">Home Assistant Community: early 2026 proxy configuration and device caveats</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the whole path</p>
+          <h2>Want local Matter without turning every setup into a radio experiment?</h2>
+          <p>Tara plans the controller, Thread, Bluetooth, network, documentation, and handoff as one installed system.</p>
+          <a class="cta" href="/configurator/">Plan your Tara kit</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Keep reading</p>
+          <div class="links">
+            <a href="/blog/home-assistant-bluetooth-proxy-guide/">Bluetooth proxy guide</a>
+            <a href="/blog/home-assistant-matter-checking-network-connectivity/">Matter network handoff</a>
+            <a href="/blog/home-assistant-thread-border-router-required/">Thread border router error</a>
+            <a href="/blog/">All technical guides</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>© 2026 Tara Home. Local-first smart home kits.</span>
+      <span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span>
+    </footer>
+  </body>
+</html>
