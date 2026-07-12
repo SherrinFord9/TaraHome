@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why Is Your Matter Device Missing Features in Home Assistant? | Tara Guides</title>
+    <meta name="description" content="Learn why a Matter device can show more controls in its vendor app, Apple Home, Google Home, Alexa, or SmartThings than it shows in Home Assistant." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/matter-device-missing-features-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/matter-device-missing-features-home-assistant/" />
+    <meta property="og:title" content="Why Is Your Matter Device Missing Features in Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Use a three-layer check before resetting a Matter device: device firmware, controller support, and the app or automation interface." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/matter-device-missing-features-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Is Your Matter Device Missing Features in Home Assistant? | Tara Guides" />
+    <meta name="twitter:description" content="A missing Matter control is usually a support gap, not a pairing failure. Check the device, controller, and app before you reset anything." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/matter-device-missing-features-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/matter-device-missing-features-home-assistant/#blogposting",
+          "headline": "Why Is Your Matter Device Missing Features in Home Assistant?",
+          "description": "Why one Matter device can show different controls in Home Assistant, its vendor app, Apple Home, Google Home, Alexa, and SmartThings—and what to check before resetting it.",
+          "image": "https://tarahome.ai/assets/generated/blog/matter-device-missing-features-home-assistant/cover.png",
+          "datePublished": "2026-07-11",
+          "dateModified": "2026-07-11",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/matter-device-missing-features-home-assistant/"
+          },
+          "citation": [
+            "https://csa-iot.org/all-solutions/matter/matter-faq/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://support.apple.com/en-us/102135",
+            "https://developers.home.google.com/matter/supported-devices",
+            "https://developers.home.google.com/matter/get-started#unsupported_features",
+            "https://developer.amazon.com/en-US/docs/alexa/smarthome/supported-matter-device-categories.html",
+            "https://developer.smartthings.com/docs/devices/device-basics",
+            "https://github.com/orgs/home-assistant/discussions/738",
+            "https://www.reddit.com/r/homeassistant/comments/1nob3gn/matter_works_with_home_assistant_is_a_scam/",
+            "https://www.reddit.com/r/homeassistant/comments/1moufrp/whats_the_point_of_matter_if_you_still_need_the/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/matter-device-missing-features-home-assistant/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Missing Matter features", "item": "https://tarahome.ai/blog/matter-device-missing-features-home-assistant/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/matter-device-missing-features-home-assistant/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why does a Matter device have more features in its vendor app than in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The vendor app can use private features outside Matter. Home Assistant can only present what the device exposes through Matter and what the current Matter integration maps into entities, actions, and automations." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is Home Assistant's Matter support unofficial?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant and the Open Home Foundation Matter Server are officially certified by the Connectivity Standards Alliance. A missing feature can still be a device, Matter-version, controller, or user-interface support gap." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will sharing a Matter device with Apple Home or Google Home add missing features to Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Matter multi-admin gives each controller its own secure relationship with the device. One controller does not copy its user interface or feature mapping into another controller." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I factory-reset a Matter device when one control is missing?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually not. A reset repairs secure setup or pairing records, not missing controller support. Update the device and controllers, check official device-type and cluster support, and compare the brand-specific Home Assistant integration before resetting." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Matter still work locally if the vendor app needs the cloud?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Normal Matter control is local. A vendor may still require an account to enable Matter, update firmware, or configure advanced features. Treat local daily control and cloud-free setup as separate promises." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter feature support</span><span>July 11, 2026</span><span>13 min read</span></p>
+            <h1>Why Is Your Matter Device Missing Features in Home Assistant?</h1>
+            <p class="lede">A Matter badge promises a common local language, not identical controls in every app. If a feature works in the vendor app, Apple Home, Google Home, Alexa, or SmartThings but not Home Assistant, check the device, controller, and app layers before you reset anything.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/matter-device-missing-features-home-assistant/cover.png" alt="A homeowner using a wall switch beside a lit lamp, phone, and smart speaker in a warm living room" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Do not factory-reset first:</strong> a missing button, sensor, scene, or automation choice is usually a support gap, not a broken pairing.</li>
+              <li><strong>Check three layers:</strong> the device must expose the feature, the Matter controller (Home Assistant, Apple Home, Google Home, Alexa, or SmartThings) must understand it, and the app must turn it into a visible control or automation option.</li>
+              <li><strong>Use Matter for:</strong> common controls that keep working inside your home without an internet connection, plus sharing one device across several smart-home platforms.</li>
+              <li><strong>Prefer a mature brand-specific local Home Assistant integration:</strong> when it provides important extras that Matter leaves out, such as Philips Hue dynamic scenes and entertainment mode.</li>
+              <li><strong>Main caveat:</strong> device software (firmware) and controller updates can add support later, while vendor-only settings or updates may still require the vendor app, an account, or cloud access.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Matter Matches the Basics, Not Every Feature</h2>
+          <p><strong>Your device is probably not broken.</strong> A Matter accessory can work perfectly in Home Assistant and still show fewer controls than it shows elsewhere. Matter standardizes device types and clusters&mdash;small bundles of capabilities such as on/off, brightness, lock state, fan speed, or temperature. It does not force every manufacturer to put every private feature into Matter, and it does not force every controller to display every optional cluster on the same day.</p>
+          <p>A Matter controller is the app or system controlling the device. The practical check has three parts. First, did the device or bridge software expose the feature through Matter? Second, does the current Home Assistant Matter integration support that device type and cluster? Third, did Home Assistant turn it into a visible control, sensor reading, button press, or automation choice? The same three questions apply to Apple Home, Google Home, Alexa, and SmartThings.</p>
+          <p>That is why a reset is usually the wrong first move. Resetting clears pairing and controller relationships; it cannot teach an app a feature it does not support. Update the device, Home Assistant Core, Matter Server, and any other controller first. Then check the official support tables and choose between Matter, a brand-specific local Home Assistant integration, or a vendor maintenance app.</p>
+
+          <h2 id="three-layers">The Three Places a Matter Feature Can Disappear</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Layer</th><th>What it means in the house</th><th>What to check</th><th>What can fix it</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>1. Device or bridge</strong></td><td>The hardware decides which standard and vendor-specific capabilities it publishes.</td><td>Exact model, firmware, Matter version, and whether a bridge exposes that child device at all.</td><td>Vendor firmware or a different integration path. Resetting rarely adds a missing capability.</td></tr>
+                <tr><td><strong>2. Matter controller</strong></td><td>Home Assistant, Apple, Google, Alexa, or SmartThings must understand the device type and cluster.</td><td>Current official device-type and cluster support, plus release notes.</td><td>Update the controller or wait for support. A native integration may already handle it.</td></tr>
+                <tr><td><strong>3. App and automation layer</strong></td><td>The controller may read a capability but still lack a visible control, sensor reading, button press, or automation choice.</td><td>Device page, disabled or hidden controls, actions, button events, automation choices, and known issues.</td><td>A controller, Home Assistant app, or dashboard update. Advanced users can follow a confirmed issue; homeowners should not guess with raw cluster commands.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Think of a Matter cluster as a page in a shared instruction book. The device has to include the page, the controller has to know how to read it, and the app has to give you a useful control. A gap at any one step produces the same homeowner symptom: “The feature is missing.”</p>
+
+          <h2 id="badge">What the Matter Badge Does and Does Not Promise</h2>
+          <p>The Connectivity Standards Alliance describes Matter as a common way to set up and control devices across compatible platforms. It also says vendor apps can continue to offer <strong>advanced configuration and differentiated features</strong>. That is the boundary in one sentence: Matter gives you an interoperable foundation, while brands and controllers can build more around it.</p>
+          <p>A Matter badge therefore does not promise that:</p>
+          <ul>
+            <li>every vendor-only mode, map, effect, calibration, or diagnostic will appear in every controller;</li>
+            <li>Apple Home, Google Home, Alexa, SmartThings, and Home Assistant will ship support for a new device type together;</li>
+            <li>a Matter bridge will expose every older device behind it;</li>
+            <li>firmware updates will arrive through Matter, because Matter over-the-air updating is optional;</li>
+            <li>you will never need the vendor app for initial activation, firmware, or advanced settings.</li>
+          </ul>
+          <div class="callout">
+            <p><strong>Home Assistant's Matter support is official.</strong> Home Assistant and the Open Home Foundation Matter Server are certified by the Connectivity Standards Alliance. “Missing feature” does not mean “unofficial controller”; it means one of the three support layers still has a gap.</p>
+          </div>
+
+          <h2 id="platforms">What Each Major Platform Officially Supports</h2>
+          <p>Support moves quickly, so use these as July 11, 2026 boundaries rather than permanent promises.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Control path</th><th>Official support and local control</th><th>Cloud or account boundary</th><th>Matter, HomeKit, and practical caveat</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Home Assistant Matter</strong></td><td>Officially certified controller. Normal Matter commands stay on the local Wi-Fi, Ethernet, or Thread network. Thread is the low-power home network used by many Matter devices. Matter Server 9 supports Matter 1.5.1.</td><td>Some vendors still require an account to enable Matter, and remote access is a separate choice.</td><td>Use Matter for standard controls. Prefer a mature native <em>local</em> integration when it exposes important extras.</td></tr>
+                <tr><td><strong>Apple Home</strong></td><td>Apple lists supported categories including bridges, lights, locks, outlets, switches, thermostats, blinds, shades, and several sensor types.</td><td>Apple Account, iCloud Keychain, and a home hub are part of syncing and the best remote experience.</td><td>HomeKit and Matter are separate protocols. A HomeKit-only feature does not automatically become a Matter feature in another controller.</td></tr>
+                <tr><td><strong>Google Home</strong></td><td>Google says many Matter device types are supported, but not all are fully supported. Local Matter control uses a compatible Google hub.</td><td>Google account, app, voice, and remote services remain part of the wider experience.</td><td>Google does not expose several clusters to users, including Binding; Groups and Scenes are handled through Routines instead of direct Matter controls.</td></tr>
+                <tr><td><strong>Amazon Alexa</strong></td><td>Amazon publishes a current device-category and cluster-to-Alexa-capability table for compatible Echo and eero Matter hubs.</td><td>Alexa app, voice, and remote services use an Amazon account and cloud services around the local Matter connection.</td><td>Only clusters mapped to Alexa capabilities become usable Alexa controls. Amazon also applies security limits to locks and other sensitive devices.</td></tr>
+                <tr><td><strong>Samsung SmartThings</strong></td><td>Matter over Thread, Wi-Fi, and Ethernet connects through compatible SmartThings hubs. Device profiles and capabilities define what SmartThings can represent.</td><td>The hub handles local device traffic; the SmartThings account and app remain part of setup, presentation, and remote use.</td><td>A Matter cluster still needs a matching SmartThings capability and app presentation. Community-made SmartThings drivers do not equal official product support.</td></tr>
+                <tr><td><strong>Vendor app or native integration</strong></td><td>Can expose proprietary features that do not exist in Matter. A native Home Assistant integration may be local or cloud-based, depending on the brand.</td><td>Firmware, diagnostics, and advanced setup may require the vendor account or cloud.</td><td>Keep the app as a maintenance tool when necessary. Do not let both the vendor app and Home Assistant run duplicate automations.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="examples">Four Real Examples That Explain the Mismatch</h2>
+          <h3 id="hue">Philips Hue: Native Local Control Is Richer Than Matter</h3>
+          <p>Home Assistant's own Matter documentation uses Philips Hue as the clearest example. Hue through Matter provides basic light controls. The native Home Assistant Hue integration also runs locally and adds Hue-specific features such as dynamic scenes and entertainment mode. For Home Assistant, Matter is not automatically the better path just because it is newer.</p>
+
+          <h3 id="switchbot">SwitchBot Bridge: The Bridge Chooses What Crosses</h3>
+          <p>Home Assistant warns that a Matter bridge does not guarantee every device behind it will appear. Its documentation uses SwitchBot Hub 2 version 1.5 as an example: curtains, locks, and blinds could cross through Matter, while lights could not. The missing light was a bridge-exposure limit, not a reason to reset Home Assistant.</p>
+
+          <h3 id="vacuum">Robot Vacuums: The Feature Existed Before Home Assistant Displayed It</h3>
+          <p>A Home Assistant GitHub discussion documented an ECOVACS DEEBOT X8 PRO OMNI exposing Matter's ServiceArea information while Apple Home already showed room controls. Home Assistant did not yet present that cluster. Home Assistant 2026.3 later added area cleaning for supported Matter vacuums. Same device, same standard, different controller timing&mdash;then an update closed the gap.</p>
+
+          <h3 id="google-switch">Google Home: A Device Can Pair but Still Have No Useful Control</h3>
+          <p>Google's official Matter table says an on/off light switch can be paired, but Google Home does not expose the Binding cluster that tells it which light to control. The switch can therefore appear without a useful end-user setup path. Pairing succeeded; controller presentation did not finish the job.</p>
+
+          <h2 id="updates">Feature Support Changes With Updates</h2>
+          <p>Home Assistant's recent releases make the moving target visible. Version 2026.3 added Matter vacuum area cleaning, carbon monoxide alarm states, and total volatile organic compound (TVOC) air-quality sensors. Version 2026.7 added Matter soil-moisture sensors. Matter Server 9 moved Home Assistant to Matter 1.5.1 on June 23, 2026.</p>
+          <p>That does not mean every Matter 1.5.1 feature instantly becomes a visible Home Assistant control or reading, called an entity. It means the controller foundation can understand that specification. Work on how that control appears, its actions, testing, and the user interface can land separately.</p>
+
+          <h2 id="troubleshoot">The Safe Troubleshooting Order</h2>
+          <ol>
+            <li><strong>Name the exact missing feature.</strong> “My vacuum works” is too broad. Write down “room selection appears in Apple Home but not Home Assistant,” or “the vendor app has a transition effect that Matter does not show.”</li>
+            <li><strong>Record where it works.</strong> Test the vendor app and each Matter controller separately. Matter multi-admin gives each controller its own direct relationship; one app working does not prove another app supports the same cluster.</li>
+            <li><strong>Update without resetting.</strong> Update device or bridge firmware, Home Assistant Core, Matter Server, and the other ecosystem controllers. Save setup codes and make a backup first.</li>
+            <li><strong>Check the device or bridge boundary.</strong> Confirm the exact model is exposed through Matter. A bridge may publish only a subset of its children or features.</li>
+            <li><strong>Check the controller's official support.</strong> Use Home Assistant release notes and the Apple, Google, Amazon, or SmartThings documentation for the device type and capability.</li>
+            <li><strong>Check Home Assistant's presentation.</strong> Look for entities, disabled entities, events, actions, and automation choices on the device page. Download diagnostics only when you are ready to open a careful issue and remove private information before sharing.</li>
+            <li><strong>Compare the native path.</strong> If Home Assistant has a mature local integration with more useful controls, use it. Keep Matter for the platforms where its common controls and multi-admin sharing help.</li>
+          </ol>
+          <div class="callout">
+            <p><strong>Do not factory-reset for a missing control.</strong> Reset only when you have evidence of a secure setup or pairing-record problem. A reset can erase working controller relationships and setup state without adding a single feature.</p>
+          </div>
+
+          <h2 id="local-cloud">Local Control and Cloud Dependency Are Separate Questions</h2>
+          <p>Home Assistant's Matter documentation is clear that normal Matter control is local and does not require the vendor cloud. It is equally clear that some vendors require an account before they let you enable Matter on a bridge or product. The Connectivity Standards Alliance also allows vendor apps to provide advanced features outside the common Matter experience.</p>
+          <p>Ask four separate questions before buying or changing a path:</p>
+          <ul>
+            <li><strong>Does daily control work during an internet outage?</strong></li>
+            <li><strong>Is a vendor login required to turn on Matter or pair the bridge?</strong></li>
+            <li><strong>Where do firmware and security updates come from?</strong></li>
+            <li><strong>Which advanced controls disappear if the vendor cloud or app goes away?</strong></li>
+          </ul>
+          <p>A device can have local Matter control and still need cloud-backed maintenance. A native Home Assistant integration can also be either local or cloud-based. Check the exact integration instead of treating “native” or “Matter” as automatic proof.</p>
+
+          <h2 id="choose-path">Which Control Path Should You Choose?</h2>
+          <ul>
+            <li><strong>Choose Matter</strong> when you need common controls to stay local and the same device to join several major platforms.</li>
+            <li><strong>Choose a native local Home Assistant integration</strong> when it is stable, officially maintained, and exposes important features Matter does not.</li>
+            <li><strong>Keep the vendor app for maintenance</strong> when firmware, calibration, maps, or special modes live there. Turn off duplicate schedules and automations.</li>
+            <li><strong>Avoid the vendor cloud path</strong> when a proven local Matter or native integration gives you everything the household needs.</li>
+          </ul>
+          <p>Tara's default is one automation owner. Let Home Assistant run the household logic. Use Apple Home, Google Home, Alexa, or SmartThings as family-facing controls where helpful. Use the vendor app for the smallest maintenance role it genuinely needs.</p>
+
+          <h2 id="safety">Locks, Garage Doors, and Safety Devices Need a Slower Test</h2>
+          <p>For a lock, garage door, alarm, smoke detector, or water shutoff, a missing control can be an intentional security limit rather than an unfinished feature. Google and Amazon publish platform-specific restrictions for sensitive device types. Do not try to bypass them with unverified custom commands.</p>
+          <p>Keep a physical key, manual release, local alarm behavior, or another safe fallback. Test alerts and automations while someone is home. Never remove the last working controller or factory-reset the only working entry device merely to make two apps look identical.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How to Share One Matter Device Across Home Assistant, Apple Home, Google Home, Alexa, and SmartThings</a></li>
+            <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
+            <li><a href="/blog/philips-hue-home-assistant-bridge-matter-zigbee/">Philips Hue in Home Assistant: Bridge, Matter, or Zigbee?</a></li>
+            <li><a href="/blog/update-matter-device-firmware-home-assistant/">Can Home Assistant Update Matter Device Firmware Without the Vendor App?</a></li>
+            <li><a href="/blog/where-should-smart-home-automations-live/">Where Should Your Smart Home Automations Live?</a></li>
+          </ul>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-vendor-more">Why does the vendor app have more features than Home Assistant?</h3>
+          <p>The vendor app can use private controls outside Matter. Home Assistant can present only what the product exposes through Matter and what the current Matter integration maps into entities, actions, and automations. Compare the native Home Assistant integration before assuming Matter is the richest path.</p>
+
+          <h3 id="faq-official">Is Home Assistant's Matter support unofficial?</h3>
+          <p>No. Home Assistant and the Open Home Foundation Matter Server are officially certified by the Connectivity Standards Alliance. A missing control can still be a product-firmware, Matter-version, controller, or app-presentation gap.</p>
+
+          <h3 id="faq-sharing">Will sharing the device from Apple Home or Google Home unlock the feature in Home Assistant?</h3>
+          <p>No. Multi-admin gives each controller its own secure relationship with the device. Apple or Google does not copy its user interface or feature mapping into Home Assistant.</p>
+
+          <h3 id="faq-reset">Should I factory-reset when one feature is missing?</h3>
+          <p>Usually not. Update first, identify the exact missing capability, check official controller support, and compare the brand-specific Home Assistant integration. Reset only for a confirmed secure setup or pairing-record problem.</p>
+
+          <h3 id="faq-internet">Does Matter still work locally if the vendor app needs the cloud?</h3>
+          <p>Normal Matter control is local. The vendor may still require an account to enable Matter, install firmware, or configure advanced features. Local daily control and fully cloud-free setup are separate promises.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Matter and Home Assistant documentation</h3>
+              <ul>
+                <li><a href="https://csa-iot.org/all-solutions/matter/matter-faq/">Connectivity Standards Alliance Matter FAQ</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/">Home Assistant Matter integration documentation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/03/10/matter-certification/">Home Assistant Matter certification announcement</a></li>
+                <li><a href="https://csa-iot.org/csa_product/home-assistant/">Connectivity Standards Alliance Home Assistant certification record</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/">Home Assistant Matter Server 9 and Matter 1.5.1 announcement</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/03/04/release-20263/">Home Assistant 2026.3 release notes: Matter vacuum areas and sensors</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/">Home Assistant 2026.7 release notes: Matter soil-moisture sensors</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Platform documentation</h3>
+              <ul>
+                <li><a href="https://support.apple.com/en-us/102135">Apple: pair and manage Matter accessories</a></li>
+                <li><a href="https://developers.home.google.com/matter/supported-devices">Google Home Matter device-type and control support</a></li>
+                <li><a href="https://developers.home.google.com/matter/get-started#unsupported_features">Google Home Matter clusters not exposed to users</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/supported-matter-device-categories.html">Amazon Alexa Matter device-category and cluster support</a></li>
+                <li><a href="https://developer.smartthings.com/docs/devices/device-basics">SmartThings device types and hub-connected Matter path</a></li>
+                <li><a href="https://developer.smartthings.com/docs/devices/device-profiles">SmartThings device profiles, capabilities, and app presentation</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Implementation examples</h3>
+              <ul>
+                <li><a href="https://github.com/orgs/home-assistant/discussions/738">Home Assistant GitHub: Matter vacuum ServiceArea support</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/106284">Home Assistant GitHub: Matter multi-press feature mapping</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1nob3gn/matter_works_with_home_assistant_is_a_scam/">r/homeassistant: features exposed through Matter and Works with Home Assistant</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1moufrp/whats_the_point_of_matter_if_you_still_need_the/">r/homeassistant: why a vendor app may still be needed</a></li>
+                <li><a href="https://community.home-assistant.io/t/is-matter-dead/878520">Home Assistant Community: Matter maturity and device support</a></li>
+                <li><a href="https://community.home-assistant.io/t/is-matter-open-or-secretly-closed-in-an-effort-to-shut-us-down/962822">Home Assistant Community: open standard and platform feature differences</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan one control system</p>
+          <h2>Want the useful features without five apps running the same house?</h2>
+          <p>Tara plans the local integration path, Matter sharing, firmware workflow, family controls, and one clear owner for every automation.</p>
+          <a class="cta" href="/configurator/">Plan your Tara kit</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Keep reading</p>
+          <div class="links">
+            <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a>
+            <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing order</a>
+            <a href="/blog/update-matter-device-firmware-home-assistant/">Matter firmware</a>
+            <a href="/blog/">All technical guides</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>© 2026 Tara Home. Local-first smart home kits.</span>
+      <span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span>
+    </footer>
+  </body>
+</html>
