@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Do You Need a SwitchBot Hub With Home Assistant? | Tara Guides</title>
+    <meta name="description" content="Use SwitchBot in Home Assistant through direct local Bluetooth, a Hub 2 or Hub 3 Matter bridge, or cloud—and know when each path is worth it." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/do-you-need-switchbot-hub-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/do-you-need-switchbot-hub-home-assistant/" />
+    <meta property="og:title" content="Do You Need a SwitchBot Hub With Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Start with direct local Bluetooth. Add a SwitchBot Matter hub only when it solves a range, sharing, IR, or household-control problem." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-switchbot-hub-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Do You Need a SwitchBot Hub With Home Assistant? | Tara Guides" />
+    <meta name="twitter:description" content="Compare SwitchBot Bluetooth, Hub 2, Hub 3, Matter, HomeKit, and cloud paths before buying another hub." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-switchbot-hub-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .article > article, .article-hero, .article-body { min-width: 0; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/do-you-need-switchbot-hub-home-assistant/#blogposting",
+      "headline": "Do You Need a SwitchBot Hub With Home Assistant? Bluetooth vs Matter vs Cloud",
+      "description": "Use SwitchBot in Home Assistant through direct local Bluetooth, a Hub 2 or Hub 3 Matter bridge, or cloud—and know when each path is worth it.",
+      "image": "https://tarahome.ai/assets/generated/blog/do-you-need-switchbot-hub-home-assistant/cover.png",
+      "datePublished": "2026-07-12",
+      "dateModified": "2026-07-12",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/do-you-need-switchbot-hub-home-assistant/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/switchbot/",
+        "https://www.home-assistant.io/integrations/switchbot_matter/",
+        "https://www.home-assistant.io/integrations/switchbot_cloud/",
+        "https://www.home-assistant.io/blog/2025/06/26/switchbot-joins-works-with-home-assistant/",
+        "https://support.switch-bot.com/hc/en-us/articles/13569889726743-Differences-Between-Hub-Mini-Hub-2-Hub-Mini-Matter-Enabled-and-Hub-3",
+        "https://support.switch-bot.com/hc/en-us/articles/38979658026519-SwitchBot-Device-Matter-Compatibility"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/do-you-need-switchbot-hub-home-assistant/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Do You Need a SwitchBot Hub With Home Assistant?", "item": "https://tarahome.ai/blog/do-you-need-switchbot-hub-home-assistant/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/do-you-need-switchbot-hub-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need a SwitchBot Hub for Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Usually no. Home Assistant's official SwitchBot Bluetooth integration controls many SwitchBot devices locally and says a SwitchBot Hub is not required. Use working active Bluetooth or an ESPHome Bluetooth proxy for range." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SwitchBot Matter control in Home Assistant local?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Home Assistant classifies SwitchBot Matter as local. A bridged child device still talks to the SwitchBot hub over Bluetooth, and the hub talks to Home Assistant over the local network. The SwitchBot app and account are still used to register, update, and configure the hub and its secondary devices." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I buy SwitchBot Hub 2 or Hub 3 for Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Hub 2 is the sensible default if you only need a Matter bridge, infrared control, and up to eight bridged secondary devices. Hub 3 supports up to 30, adds a dial and more on-device controls, and costs more. Start with Bluetooth if a hub does not solve a specific problem." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SwitchBot Hub 2 or Hub 3 a Thread border router?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. These SwitchBot hubs bridge supported Bluetooth children into Matter over the local Wi-Fi network. They are not Thread border routers and do not provide the Thread radio needed by Matter-over-Thread products." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a SwitchBot Bluetooth device appear in Apple Home without a SwitchBot hub?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Often yes. Add the supported SwitchBot device to Home Assistant over Bluetooth, then expose its compatible controls and sensor readings to Apple Home with Home Assistant's HomeKit Bridge integration. Home Assistant remains the local bridge." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>SwitchBot &amp; Local Control</span><span>July 12, 2026</span><span>13 min read</span></p>
+            <h1>Do You Need a SwitchBot Hub With Home Assistant?</h1>
+            <p class="lede">Usually no: start with direct local Bluetooth and add a Bluetooth proxy for range. Buy Hub 2 or Hub 3 when you need to share supported devices with other smart-home platforms through Matter, use infrared control, or add a separate household control surface.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/do-you-need-switchbot-hub-home-assistant/cover.png" alt="SwitchBot Hub 2 and Hub 3 on a warm wood console in a living room" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Start here:</strong> Add supported SwitchBot devices directly with Home Assistant's Bluetooth set to Active so it can send commands. A SwitchBot hub is not required.</li>
+    <li><strong>If range is poor:</strong> Put an ESPHome Bluetooth proxy—a small local radio extender—near the device before buying a Hub 2 or Hub 3.</li>
+    <li><strong>Buy a hub when:</strong> You want its screen or infrared remote, or you want it to translate supported Bluetooth devices into Matter for Home Assistant, Apple Home, Google Home, Alexa, or SmartThings.</li>
+    <li><strong>Avoid this:</strong> Do not choose the SwitchBot Cloud integration as the default no-cloud path; it needs the vendor service and some sensor readings refresh only once every 10 minutes.</li>
+    <li><strong>Main caveat:</strong> Matter control stays inside your home, but hub setup, built-in software updates, and selecting bridged devices still use the SwitchBot app and account—and Matter may expose fewer features than Bluetooth.</li>
+  </ul>
+</aside>
+
+<h2 id="short-answer">Short Answer: Most Homes Should Try Bluetooth First</h2>
+<p><strong>You usually do not need a SwitchBot hub to use SwitchBot devices with Home Assistant.</strong> Home Assistant's official SwitchBot Bluetooth integration—the connector that adds SwitchBot products—says so directly. It supports local control for Bot, Curtain 3, Blind Tilt, Roller Shade, meters, sensors, current locks, plugs, lights, leak detectors, and more. Home Assistant calls this <strong>Local Push</strong>: normal updates and commands stay inside the home instead of visiting SwitchBot's cloud first.</p>
+<p>Start with a Bluetooth adapter in <strong>Active mode</strong>, which lets Home Assistant send commands instead of only listening. If a curtain, lock, or meter is too far away, put an <a href="/blog/home-assistant-bluetooth-proxy-guide/">ESPHome Bluetooth proxy</a> nearby. This small local radio extender relays Bluetooth between that room and Home Assistant, often fixing range without a SwitchBot hub.</p>
+<p>Buy Hub 2 or Hub 3 only for an extra job: translating supported Bluetooth devices into Matter, learning infrared remotes, providing SwitchBot's display and buttons, or keeping a separate SwitchBot app experience. Matter is the shared standard used by Home Assistant, Apple Home, Google Home, Alexa, and SmartThings. A hub can be useful; it is not the admission ticket for Home Assistant.</p>
+
+<div class="callout">
+  <p><strong>The simplest rule:</strong> try direct Bluetooth, improve Bluetooth range if needed, then add Matter only for a specific cross-platform reason. Use one main connection method per device once testing is over.</p>
+</div>
+
+<h2 id="three-paths">The Three SwitchBot Paths Are Not the Same</h2>
+<p>“Works with Home Assistant” can mean local Bluetooth, local Matter, or SwitchBot Cloud. All three can create controls and sensor readings in Home Assistant, but they differ in hardware, internet dependence, available features, and where setup lives. The HomeKit column below means Apple HomeKit—not Matter—and explains the cleanest Apple path.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Official support</th>
+        <th>Local control and cloud dependency</th>
+        <th>Matter, HomeKit, and other platforms</th>
+        <th>Best use and caveats</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Direct SwitchBot Bluetooth</strong><br />Bot, Curtain 3, Blind Tilt, Roller Shade, meters, sensors, locks, plugs, lights, and more.</td>
+        <td>Official Home Assistant integration; Gold quality; Local Push. Home Assistant explicitly says a SwitchBot hub is not required.</td>
+        <td>Daily control is local. Some encrypted devices may use a SwitchBot account during setup to import keys; advanced users can enter the keys manually. The app is also needed for calibration and some product settings.</td>
+        <td>No Matter hub needed. Home Assistant can expose compatible controls and sensor readings to Apple Home through HomeKit Bridge. Alexa and Google paths depend on how you expose Home Assistant.</td>
+        <td><strong>Best default.</strong> Requires active Bluetooth in range. A proxy is usually the first range fix. Feature support varies by model.</td>
+      </tr>
+      <tr>
+        <td><strong>Hub 2 or Hub 3 as a Matter bridge</strong><br />The child remains Bluetooth; the hub translates it to Matter over the local network.</td>
+        <td>Home Assistant's SwitchBot Matter partner page explicitly certifies selected children through Hub 2 and Hub 3. It is Local Push.</td>
+        <td>Home Assistant Matter commands are local. The SwitchBot app/account and internet are still part of hub registration, built-in software updates, and choosing secondary devices.</td>
+        <td>The same bridge can be added to Home Assistant or another supported Matter ecosystem. Matter multi-admin—the feature for sharing one device with several platforms—can share it when the controller and device support that path.</td>
+        <td>Choose for sharing supported devices with other platforms through Matter, infrared control, hub controls, or deliberate bridge placement. Matter can expose a smaller standardized feature set than direct Bluetooth.</td>
+      </tr>
+      <tr>
+        <td><strong>Hub Mini Matter Enabled</strong></td>
+        <td>SwitchBot documents it as a Matter bridge with four secondary-device slots. Home Assistant's current partner certification page names Hub 2 and Hub 3, not Hub Mini.</td>
+        <td>Routine Matter control is designed to stay local, but Home Assistant does not currently list this hub on its SwitchBot partner page. The SwitchBot app/account remains the configuration path.</td>
+        <td>Vendor documentation lists Apple Home, Google Home, Alexa, and SmartThings paths. Do not confuse it with the older plain Hub Mini, which has no Matter support.</td>
+        <td>Budget bridge for a small setup, but Hub 2 is the safer Home Assistant recommendation because it is explicitly named on the partner page and has eight slots.</td>
+      </tr>
+      <tr>
+        <td><strong>Standalone Matter over Wi-Fi</strong><br />Air Purifier, Air Purifier Table, K20+ Pro, and K11+ on Home Assistant's current certified list.</td>
+        <td>Official Home Assistant SwitchBot Matter certification for the listed models; no SwitchBot hub required.</td>
+        <td>Local Matter control over Wi-Fi. Vendor-app setup, updates, or extra functions may still use an account or internet.</td>
+        <td>Pair or share with Home Assistant, Apple Home, Google Home, Alexa, or SmartThings when that exact model and platform support the device type.</td>
+        <td>Choose if you own one of the exact certified models. Do not assume a similar product name uses the same path.</td>
+      </tr>
+      <tr>
+        <td><strong>SwitchBot Cloud</strong></td>
+        <td>Official Home Assistant integration; classified as Cloud Polling.</td>
+        <td>Needs a SwitchBot account, cloud service, and internet. Sensors poll about every 10 minutes; pushed updates require a publicly reachable Home Assistant URL or Home Assistant Cloud.</td>
+        <td>Separate from Matter and HomeKit. Infrared appliance state can be only Home Assistant's best guess if another remote is used.</td>
+        <td>Use only when the local integrations do not expose a function you need. Avoid as the default for locks, leak alerts, presence, or outage-sensitive automations.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2 id="which-hub">If You Need a Hub, Which One Should You Buy?</h2>
+<p>These were the listed U.S. one-unit prices when checked on July 12, 2026; promotions can change them. The capacity figures come from SwitchBot's hub comparison, and mean the number of secondary devices that can be synchronized to a third-party service.</p>
+
+<div class="comparison-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Current model</th>
+        <th>Listed price and Matter capacity</th>
+        <th>What it adds</th>
+        <th>Tara recommendation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>SwitchBot Hub Mini Matter Enabled</strong></td>
+        <td>US$59.99; up to 4 bridged secondary devices.</td>
+        <td>Small Matter bridge and infrared remote. No built-in display, temperature/humidity sensor, light sensor, or manual scene buttons.</td>
+        <td>Only for a tiny, price-sensitive bridge plan. Confirm the exact device and controller path first.</td>
+      </tr>
+      <tr>
+        <td><strong>SwitchBot Hub 2</strong></td>
+        <td>US$69.99; up to 8 bridged secondary devices.</td>
+        <td>Matter bridge, infrared remote, display, temperature/humidity and light sensing, two touch controls, and offline IR control.</td>
+        <td><strong>Best default hub.</strong> It costs little more than the Mini, is explicitly covered by Home Assistant's partner page, and is enough for a focused room or small home.</td>
+      </tr>
+      <tr>
+        <td><strong>SwitchBot Hub 3</strong></td>
+        <td>US$119.99; up to 30 bridged secondary devices.</td>
+        <td>Larger screen, Dial Master control, scene buttons, sensors, infrared, and SwitchBot control of supported third-party Matter devices.</td>
+        <td>Choose for a larger SwitchBot installation or because you want its physical controls. Do not pay the premium merely to connect one curtain to Home Assistant.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p><strong>The older plain SwitchBot Hub Mini is not the same product.</strong> SwitchBot's comparison lists no Matter function for it. A discounted listing that omits “Matter Enabled” may give you cloud and infrared features without the local Matter bridge you expected.</p>
+<p>Hub 2 and Hub 3 are also <strong>not Thread border routers</strong>. Thread is the low-power wireless network used by many battery-powered Matter devices, and a border router connects that network to the rest of the home. SwitchBot's <a href="https://www.switch-bot.com/products/switchbot-hub-2" target="_blank" rel="noopener noreferrer">Hub 2 documentation</a> describes Bluetooth children bridged to Matter over Wi-Fi, while the <a href="https://www.switch-bot.com/products/switchbot-hub-3" target="_blank" rel="noopener noreferrer">Hub 3 specifications</a> list Wi-Fi and Bluetooth Low Energy connectivity, not Thread. Buying either one will not provide the Thread radio needed for IKEA, Eve, Aqara, or Nanoleaf Matter-over-Thread devices.</p>
+
+<h2 id="bluetooth-setup">The Local Bluetooth Setup Order</h2>
+<p>This order keeps the first attempt simple and gives range problems an obvious fix.</p>
+<ol>
+  <li><strong>Update Home Assistant first.</strong> SwitchBot support changes quickly, and the integration's device list is much broader than it used to be.</li>
+  <li><strong>Configure the device in the SwitchBot app.</strong> Calibrate Curtain 3, Blind Tilt, Roller Shade, and locks before asking Home Assistant to control them.</li>
+  <li><strong>Check active Bluetooth.</strong> In Home Assistant, open Settings → Devices &amp; services → Bluetooth. Active mode is required to connect and control, not just listen for the small broadcasts that devices send.</li>
+  <li><strong>Add SwitchBot Bluetooth.</strong> Use Settings → Devices &amp; services → Add integration, then choose SwitchBot Bluetooth.</li>
+  <li><strong>Add a proxy if needed.</strong> Place an ESPHome Bluetooth proxy in the room with the device. Do not hide the proxy inside a metal cabinet or behind a television.</li>
+  <li><strong>Test the exact feature.</strong> Operate the curtain, read the sensor, or lock and unlock while watching Home Assistant. Check the status field named <code>last_run_success</code> if commands are intermittent.</li>
+</ol>
+<p>Some SwitchBot products are encrypted. Home Assistant can import their encryption keys from a SwitchBot username/password account, or advanced users can enter keys manually. This does not turn daily Bluetooth control into cloud control; it does mean “local” and “never touched a vendor account” are different promises.</p>
+
+<h2 id="matter-setup">The Matter Bridge Setup Order</h2>
+<p>Choose this only after you have decided a bridge is useful. Hub 2 is the most straightforward Home Assistant choice for a small setup.</p>
+<ol>
+  <li>Add the hub to the SwitchBot app, update its firmware, and keep it on the same trusted home network as Home Assistant.</li>
+  <li>Add and calibrate the SwitchBot child device in the app. Confirm it works through the hub before involving Matter.</li>
+  <li>Open the hub's Matter settings in the SwitchBot app, then add the child under <strong>Secondary Devices</strong>. Not every product or every feature is available; some entries may be labeled as a lab feature.</li>
+  <li>Add the hub to Home Assistant's Matter integration with the Home Assistant companion app, or share it from the first Matter controller using a new pairing code.</li>
+  <li>Rename bridged entities clearly—for example, “Office Curtain via Hub 2”—so you can tell them from any Bluetooth test entities.</li>
+  <li>Compare the exposed controls. If Bluetooth provides the feature set you need and Matter does not, keep Bluetooth and remove or disable the duplicate.</li>
+</ol>
+<p>Home Assistant's official Matter page currently certifies selected SwitchBot locks, sensors, meters, Curtain 3, Contact Sensor, Roller Shade, and related products through Hub 2 or Hub 3. SwitchBot's own compatibility page is broader and includes beta entries. Treat the Home Assistant list as the safer promise for a new purchase.</p>
+
+<h2 id="which-devices">What This Means for Real SwitchBot Devices</h2>
+<h3 id="bot">Bot</h3>
+<p>Use direct Bluetooth first. Home Assistant can press it, switch it, and report battery level. Add a proxy if the mechanical button is in a far room. SwitchBot documents Bot as Matter-over-bridge capable, but it is not on Home Assistant's current certified Hub 2/Hub 3 child list, so do not buy a hub solely on that assumption without checking the live compatibility pages.</p>
+
+<h3 id="curtains">Curtain 3, Blind Tilt, and Roller Shade</h3>
+<p>Calibrate in the SwitchBot app, then try Bluetooth. Home Assistant's Bluetooth integration supports position control and model-specific details such as Curtain 3 movement speed. Curtain 3 and Roller Shade also appear on Home Assistant's certified Matter-via-hub list, so Hub 2 or Hub 3 is a reasonable alternative when bridge placement or sharing the curtain with another platform matters. Blind Tilt works over Bluetooth; vendor Matter support is broader than Home Assistant's certified list.</p>
+
+<h3 id="meters-sensors">Meters, Contact Sensor, Motion Sensor, Presence Sensor, and leak detection</h3>
+<p>Bluetooth is usually the better local sensor path because Home Assistant receives the model's native data without a generic bridge in the middle. A nearby proxy matters more than a hub badge. For Presence Sensor in particular, community reports compare Bluetooth and Matter latency with mixed results. Test your room and automation before standardizing on one path. Safety alerts should have a second notification or physical check, not depend on a single wireless event.</p>
+
+<h3 id="locks">Lock, Lock Pro, and Lock Ultra</h3>
+<p>Use only an officially supported path for the exact lock. These are encrypted products and need proper calibration. Home Assistant supports local Bluetooth for current lock models, while selected models are certified through Hub 2 or Hub 3. Keep the physical key or keypad fallback, test door-state reporting, and never make the first migration while someone could be locked out. Home Assistant also notes limitations around dual-lock mode and primary lock state.</p>
+
+<h3 id="standalone-matter">Air purifiers and newer robots</h3>
+<p>Some exact models are standalone Matter-over-Wi-Fi devices, so a SwitchBot hub adds nothing to their Home Assistant Matter connection. Home Assistant's current certified list names Air Purifier, Air Purifier Table, K20+ Pro, and K11+. Similar model names are not proof of the same connection method; match the product page and Matter code to the exact unit.</p>
+
+<h2 id="apple-google-alexa">Apple Home, Google Home, Alexa, and SmartThings Paths</h2>
+<p>If Home Assistant already controls a SwitchBot device over Bluetooth, Apple households can often keep that local path and expose the compatible controls and sensor readings through Home Assistant's <strong>HomeKit Bridge</strong> integration. In that design, Home Assistant is the bridge to Apple Home and no SwitchBot hub is needed. HomeKit Bridge is different from adding an Apple accessory to Home Assistant through the HomeKit Device integration.</p>
+<p>A SwitchBot Hub 2, Hub 3, or compatible bridge can instead present supported children to Matter platforms. Matter multi-admin may let you share the bridge between Home Assistant and another controller, but device types and exposed features still vary. Alexa, Google Home, and remote voice services can add account or cloud dependencies even when the Matter traffic inside the house is local.</p>
+<p>Choose one place for automations—usually Home Assistant—and use family platforms for voice and convenient room control. Running the same curtain schedule in SwitchBot, Apple Home, Google Home, Alexa, SmartThings, and Home Assistant creates duplicate commands and support headaches.</p>
+
+<h2 id="cloud-boundary">Where the SwitchBot Cloud Still Appears</h2>
+<p>There are three separate cloud questions:</p>
+<ul>
+  <li><strong>Direct Bluetooth:</strong> normal commands stay local. The app or account may still be used for calibration, key import, firmware, and product settings.</li>
+  <li><strong>Matter through a SwitchBot hub:</strong> normal Home Assistant control is local, but the SwitchBot app/account remains the management path for the hub and bridged children.</li>
+  <li><strong>SwitchBot Cloud integration:</strong> the integration itself depends on SwitchBot's service and internet access.</li>
+</ul>
+<p>The cloud integration can cover products or functions missing from local paths, but it comes with real tradeoffs. Home Assistant says ordinary sensors request cloud status every 10 minutes. Some sensors and vacuums receive automatic pushed updates only when SwitchBot's service can reach your Home Assistant through a public web address or Home Assistant Cloud. Infrared appliance state is inferred from commands and can be wrong after someone uses the original remote.</p>
+<p>For a no-cloud home, do not call the cloud integration a harmless fallback. Use it deliberately, label its entities, and decide what should happen when the internet or vendor service is unavailable.</p>
+
+<h2 id="mistakes">Five Mistakes to Avoid</h2>
+<h3 id="buying-hub-first">1. Buying a hub before testing direct Bluetooth</h3>
+<p>A $69.99 bridge is an expensive Bluetooth range extender if a proxy would have solved the room. Confirm that the device is supported, active Bluetooth is enabled, and a proxy cannot fix placement before adding another ecosystem box.</p>
+
+<h3 id="matter-more-features">2. Assuming Matter means more features</h3>
+<p>Matter gives products a shared control language. It does not guarantee every SwitchBot calibration, diagnostic, scene, button, battery detail, or vendor-specific setting. Read Home Assistant's exact device lists and the <a href="/blog/matter-device-missing-features-home-assistant/">Matter missing-features guide</a> before switching a working Bluetooth device.</p>
+
+<h3 id="mini-confusion">3. Confusing Hub Mini with Hub Mini Matter Enabled</h3>
+<p>The old Hub Mini has no Matter function. Product names in marketplace listings are often shortened, so check the exact model before buying. Also remember that Home Assistant's partner certification page currently calls out Hub 2 and Hub 3.</p>
+
+<h3 id="duplicate-entities">4. Keeping Bluetooth, Matter, and cloud copies forever</h3>
+<p>Temporary duplicates are useful for comparison. Permanent duplicates create ambiguous dashboards, double automations, and the chance of acting on stale cloud state. Rename test entities, choose a winner, then disable or remove the unused path.</p>
+
+<h3 id="thread-assumption">5. Buying a SwitchBot hub for Thread</h3>
+<p>Hub 2 and Hub 3 are Wi-Fi Matter bridges for supported Bluetooth products, not Thread border routers. A separate supported Thread border router is still required for Matter-over-Thread devices.</p>
+
+<h2 id="recommendation">The Best Choice for Most Home Assistant Homes</h2>
+<p>Start with direct SwitchBot Bluetooth. Use active Bluetooth, configure the device in the SwitchBot app where necessary, and add an ESPHome Bluetooth proxy when the radio path is weak. This is officially supported, local, and often exposes the richest Home Assistant feature set.</p>
+<p>Buy Hub 2 when you need a small, officially named Matter bridge, infrared control, or SwitchBot's display and buttons. Buy Hub 3 for a larger SwitchBot installation—up to 30 synchronized secondary devices—or because its dial, screen, and physical controls have household value. The Matter-enabled Hub Mini is a budget four-device option, but Home Assistant's current partner page gives Hub 2 and Hub 3 the clearer certification story.</p>
+<p>Use SwitchBot Cloud only for a feature that the local Bluetooth and Matter paths cannot provide. Whatever you choose, keep one automation brain, one primary integration per device, and a written note about which functions still depend on the SwitchBot app, account, or internet.</p>
+
+<h2 id="related-reading">Related Tara Reading</h2>
+<ul>
+  <li><a href="/blog/home-assistant-bluetooth-proxy-guide/">Home Assistant Bluetooth Proxy: Fix Range Without Another Vendor Hub</a></li>
+  <li><a href="/blog/matter-device-missing-features-home-assistant/">Why a Matter Device Can Be Missing Features in Home Assistant</a></li>
+  <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter Devices With Home Assistant, Apple, Google, Alexa, and SmartThings</a></li>
+  <li><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit Device vs HomeKit Bridge in Home Assistant</a></li>
+  <li><a href="/blog/will-home-assistant-matter-work-without-internet/">Will Home Assistant Matter Work Without Internet?</a></li>
+  <li><a href="/blog/can-home-assistant-be-a-matter-bridge/">Can Home Assistant Be a Matter Bridge?</a></li>
+</ul>
+
+<h2 id="faq">FAQ</h2>
+<h3 id="need-hub">Do I need a SwitchBot Hub for Home Assistant?</h3>
+<p>Usually no. Home Assistant's official SwitchBot Bluetooth integration controls many products locally and explicitly says a SwitchBot Hub is not required. Use active Bluetooth or an ESPHome Bluetooth proxy for range.</p>
+
+<h3 id="matter-local">Is SwitchBot Matter control in Home Assistant local?</h3>
+<p>Yes. Home Assistant classifies SwitchBot Matter as local. With a bridged child, the child still talks Bluetooth to the hub and the hub talks Matter to Home Assistant over the local network. The SwitchBot app and account remain part of registration, firmware, and secondary-device setup.</p>
+
+<h3 id="hub-two-three">Should I buy Hub 2 or Hub 3?</h3>
+<p>Hub 2 is the practical default: eight bridged-device slots, IR, sensors, a display, and explicit Home Assistant partner coverage. Hub 3 supports up to 30 secondary devices and adds a dial and more physical controls. Pay for Hub 3 only if those extras solve a real household need.</p>
+
+<h3 id="thread-router">Is Hub 2 or Hub 3 a Thread border router?</h3>
+<p>No. They bridge supported SwitchBot Bluetooth devices into Matter over Wi-Fi. They do not provide the Thread radio required by Matter-over-Thread devices.</p>
+
+<h3 id="apple-without-hub">Can SwitchBot Bluetooth devices appear in Apple Home without a SwitchBot hub?</h3>
+<p>Often yes. Add the supported device to Home Assistant over Bluetooth, then expose its compatible controls and sensor readings through Home Assistant's HomeKit Bridge integration. Home Assistant becomes the local bridge to Apple Home.</p>
+</div>
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/switchbot/" target="_blank" rel="noopener noreferrer">SwitchBot Bluetooth integration and supported devices</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/switchbot_matter/" target="_blank" rel="noopener noreferrer">SwitchBot Matter partner page and certified devices</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/switchbot_cloud/" target="_blank" rel="noopener noreferrer">SwitchBot Cloud integration and update behavior</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/06/26/switchbot-joins-works-with-home-assistant/" target="_blank" rel="noopener noreferrer">SwitchBot joins Works with Home Assistant</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>SwitchBot product documentation</h3>
+              <ul>
+                <li><a href="https://www.switch-bot.com/products/switchbot-hub-2" target="_blank" rel="noopener noreferrer">SwitchBot Hub 2 product page</a></li>
+                <li><a href="https://www.switch-bot.com/products/switchbot-hub-3" target="_blank" rel="noopener noreferrer">SwitchBot Hub 3 product page</a></li>
+                <li><a href="https://www.switch-bot.com/products/switchbot-hub-mini-matter-enabled" target="_blank" rel="noopener noreferrer">SwitchBot Hub Mini Matter Enabled product page</a></li>
+                <li><a href="https://support.switch-bot.com/hc/en-us/articles/13569889726743-Differences-Between-Hub-Mini-Hub-2-Hub-Mini-Matter-Enabled-and-Hub-3" target="_blank" rel="noopener noreferrer">SwitchBot hub model comparison</a></li>
+                <li><a href="https://support.switch-bot.com/hc/en-us/articles/38979658026519-SwitchBot-Device-Matter-Compatibility" target="_blank" rel="noopener noreferrer">SwitchBot device Matter compatibility</a></li>
+                <li><a href="https://support.switch-bot.com/hc/en-us/articles/35927178604311-How-to-Connect-SwitchBot-Devices-to-Third-Party-Platforms-Matter-over-Bridge" target="_blank" rel="noopener noreferrer">SwitchBot Matter-over-bridge setup</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1t55j6b" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: SwitchBot shades and whether a hub is needed</a></li>
+                <li><a href="https://community.home-assistant.io/t/switchbot-native-bluetooth-vs-matter/897312" target="_blank" rel="noopener noreferrer">Home Assistant Community: native Bluetooth vs Matter</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1rbfnzz" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Presence Sensor over Matter or Bluetooth</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1r19l05" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Hub 3 controls and Home Assistant caveats</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/175533" target="_blank" rel="noopener noreferrer">GitHub: Meter Pro CO2 Bluetooth setup caveat</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/174674" target="_blank" rel="noopener noreferrer">GitHub: Air Purifier Matter feature caveat</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product image sources</h3>
+              <ul>
+                <li><a href="https://www.switch-bot.com/products/switchbot-hub-2" target="_blank" rel="noopener noreferrer">Official SwitchBot Hub 2 imagery</a></li>
+                <li><a href="https://www.switch-bot.com/products/switchbot-hub-3" target="_blank" rel="noopener noreferrer">Official SwitchBot Hub 3 imagery</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+        <section class="block article-cta">
+          <p class="kicker">Turn the guide into a home plan</p>
+          <h2>Want SwitchBot convenience without a cloud maze?</h2>
+          <p>Tara packages the Home Assistant hub, radio coverage, local defaults, and family handoff so every device has one clear control path.</p>
+          <a class="cta" href="/configurator/">Open the configurator</a>
+        </section>
+        <section class="block related">
+          <p class="kicker">Related Tara pages</p>
+          <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/no-subscription-smart-home/">No-subscription smart home</a><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Protocol guide</a><a href="/blog/home-assistant-bluetooth-proxy-guide/">Bluetooth proxy guide</a><a href="/blog/matter-device-missing-features-home-assistant/">Matter feature caveats</a><a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit paths</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
