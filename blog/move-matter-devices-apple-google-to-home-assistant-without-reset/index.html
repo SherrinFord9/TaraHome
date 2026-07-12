@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Move Matter Devices From Apple or Google to Home Assistant Without Resetting | Tara Guides</title>
+    <meta name="description" content="Move an already-paired Matter device from Apple Home or Google Home to Home Assistant with multi-admin, then retire the old controller safely without a factory reset." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/" />
+    <meta property="og:title" content="Move Matter Devices From Apple or Google to Home Assistant Without Resetting | Tara Guides" />
+    <meta property="og:description" content="Share first, test second, and remove only the old Matter controller relationship after Home Assistant works." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Move Matter Devices From Apple or Google to Home Assistant Without Resetting | Tara Guides" />
+    <meta name="twitter:description" content="A safe Apple Home or Google Home to Home Assistant Matter migration order that keeps the Thread radio path alive." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/#blogposting",
+          "headline": "Can You Move Matter Devices From Apple Home or Google Home to Home Assistant Without a Factory Reset?",
+          "description": "A safe multi-admin migration order for adding already-paired Apple Home or Google Home Matter devices to Home Assistant, testing them, and retiring only the old controller relationship.",
+          "image": "https://tarahome.ai/assets/generated/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/cover.png",
+          "datePublished": "2026-07-12",
+          "dateModified": "2026-07-12",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://support.apple.com/en-gb/102135",
+            "https://support.apple.com/en-us/102557",
+            "https://support.google.com/googlehome/answer/13127223?hl=en-CA",
+            "https://developers.home.google.com/matter/thread",
+            "https://developer.amazon.com/en-US/docs/alexa/smarthome/thread-support.html",
+            "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+            "https://www.home-assistant.io/integrations/aqara/",
+            "https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/",
+            "https://www.tp-link.com/us/home-networking/smart-plug/tapo-p125m/",
+            "https://www.reddit.com/r/homeassistant/comments/1umn8j9/advice_request_switching_matter_hub_to_ha_green/",
+            "https://www.reddit.com/r/homeassistant/comments/1t2m4hi/exposing_matter_devices_in_googleapple_home_back/",
+            "https://www.reddit.com/r/homeassistant/comments/1ssozbl/matter_via_apple_home_and_then_home_assistant/",
+            "https://community.home-assistant.io/t/can-i-remove-a-thread-device-from-google-home-but-still-use-my-nest-hub-as-the-border-router/864922",
+            "https://community.home-assistant.io/t/matter-thread-and-why-just-reset-it-is-a-myth/976430",
+            "https://github.com/home-assistant/core/issues/127693"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Move Matter devices without a reset", "item": "https://tarahome.ai/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I move a Matter device from Apple Home or Google Home to Home Assistant without a factory reset?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Use Matter multi-admin to create a fresh temporary sharing code from the controller that already has the device, then add it in the Home Assistant Companion app as a device that is already in use. Test Home Assistant before removing any old controller fabric." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does the original Matter QR code not work when I add Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The code printed on the device is for its original pairing. Once the device is already paired, open the existing controller's sharing flow and generate a new temporary multi-admin code or QR code for Home Assistant." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Home Assistant need its own Thread radio to control a shared Matter-over-Thread device?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not when a working Apple, Google, or other Thread border router already connects that Thread network to the same local network as Home Assistant. Add a Home Assistant Thread radio only when you want Home Assistant to own or add resilience to the Thread path, and join it to the existing network before retiring the old router." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can a Nest Hub, HomePod, or Apple TV remain the Thread border router after I remove its Matter controller from a device?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The Matter controller relationship and the Thread border-router role are separate. Keep the hub registered, powered, and on the home network, verify Home Assistant control, and do not remove the hardware until another border router has joined the same Thread network and passed testing." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will Apple Home Key or vendor-only features move to Home Assistant through Matter?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not necessarily. Matter shares the standardized features supported by both the device and Home Assistant. Apple Home Key, vendor diagnostics, some device-software updates, and other platform-specific extras can require the original platform or vendor app, so keep that controller fabric if those features matter." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter migration</span><span>July 12, 2026</span><span>14 min read</span></p>
+            <h1>Can You Move Matter Devices From Apple Home or Google Home to Home Assistant Without a Factory Reset?</h1>
+            <p class="lede">Yes. Add Home Assistant as another Matter controller, prove that it works, and only then remove the controller you are retiring. Keep the Apple TV, HomePod, or Nest Hub online if it still provides the Thread radio path.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/cover.png" alt="Homeowner arranging a Matter smart plug and contact sensor beside a local smart-home hub and smart speaker" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>What to do:</strong> In the Apple Home or Google Home sharing flow, create a fresh temporary Matter code, then add the device in Home Assistant as <strong>already in use</strong>.</li>
+              <li><strong>Test before removing anything:</strong> control the device, run one Home Assistant automation, and confirm both controllers appear under <strong>Manage fabrics</strong>.</li>
+              <li><strong>What to remove:</strong> retire only the old Matter controller relationship after its duplicate routines and platform-only features are accounted for. Do not delete the whole Home or reset the device.</li>
+              <li><strong>What to keep:</strong> leave the Apple TV, HomePod, or Nest Hub powered if it is still your only Thread border router&mdash;the radio bridge between Thread devices and the home network.</li>
+              <li><strong>Main caveat:</strong> this works only for Matter devices. HomeKit-only accessories, cloud-linked Works with Google devices, and Apple Home Key or vendor-only features use different paths.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Share, Test, Remove the Old Controller Last</h2>
+          <p><strong>You normally do not need to factory-reset a Matter device just because you want Home Assistant to become its main controller.</strong> Matter includes <strong>multi-admin</strong>, which lets one device trust more than one smart-home platform at the same time. In Home Assistant, open the Companion app, go to <strong>Settings &gt; Matter &gt; Add device</strong>, choose <strong>Yes, it is already in use</strong>, and follow the Apple Home or Google Home sharing flow. Use the fresh temporary sharing code from the controller that already owns the device; do not reuse the QR code printed on the box.</p>
+          <p>Once Home Assistant controls the device, test it before changing the old setup. <strong>Local control</strong> means those daily commands stay inside the home network instead of waiting for a vendor's internet server. Open the device page, use <strong>Manage fabrics</strong>&mdash;Matter's name for each secure controller relationship&mdash;and confirm Home Assistant plus the original platform are listed. Move one <strong>automation</strong>&mdash;a rule that makes the device act on its own&mdash;verify status updates, and keep a manual fallback for a lock, garage door, alarm, heater, or other safety-sensitive device. If Apple Home or Google Home still supplies Siri, Home Key, remote access, device-software updates (often called firmware), or a family-friendly app, you can simply keep both controllers.</p>
+          <p>If you truly want to retire the old controller, remove only that controller's fabric after testing. For a Matter-over-Thread device, keep its existing Thread border router online or join a Home Assistant border router to the same Thread network first. Adding Home Assistant control and replacing the Thread radio are two separate jobs.</p>
+
+          <div class="callout">
+            <p><strong>The one-sentence order:</strong> share first, test second, move automations third, remove the old fabric fourth, and replace border-router hardware only after the same Thread network works through the replacement.</p>
+          </div>
+
+          <h2 id="what-moves">First Confirm What Kind of Device You Have</h2>
+          <p>Look for the Matter logo in the product documentation or its current app. The word <strong>Thread</strong> describes a low-power local network; it does not prove the device supports Matter. These examples are current as of <strong>July 12, 2026</strong>, and exact features can vary by region, hardware revision, and device software.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Device path and concrete examples</th>
+                  <th>Official Home Assistant path</th>
+                  <th>Local control and cloud boundary</th>
+                  <th>Matter or HomeKit path</th>
+                  <th>Main caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Native Matter-over-Thread device</strong><br />Examples: IKEA KAJPLATS Matter-over-Thread bulb; Aqara Door and Window Sensor P2.</td>
+                  <td>Add the already-paired device through Home Assistant's Matter integration. A working third-party Thread border router can carry the traffic; Home Assistant does not need a second radio just to control it.</td>
+                  <td>Home Assistant's normal Matter commands stay local. The vendor app or original ecosystem may still be useful for firmware, diagnostics, remote access, or extra settings.</td>
+                  <td>Use Matter multi-admin. A HomeKit-only Thread device without Matter uses the separate HomeKit Device integration instead.</td>
+                  <td>Keep the current Thread border router until another router has joined the same network. A new, separate Thread network does not move the device.</td>
+                </tr>
+                <tr>
+                  <td><strong>Native Matter-over-Wi-Fi device</strong><br />Example: TP-Link Tapo P125M smart plug.</td>
+                  <td>Use the same already-in-use Matter flow. No Thread border router is required because the plug uses 2.4 GHz Wi-Fi.</td>
+                  <td>Configured Matter apps can control the P125M locally when the internet is down. Tapo remote control and some app extras use the vendor account and internet service.</td>
+                  <td>Matter multi-admin can share it among Home Assistant, Apple Home, Google Home, Alexa, and SmartThings.</td>
+                  <td>Do not buy a Thread radio to fix a Wi-Fi device. Feature exposure can differ between the Tapo app and each Matter controller.</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter bridge</strong><br />A hub that presents its child devices through Matter. Examples: IKEA DIRIGERA, Philips Hue Bridge, Aqara Hub M3, and SwitchBot Hub 2.</td>
+                  <td>Add the bridge itself as an already-used Matter device. Home Assistant receives only the child-device types and features the bridge exposes through Matter.</td>
+                  <td>The bridge-to-Home Assistant Matter path is local. Vendor apps, accounts, firmware, scenes, and remote features can still have separate cloud requirements.</td>
+                  <td>This is Matter bridging, not HomeKit Bridge. Home Assistant's native Hue integration can expose more features than Hue-over-Matter and also runs locally.</td>
+                  <td>Removing or resetting one bridge can affect many child devices. Test one room and compare missing features before retiring the native integration.</td>
+                </tr>
+                <tr>
+                  <td><strong>HomeKit-only accessory</strong><br />The packaging says Works with Apple Home or HomeKit but has no Matter logo.</td>
+                  <td>Use Home Assistant's HomeKit Device integration&mdash;its built-in connection for HomeKit accessories&mdash;not the Matter migration steps in this guide.</td>
+                  <td>Home Assistant's HomeKit Device control is local after pairing. Apple remote access and Siri remain Apple ecosystem features.</td>
+                  <td>HomeKit-over-Thread is still HomeKit. Matter multi-admin codes do not convert it into a Matter device.</td>
+                  <td>Moving it may require removing the accessory from Apple Home so Home Assistant can discover it. Save the HomeKit code and follow the exact product instructions.</td>
+                </tr>
+                <tr>
+                  <td><strong>Works with Google Home or vendor-cloud device</strong><br />No Matter logo or Matter accessory entry is present.</td>
+                  <td>Use the matching Home Assistant integration, local API, HomeKit Device path, or vendor cloud integration where supported.</td>
+                  <td>Cloud-linked control can stop during an internet or vendor-service outage. A local Home Assistant integration is preferable when the product officially provides one.</td>
+                  <td>This is not Matter multi-admin, even if Google Home shows the device next to Matter products.</td>
+                  <td>A temporary Matter sharing code will not exist. Do not reset the device looking for one.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="prepare">Before the First Device: Preserve the Working House</h2>
+          <ol>
+            <li><strong>Update the supported path.</strong> Install the current stable Home Assistant, Matter Server app, and Companion app. Matter Server is the official local service that maintains Home Assistant's Matter controller relationships. Home Assistant Operating System with that app is the supported route.</li>
+            <li><strong>Make a Home Assistant backup.</strong> Also save each original Matter setup code, model, serial number, room, current platform, and any important platform-only feature.</li>
+            <li><strong>Choose a harmless pilot.</strong> Start with one plug or light you can operate manually. Do not make a front-door lock, water shutoff, smoke alarm, or heating control your first test.</li>
+            <li><strong>Write down the Thread route.</strong> In <strong>Settings &gt; Devices &amp; services &gt; Thread</strong>, note the visible Apple, Google, Home Assistant, IKEA, Aqara, Amazon, or SmartThings networks and border routers. Seeing a network does not mean Home Assistant knows its password-like credentials.</li>
+            <li><strong>List duplicate routines.</strong> Decide which Apple Home or Google Home routines will move to Home Assistant and which family-facing controls should remain. Two automations responding to the same event can make a successful migration look broken.</li>
+          </ol>
+
+          <h2 id="apple-home">Apple Home to Home Assistant: The Safe Order</h2>
+          <ol>
+            <li><strong>Keep Apple Home working.</strong> Leave the iPhone signed into the Apple Account that owns the Home. Keep the HomePod mini, HomePod 2nd generation, or supported Apple TV 4K online if it is serving Thread devices.</li>
+            <li><strong>Open the Home Assistant Companion app on the iPhone.</strong> Go to <strong>Settings &gt; Matter &gt; Add device</strong>.</li>
+            <li><strong>Choose the already-in-use option.</strong> Select <strong>Yes, it is already in use</strong>, then choose Apple Home and follow the prompts. Apple documents that a previously paired Matter accessory can be selected by another Matter-capable app.</li>
+            <li><strong>Use the new sharing permission.</strong> Do not scan the original box code as though the device were new. The current Apple controller opens a temporary pairing window for Home Assistant.</li>
+            <li><strong>Confirm real control.</strong> Rename the device, operate it from Home Assistant, verify state changes, and run one simple automation. For a lock, test locking, unlocking, PIN behavior, Home Key, notifications, and a physical key or keypad fallback with an adult present.</li>
+            <li><strong>Check both fabrics.</strong> On the Home Assistant Matter device page, open the menu next to <strong>Share device</strong>, choose <strong>Manage fabrics</strong>, and confirm both Home Assistant and Apple appear.</li>
+            <li><strong>Stop here if Apple still adds value.</strong> Keeping Apple Home does not make Home Assistant less local. It preserves Home Key, Siri, Apple family access, and any Apple-specific behavior the household still wants.</li>
+            <li><strong>If retiring Apple control, move routines first.</strong> Turn off duplicate Apple automations and test Home Assistant through a normal day.</li>
+            <li><strong>Remove only the Apple fabric.</strong> In Home Assistant's <strong>Manage fabrics</strong> view, remove the Apple controller of interest. Home Assistant also instructs Apple users to remove the matching Apple Keychain entry. On iPhone or iPad, Apple exposes Matter accessories under <strong>Settings &gt; General &gt; Matter Accessories</strong>; do not choose <strong>Remove From All Services</strong> when Home Assistant should remain.</li>
+          </ol>
+          <p>Do not delete the Apple Home as a migration shortcut. A Home contains people, rooms, automations, hubs, and other accessories that have nothing to do with the one device you are moving. Remove one controller relationship at a time.</p>
+
+          <h2 id="google-home">Google Home to Home Assistant: The Safe Order</h2>
+          <ol>
+            <li><strong>Keep Google Home and its hub online.</strong> A Nest Hub 2nd gen, Nest Hub Max, Nest Wifi, Nest Wifi Pro, or Google TV Streamer may be the only Thread border router serving the device.</li>
+            <li><strong>Open the device in Google Home.</strong> Touch and hold its tile, open <strong>Settings</strong>, then <strong>Linked Matter apps &amp; services</strong>.</li>
+            <li><strong>Start Matter sharing.</strong> Choose <strong>Link apps &amp; services</strong> and select Home Assistant when offered, or generate a fresh temporary pairing code. Google documents both app-to-app sharing and temporary code or QR-code paths.</li>
+            <li><strong>Add it as already used in Home Assistant.</strong> In the Home Assistant Companion app, go to <strong>Settings &gt; Matter &gt; Add device</strong>, choose <strong>Yes, it is already in use</strong>, select Google Home, and follow the dialog.</li>
+            <li><strong>Test before changing Google.</strong> Operate the device, watch state updates, and run one Home Assistant automation. Under <strong>Manage fabrics</strong>, confirm Home Assistant and the Google controller are both present.</li>
+            <li><strong>Move or disable duplicate Google routines.</strong> Voice control and family access can stay in Google Home while Home Assistant owns the serious automation logic.</li>
+            <li><strong>If retiring Google control, remove the Google fabric last.</strong> Use Home Assistant's <strong>Manage fabrics</strong> view after testing. Google's normal <strong>Remove device</strong> flow also removes that device's Google Home settings and routines, so do not make it the first step.</li>
+          </ol>
+          <p>Google says Matter commands issued while you are at home can stay local, while away-from-home commands use its cloud before the hub sends the final command locally. Home Assistant's Matter control is local; remote access to Home Assistant is a separate choice. Removing Google app control can reduce one cloud path, but only after you have replaced any remote access or voice behavior the household expects.</p>
+
+          <h2 id="thread-border-router">Do Not Confuse the Controller With the Thread Border Router</h2>
+          <p>A <strong>Matter controller</strong> is the trusted platform relationship represented by a fabric: Home Assistant, Apple Home, Google Home, Alexa, or SmartThings. A <strong>Thread border router</strong> is the local network bridge that forwards encrypted packets between the low-power Thread mesh and Ethernet or Wi-Fi. One box, such as a HomePod mini or Nest Hub, can perform both jobs, but the jobs remain separate.</p>
+          <p><strong>You do not need a Home Assistant Connect radio merely to control a shared Matter-over-Thread device.</strong> Home Assistant's Matter documentation lists Apple TV, HomePod, Nest Hub, Nest Wifi Pro, and Home Assistant OpenThread routers as usable Thread paths. Home Assistant still needs working local <strong>IPv6</strong>&mdash;the inside-the-house addressing Matter uses&mdash;and nearby-device discovery traffic to reach the border router and device.</p>
+          <p>If you plan to unplug the final Apple or Google border router, add the replacement first. Home Assistant's current Thread documentation supports importing an Apple-created network with the appropriate iPhone or a Google-created network with the appropriate Android phone. Make that network preferred, configure a Home Assistant OpenThread Border Router using Home Assistant Yellow, Connect ZBT-1, Connect ZBT-2, or another supported adapter, and confirm it joins the existing network. Test powered and battery devices before the old hub leaves.</p>
+          <div class="callout">
+            <p><strong>Do not form a fresh Home Assistant Thread network just because you bought a new radio.</strong> Existing Thread devices will not jump to a different password automatically. Join the known working network or plan a separate, device-by-device migration.</p>
+          </div>
+
+          <h2 id="ecosystem-boundaries">What Each Ecosystem Still Owns</h2>
+          <ul>
+            <li><strong>Home Assistant:</strong> local Matter control, <strong>entities</strong>&mdash;the individual controls and sensors Home Assistant creates&mdash;dashboards, and automations. Home Assistant Cloud is optional for remote access and supported voice-assistant linking; it is not required for local Matter commands.</li>
+            <li><strong>Apple Home:</strong> Apple Account and Home membership, Siri, Home Key where supported, Apple remote access, and Apple-managed hubs. A Matter fabric does not copy Home Key into Home Assistant.</li>
+            <li><strong>Google Home:</strong> Google Account and Home membership, Assistant or Gemini voice behavior, Google routines, remote access, and Google-managed hubs. Its cloud boundary is separate from local Matter traffic inside the home.</li>
+            <li><strong>Alexa and eero:</strong> selected Echo and eero models provide Thread border routing, while Alexa app, voice, remote, and account behavior remain Amazon services. Share the Matter device to Home Assistant; do not assume Home Assistant can administer the Amazon Thread network.</li>
+            <li><strong>SmartThings:</strong> current hubs and selected Samsung devices can act as Matter controllers and Thread border routers. Multi-admin can share control with Home Assistant, but SmartThings routines, account services, device-type coverage, and hub firmware remain SmartThings concerns.</li>
+            <li><strong>IKEA, Aqara, Eve, Nanoleaf, TP-Link, and other vendors:</strong> standardized Matter functions can move between controllers. Vendor-only settings, diagnostics, updates, and warranty support may still require the exact app, account, hub, or controller path named by the manufacturer.</li>
+          </ul>
+          <p>Community experience is useful for spotting failure patterns, not for overriding the official steps for your model. A Home Assistant GitHub issue documents stale or duplicated entities after devices were reset and re-added without first removing the old Matter record. That supports a careful removal order; it does not prove that every reset or every brand will fail.</p>
+
+          <h2 id="avoid">What to Avoid During the Move</h2>
+          <ul>
+            <li><strong>Do not reuse the original QR code for an already-paired device.</strong> Generate a fresh temporary sharing code from its current controller.</li>
+            <li><strong>Do not delete the whole Apple Home or Google Home.</strong> Migrate and verify one Matter device at a time.</li>
+            <li><strong>Do not choose “remove from all services.”</strong> Remove only the controller fabric you intend to retire.</li>
+            <li><strong>Do not unplug the last Thread border router.</strong> Keep it powered until another border router has joined the same network and passed a power-cycle test.</li>
+            <li><strong>Do not expose the same device twice.</strong> A direct Matter entry plus a Home Assistant-to-Apple or Home Assistant-to-Google bridge entry can create duplicate tiles and ambiguous voice names.</li>
+            <li><strong>Do not assume every feature follows.</strong> Check Home Key, energy readings, advanced lock settings, scenes, firmware updates, notifications, and vendor diagnostics before retiring an app.</li>
+            <li><strong>Do not make a critical device the pilot.</strong> Keep manual keys, physical controls, alarm procedures, and heating or water fallbacks available throughout testing.</li>
+          </ul>
+
+          <h2 id="troubleshooting">If Home Assistant Will Not Add the Shared Device</h2>
+          <ol>
+            <li><strong>Generate another sharing code.</strong> Temporary Matter codes expire. The original printed code is not the replacement.</li>
+            <li><strong>Use the Companion app, not a desktop browser.</strong> Home Assistant's Matter pairing flow depends on the mobile platform and current app permissions.</li>
+            <li><strong>Confirm the Matter integration and Matter Server app are current.</strong> Do not install an unrelated community Matter bridge and expect it to import Google or Apple devices.</li>
+            <li><strong>Check the local network path.</strong> Home Assistant, the controller hub, and Matter device need usable local IPv6 and discovery traffic. Keep them on the same simple local network while testing.</li>
+            <li><strong>For Thread, check credentials and the border router.</strong> Home Assistant can discover a Thread network name without knowing its credentials. Follow the official iPhone or Android import flow when adding a Home Assistant border router to an existing Apple or Google network.</li>
+            <li><strong>Check whether the product is truly Matter.</strong> HomeKit-only, Works with Google, and vendor-cloud devices will not produce a valid Matter multi-admin path.</li>
+            <li><strong>Reset only as the documented last resort.</strong> First remove stale controller records where possible, preserve setup codes, and follow the manufacturer's exact reset sequence for that model.</li>
+          </ol>
+          <p>If pairing stalls on network checks, use Tara's <a href="/blog/home-assistant-matter-checking-network-connectivity/">Matter connectivity checklist</a>. If the device appears but features are missing, read the <a href="/blog/matter-device-missing-features-home-assistant/">Matter feature support guide</a> before assuming the migration failed.</p>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p>For an Apple- or Google-first house, do not rebuild a working Matter setup to make Home Assistant look like the first controller. Add Home Assistant as another fabric, migrate one non-critical device, move the automation, and observe it through a normal day. Keep the family-facing app if it remains useful.</p>
+          <p>Retire a platform only when the benefits are clear: fewer duplicate routines, less cloud dependence, or a simpler handoff. Even then, remove the controller fabric separately from its Thread hardware. The homeowner should finish with a short note naming the Matter controllers, the Thread network owner, the border routers, the firmware app, and the manual fallback for every critical device.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How Matter multi-admin works across Home Assistant, Apple, Google, Alexa, and SmartThings</a></li>
+            <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should you pair a Matter device to Home Assistant or Apple/Google first?</a></li>
+            <li><a href="/blog/replace-thread-border-router-without-repairing-matter-devices/">Replace a Thread border router without re-pairing Matter devices</a></li>
+            <li><a href="/blog/where-should-smart-home-automations-live/">Where should smart-home automations live?</a></li>
+            <li><a href="/blog/will-home-assistant-matter-work-without-internet/">Will Home Assistant and Matter work without internet?</a></li>
+            <li><a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Do you still need IKEA DIRIGERA with Home Assistant?</a></li>
+          </ul>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="without-reset">Can I move a Matter device from Apple Home or Google Home to Home Assistant without a factory reset?</h3>
+          <p>Yes. Use Matter multi-admin to create a fresh temporary sharing code from the controller that already has the device, then add it in the Home Assistant Companion app as a device that is already in use. Test Home Assistant before removing any old controller fabric.</p>
+          <h3 id="original-code">Why does the original Matter QR code not work when I add Home Assistant?</h3>
+          <p>The code printed on the device is for its original pairing. Once the device is already paired, open the existing controller's sharing flow and generate a new temporary multi-admin code or QR code for Home Assistant.</p>
+          <h3 id="need-radio">Does Home Assistant need its own Thread radio to control a shared Matter-over-Thread device?</h3>
+          <p>Not when a working Apple, Google, or other Thread border router already connects that Thread network to the same local network as Home Assistant. Add a Home Assistant Thread radio only when you want Home Assistant to own or add resilience to the Thread path, and join it to the existing network before retiring the old router.</p>
+          <h3 id="keep-border-router">Can a Nest Hub, HomePod, or Apple TV remain the Thread border router after I remove its Matter controller from a device?</h3>
+          <p>The Matter controller relationship and the Thread border-router role are separate. Keep the hub registered, powered, and on the home network, verify Home Assistant control, and do not remove the hardware until another border router has joined the same Thread network and passed testing.</p>
+          <h3 id="platform-features">Will Apple Home Key or vendor-only features move to Home Assistant through Matter?</h3>
+          <p>Not necessarily. Matter shares the standardized features supported by both the device and Home Assistant. Apple Home Key, vendor diagnostics, some device-software updates, and other platform-specific extras can require the original platform or vendor app, so keep that controller fabric if those features matter.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter: sharing devices, managing fabrics, and removing controllers</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread: existing Apple and Google networks, credentials, and border routers</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: the 2026 Matter Server upgrade</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/aqara/" target="_blank" rel="noopener noreferrer">Home Assistant Aqara Matter partner device list</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Platform and product documentation</h3>
+              <ul>
+                <li><a href="https://support.apple.com/en-gb/102135" target="_blank" rel="noopener noreferrer">Apple: pair, view, and remove Matter accessories or individual services</a></li>
+                <li><a href="https://support.apple.com/en-us/102557" target="_blank" rel="noopener noreferrer">Apple: supported Thread home hubs</a></li>
+                <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en-CA" target="_blank" rel="noopener noreferrer">Google Home: Matter multi-admin, temporary codes, and local versus remote control</a></li>
+                <li><a href="https://developers.home.google.com/matter/thread" target="_blank" rel="noopener noreferrer">Google Home developer documentation: Thread border routers and credentials</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/thread-support.html" target="_blank" rel="noopener noreferrer">Amazon: current Thread-enabled Echo and eero models</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings: Matter controllers, Thread border routers, and multi-admin</a></li>
+                <li><a href="https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/" target="_blank" rel="noopener noreferrer">IKEA: Matter-over-Thread products, DIRIGERA, and multi-platform setup</a></li>
+                <li><a href="https://www.tp-link.com/us/home-networking/smart-plug/tapo-p125m/" target="_blank" rel="noopener noreferrer">TP-Link: Tapo P125M Matter-over-Wi-Fi, local control, and multi-admin</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1umn8j9/advice_request_switching_matter_hub_to_ha_green/" target="_blank" rel="noopener noreferrer">r/homeassistant: moving an Apple-first Matter home to Home Assistant</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1t2m4hi/exposing_matter_devices_in_googleapple_home_back/" target="_blank" rel="noopener noreferrer">r/homeassistant: sharing Google Home Matter devices into Home Assistant</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ssozbl/matter_via_apple_home_and_then_home_assistant/" target="_blank" rel="noopener noreferrer">r/homeassistant: Apple Home first, then Home Assistant</a></li>
+                <li><a href="https://community.home-assistant.io/t/can-i-remove-a-thread-device-from-google-home-but-still-use-my-nest-hub-as-the-border-router/864922" target="_blank" rel="noopener noreferrer">Home Assistant Community: removing Google control while keeping a Nest Hub border router</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-thread-and-why-just-reset-it-is-a-myth/976430" target="_blank" rel="noopener noreferrer">Home Assistant Community: Apple-to-Home Assistant lifecycle cautions and model-specific disagreement</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/127693" target="_blank" rel="noopener noreferrer">Home Assistant GitHub: stale Matter nodes after reset and re-add sequences</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Keep the handoff calm</p>
+          <h2>Want Home Assistant to become the brain without rebuilding every Matter device?</h2>
+          <p>Tara documents controller fabrics, Thread ownership, local automations, firmware paths, backups, and manual fallbacks so an Apple- or Google-first house can move one proven step at a time.</p>
+          <a class="cta" href="/configurator/">Plan your Tara kit</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Keep reading</p>
+          <div class="links">
+            <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a>
+            <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose the first Matter app</a>
+            <a href="/blog/replace-thread-border-router-without-repairing-matter-devices/">Replace a Thread border router</a>
+            <a href="/blog/">All technical guides</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <span>&copy; 2026 Tara Home. Local-first smart home kits.</span>
+      <span><a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></span>
+    </footer>
+  </body>
+</html>
