@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google TV Streamer Thread with Home Assistant | Tara Guides</title>
+    <meta name="description" content="Use Google TV Streamer, Nest Hub, or Nest Wifi Pro as the Thread border router for Home Assistant, with local control, setup steps, and caveats." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/google-tv-streamer-thread-border-router-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/google-tv-streamer-thread-border-router-home-assistant/" />
+    <meta property="og:title" content="Can Google TV Streamer Be Your Thread Border Router for Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Yes. Use a supported Google Thread border router with Home Assistant, keep routine Matter control local, and avoid the Google devices that only handle Matter over Wi-Fi." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/google-tv-streamer-thread-border-router-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can Google TV Streamer Be Your Thread Border Router for Home Assistant? | Tara Guides" />
+    <meta name="twitter:description" content="A plain-English setup and compatibility guide for Google TV Streamer, Nest Hub, Nest Wifi Pro, Thread, Matter, and Home Assistant." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/google-tv-streamer-thread-border-router-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/google-tv-streamer-thread-border-router-home-assistant/#blogposting",
+          "headline": "Can Google TV Streamer Be Your Thread Border Router for Home Assistant?",
+          "description": "Use Google TV Streamer, Nest Hub, or Nest Wifi Pro as the Thread border router for Home Assistant, with local control, setup steps, and caveats.",
+          "image": "https://tarahome.ai/assets/generated/blog/google-tv-streamer-thread-border-router-home-assistant/cover.png",
+          "datePublished": "2026-07-13",
+          "dateModified": "2026-07-13",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/google-tv-streamer-thread-border-router-home-assistant/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://www.home-assistant.io/integrations/nest/",
+            "https://www.home-assistant.io/integrations/homekit_controller/",
+            "https://support.google.com/googlehome/answer/12391458?hl=en",
+            "https://support.google.com/googlehome/answer/13127223?hl=en",
+            "https://support.google.com/googletv/answer/15273676?hl=en",
+            "https://support.google.com/chromecast/answer/15178609?hl=en-GB",
+            "https://support.google.com/chromecast/answer/7124014?hl=en",
+            "https://support.google.com/googlehome/answer/6300732?hl=en-CA",
+            "https://blog.google/products-and-platforms/devices/google-nest/google-tv-streamer/",
+            "https://support.apple.com/en-us/102135",
+            "https://www.threadgroup.org/Portals/0/Documents/Thread_1.4_Features_White_Paper_September_2024.pdf",
+            "https://www.reddit.com/r/homeassistant/comments/1r393ny/how_to_use_google_nest_hub_as_thread_router/",
+            "https://www.reddit.com/r/homeassistant/comments/1tfye3b/can_the_google_nest_hub_allow_ha_on_a_virtual/",
+            "https://www.reddit.com/r/homeassistant/comments/1u6aqe4/google_tv_streamer_matter_14_update/",
+            "https://community.home-assistant.io/t/google-tv-streamer-as-thread-border-router/771390",
+            "https://community.home-assistant.io/t/thread-move-nest-hub-in-my-preferred-network/988139",
+            "https://github.com/home-assistant/android/issues/4146",
+            "https://github.com/home-assistant/core/issues/154629"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/google-tv-streamer-thread-border-router-home-assistant/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Google TV Streamer Thread with Home Assistant", "item": "https://tarahome.ai/blog/google-tv-streamer-thread-border-router-home-assistant/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/google-tv-streamer-thread-border-router-home-assistant/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do I need Home Assistant Connect ZBT-2 if I already have Google TV Streamer?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Google TV Streamer (4K) is a Thread border router that Home Assistant lists as known to work. Home Assistant can use it to reach Matter-over-Thread devices, although Home Assistant cannot configure or administer the Google border router itself." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is Chromecast with Google TV a Thread border router?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Chromecast with Google TV is a different product and is not on Google or Home Assistant's current Thread border-router lists. The supported streaming product is Google TV Streamer (4K)." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need the Google Nest integration in Home Assistant to use Nest Hub for Thread?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The Google Nest integration is a cloud API for selected Google cameras, doorbells, and thermostats. It does not enable a Nest Hub's Thread radio. Home Assistant discovers Thread border routers separately on the local network." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will Home Assistant Matter devices still work if the internet is down?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Routine Home Assistant Matter control is local and can continue while the internet is down if Home Assistant, the Google Thread border router, the local network, and the end device remain powered and reachable. Google remote access, account services, some voice features, and some firmware paths may not." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can an iPhone import a Google-created Thread network into Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant's current documented setup calls for Android when copying a Google-created Thread network and iPhone when copying an Apple-created network. An iPhone-only household should use a documented Google-first sharing path or a Home Assistant-owned Thread network instead of assuming the saved Google network details will transfer." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Thread 1.4 automatically merge Google and Home Assistant Thread networks?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Thread 1.4 adds standards-based ways to share saved network details, but current Home Assistant documentation still warns that vendors can create separate networks and that the phone's preferred Thread network affects device setup. Use the documented copy-and-join flow." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Google Thread</span><span>July 13, 2026</span><span>13 min read</span></p>
+            <h1>Can Google TV Streamer Be Your Thread Border Router for Home Assistant?</h1>
+            <p class="lede">Yes. Google TV Streamer (4K) can provide the Thread radio path while Home Assistant remains the local Matter controller. Nest Hub (2nd gen), Nest Hub Max, and Nest Wifi Pro can do the same job.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/google-tv-streamer-thread-border-router-home-assistant/cover.png" alt="Google TV Streamer and remote on a warm oak console beside flowers and dark-green books" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Use what you own:</strong> If you already have Google TV Streamer (4K), Nest Hub (2nd gen), Nest Hub Max, or Nest Wifi Pro, let it provide Thread for Home Assistant before buying another radio.</li>
+              <li><strong>Best setup for both apps:</strong> Add the Matter-over-Thread device to Google Home first, then share it to Home Assistant. Keep the real automations in one system so one event does not run the same routine twice.</li>
+              <li><strong>What to avoid:</strong> Nest Hub (1st gen), Nest Audio, Nest Mini, and Chromecast with Google TV are not Thread border routers, even though some can act as Matter hubs over Wi-Fi.</li>
+              <li><strong>Main caveat:</strong> Home Assistant can use a Google border router but cannot manage it. Google setup, saved Thread network details, updates, and remote features still involve Google services, and copying those details into Home Assistant uses Android.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Yes&mdash;You Do Not Need Another Thread Radio</h2>
+          <p><strong>Google TV Streamer (4K) can be the Thread border router for Matter devices controlled by Home Assistant.</strong> A Thread border router is the always-on bridge between low-power Thread devices and your normal Wi-Fi or Ethernet network. It forwards encrypted local traffic; it does not become the owner of the device. Home Assistant remains the Matter controller—the brain that adds and controls the accessory—and runs your automations.</p>
+          <p>If you already use Google Home, the calmest setup is to add the new Matter-over-Thread accessory there first, confirm it works, and then share it to Home Assistant. If Home Assistant should be the only controller, an Android phone can copy the Google-created Thread network details into Home Assistant and add the accessory directly. In either case, the Google device supplies the radio route and Home Assistant supplies the local control.</p>
+          <p>You do <strong>not</strong> need the paid Google Nest integration for this. That separate cloud integration is for supported Google thermostats, cameras, and doorbells. You also do not need any Thread border router for Matter-over-Wi-Fi devices. Before buying hardware, check the accessory box for both the Matter logo and the Thread logo.</p>
+
+          <h2 id="supported-models">Which Google Devices Actually Provide Thread?</h2>
+          <p>Google uses the word <em>hub</em> for several devices that can run Matter over Wi-Fi. Only the models in the Thread column provide the radio needed by a Matter-over-Thread sensor, lock, bulb, or switch.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Google device</th><th scope="col">Google's current Thread support</th><th scope="col">Home Assistant status</th><th scope="col">Homeowner recommendation</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Google TV Streamer (4K)</strong></td><td>Yes. Google documents a built-in Thread border router and a Thread on/off toggle.</td><td>Explicitly listed as known to work.</td><td><strong>Best dual-purpose choice</strong> when you also want the TV streamer. Do not confuse it with Chromecast with Google TV.</td></tr>
+                <tr><td><strong>Nest Hub (2nd gen)</strong></td><td>Yes.</td><td>Explicitly listed as known to work.</td><td>Use it if you already own one. Confirm it is second generation; the first-generation display has no Thread radio.</td></tr>
+                <tr><td><strong>Nest Hub Max</strong></td><td>Yes.</td><td>Explicitly listed as known to work.</td><td>A good existing border router when its location helps cover the house.</td></tr>
+                <tr><td><strong>Nest Wifi Pro (Wi-Fi 6E)</strong></td><td>Yes.</td><td>Explicitly listed as known to work.</td><td>Use the mesh you already have. Do not replace a stable router only to collect another Thread badge.</td></tr>
+                <tr><td><strong>Google Home Speaker (2026)</strong></td><td>Yes. Google's current page lists Thread.</td><td>Not yet named on Home Assistant's current known-to-work list.</td><td><strong>Early option:</strong> reasonable for Google Home, but do not buy it solely for a Home Assistant Thread plan until Home Assistant documents the model.</td></tr>
+                <tr><td><strong>Older Nest Wifi router and point</strong></td><td>Google's specifications identify them as Thread border routers, but its current Matter-over-Thread hub table names only Nest Wifi Pro and the legacy specifications still label Matter support “coming soon.”</td><td>Home Assistant lists Nest Wifi as known to work for Thread routing.</td><td>Keep a working unit for Thread. Do not buy the old line expecting the same current Google Matter-hub path as Nest Wifi Pro.</td></tr>
+                <tr><td><strong>Nest Hub (1st gen), Nest Audio, Nest Mini, Google Home Mini, original Google Home, Google Wifi, Chromecast with Google TV</strong></td><td>No Thread border-router support on Google's current list or product specifications.</td><td>Not listed as Thread border routers.</td><td><strong>Avoid for this job.</strong> Some are Matter hubs over Wi-Fi, which is not the same as providing Thread.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout">
+            <p><strong>The label trap:</strong> <em>Google TV Streamer (4K)</em> is the current low-profile box that sits near the TV. <em>Chromecast with Google TV</em> is the older dongle. The older product cannot become a Thread border router through a Home Assistant setting.</p>
+          </div>
+
+          <h2 id="roles">Thread, Matter, Google Home, and the Nest Integration Are Four Different Jobs</h2>
+          <ul>
+            <li><strong>Thread</strong> is the low-power wireless network used by many battery devices.</li>
+            <li><strong>The Google border router</strong> connects that Thread network to the home's normal local network. It forwards packets and cannot read the encrypted Matter content.</li>
+            <li><strong>Matter</strong> is the shared control language. Home Assistant's Matter Server is the controller that adds devices and gives Home Assistant their controls and sensor readings.</li>
+            <li><strong>Google Home</strong> is another Matter controller and household app. One Matter device can belong to both Google and Home Assistant.</li>
+            <li><strong>The Google Nest integration</strong> is an unrelated cloud API for selected Google-branded thermostats, cameras, and doorbells. It does not expose or unlock a Nest Hub's Thread radio.</li>
+          </ul>
+          <p>This separation explains why no Google Nest entity appears in Home Assistant for the Streamer's Thread router. Home Assistant discovers the Thread network locally, usually with a name such as <code>NEST-PAN-1234</code>. The router is infrastructure, not a switch that should appear on a dashboard.</p>
+
+          <h2 id="paths">Choose One of These Three Setup Paths</h2>
+          <h3 id="google-first">1. Google Home First, Then Share to Home Assistant</h3>
+          <p><strong>Choose this when the household wants both Google Home and Home Assistant.</strong> It uses Google's working Thread network first and avoids trying to make the setup phone choose a different network.</p>
+          <ol>
+            <li>Set up Google TV Streamer, Nest Hub, or Nest Wifi Pro in Google Home. For Google TV Streamer, confirm <strong>Settings &gt; Network and Internet &gt; Thread network</strong> is on.</li>
+            <li>Add the new Matter-over-Thread accessory in Google Home and confirm it responds with Bluetooth turned off.</li>
+            <li>In the Home Assistant Companion app, open the Matter add-device flow and choose <strong>Yes, it's already in use</strong>.</li>
+            <li>Select the Google Home sharing path and follow the prompts to add Home Assistant as another Matter controller.</li>
+            <li>Keep automations in one place. If Home Assistant runs them, do not also export the Home Assistant copy back into Google or create the same routine twice.</li>
+          </ol>
+          <p>This is Matter <strong>multi-admin</strong>: the device gets a direct, encrypted relationship with both platforms. Google and Home Assistant do not copy room names, scenes, users, or automations between them.</p>
+
+          <h3 id="ha-first">2. Add the Device Directly to Home Assistant Through Google Thread</h3>
+          <p><strong>Choose this when Google Home does not need to control the accessory.</strong> Home Assistant's current documentation uses an Android phone for a Google-created Thread network.</p>
+          <ol>
+            <li>Put the Android phone, Google border router, and Home Assistant on the same ordinary home network.</li>
+            <li>In the Home Assistant Companion app, go to <strong>Settings &gt; Devices &amp; services &gt; Thread</strong>, select <strong>Configure</strong>, then <strong>Import Credentials</strong>.</li>
+            <li>Refresh the Thread page. Confirm Home Assistant knows the <code>NEST-PAN</code> credentials, then make that network preferred if the button is available.</li>
+            <li>Open the Home Assistant Matter add-device flow, choose a new device, and scan its Matter code while the phone is close to the accessory.</li>
+          </ol>
+          <p>The preferred-network label in Home Assistant is useful, but it is not absolute. Home Assistant warns that adding a device still follows the phone's preferred Thread network. If the phone keeps choosing an old network, fix the saved network details on the phone before resetting every accessory.</p>
+
+          <h3 id="add-ha-router">3. Add a Home Assistant Border Router to Google's Existing Network</h3>
+          <p><strong>Choose this when you want a second route or Home Assistant-owned radio without creating a second mesh.</strong> Copy the saved Google Thread network first, make it preferred, and then enable the OpenThread Border Router app for Home Assistant Yellow, Connect ZBT-1, or Connect ZBT-2. Home Assistant's documented flow joins its border router to the existing third-party network.</p>
+          <p>Do not form a fresh <code>ha-thread</code> network first and assume it will merge later. A second network with a different password does not extend the first. Also remember that a Connect ZBT-2 runs either Zigbee or Thread firmware at one time, not both.</p>
+
+          <h2 id="local-cloud">What Is Local, and What Still Uses Google?</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Part of the setup</th><th scope="col">Local or cloud?</th><th scope="col">What this means in the house</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Home Assistant controlling a Matter device</strong></td><td>Local.</td><td>Commands travel across the local network through the Google Thread border router. Normal control does not need the vendor cloud.</td></tr>
+                <tr><td><strong>Google border-router forwarding</strong></td><td>Local network function.</td><td>The Google device routes encrypted local messages between Thread and Wi-Fi or Ethernet; it is not the Home Assistant controller.</td></tr>
+                <tr><td><strong>Google device setup and saved Thread network backup</strong></td><td>Google account and services are involved.</td><td>Google documents storing the Streamer's Thread network details securely in the Google Account. Setup and recovery are not account-free.</td></tr>
+                <tr><td><strong>Google Home control while you are away and some voice, account, and notification features</strong></td><td>Cloud-dependent features.</td><td>Google says in-home Matter commands can run locally, while away-from-home control uses its cloud. Home Assistant's local control remains separate.</td></tr>
+                <tr><td><strong>Firmware updates</strong></td><td>Usually vendor-managed.</td><td>Keep the Streamer or Hub updated through Google. The accessory itself may also need its manufacturer's app or Matter update path.</td></tr>
+                <tr><td><strong>Home Assistant Nest integration</strong></td><td>Cloud integration.</td><td>Use only for its supported thermostat, camera, and doorbell features. It is not required for Thread or Matter routing.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>During an internet outage, routine Home Assistant Matter control should remain local if Home Assistant, the Google border router, the LAN, and the accessory all remain powered and reachable. Test this before relying on a lock, leak alert, or safety routine. Local protocol design is not a substitute for a physical key, audible alarm, or manufacturer-approved safety control.</p>
+
+          <h2 id="apple-homekit">What About Apple Home and HomeKit?</h2>
+          <p>A <strong>Matter</strong> accessory can be shared with Apple Home as another Matter controller. That sharing does not move the accessory to a new Thread network, merge Apple and Google Thread networks, or copy automations. If direct Apple control matters, use Apple's documented Matter setup and make sure the Apple household has a supported home hub or third-party Thread route for that accessory.</p>
+          <p>A <strong>HomeKit-over-Thread</strong> accessory is different: it speaks Apple's HomeKit protocol over Thread rather than Matter. Home Assistant can use compatible HomeKit devices through its HomeKit Device integration, but its setup and saved-network path are not the same as Matter sharing. Do not buy a Thread-only product and assume the Matter logo is optional.</p>
+          <p>For Google-created Thread networks, Home Assistant's current setup specifically calls for Android. An iPhone-only household should use a documented Google-first sharing flow or choose an Apple- or Home Assistant-owned Thread plan instead of assuming an iPhone will copy Google's saved network details.</p>
+
+          <h2 id="thread-14">Thread 1.4 Helps, but It Does Not Automatically Merge Everything</h2>
+          <p>Thread credential sharing is a defining Thread 1.4 capability. Home Assistant added Thread 1.4 support to its OpenThread Border Router app in the June 23, 2026 Matter upgrade. Google's production notes, also updated June 23, say Google TV Streamer build <code>UTTK.260317.003</code> adds Thread credential sharing. Google's note does not itself label that build “Thread 1.4,” so treat the new sharing feature as useful progress rather than proof of automatic cross-brand merging.</p>
+          <p>Google says Google TV Streamer can create a Thread network or join an existing one, but that does not prove every Streamer, Nest Hub, Apple border router, and Home Assistant radio will automatically become one mesh. Home Assistant's current documentation still says vendors can form separate networks, saved network details must be copied, and the phone's preferred network affects device setup. Use the documented copy-and-join flow; do not factory-reset a stable house merely because two network names appear.</p>
+
+          <h2 id="troubleshooting">If Pairing Fails, Try These in Order</h2>
+          <ol>
+            <li><strong>Confirm the hardware.</strong> Google TV Streamer (4K) is supported; Chromecast with Google TV is not. Nest Hub must be second generation or Max.</li>
+            <li><strong>Check the Google side.</strong> Update the Google device and Google Home app. Google's June 23 production notes list Streamer build <code>UTTK.260317.003</code> with Thread credential sharing. On Streamer, make sure the Thread toggle is on.</li>
+            <li><strong>Use one simple home network.</strong> Keep the phone, border router, and Home Assistant on the same network while adding the device. Guest Wi-Fi or network rules that stop devices from seeing one another can prevent discovery.</li>
+            <li><strong>Check IPv6.</strong> Thread uses IPv6, the local addressing system that lets its devices reach Home Assistant. A setup can appear to pair and then become unavailable if that path is blocked.</li>
+            <li><strong>Copy the right Thread network.</strong> On Android, use Home Assistant's <strong>Import Credentials</strong> button and confirm its icon appears beside the intended <code>NEST-PAN</code> network.</li>
+            <li><strong>Use the right Matter flow.</strong> A factory-new device uses the new-device path. A device already in Google Home uses the already-in-use sharing path.</li>
+            <li><strong>Restart normally.</strong> Reboot the Streamer or Hub and Home Assistant once. Do not begin by clearing all Google Play Services data; that can disturb other phone services and does not repair a broken LAN.</li>
+            <li><strong>Reset last.</strong> Factory-reset only the one accessory after the saved Thread network, IPv6, same-network discovery, and the correct sharing path have been checked.</li>
+          </ol>
+
+          <h2 id="recommendation">Tara's Recommendation</h2>
+          <p>If Google TV Streamer, Nest Hub (2nd gen), Nest Hub Max, or Nest Wifi Pro already works in the house, use it as the first Thread border router. Pair through Google first when both Google Home and Home Assistant need the device. Pair directly to Home Assistant after copying Google's saved Thread network when Home Assistant should be the only controller.</p>
+          <p>Buy a Google TV Streamer for its combined TV and Thread job, not only for a logo. For an iPhone-only, Home Assistant-first house&mdash;or a home that wants Home Assistant to configure and troubleshoot its own border router&mdash;a dedicated Connect ZBT-2 or Yellow Thread setup is usually clearer. Whichever path you choose, keep one stable Thread network, one main automation brain, and a tested recovery plan.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3>Do I need Connect ZBT-2 if I already have Google TV Streamer?</h3>
+          <p>No. Google TV Streamer (4K) is a Thread border router that Home Assistant lists as known to work. Add a Home Assistant radio later only when it solves a coverage, ownership, or recovery problem.</p>
+
+          <h3>Is Chromecast with Google TV a Thread border router?</h3>
+          <p>No. Chromecast with Google TV is the older dongle and is not on the current Google or Home Assistant Thread border-router lists. The supported product is Google TV Streamer (4K).</p>
+
+          <h3>Do I need the Google Nest integration to use Nest Hub for Thread?</h3>
+          <p>No. The Nest integration is a separate cloud path for supported Google thermostats, cameras, and doorbells. Thread border routers are discovered locally and do not become Nest entities in Home Assistant.</p>
+
+          <h3>Will Matter devices work when the internet is down?</h3>
+          <p>Home Assistant's routine Matter control is local. It can continue if Home Assistant, the Google border router, the LAN, and the accessory remain powered and reachable. Google remote access, account services, some voice features, and some firmware paths may not.</p>
+
+          <h3>Can an iPhone import Google's Thread credentials into Home Assistant?</h3>
+          <p>Home Assistant's current documented setup calls for Android when importing a Google-created Thread network and iPhone when importing an Apple-created network. Use a documented Google-first sharing path or a Home Assistant-owned Thread network in an iPhone-only home.</p>
+
+          <h3>Does Thread 1.4 automatically merge Google and Home Assistant networks?</h3>
+          <p>No. It makes authorized sharing of saved Thread network details possible, but current products and apps still need the documented copy-and-join flow. A shared Matter device also does not merge two Thread networks.</p>
+
+          <h2 id="related">Related Tara Guides</h2>
+          <p>Compare every major platform in Tara's <a href="/blog/which-thread-border-router-home-assistant-2026/">2026 Thread border-router guide</a>. If Home Assistant reports missing Thread hardware, use the <a href="/blog/home-assistant-thread-border-router-required/">Thread border-router error checklist</a>. For two-app control, follow the <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin guide</a>. For weak coverage, learn how to <a href="/blog/extend-thread-range-home-assistant-without-second-network/">extend one Thread mesh without creating another</a>.</p>
+        </div>
+      </article>
+
+      <section class="block article-cta">
+        <p class="kicker">Plan the radio path</p>
+        <h2>Use the hubs already in the house without creating three Thread networks.</h2>
+        <p>Tara plans the local controller, Thread coverage, cross-platform sharing, and homeowner handoff as one system.</p>
+        <a class="cta" href="/configurator/">Configure your Tara system</a>
+      </section>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread integration, supported border routers, credentials, and preferred networks</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration and commissioning paths</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant's June 23, 2026 Matter Server and Thread 1.4 upgrade</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/nest/" target="_blank" rel="noopener noreferrer">Home Assistant Google Nest cloud integration scope</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Device integration</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Google, Apple, and Thread documentation</h3>
+            <ul>
+              <li><a href="https://support.google.com/googlehome/answer/12391458?hl=en" target="_blank" rel="noopener noreferrer">Google's current Matter hub and Thread border-router model list</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en" target="_blank" rel="noopener noreferrer">Google Matter setup, local in-home control, remote control, and multi-admin sharing</a></li>
+              <li><a href="https://support.google.com/googletv/answer/15273676?hl=en" target="_blank" rel="noopener noreferrer">Google TV Streamer and Chromecast with Google TV feature comparison</a></li>
+              <li><a href="https://support.google.com/chromecast/answer/15178609?hl=en-GB" target="_blank" rel="noopener noreferrer">Google TV Streamer Thread setup, toggle, and troubleshooting</a></li>
+              <li><a href="https://support.google.com/chromecast/answer/7124014?hl=en" target="_blank" rel="noopener noreferrer">Google TV Streamer production firmware notes and Thread credential sharing</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/6300732?hl=en-CA" target="_blank" rel="noopener noreferrer">Google Wifi, Nest Wifi, and Nest Wifi Pro feature comparison</a></li>
+              <li><a href="https://blog.google/products-and-platforms/devices/google-nest/google-tv-streamer/" target="_blank" rel="noopener noreferrer">Google TV Streamer product announcement and official cover-photo source</a></li>
+              <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple Matter accessory setup and sharing</a></li>
+              <li><a href="https://www.threadgroup.org/Portals/0/Documents/Thread_1.4_Features_White_Paper_September_2024.pdf" target="_blank" rel="noopener noreferrer">Thread Group: Thread 1.4 feature overview</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1r393ny/how_to_use_google_nest_hub_as_thread_router/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: using Nest Hub as the Thread router</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1tfye3b/can_the_google_nest_hub_allow_ha_on_a_virtual/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Google Thread with a virtual Home Assistant host</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1u6aqe4/google_tv_streamer_matter_14_update/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Google TV Streamer update and direct-versus-shared setup questions</a></li>
+              <li><a href="https://community.home-assistant.io/t/google-tv-streamer-as-thread-border-router/771390" target="_blank" rel="noopener noreferrer">Home Assistant Community: Google TV Streamer as border router</a></li>
+              <li><a href="https://community.home-assistant.io/t/thread-move-nest-hub-in-my-preferred-network/988139" target="_blank" rel="noopener noreferrer">Home Assistant Community: Nest Hub and preferred-network limits</a></li>
+              <li><a href="https://github.com/home-assistant/android/issues/4146" target="_blank" rel="noopener noreferrer">Home Assistant Android: changing an old preferred Thread dataset</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/154629" target="_blank" rel="noopener noreferrer">Home Assistant Core: changing or deleting a preferred Thread network</a></li>
+            </ul>
+          </div>
+        </div>
+        <p>Cover product photography is derived from Google's official Google TV Streamer image for editorial identification. TaraHome is not affiliated with or endorsed by Google.</p>
+      </section>
+
+      <section class="block related">
+        <div class="links"><a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread border router</a><a href="/blog/home-assistant-thread-border-router-required/">Fix the border-router error</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter devices</a><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose the first Matter app</a><a href="/blog/extend-thread-range-home-assistant-without-second-network/">Extend Thread range</a><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Main LAN or IoT VLAN</a><a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a><a href="/configurator/">Configurator</a></div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home planning.</span></footer>
+  </body>
+</html>
