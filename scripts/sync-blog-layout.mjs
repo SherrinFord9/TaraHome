@@ -7,6 +7,8 @@ const repo = resolve(process.cwd());
 const blogDir = resolve(repo, 'blog');
 const markerStart = '/* tara-blog-layout-v2:start */';
 const markerEnd = '/* tara-blog-layout-v2:end */';
+const typographyMarkerStart = '/* tara-blog-typography-v3:start */';
+const typographyMarkerEnd = '/* tara-blog-typography-v3:end */';
 
 const layoutCss = `
       ${markerStart}
@@ -179,6 +181,69 @@ const renderedLayoutCss = layoutCss
   .replace(/\s*([{}:;,])\s*/g, '$1')
   .trim();
 
+const typographyCss = `
+      ${typographyMarkerStart}
+      body {
+        font-weight: 400;
+      }
+      h1,
+      h2,
+      h3 {
+        font-weight: 400;
+      }
+      p,
+      .lede {
+        font-weight: 400;
+      }
+      .blog-card h2,
+      .blog-card p {
+        font-weight: 400;
+      }
+      .article-body p,
+      .article-body li {
+        font-weight: 400;
+      }
+      .article-body .inline-figure figcaption,
+      .source-grid li,
+      .legal p,
+      .legal li {
+        font-weight: 400;
+      }
+      .kicker,
+      nav strong,
+      .list li,
+      .steps li::before,
+      .faq summary,
+      .links a,
+      .cta,
+      .article-meta,
+      .article-body th,
+      .article-body strong {
+        font-weight: 600;
+      }
+      ${typographyMarkerEnd}`;
+const renderedTypographyCss = typographyCss
+  .replace(/\s+/g, ' ')
+  .replace(/\s*([{}:;,])\s*/g, '$1')
+  .trim();
+
+function appendAsLastStyleBlock(html, block, startMarker, endMarker) {
+  const start = html.indexOf(startMarker);
+  const end = html.indexOf(endMarker, start + startMarker.length);
+  let next = html;
+
+  if (start !== -1 && end !== -1) {
+    next = `${html.slice(0, start).trimEnd()}${html.slice(end + endMarker.length).trimStart()}`;
+  }
+
+  const styleEnd = next.lastIndexOf('</style>');
+  if (styleEnd === -1) {
+    throw new Error('No closing style tag found while syncing blog typography.');
+  }
+
+  return `${next.slice(0, styleEnd)}\n      ${block}\n    ${next.slice(styleEnd)}`;
+}
+
 const targets = [resolve(repo, 'blog.html'), resolve(blogDir, 'index.html')];
 for (const entry of readdirSync(blogDir, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue;
@@ -204,6 +269,14 @@ for (const path of targets) {
     next = `${html.slice(0, styleEnd)}\n      ${renderedLayoutCss}\n    ${html.slice(styleEnd)}`;
   }
 
+  // Avenir Book is a static regular face, not a variable 400-800 font.
+  next = next.replace(/font-weight:\s*400\s+800;/g, 'font-weight: 400;');
+  next = appendAsLastStyleBlock(
+    next,
+    renderedTypographyCss,
+    typographyMarkerStart,
+    typographyMarkerEnd,
+  );
   next = next.replace(/[ \t]+\n/g, '\n');
 
   if (next !== html) {

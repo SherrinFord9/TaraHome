@@ -45,6 +45,31 @@ for page in "${pages[@]}"; do
     failed=1
   fi
 
+  if grep -Eq 'font-weight:[[:space:]]*400[[:space:]]+800;' "$page"; then
+    echo "Typography FAIL: $page falsely declares static Avenir Book as a variable 400-800 face." >&2
+    failed=1
+  fi
+
+  if ! grep -Fq '/* tara-blog-typography-v3:start */' "$page"; then
+    echo "Typography FAIL: $page is missing the canonical blog typography block." >&2
+    failed=1
+  fi
+
+  if ! grep -Fq 'h1,h2,h3{font-weight:400;}' "$page"; then
+    echo "Typography FAIL: $page does not preserve regular-weight Tara headings." >&2
+    failed=1
+  fi
+
+  if ! grep -Fq '.blog-card h2,.blog-card p{font-weight:400;}' "$page"; then
+    echo "Typography FAIL: $page does not preserve the library card weight hierarchy." >&2
+    failed=1
+  fi
+
+  if ! grep -Fq '.article-body p,.article-body li{font-weight:400;}' "$page"; then
+    echo "Typography FAIL: $page does not preserve readable article body weights." >&2
+    failed=1
+  fi
+
   if grep -Fq 'font-family: Avenir, Inter' "$page"; then
     echo "Typography FAIL: $page still uses the unregistered Avenir/Inter fallback stack." >&2
     failed=1
