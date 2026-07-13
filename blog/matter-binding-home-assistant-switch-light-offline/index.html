@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matter Switches When Home Assistant Is Down | Tara Guides</title>
+    <meta name="description" content="Use Matter Server 9's experimental Binding editor to connect a compatible Matter switch directly to a light, then learn what still works when Home Assistant is down." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/matter-binding-home-assistant-switch-light-offline/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/matter-binding-home-assistant-switch-light-offline/" />
+    <meta property="og:title" content="Can a Matter Switch Control Lights If Home Assistant Is Down? | Tara Guides" />
+    <meta property="og:description" content="Matter binding can keep simple lighting control local and direct, but only when both devices expose the right clusters and the network path stays powered." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/matter-binding-home-assistant-switch-light-offline/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can a Matter Switch Control Lights If Home Assistant Is Down? | Tara Guides" />
+    <meta name="twitter:description" content="A plain-English guide to Matter bindings, Home Assistant Matter Server 9, device compatibility, and outage testing." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/matter-binding-home-assistant-switch-light-offline/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400 800;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/matter-binding-home-assistant-switch-light-offline/#blogposting",
+          "headline": "Can a Matter Switch Control Lights If Home Assistant Is Down?",
+          "description": "How to use Matter Server 9's experimental Binding editor with compatible switches and lights, what remains local, and which outages still break the control path.",
+          "image": "https://tarahome.ai/assets/generated/blog/matter-binding-home-assistant-switch-light-offline/cover.png",
+          "datePublished": "2026-07-12",
+          "dateModified": "2026-07-12",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/matter-binding-home-assistant-switch-light-offline/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md",
+            "https://github.com/matter-js/matterjs-server/blob/main/CHANGELOG.md",
+            "https://github.com/matter-js/matterjs-server/pull/757",
+            "https://developers.home.google.com/matter/supported-devices",
+            "https://help.inovelli.com/en/articles/8705901-white-series-dimmer-switch-manual",
+            "https://help.inovelli.com/en/articles/9692499-white-series-dimmer-switch-setup-instructions-home-assistant",
+            "https://help.inovelli.com/en/articles/13539955-vtm31-sn-firmware-1-1-0-update-advisory",
+            "https://www.ikea.com/se/en/customer-service/knowledge/articles/4a1e443e-624e-4d0f-b104-d5c952a2c2f8.html",
+            "https://www.reddit.com/r/homeassistant/comments/1udk0j1/the_matter_upgrade_youve_been_waiting_for/",
+            "https://www.reddit.com/r/homeassistant/comments/1udg08r/two_or_more_switches_that_toggle_in_sync_without/",
+            "https://community.home-assistant.io/t/add-support-for-matter-binding-feature/769947",
+            "https://community.home-assistant.io/t/can-i-make-my-lights-resilient-with-matter/945590",
+            "https://community.inovelli.com/t/white-series-dimmer-vtm31-sn-bug-enhancement-thread/17216",
+            "https://threadgroup.org/Newsroom/Blog/what-is-a-thread-border-router-and-how-is-it-different-from-a-hub-or-a-bridge"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/matter-binding-home-assistant-switch-light-offline/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Matter switch binding and outages", "item": "https://tarahome.ai/blog/matter-binding-home-assistant-switch-light-offline/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/matter-binding-home-assistant-switch-light-offline/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can a Matter switch control a light when Home Assistant is down?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, when the switch and light support the required Matter clusters and a direct binding has been configured between them. The command then travels device to device instead of waiting for a Home Assistant automation, although the Wi-Fi or Thread network path must remain available." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is there no Binding section for my Matter button?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A Matter logo does not require every device to implement the Binding cluster or the client cluster needed to command a light. Check the source device's correct endpoint in the Matter Server dashboard. If the Binding panel is absent, use a Home Assistant automation or the manufacturer's documented direct-pairing path." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will a binding work if the Home Assistant computer is unplugged?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only if unplugging that computer does not also remove the needed Thread border router, Wi-Fi access point, or route between the devices. A direct binding removes Home Assistant Core from the command path, not the network infrastructure." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is a Home Assistant automation the same as a Matter binding?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. An automation receives an event in Home Assistant and then sends a command, so it stops when Home Assistant Core is unavailable. A Matter binding stores a direct device relationship and can continue without the controller after setup." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does pairing an IKEA BILRESA remote directly to a KAJPLATS light create the same Home Assistant binding?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No assumption should be made. IKEA documents a direct remote-to-light pairing path that works without a hub, while Home Assistant Matter binding is configured through the Matter Server dashboard and requires the relevant Matter clusters. Treat them as separate setup paths and test the one you choose." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter binding</span><span>July 12, 2026</span><span>13 min read</span></p>
+            <h1>Can a Matter Switch Control Lights If Home Assistant Is Down?</h1>
+            <p class="lede">Yes&mdash;if the switch and light expose the right Matter features and you create a direct binding. Home Assistant Matter Server 9 now has an experimental editor for that job, but a Matter logo alone does not promise compatibility.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/matter-binding-home-assistant-switch-light-offline/cover.png" alt="Homeowner pressing a wall switch while two lamps stay lit beside an unplugged home automation computer" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>What to do:</strong> Update to Matter Server 9.0 or newer, open its web dashboard, select the physical switch or button, and look for a <strong>Binding</strong> panel.</li>
+              <li><strong>Choose binding when:</strong> one compatible Matter switch should run one light or a simple light function even while Home Assistant Core restarts.</li>
+              <li><strong>What to avoid:</strong> do not buy a button merely because it says Matter; many buttons report presses to a controller but cannot send direct on/off or dimming commands.</li>
+              <li><strong>Main caveat:</strong> the editor is experimental, and the Wi-Fi or Thread path must stay powered. If the Home Assistant box is also the only bridge between Thread devices and the home network, unplugging it can still break the route.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Yes, With a Real Matter Binding</h2>
+          <p>A <strong>Matter binding</strong> is a rule stored on a device that tells it to send a command directly to another Matter device. A compatible wall switch can therefore tell a compatible bulb to turn on without waiting for a Home Assistant automation. Once that binding is configured, Home Assistant Core and the Matter Server are not in the middle of each button press. This does not guarantee the light will work after the entire Home Assistant computer loses power, because that computer may also provide part of the Thread or Wi-Fi route.</p>
+          <p>Home Assistant's June 23, 2026 Matter Server 9 release made this practical for advanced homeowners. The app moved to matter.js 1.1.0, and that server's June 17 changelog includes a revamped <strong>experimental Binding overview and editor</strong>. The word <em>experimental</em> matters: the editor can create the relationship, but it cannot add features that the switch or light <strong>firmware</strong>&mdash;the software stored inside the device&mdash;does not contain.</p>
+          <p>That is why the honest recommendation is narrow. Use binding for a simple, tested lighting path that must survive a Home Assistant Core restart. Use a normal Home Assistant automation when you need double-press actions, conditions, scenes, mixed Zigbee/Wi-Fi/Matter devices, or different behavior by time of day. For a critical room, keep a physical switch that can still control its wired load even if every smart service fails.</p>
+
+          <h2 id="three-paths">A Local Switch, an Automation, and a Binding Are Different</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Control path</th><th scope="col">What happens in the house</th><th scope="col">Works if Home Assistant Core stops?</th><th scope="col">Main limitation</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Physical wired load</strong></td><td>The wall switch controls the circuit attached to it.</td><td>Usually yes. This is device behavior, not an automation.</td><td>Only controls the wired load unless the switch has another direct-control feature.</td></tr>
+                <tr><td><strong>Home Assistant automation</strong></td><td>A button event reaches Home Assistant; Home Assistant decides what to do and sends commands.</td><td>No.</td><td>Most flexible, but Home Assistant Core is part of every press.</td></tr>
+                <tr><td><strong>Matter binding</strong></td><td>The source switch sends a standard Matter command to the target light.</td><td>Yes, if the binding and network path are healthy.</td><td>Both devices need compatible clusters, and setup is still experimental.</td></tr>
+                <tr><td><strong>Manufacturer direct pairing</strong></td><td>A vendor-specific setup pairs a remote straight to a light.</td><td>Often yes.</td><td>May be separate from Matter binding and may not coexist with the smart-system setup you want.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="what-changed">What Matter Server 9 Changed</h2>
+          <p>Home Assistant's official Matter Server app 9.0.0 bundled matter.js 1.1.0. The Home Assistant app changelog calls 9.0 the first all-user release on the new server, and the matter.js changelog says version 1.1.0 added the revamped experimental Binding editor plus limited management for the device permissions that bindings need. As of July 12, 2026, the stable Home Assistant app is 9.0.4 and bundles matter.js Server 1.1.7.</p>
+          <p>In plain English, the Matter Server web dashboard can now show a compatible device's <strong>Binding</strong> entries and help create a direct source-to-target relationship. The dashboard also tries to give the source switch <strong>Operate</strong> permission on the target endpoint and cluster. That permission is the target light agreeing that this switch may operate a specific function.</p>
+          <div class="callout">
+            <p><strong>As of July 12, 2026:</strong> Matter Server app 9.0.4 is already beyond the first 9.0.0 release. Update the app and read its release notes before testing, because early 9.0 migration and stability fixes arrived quickly. Take a full Home Assistant backup first.</p>
+          </div>
+
+          <h2 id="compatibility">Check Compatibility Before You Touch the Binding Editor</h2>
+          <p>Binding needs more than two devices that carry a Matter logo. Matter organizes features into <strong>clusters</strong>, which are standard bundles such as On/Off, Level Control for dimming, and Binding. The source device needs the Binding cluster and a client cluster that can send the intended command. The target needs the matching server cluster that receives it.</p>
+          <ul>
+            <li><strong>Both devices must be on Home Assistant's Matter fabric.</strong> A fabric is one controller's secure relationship with its Matter devices. Multi-admin can put the same accessory on several fabrics, but Home Assistant can only configure the relationship it is authorized to manage.</li>
+            <li><strong>The source endpoint must expose Binding.</strong> An endpoint is one controllable part of a device. A switch can have separate endpoints for its wired load, up paddle, down paddle, and indicator light. Check the physical-control endpoint, not only the first tile.</li>
+            <li><strong>The source needs the command client.</strong> Seeing a button-press event does not prove the button can send an On/Off or Level Control command directly.</li>
+            <li><strong>The target must accept that command.</strong> An On/Off binding cannot invent dimming, color, or scene behavior.</li>
+            <li><strong>The network must remain.</strong> Binding removes Home Assistant Core from the decision, not Wi-Fi, Thread routing, or electrical power.</li>
+          </ul>
+
+          <h3 id="real-examples">Concrete Examples and What They Actually Prove</h3>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Example</th><th scope="col">Official path</th><th scope="col">Local or cloud?</th><th scope="col">Matter binding caveat</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Inovelli White Series VTM31-SN</strong></td><td>Inovelli documents it as a Matter-over-Thread dimmer and publishes Home Assistant setup instructions.</td><td>The wired paddle and Matter control are local. No vendor cloud is required for ordinary Home Assistant control.</td><td>Working examples bind the controller on endpoint 2 to a compatible light. Physical-paddle behavior is not an arbitrary gesture mapper, and Inovelli warns that some firmware updates may require rebuilding bindings.</td></tr>
+                <tr><td><strong>Tuo Smart Button or Innovation Matters Pushbutton Module</strong></td><td>Home Assistant's official Matter docs list these as examples for button-press automations.</td><td>The Matter event can remain local, but a Home Assistant automation needs Home Assistant Core running.</td><td>An event entity is not proof of a Binding client. Check the dashboard before expecting direct control.</td></tr>
+                <tr><td><strong>IKEA BILRESA with KAJPLATS</strong></td><td>IKEA documents a four-press direct remote-to-light pairing path that needs no hub.</td><td>The direct path is local and can work without Home Assistant or cloud.</td><td>Treat IKEA's documented direct pairing and Home Assistant's generic Matter Binding editor as separate paths. Use Tara's <a href="/blog/ikea-bilresa-direct-pairing-vs-home-assistant/">BILRESA decision guide</a> before mixing them.</td></tr>
+                <tr><td><strong>Matter On/Off Light Switch in Google Home</strong></td><td>Google officially allows commissioning this device type.</td><td>Google's Matter device path is local through a compatible hub, while app, account, voice, and remote features have wider ecosystem dependencies.</td><td>Google explicitly says its Home app does not expose the Binding cluster, so the user cannot configure that switch to a light there.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="setup">How to Create a Matter Binding in Home Assistant</h2>
+          <p>This is an advanced setup in an experimental dashboard. Start with one non-critical switch and one lamp. Do not begin with stair lighting, emergency lighting, a heater, a fan, an outlet, a lock, or anything where a missed or unintended command creates a safety problem.</p>
+          <ol>
+            <li><strong>Back up and update.</strong> Create a full Home Assistant backup. Update Home Assistant and the Matter Server app to current stable releases. If you are moving from Matter Server 8.x, read the 9.0 migration notes before touching the device list.</li>
+            <li><strong>Add both devices to Home Assistant Matter.</strong> In the Companion app, commission each new accessory or share it from its current Matter controller. Confirm that normal Home Assistant control works first.</li>
+            <li><strong>Remove the duplicate experiment.</strong> Temporarily disable any Home Assistant automation that already maps this button to this light. Otherwise a successful binding and an automation can both fire, hiding what you are actually testing.</li>
+            <li><strong>Open the Matter Server dashboard.</strong> On Home Assistant OS, go to <strong>Settings &gt; Apps &gt; Matter Server &gt; Open Web UI</strong>.</li>
+            <li><strong>Open the source switch or button.</strong> Select the node, then the endpoint that represents the physical control. Look for a <strong>Binding</strong> panel. If it is absent, check the other endpoints once. If none has it, stop&mdash;this device does not expose a binding that the dashboard can configure.</li>
+            <li><strong>Add the target.</strong> In the Binding panel, choose <strong>Add binding</strong>, select the target light, select its correct endpoint, and choose the compatible cluster. Start with <strong>On/Off</strong>. Add Level Control only when both devices clearly support dimming.</li>
+            <li><strong>Read the result.</strong> Confirm the new binding appears and that the dashboard does not report an access-control or capacity error. Do not manually loosen permissions just to make an error disappear.</li>
+            <li><strong>Test the physical press.</strong> Press the real paddle or button. Do not test only by toggling the source device from the Home Assistant dashboard; some devices intentionally send bound commands only for a physical action.</li>
+          </ol>
+          <div class="callout">
+            <p><strong>One light at a time:</strong> the current editor creates direct node-and-endpoint bindings, not a homeowner-friendly Matter group. Several lights usually need several binding entries, and small device tables or permission limits may run out. Use a Home Assistant light group when synchronized control matters more than controller-free operation.</p>
+          </div>
+
+          <h3 id="outage-test">Test the Outage Without Creating a New Failure</h3>
+          <p>First prove the direct path with the old Home Assistant automation disabled. Then restart <strong>Home Assistant Core</strong> and press the switch during the restart. If the light still responds, you have removed Core from that command path.</p>
+          <p>Do not start by pulling power from the whole Home Assistant machine. If that box also runs your only OpenThread border router, Wi-Fi adapter, or network service, the test removes more than the controller. A good resilience test changes one thing at a time.</p>
+
+          <h2 id="outages">What Still Has to Be Running?</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Failure or outage</th><th scope="col">Should the binding still work?</th><th scope="col">Why</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Internet service is down</strong></td><td>Yes.</td><td>Normal Matter binding traffic stays inside the home. Vendor remote access and voice services are separate.</td></tr>
+                <tr><td><strong>Home Assistant Core is restarting</strong></td><td>Yes.</td><td>The direct command does not wait for a Home Assistant automation.</td></tr>
+                <tr><td><strong>Matter Server is temporarily unavailable</strong></td><td>Yes, after a valid binding is stored.</td><td>The controller is needed to configure or change the relationship, not to relay every press.</td></tr>
+                <tr><td><strong>The entire Home Assistant box is unplugged</strong></td><td>It depends.</td><td>Two devices on the same healthy Thread mesh may still communicate. Thread-to-Wi-Fi control, a sleepy button that lost its powered Thread parent, or any path using the box's only border router can fail.</td></tr>
+                <tr><td><strong>Wi-Fi access point or required Thread border router is off</strong></td><td>Often no.</td><td>Direct does not mean radio-free. A Wi-Fi-to-Thread binding still needs the border router, and Wi-Fi devices still need the LAN.</td></tr>
+                <tr><td><strong>The switch or light loses power</strong></td><td>No.</td><td>No software feature can replace power at the source or target.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="ecosystems">Apple Home, Google Home, Alexa, and SmartThings Are Not the Same Editor</h2>
+          <p>Matter standardizes the building blocks, but consumer platforms decide which ones they expose. Google documents the boundary unusually clearly: its Home app can commission a Matter On/Off Light Switch but does not expose the Binding cluster needed to tell that switch which light to control.</p>
+          <p>Do not assume Apple Home, Alexa, or SmartThings offers the same generic binding screen just because all three support Matter switches or buttons. Their automations and routines can make a button useful, but that puts a controller or hub back into the decision path. Use direct binding only when the exact platform and product documentation describes it, or when Home Assistant's Matter Server dashboard shows the compatible endpoints and completes a tested binding.</p>
+          <p><strong>Multi-admin</strong>&mdash;sharing one Matter device with several platforms&mdash;also does not copy rooms, automations, or binding setup between those platforms. Configure the binding on the Home Assistant fabric only after both devices are present there, and do not remove that fabric casually. For the broader sharing model, see Tara's <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin guide</a>.</p>
+
+          <h2 id="troubleshooting">Why a Binding Fails</h2>
+          <h3 id="no-panel">There Is No Binding Panel</h3>
+          <p>You may be looking at the wrong endpoint, or the source firmware may not implement Binding. Check every plausible physical-control endpoint once. If the panel is still absent, do not force it with copied cluster numbers. Use a Home Assistant automation, a wired load, or a documented manufacturer direct-pairing mode.</p>
+
+          <h3 id="no-target">The Light Does Not Appear as a Target</h3>
+          <p>Confirm the light is added directly to the same Home Assistant Matter fabric and is online. A light visible only through another integration or a bridge is not automatically a bindable Matter node. Also confirm the light endpoint exposes the server cluster you chose.</p>
+
+          <h3 id="simple-only">On/Off Works, but Double Press Does Not</h3>
+          <p>That can be normal. Binding maps compatible Matter commands; it is not a general automation builder. Keep gesture logic, time conditions, scenes, and cross-protocol actions in Home Assistant. A simple bound on/off path can coexist with richer automations, but test carefully so one press does not produce duplicate commands.</p>
+
+          <h3 id="only-with-ha">It Works Only While Home Assistant Is Running</h3>
+          <p>You may still be watching an automation rather than a binding. Disable the automation and repeat the physical-press test. If the light stops, inspect the Binding entry and access-control result in the Matter Server dashboard. If the direct press works during a Core restart but fails when the whole box is powered off, inspect the Thread or Wi-Fi route instead.</p>
+
+          <h2 id="recommendation">Tara's Recommendation</h2>
+          <p>Use a direct Matter binding as a small resilience layer, not as a replacement for Home Assistant. Bind the one physical action the household expects to work every time&mdash;usually on/off, sometimes dimming&mdash;and leave scenes, occupancy, schedules, and cross-brand logic in Home Assistant.</p>
+          <p>Buy hardware for what it exposes today. For a wall control, prefer a switch that still operates its own safe wired lighting load and whose manufacturer documents the exact Matter endpoints. For a wireless button, assume Home Assistant automation until the current firmware and Matter Server dashboard prove a compatible binding. Never install or rewire a mains-voltage switch unless you are qualified; follow the manufacturer load limits and use a licensed electrician when needed.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3>Can a Matter switch control a light when Home Assistant is down?</h3>
+          <p>Yes, when the switch and light support the required Matter clusters and a direct binding has been configured. Home Assistant Core is then outside the press-to-light command path, but the necessary Wi-Fi or Thread network must remain.</p>
+
+          <h3>Why is there no Binding section for my Matter button?</h3>
+          <p>A Matter logo does not require every button to implement the Binding cluster or an On/Off or Level Control client. Check the correct endpoint. If the panel is absent, use a Home Assistant automation or the manufacturer's documented direct mode.</p>
+
+          <h3>Will a binding work if the Home Assistant computer is unplugged?</h3>
+          <p>Only if that computer is not also providing a required Thread border router, Wi-Fi path, or other network service. Restart Home Assistant Core first to test the controller-independent part without accidentally removing the radio path.</p>
+
+          <h3>Is a Home Assistant automation the same as a Matter binding?</h3>
+          <p>No. An automation requires Home Assistant to receive an event and send the result. A binding stores a direct device relationship. Automations are more flexible; bindings are narrower and can be more resilient.</p>
+
+          <h3>Does IKEA BILRESA direct pairing use this Home Assistant binding?</h3>
+          <p>Do not treat them as the same setup. IKEA documents a separate direct remote-to-light pairing flow. Home Assistant binding uses the Matter Server dashboard and requires compatible Matter clusters. Pick one path deliberately and test it before depending on it.</p>
+
+          <h2 id="related">Related Tara Guides</h2>
+          <p>If the Matter app itself is unhealthy, start with <a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server 9 startup troubleshooting</a>. If a button or switch is missing controls, read <a href="/blog/matter-device-missing-features-home-assistant/">why Matter features go missing</a>. For outage planning beyond one light, use <a href="/blog/will-home-assistant-matter-work-without-internet/">the Home Assistant and Matter internet-outage guide</a> and <a href="/blog/where-should-smart-home-automations-live/">choose one automation brain</a>.</p>
+        </div>
+      </article>
+
+      <section class="block article-cta">
+        <p class="kicker">Plan the control path</p>
+        <h2>Build a smart home that still has sensible physical controls.</h2>
+        <p>Tara plans local automations, device paths, and homeowner handoff together&mdash;including what should still work during an update or outage.</p>
+        <a class="cta" href="/configurator/">Configure your Tara system</a>
+      </section>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration and button automation guidance</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: the June 23, 2026 Matter Server upgrade</a></li>
+              <li><a href="https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Home Assistant Matter Server app changelog</a></li>
+              <li><a href="https://github.com/matter-js/matterjs-server/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Open Home Foundation matter.js server changelog</a></li>
+              <li><a href="https://github.com/matter-js/matterjs-server/pull/757" target="_blank" rel="noopener noreferrer">matter.js server binding and access-control editor implementation</a></li>
+              <li><a href="https://developers.home.google.com/matter/supported-devices" target="_blank" rel="noopener noreferrer">Google Matter device types and Binding-cluster limitation</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://help.inovelli.com/en/articles/8705901-white-series-dimmer-switch-manual" target="_blank" rel="noopener noreferrer">Inovelli White Series VTM31-SN manual</a></li>
+              <li><a href="https://help.inovelli.com/en/articles/9692499-white-series-dimmer-switch-setup-instructions-home-assistant" target="_blank" rel="noopener noreferrer">Inovelli VTM31-SN Home Assistant setup</a></li>
+              <li><a href="https://help.inovelli.com/en/articles/13539955-vtm31-sn-firmware-1-1-0-update-advisory" target="_blank" rel="noopener noreferrer">Inovelli VTM31-SN firmware and binding advisory</a></li>
+              <li><a href="https://www.ikea.com/se/en/customer-service/knowledge/articles/4a1e443e-624e-4d0f-b104-d5c952a2c2f8.html" target="_blank" rel="noopener noreferrer">IKEA KAJPLATS and BILRESA direct-pairing instructions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1udk0j1/the_matter_upgrade_youve_been_waiting_for/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Matter Server 9 and direct-binding questions</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1udg08r/two_or_more_switches_that_toggle_in_sync_without/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: direct binding versus controller automation</a></li>
+              <li><a href="https://community.home-assistant.io/t/add-support-for-matter-binding-feature/769947" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter Binding feature thread</a></li>
+              <li><a href="https://community.home-assistant.io/t/can-i-make-my-lights-resilient-with-matter/945590" target="_blank" rel="noopener noreferrer">Home Assistant Community: resilient Matter lighting question</a></li>
+              <li><a href="https://community.inovelli.com/t/white-series-dimmer-vtm31-sn-bug-enhancement-thread/17216" target="_blank" rel="noopener noreferrer">Inovelli technical community: VTM31-SN binding behavior</a></li>
+              <li><a href="https://threadgroup.org/Newsroom/Blog/what-is-a-thread-border-router-and-how-is-it-different-from-a-hub-or-a-bridge" target="_blank" rel="noopener noreferrer">Thread Group: border routers, hubs, and local Thread traffic</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block related">
+        <div class="links"><a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server 9 recovery</a><a href="/blog/matter-device-missing-features-home-assistant/">Missing Matter features</a><a href="/blog/ikea-bilresa-direct-pairing-vs-home-assistant/">BILRESA direct pairing</a><a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a><a href="/blog/where-should-smart-home-automations-live/">Where automations should live</a><a href="/blog/best-smart-light-switches-home-assistant-2026/">Smart light switches</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/configurator/">Configurator</a></div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home planning.</span></footer>
+  </body>
+</html>
