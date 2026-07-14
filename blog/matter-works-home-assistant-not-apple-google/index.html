@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matter Works in Home Assistant but Not Apple or Google? | Tara Guides</title>
+    <meta name="description" content="Fix a Matter device that works in Home Assistant but says No Response in Apple Home or offline in Google Home. Repair only the failed platform." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/matter-works-home-assistant-not-apple-google/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/matter-works-home-assistant-not-apple-google/" />
+    <meta property="og:title" content="Matter Works in Home Assistant but Not Apple or Google? | Tara Guides" />
+    <meta property="og:description" content="Check the second Matter fabric, its hub, IPv6, and device support before resetting a device that Home Assistant can still control." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/matter-works-home-assistant-not-apple-google/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Matter Works in Home Assistant but Not Apple or Google? | Tara Guides" />
+    <meta name="twitter:description" content="A reset-last repair order for one Matter platform that says No Response while Home Assistant still works." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/matter-works-home-assistant-not-apple-google/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/matter-works-home-assistant-not-apple-google/#blogposting",
+          "headline": "Matter Works in Home Assistant but Says No Response in Apple or Google Home",
+          "description": "Fix a Matter device that still works in Home Assistant but says No Response in Apple Home or offline in Google Home by repairing only the failed platform.",
+          "image": "https://tarahome.ai/assets/generated/blog/matter-works-home-assistant-not-apple-google/cover.png",
+          "datePublished": "2026-07-13",
+          "dateModified": "2026-07-13",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/matter-works-home-assistant-not-apple-google/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://support.apple.com/en-us/102135",
+            "https://support.apple.com/en-us/102056",
+            "https://support.google.com/googlehome/answer/13127223?hl=en",
+            "https://support.google.com/googlehome/answer/12391458",
+            "https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html",
+            "https://www.developer.amazon.com/en-US/docs/alexa/smarthome/best-practices-commission-matter.html",
+            "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+            "https://community.home-assistant.io/t/share-device-from-ha-to-apple-home/996671",
+            "https://community.home-assistant.io/t/sharing-ha-matter-device-to-ios-works-fine-but-fails-on-android-for-lack-of-google-hub/993735",
+            "https://www.reddit.com/r/homeassistant/comments/1ssozbl/matter_via_apple_home_and_then_home_assistant/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/matter-works-home-assistant-not-apple-google/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Matter works in Home Assistant but not Apple or Google", "item": "https://tarahome.ai/blog/matter-works-home-assistant-not-apple-google/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/matter-works-home-assistant-not-apple-google/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why does a Matter device work in Home Assistant but say No Response in Apple Home?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant and Apple Home have separate Matter controller relationships. Home Assistant working proves the device and its Home Assistant path are alive, but Apple may still have an incomplete fabric, an offline home hub, a blocked local IPv6 path, or an unsupported feature. Check Manage fabrics and Apple’s hub path before resetting the device." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Apple Home need a home hub for Matter?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not always. Apple says an iPhone on iOS 18 or later can add and control Matter accessories without a home hub, and an iPhone 15 Pro or later can locally manage supported Thread accessories. Apple still recommends a home hub for the best experience, remote control, and wider Thread coverage." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does Google Home ask for a hub when Home Assistant already has a Thread border router?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A Thread border router carries local IP traffic but is not automatically Google Home’s Matter controller. Google requires a Matter-enabled hub for Google Home, plus IPv6. For a Thread device, choose a Google hub that also includes a Thread border router, such as Nest Hub second generation, Nest Hub Max, Nest Wifi Pro, or Google TV Streamer." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I reuse the Matter QR code printed on the box?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use the fresh temporary sharing code generated by the controller that already owns the device. The original setup code may work only when the device and controllers support that optional flow and the device is deliberately put back into pairing mode." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I factory-reset a Matter device that still works in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. First repair or replace only the failed Apple, Google, Alexa, or SmartThings fabric. A factory reset removes the device from its networks and controller relationships and can break the working Home Assistant setup." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter multi-platform repair</span><span>July 13, 2026</span><span>12 min read</span></p>
+            <h1>Matter Works in Home Assistant but Says No Response in Apple or Google Home</h1>
+            <p class="lede">If Home Assistant still controls the device, do not factory-reset it. Confirm the second platform actually joined the device, then repair only that platform's hub, local network path, or Matter controller relationship.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/matter-works-home-assistant-not-apple-google/cover.png" alt="Homeowner checking a phone beside a working lamp while troubleshooting two smart-home platforms" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Check the share:</strong> in Home Assistant, open the Matter device, use the menu beside <strong>Share device</strong>, and select <strong>Manage fabrics</strong>. If Apple, Google, Alexa, or SmartThings is missing, the share never finished.</li>
+              <li><strong>Use a fresh code:</strong> generate a new sharing code in Home Assistant. In Apple Home, choose <strong>Add Accessory &gt; More options</strong> and select the already-paired device. Google Home also needs its own compatible Matter hub and a home router with IPv6 enabled.</li>
+              <li><strong>Repair only the failed platform:</strong> update and restart its app and hub, keep the phone and hubs on the trusted home network, and check that the platform supports that device type.</li>
+              <li><strong>Avoid factory reset and “Remove From All Services”:</strong> the main caveat is that Matter multi-admin, HomeKit Bridge, voice-assistant account linking, and unofficial Matter bridges are different paths.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Repair the Platform That Failed, Not the Device</h2>
+          <p><strong>A Matter device can work perfectly in Home Assistant while Apple Home says “No Response” or Google Home shows it offline because each platform has its own secure controller relationship with the device.</strong> Matter calls each relationship a <strong>fabric</strong>. Home Assistant, Apple Home, Google Home, Alexa, and SmartThings do not borrow one shared controller record.</p>
+          <p>Working Home Assistant control is valuable evidence: the device has power, Home Assistant's fabric is valid, and at least one local route works. It does not prove that Apple or Google's share completed, that its Matter hub is online, that its app supports the device type, or that its hub can reach the device over local IPv6.</p>
+          <div class="callout">
+            <p><strong>Start with one question:</strong> does the destination platform appear under <strong>Manage fabrics</strong> in Home Assistant? “No” means commissioning never completed. “Yes” means the platform joined and its controller, hub, feature support, or network path now needs attention.</p>
+          </div>
+
+          <h2 id="identify-path">First Confirm Which Connection You Actually Built</h2>
+          <p>Several Home Assistant-to-platform paths can put the same name in two apps. They are not interchangeable, and the repair depends on which one you used.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">What you used</th><th scope="col">What it really is</th><th scope="col">Where to repair it</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Home Assistant Matter &gt; Share device</strong></td><td>Direct Matter multi-admin. The physical device joins another platform's fabric.</td><td>The Matter device's <strong>Manage fabrics</strong> view and the destination platform's Matter hub</td></tr>
+                <tr><td><strong>HomeKit Bridge</strong></td><td>Home Assistant exposes selected entities to Apple Home through a virtual HomeKit bridge.</td><td>The HomeKit Bridge integration, bridge pairing, and included entities—not Matter fabrics</td></tr>
+                <tr><td><strong>Google Assistant or Alexa account linking</strong></td><td>A voice-assistant connection, often using a cloud account path.</td><td>The voice integration, account link, and exposed entities</td></tr>
+                <tr><td><strong>Matterbridge or Home Assistant Matter Hub</strong></td><td>A separate community project that makes Home Assistant entities look like a Matter bridge.</td><td>That project's logs and documentation; it is not Home Assistant's official Matter controller</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>For direct Matter sharing, the device must already appear under <strong>Settings &gt; Devices &amp; services &gt; Matter &gt; Devices</strong>. Open it, find <strong>Share device</strong>, open the nearby three-dot menu, and select <strong>Manage fabrics</strong>. Home Assistant's official instructions say the destination should appear there after a successful share; Google, for example, is shown as Google LLC.</p>
+          <p>If the destination is not listed, skip restarts and go to the next section. If it is listed, continue to the platform and network checks.</p>
+
+          <h2 id="share-not-complete">If the Destination Fabric Is Missing, Share Again With a Fresh Code</h2>
+          <p>A Matter device that is already in use normally needs a new temporary invitation from its current controller. The printed QR code was made for first setup. Amazon's current Matter guidance explains that the standard's required secondary-commissioning method opens a new pairing window and creates a fresh random code.</p>
+          <ol>
+            <li>In Home Assistant, open the device under the Matter integration and select <strong>Share device</strong>.</li>
+            <li>Generate the new QR code or numeric sharing code. Keep this screen open; the invitation expires.</li>
+            <li>Open the destination app's add-accessory flow. Tell it the device is already in use when that choice appears.</li>
+            <li>Enter or scan the temporary code from Home Assistant, not a screenshot of an old code.</li>
+            <li>Return to Home Assistant's <strong>Manage fabrics</strong> view and confirm the destination now appears before moving rooms or rebuilding routines.</li>
+          </ol>
+
+          <h3 id="apple-share">Apple Home: Choose the Already-Paired Accessory</h3>
+          <p>Apple's May 2026 instructions say to open <strong>Home &gt; Add &gt; Add Accessory</strong>, then choose <strong>More options</strong> and select the Matter accessory that was previously paired in another app. A recent Home Assistant Community thread describes the easy-to-miss failure: repeatedly scanning the displayed Home Assistant QR code timed out, while choosing the discovered accessory under <strong>More options</strong> and then supplying the code completed the share.</p>
+          <p>Apple also lists the paired device under <strong>Settings &gt; General &gt; Matter Accessories</strong>. That view can show its connected services and helps separate “the iPhone remembers this device” from “Apple Home currently has a working fabric.”</p>
+
+          <h3 id="google-share">Google Home: A Google Matter Hub Is Still Required</h3>
+          <p>Home Assistant's Matter Server and a Home Assistant Thread border router do not replace Google's controller. Google says each Matter app needs its own Matter hub. Google Home also requires IPv6, the local addressing system Matter uses inside the home. Before buying anything, check whether your household already has a compatible Google hub. For Matter-over-Thread, that hub must include a Thread border router, such as a <strong>Google Home Speaker (2026), Nest Hub (2nd generation), Nest Hub Max, Nest Wifi Pro, or Google TV Streamer (4K)</strong>.</p>
+          <p>A Google Home Speaker, Nest Audio, Nest Mini, first-generation Nest Hub, and some compatible TVs can act as Google Matter hubs for Wi-Fi devices, but Google's current list does not give all of them a Thread radio. If a Thread lock or sensor says a hub is required, adding another app or syncing Home Assistant credentials does not create Google's missing Matter administrator.</p>
+
+          <h2 id="fabric-present">If the Fabric Exists but the App Says Offline</h2>
+          <p>Now treat this as a destination-platform problem. Do the smallest reversible checks first:</p>
+          <ol>
+            <li><strong>Test the same control in Home Assistant.</strong> If it still works, leave the device powered and paired.</li>
+            <li><strong>Update and reopen the destination app.</strong> Confirm the phone is signed into the intended home and account.</li>
+            <li><strong>Check the destination Matter hub.</strong> Make sure it is online, in the correct home, and current. Restart that hub once, then wait for it to return before testing.</li>
+            <li><strong>Put the phone and hubs on the trusted home network.</strong> Pause a VPN while diagnosing. Avoid guest Wi-Fi and client isolation.</li>
+            <li><strong>Check the device maker's app for firmware.</strong> Do not switch the device to a different vendor connection merely to update it unless the maker documents that path.</li>
+            <li><strong>Confirm device-type support.</strong> Matter certification does not force every platform release to expose every device category or optional feature on the same day.</li>
+          </ol>
+          <p>Apple's current “No Response” guidance follows the same order: update software, reopen Home, use the same Wi-Fi, restart affected accessories and home hubs, allow a Thread network to settle, and check VPN or security software. Apple puts removal near the end—not at the start.</p>
+
+          <h2 id="platform-table">What Each Platform Needs in 2026</h2>
+          <p>This is the practical boundary between official support, local Matter control, cloud services, and a Thread route. Model and feature support changes, so use the linked platform lists before buying a hub.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Platform</th><th scope="col">Current controller examples</th><th scope="col">Local and cloud boundary</th><th scope="col">Matter or HomeKit path and caveat</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Home Assistant</strong></td><td>Official Matter Server app on Home Assistant OS; Yellow or a dedicated Connect ZBT-1/ZBT-2 can provide a Home Assistant-managed Thread route</td><td>Routine Matter control is local. Remote access, vendor accounts, and some updates are separate.</td><td>Direct Matter devices appear under the Matter integration. Home Assistant is a controller, not a built-in Matter bridge for every existing entity.</td></tr>
+                <tr><td><strong>Apple Home</strong></td><td>HomePod, HomePod mini, or Apple TV 4K for the best home-hub experience; iOS 18 can control supported Matter without a hub in limited local cases</td><td>At-home Matter control is local; iCloud sync, remote access, and Apple services still use the internet.</td><td>Use direct Matter multi-admin for the physical device. HomeKit Bridge is a different path and does not guarantee Home Key, UWB, or every Apple-only feature.</td></tr>
+                <tr><td><strong>Google Home</strong></td><td>For Wi-Fi and Thread: Google Home Speaker (2026), Nest Hub (2nd gen), Nest Hub Max, Nest Wifi Pro, or Google TV Streamer (4K)</td><td>The hub sends normal commands locally; away-from-home requests use Google's cloud. A Google Account, hub, and IPv6 are required.</td><td>Each Matter app needs its own hub. Some older Google speakers are Matter hubs for Wi-Fi but are not Thread border routers.</td></tr>
+                <tr><td><strong>Amazon Alexa</strong></td><td>Matter-enabled Echo or eero; Thread examples include Echo (4th gen), Echo Hub, supported Echo Show models, and supported eero models</td><td>Direct Matter device control can be local. Voice, remote services, accounts, and some device paths still use Amazon's cloud.</td><td>Use a fresh code from Home Assistant for secondary commissioning. Not every Matter-capable Echo is also a Thread border router.</td></tr>
+                <tr><td><strong>Samsung SmartThings</strong></td><td>SmartThings 2018 Hub and Aeotec Smart Home Hub include Matter control and Thread routing; the SmartThings 2015 Hub needs a separate Thread border router</td><td>Matter device traffic can be local, while account setup, app access, remote control, updates, and other SmartThings integrations can use the cloud.</td><td>Share the actual Matter device. This does not turn all Zigbee or Z-Wave devices attached to a SmartThings hub into Matter accessories.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="network">Why Home Assistant Working Does Not Clear the Home Network</h2>
+          <p>Matter uses local IPv6—the address system that lets Matter devices and hubs find one another inside the home. Home Assistant may have a good route to the device while an Apple, Google, Alexa, or SmartThings controller sits behind a different Wi-Fi access point, guest network, separate network segment, or device-discovery filter. A working internet connection does not prove that this local path works between every hub.</p>
+          <ul>
+            <li>Keep the Matter controllers and border routers on the same trusted LAN while testing.</li>
+            <li>Disable client isolation on the trusted smart-home network; do not place one hub on guest Wi-Fi.</li>
+            <li>Temporarily pause VPN or third-party phone security software only long enough to test the local pairing path.</li>
+            <li>If your router separates devices into network segments, often called VLANs, verify IPv6 routing and local device discovery across the intended boundary. Do not open ports to the public internet.</li>
+            <li>For Thread, confirm the device still has a powered border router for the Thread network it originally joined. A second unrelated Thread network does not help.</li>
+          </ul>
+          <p>Google warns that setup can appear to work without IPv6 before control fails later. Apple likewise tells households with several unresponsive brands to check the same Wi-Fi, router, home hubs, VPN, and security software. Those checks are more useful than resetting a device that Home Assistant can demonstrably reach.</p>
+
+          <h2 id="features">An Online Device Can Still Have Missing Features</h2>
+          <p>“It paired” and “it exposes every feature” are separate questions. Apple, Google, Alexa, SmartThings, and Home Assistant each map the Matter device types and optional features they support. A lock can provide basic lock control in one app while a platform-specific key, UWB unlock, access-code screen, history view, or firmware tool remains in another.</p>
+          <p>HomeKit Bridge also cannot turn a normal Home Assistant lock entity into a natively certified Apple lock with every secure Apple feature. Direct Matter sharing creates a real second fabric, but even that does not promise Home Key or a vendor-only feature. Check the lock maker's exact model documentation before removing the connection that currently provides a household-critical feature.</p>
+          <div class="callout">
+            <p><strong>Locks, garage doors, alarms, shades, and HVAC:</strong> keep a physical key, manual control, or safe fallback. Save access codes and platform routines before removing any controller, and perform recovery while physically at home.</p>
+          </div>
+
+          <h2 id="repair-fabric">How to Replace Only the Failed Fabric</h2>
+          <p>If the destination is listed in <strong>Manage fabrics</strong>, its hub and local network are healthy, and it still cannot control a supported device, remove and rebuild only that destination relationship.</p>
+          <ol>
+            <li>Record the destination app's room, routines, scenes, names, and any family permissions tied to the device.</li>
+            <li>Take a Home Assistant backup and confirm Home Assistant still controls the device.</li>
+            <li>In the Home Assistant Matter device, open <strong>Manage fabrics</strong> and remove only the failed controller.</li>
+            <li>For Apple, follow Home Assistant's Apple cleanup prompt as well. In <strong>Settings &gt; General &gt; Matter Accessories</strong>, remove only the stale Apple Home connected service or Keychain record the prompt identifies. Never choose <strong>Remove From All Services</strong> while Home Assistant should keep working.</li>
+            <li>Restart the destination Matter hub, wait for it to return, then generate a fresh sharing code from Home Assistant.</li>
+            <li>Add the already-paired device in the destination app and confirm the destination reappears under <strong>Manage fabrics</strong>.</li>
+            <li>Test device control from both platforms before rebuilding the saved routines.</li>
+          </ol>
+          <p>Do not delete the Home Assistant device, remove Home Assistant's own fabric, or erase the Thread network. Those actions destroy the known-good half of the setup without repairing the other controller.</p>
+
+          <h2 id="reset-last">When a Factory Reset Is Finally Reasonable</h2>
+          <p>A factory reset is reasonable only after the device fails in every controller, the documented power or wake procedure does not restore it, current firmware does not help, and a clean single-fabric re-add has failed. It can also be necessary for an ownership change or a maker-documented recovery procedure.</p>
+          <p>Before resetting, photograph the original setup label, save automations and access details, take a Home Assistant backup, and check the maker's exact reset steps. Reset only the affected device. If Home Assistant still operates it, you have not reached this point.</p>
+
+          <h2 id="local-cloud">What Stays Local and What Still Uses the Cloud?</h2>
+          <p>After commissioning, each Matter controller can send normal commands locally over Wi-Fi, Ethernet, or Thread. Home Assistant does not relay its working Matter command through Apple, Google, Amazon, or Samsung, and those platforms do not need Home Assistant to remain online for their own valid fabric.</p>
+          <p>Cloud services can still handle remote access, account and home membership, voice recognition, app synchronization, firmware delivery, vendor-only features, and some setup checks. This is why one platform can say offline while another still works locally—and why “Matter is local” does not mean every surrounding app feature is account-free.</p>
+
+          <h2 id="recommendation">Tara's Recommendation</h2>
+          <p>Use <strong>Manage fabrics</strong> as the fork in the road. If the destination is absent, repeat sharing with a fresh temporary code and the correct already-paired-device flow. If it is present, repair the destination hub, local IPv6 path, and device support. Replace only that fabric after saving its routines.</p>
+          <p>Keep one known-good controller alive throughout the repair. A working platform is not a nuisance to erase; it is your proof that the device can be recovered without a factory reset.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3>Why does my Matter device work in Home Assistant but say No Response in Apple Home?</h3>
+          <p>The two platforms have separate Matter fabrics. Check whether Apple appears under Home Assistant's <strong>Manage fabrics</strong>. If it does, update and restart Apple Home and its home hub, check the same trusted Wi-Fi and VPN settings, and verify Apple supports the device type. Do not reset the device while Home Assistant still works.</p>
+
+          <h3>Does Apple Home need a home hub for Matter?</h3>
+          <p>Not in every local case. Apple says iOS 18 or later can add and control Matter accessories without a home hub, and an iPhone 15 Pro or later can locally manage supported Thread accessories. Apple still recommends a home hub for the best experience, remote access, automations, and stronger Thread coverage.</p>
+
+          <h3>Why does Google Home ask for a hub when Home Assistant has a Thread border router?</h3>
+          <p>A Thread border router carries packets; it is not automatically Google's Matter controller. Google requires its own compatible Matter hub and IPv6. For a Thread device, choose a Google Matter hub that also contains a Thread border router.</p>
+
+          <h3>Can I reuse the QR code printed on the device?</h3>
+          <p>Use the fresh temporary code from Home Assistant's <strong>Share device</strong> flow. The original code may work only when the device and both controllers support the optional original-code method and the device is deliberately put back into pairing mode.</p>
+
+          <h3>Will HomeKit Bridge give a Matter lock Apple Home Key?</h3>
+          <p>Do not assume it will. HomeKit Bridge exposes Home Assistant entities through a virtual bridge; it is not the same as directly adding a compatible physical lock to Apple Home. Home Key, UWB unlock, and other secure platform features depend on the exact lock, certification, firmware, and direct connection path.</p>
+        </div>
+      </article>
+
+      <section class="block article-cta">
+        <p class="kicker">Keep the working path</p>
+        <h2>Want a multi-platform smart home that stays understandable when one app goes offline?</h2>
+        <p>Tara can map the Matter controllers, Thread border routers, local network, feature owners, and reset-last recovery path before hardware is installed.</p>
+        <a class="cta" href="/configurator/">Build your local smart-home plan</a>
+      </section>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <p><strong>Official documentation</strong></p>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter: sharing a device, Manage fabrics, removing one controller, local control, and bridge limits</a></li>
+              <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple Support: add an already-paired Matter accessory and remove one connected service</a></li>
+              <li><a href="https://support.apple.com/en-us/102056" target="_blank" rel="noopener noreferrer">Apple Support: troubleshoot HomeKit or Matter accessories showing No Response</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en" target="_blank" rel="noopener noreferrer">Google Home: Matter hub, IPv6, multi-admin sharing, and local-versus-remote control</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/12391458" target="_blank" rel="noopener noreferrer">Google Home: current Matter hub and Thread border-router model lists</a></li>
+              <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html" target="_blank" rel="noopener noreferrer">Amazon Alexa: current Matter administrators, Thread border routers, device types, and local control</a></li>
+              <li><a href="https://www.developer.amazon.com/en-US/docs/alexa/smarthome/best-practices-commission-matter.html" target="_blank" rel="noopener noreferrer">Amazon Alexa: fresh codes and secondary Matter commissioning</a></li>
+              <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings: controller models, Thread routing, sharing codes, and multi-admin</a></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Community discussions and caveats</strong></p>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/share-device-from-ha-to-apple-home/996671" target="_blank" rel="noopener noreferrer">Home Assistant Community: Apple Home sharing timeout and the More options path, March–June 2026</a></li>
+              <li><a href="https://community.home-assistant.io/t/sharing-ha-matter-device-to-ios-works-fine-but-fails-on-android-for-lack-of-google-hub/993735" target="_blank" rel="noopener noreferrer">Home Assistant Community: Apple sharing works while Google Home requires its own hub, March 2026</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1ssozbl/matter_via_apple_home_and_then_home_assistant/" target="_blank" rel="noopener noreferrer">r/homeassistant: direct Matter sharing, Apple home-hub placement, and one-controller failures, April 2026</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related Tara Guides</p>
+        <div class="links">
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter across platforms</a>
+          <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose which app pairs first</a>
+          <a href="/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/">Move Matter without a reset</a>
+          <a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Matter versus HomeKit Bridge</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home planning.</span></footer>
+  </body>
+</html>
