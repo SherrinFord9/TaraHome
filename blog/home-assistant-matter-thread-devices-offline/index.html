@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fix Matter-over-Thread Devices Offline in Home Assistant | Tara Guides</title>
+    <meta name="description" content="Fix Matter-over-Thread devices that go offline in Home Assistant. Check scope, Matter Server, the border router, IPv6, mesh, and channel before resetting." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-matter-thread-devices-offline/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-matter-thread-devices-offline/" />
+    <meta property="og:title" content="Why Matter-over-Thread Devices Keep Going Offline in Home Assistant | Tara Guides" />
+    <meta property="og:description" content="Find out whether the device, Thread mesh, border router, home network, or Matter Server failed before deleting or re-pairing anything." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-thread-devices-offline/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why Matter-over-Thread Devices Keep Going Offline in Home Assistant | Tara Guides" />
+    <meta name="twitter:description" content="A reset-last troubleshooting order for Home Assistant, Matter Server, Thread border routers, IPv6, range, and radio interference." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-thread-devices-offline/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-thread-devices-offline/#blogposting",
+          "headline": "Why Matter-over-Thread Devices Keep Going Offline in Home Assistant",
+          "description": "Fix Matter-over-Thread devices that go offline in Home Assistant by checking scope, Matter Server, the border router, IPv6, mesh, and channel before resetting.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-matter-thread-devices-offline/cover.png",
+          "datePublished": "2026-07-13",
+          "dateModified": "2026-07-13",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-matter-thread-devices-offline/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://www.home-assistant.io/blog/2025/03/10/matter-certification/",
+            "https://www.home-assistant.io/faq/is-it-reliable/",
+            "https://threadgroup.org/Newsroom/Blog/multiple-thread-networks-and-the-seamless-interconnectivity-of-ip",
+            "https://openthread.io/guides/border-router",
+            "https://openthread.io/guides/thread-primer/node-roles-and-types",
+            "https://github.com/matter-js/matterjs-server/blob/main/packages/dashboard/README.md",
+            "https://github.com/matter-js/matterjs-server/blob/main/docs/os_requirements.md",
+            "https://www.reddit.com/r/homeassistant/comments/1uuxw6s/matter_over_thread_unreliable/",
+            "https://www.reddit.com/r/homeassistant/comments/1u951al/matter_over_thread_is_a_pain_after_ha_restart_all/",
+            "https://community.home-assistant.io/t/matter-over-thread-devices-all-offline/1012133",
+            "https://community.home-assistant.io/t/matter-thread-onboarding-and-stability-issues-observations-from-real-world-home-network-environments/1015504",
+            "https://github.com/home-assistant/addons/issues/3889",
+            "https://github.com/home-assistant/core/issues/123835",
+            "https://github.com/home-assistant/core/issues/174699",
+            "https://github.com/home-assistant/core/issues/174891"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-thread-devices-offline/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Matter-over-Thread devices offline", "item": "https://tarahome.ai/blog/home-assistant-matter-thread-devices-offline/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-thread-devices-offline/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Should I buy Home Assistant Connect ZBT-2 when Matter-over-Thread devices go offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not as the first fix. If the devices still work through Apple Home or Google Home, the existing Thread mesh and border router are doing their job. Check Home Assistant's Matter Server and local IPv6 path first. Add a Home Assistant-managed border router only as a deliberate network choice, not as an extra antenna for a different Thread network." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why do Thread devices work in Apple Home but show unavailable in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "That usually means the device and Thread mesh are alive. Focus on Home Assistant's Matter Server, its Matter fabric relationship with the device, and IPv6 or multicast reachability between Home Assistant and the border router before touching the device's reset button." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will syncing Thread credentials restore an already paired device?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually not. The phone uses Thread credentials mainly while placing a new Matter-over-Thread device onto a mesh. An already paired device needs its existing border-router path, local IPv6 connectivity, and Matter controller relationship to work." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I factory-reset an offline Matter-over-Thread device?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only after scoped checks fail. A factory reset removes the device from its Matter fabrics and Thread network, so it creates more recovery work. Save the setup code, note affected automations, take a Home Assistant backup, and reset only the failed device as a last resort." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do Matter-over-Thread devices need the internet to stay online?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Normal Matter control and Home Assistant automations can stay local after commissioning. Vendor firmware delivery, account services, remote access, voice assistants, and some setup checks may still use the internet, but an internet outage alone should not break an established local Thread mesh." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter-over-Thread troubleshooting</span><span>July 13, 2026</span><span>13 min read</span></p>
+            <h1>Why Matter-over-Thread Devices Keep Going Offline in Home Assistant</h1>
+            <p class="lede">First find out whether one device, one part of the Thread network, every Thread device, or only Home Assistant is offline. That single check tells you where to look—and prevents a needless rebuild.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-matter-thread-devices-offline/cover.png" alt="Homeowner checking a local smart-home computer and router after Matter-over-Thread devices went offline" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Do this first:</strong> Do not delete anything. Save Matter diagnostics and logs, wait a few minutes after an update or power cut, then check whether one device, all Thread devices, all Matter devices, or only Home Assistant is affected.</li>
+              <li><strong>If Apple Home or Google Home still works:</strong> The Thread network is probably alive. Update or restart Home Assistant's local Matter service, then check the local network path between Home Assistant and the Thread hub.</li>
+              <li><strong>If every platform lost every Thread device:</strong> Check the Thread border router—the hub that connects Thread devices to your home network—plus its power and nearby powered Thread devices that relay traffic. Phone credential syncing is for setup, not an everyday repair for paired devices.</li>
+              <li><strong>What to avoid:</strong> Do not factory-reset devices, create a second Thread network, buy another radio, or change channels until the evidence points there. The main caveat is that device software (firmware) and third-party border-router bugs can look like a Home Assistant fault.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Find the Failed Layer Before You Rebuild Anything</h2>
+          <p><strong>The most useful first test is not a reset. It is checking where the device still works.</strong> If every Matter-over-Thread device is unavailable in Home Assistant but still responds in Apple Home, Google Home, Alexa, or SmartThings, the low-power Thread network is carrying traffic. Start with Home Assistant's Matter Server—the local service that maintains its trusted device connections—and the network path between Home Assistant and the Thread border router.</p>
+          <p>If the same devices are offline in every app, look at the Thread side: the border router, powered devices that relay Thread traffic, radio interference, or device software. If only one sensor has failed, do not treat the whole house as broken. Check that device's power, location, software version, and nearest powered Thread route.</p>
+          <p>Before updating, download Matter diagnostics, save the Matter Server log, and make a Home Assistant backup. Then update one relevant component at a time, wait for any migration and reconnection to finish, and retest. The sections below show the exact safe order.</p>
+          <div class="callout">
+            <p><strong>Reset-last rule:</strong> factory resetting erases the device's Thread network membership and its trusted links to Home Assistant, Apple Home, Google Home, or another controller. It can turn one offline device into a full re-pairing and automation-repair job.</p>
+          </div>
+
+          <h2 id="four-layers">The Four Layers That Can All Say “Unavailable”</h2>
+          <p><strong>Matter-over-Thread</strong> combines two different jobs. Thread is the low-power radio network. Matter is the common language and security relationship that lets Home Assistant control the device. Home Assistant can show the same word—<em>unavailable</em>—when either job fails.</p>
+          <p>A <strong>Thread border router</strong>, such as a HomePod mini, compatible Apple TV 4K, Nest Hub (2nd Gen), Nest Wifi Pro, Home Assistant Yellow, or a Home Assistant Connect radio running OpenThread, connects the Thread mesh to your normal Ethernet or Wi-Fi network. It forwards encrypted traffic; it is not the automation brain.</p>
+          <p>A <strong>powered Thread router</strong> is different. A mains-powered plug, bulb, or other eligible Thread device may relay messages inside the mesh. Most battery sensors sleep to save power and do not extend range. Finally, a <strong>Matter fabric</strong> is the trusted relationship between a controller and a device. Apple Home and Home Assistant can each have a separate fabric on the same device.</p>
+
+          <h2 id="symptom-table">Use the Symptom Pattern to Pick the Next Check</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">What you see</th><th scope="col">Most likely area</th><th scope="col">Do next</th><th scope="col">Avoid</th></tr></thead>
+              <tbody>
+                <tr><td><strong>One battery device is offline</strong></td><td>Device power, firmware, wake cycle, or its local mesh path</td><td>Wake or power-cycle that device, inspect its last-seen time, and test it closer to a powered Thread router.</td><td>Restarting every hub or rebuilding the Thread network</td></tr>
+                <tr><td><strong>Several nearby devices fail together</strong></td><td>A powered Thread router or radio-coverage branch</td><td>Check whether a powered plug, bulb, or border router in that area lost power or disappeared from the Matter Server map.</td><td>Assuming battery sensors will relay for one another</td></tr>
+                <tr><td><strong>All Thread devices fail, but Matter-over-Wi-Fi still works</strong></td><td>Thread border router, Thread mesh, IPv6 route, or OpenThread app</td><td>Check the Thread integration, border-router status, OpenThread Border Router app logs if used, and local IPv6 reachability.</td><td>Deleting the Matter integration</td></tr>
+                <tr><td><strong>Thread devices work in Apple or Google but not Home Assistant</strong></td><td>Home Assistant Matter Server, Matter fabric, or local path to the border router</td><td>Update and restart Matter Server, then check IPv6, multicast, and whether the device still appears in Matter Server.</td><td>Factory resetting a demonstrably healthy device</td></tr>
+                <tr><td><strong>Thread and Wi-Fi Matter devices both fail</strong></td><td>Matter Server, integration, host networking, or a recent update</td><td>Check Matter Server first and review its logs or backup history before changing the radio network.</td><td>Changing the Thread channel</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="recovery-order">The Recovery Order That Preserves Your Pairings</h2>
+          <h3 id="wait-and-scope">1. Let the Network Settle, Then Scope the Failure</h3>
+          <p>After a Home Assistant update, Matter Server restart, border-router restart, or full power outage, give powered routers and sleepy devices several minutes to reconnect. Do not stack more restarts while the mesh is still rebuilding its routes.</p>
+          <p>Before restarting anything else, open <strong>Settings &gt; Devices &amp; services &gt; Matter</strong>, use its menu to select <strong>Download diagnostics</strong>, and save the current Matter Server log. Go to <strong>Settings &gt; System &gt; Backups &gt; Backup now</strong> and include the Matter Server app and configuration. Then test one affected device in every controller that already knows it, one Matter-over-Wi-Fi device, and one non-Matter Home Assistant device. Write down the first failure time and what changed immediately before it. This separates a device problem from a Thread problem, and a Thread problem from a Home Assistant controller problem.</p>
+
+          <h3 id="matter-server">2. Check Matter Server Before the Thread Radio</h3>
+          <p>Open <strong>Settings &gt; Devices &amp; services &gt; Matter</strong>. This integration is Home Assistant's connection to the local Matter Server. Then open <strong>Settings &gt; Apps &gt; Matter Server</strong> and confirm the app is running. Update Home Assistant, Matter Server, and the OpenThread Border Router app when you use it. Home Assistant's June 23, 2026 Matter upgrade moved the server to matter.js, improved reconnection, and added a clearer Thread and Wi-Fi network view.</p>
+          <p>Go to <strong>Settings &gt; Apps &gt; Matter Server &gt; Open Web UI</strong>, choose <strong>Thread</strong>, and inspect the network map. Look for the border router, the affected device, its reported role, and whether a group of devices vanished behind the same powered router. Refresh before trusting an old gray or missing connection. The view fills progressively, some devices do not expose every diagnostic, and roles can change. The map is evidence, not a reason to reset everything it cannot currently draw.</p>
+          <p>If Matter-over-Wi-Fi devices are also unavailable, stay on the Matter Server and host-networking path. A Thread radio change cannot repair a controller that has lost every Matter device.</p>
+
+          <h3 id="thread-border-router">3. Check the Thread Network and Its Border Router</h3>
+          <p>Go to <strong>Settings &gt; Devices &amp; services &gt; Thread &gt; Configure</strong>. Confirm that the network carrying the affected devices is still listed and has an active border router. Seeing several network names does not mean devices can move between them; different Thread networks can use different credentials—the network name and password-like key used during setup.</p>
+          <p>If Home Assistant owns the Thread network, check that its OpenThread Border Router app is running and that the radio is still attached. If Apple, Google, Amazon, IKEA, Aqara, or SmartThings owns the network, check that the platform's border router is powered and healthy. Restart one relevant border router, then wait and retest. Power-cycling every router at once removes the redundant paths you are trying to diagnose.</p>
+          <p><strong>Do not create a new Home Assistant Thread network as a quick fix.</strong> A second network does not strengthen devices that remain on the first one. It can also make the phone used for pairing choose the wrong credentials next time.</p>
+
+          <h3 id="ipv6-mdns">4. Check Local IPv6 and Device Discovery—Even If the Internet Works</h3>
+          <p>Thread is an IPv6-only network. In this context, <strong>IPv6</strong> means the local addressing Home Assistant uses to reach devices through the border router; your internet provider does not need to give you public IPv6 for local Thread to work.</p>
+          <p>Home Assistant, Matter Server, and the border router need a clean local route. Home Assistant's official Thread troubleshooting says the host and home router must support IPv6, and routed setups need IPv6 forwarding. Mesh Wi-Fi, guest networks, client isolation, firewalls, and separate VLANs—separate network segments—can block the local device-discovery traffic called <strong>multicast DNS, or mDNS</strong>, even while ordinary web browsing works.</p>
+          <ul>
+            <li>Keep Home Assistant and the Thread border router on the same trusted LAN while diagnosing.</li>
+            <li>On a virtual machine, confirm that its network is bridged into the LAN and has working local IPv6—not only IPv4.</li>
+            <li>For a self-managed Matter Server container, follow the matter.js host-network and IPv6 requirements. Do not copy Linux forwarding settings from a border-router guide onto a host that is not acting as a router.</li>
+            <li>On a routed or VLAN setup, verify IPv6 routing and multicast forwarding rather than opening broad internet-facing firewall rules.</li>
+            <li>Check mesh Wi-Fi settings for client isolation, multicast filtering, or mDNS controls. Do not blindly disable every network-protection feature.</li>
+          </ul>
+          <p>If devices work in Apple Home but not Home Assistant, this local path is especially important: the Apple controller may be beside the Thread mesh while Home Assistant sits across a filtered network boundary.</p>
+
+          <h3 id="log-clues">5. Read the Log Clue Before Choosing a Fix</h3>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Log clue</th><th scope="col">Plain-English meaning</th><th scope="col">Check next</th></tr></thead>
+              <tbody>
+                <tr><td><code>Resolving (no address known)</code></td><td>Matter Server has not learned a usable local address for the device.</td><td>The device, border router, Thread address publication, and mDNS path</td></tr>
+                <tr><td><code>ENETUNREACH</code> or route unavailable</td><td>Home Assistant has no working IPv6 route to the device.</td><td>Border-router status, IPv6 route advertisements, VM/container networking, and recent prefix changes</td></tr>
+                <tr><td>Address resolves, then CASE or retransmission timeout</td><td>Discovery worked, but the device did not answer the secure Matter session.</td><td>Device attachment, Thread route, firewall state, and the border router</td></tr>
+                <tr><td>Repeated <code>ChannelAccessFailure</code></td><td>The radio repeatedly found its channel too busy.</td><td>2.4 GHz congestion and the coordinated channel-change path</td></tr>
+                <tr><td><code>NoAck</code></td><td>A message was not acknowledged. This can be normal while a battery device sleeps.</td><td>Persistent errors on an always-powered device point more strongly to range, power, or hardware</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>An <code>mDNSPlatformSendUDP ... error 99</code> message tied to an internal Docker <code>veth</code> interface is documented by Home Assistant as commonly cosmetic. Do not rebuild the Thread network because of that line alone.</p>
+
+          <h3 id="one-device">6. Treat One Failed Device as One Failed Device</h3>
+          <p>For one sensor, lock, shade, plug, or bulb, check its power and firmware before moving infrastructure. Wake a battery device using the maker's documented action, or power-cycle a mains-powered device once. Test it temporarily nearer a powered Thread router that belongs to the same Thread network.</p>
+          <p>If a whole cluster fails behind one powered device, restore that routing device first. If the failed device works in another Matter controller, use that working platform to confirm firmware and status. Home Assistant's Matter page also shows the network name and device role for paired devices, which can help confirm that you are looking at the right mesh.</p>
+
+          <h3 id="radio-channel">7. Change the Radio Channel Only When the Logs Point There</h3>
+          <p>Thread, Zigbee, Bluetooth, and 2.4 GHz Wi-Fi share busy radio space. Home Assistant documents repeated <code>ChannelAccessFailure</code> messages as evidence that the Thread radio cannot get airtime. A sleeping battery device can produce an occasional <code>NoAck</code>; persistent errors from an always-powered device point more strongly to range, power, or hardware.</p>
+          <p>If the evidence shows interference, use Home Assistant's coordinated Thread channel-change tool. It schedules the move so devices can follow. Do not manually erase the network or select channel 25 or 26 only because it fixed someone else's house; Wi-Fi layout, Zigbee channel, region, and hardware all matter. Our <a href="/blog/home-assistant-thread-channel-change-without-repairing/">Thread channel guide</a> covers the safe sequence.</p>
+
+          <h3 id="fabric-repair">8. Repair Only the Controller Relationship That Failed</h3>
+          <p>If the device is healthy in another ecosystem but Home Assistant cannot restore its secure Matter connection, the last repair before a factory reset is the Home Assistant fabric—its trusted controller relationship—not the whole Thread network. Take a Home Assistant backup and save the device's original setup label first.</p>
+          <p><strong>Do not repeatedly share a device that Home Assistant still lists.</strong> That can leave stale or duplicate nodes. First save diagnostics and verify that another controller still operates the device. If the Home Assistant relationship truly must be removed, record its device controls—called entities—and automations, then use <strong>Delete</strong> on that device's Home Assistant page. Do not remove the remaining working platform from <strong>Manage fabrics</strong>, and do not use this path when Home Assistant is the only controller.</p>
+          <p>Only after the old Home Assistant relationship is cleanly removed should you use the working controller to generate a <strong>fresh Matter sharing code</strong> and add the device in Home Assistant as one that is already in use. The fresh code is temporary; it is not the original box QR code. This keeps the device on its existing Thread network and preserves other controllers. See our guide to <a href="/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/">adding an existing Matter device to Home Assistant without a factory reset</a>.</p>
+
+          <h2 id="reset">When a Factory Reset Is Finally Reasonable</h2>
+          <p>A device-level reset becomes reasonable when the device is offline in every controller, cannot rejoin after its documented power or wake procedure, has current firmware, and still fails beside a known-good router on the correct network. It is also appropriate when ownership changes or the remaining fabric records cannot be recovered safely.</p>
+          <p>Before resetting, photograph the setup code, note the device name and automations, take a Home Assistant backup, and confirm the maker's exact reset steps. Reset only that device. Do not delete the Thread integration, erase the border router, or rebuild unaffected devices around it.</p>
+          <div class="callout">
+            <p><strong>Locks, alarms, shades, and HVAC:</strong> keep a physical key, manual control, or safe fallback available. Do not test a smart lock while away from home, defeat an alarm's safety path, or repeatedly cycle HVAC equipment simply to see whether Thread reconnects.</p>
+          </div>
+
+          <h2 id="new-border-router">Will Buying Connect ZBT-2 Fix It?</h2>
+          <p><strong>Not when the current Thread network still works.</strong> Home Assistant can control Matter devices through supported third-party border routers. If an Apple TV or HomePod carries the device and Apple Home still responds, adding ZBT-2 does not automatically repair Home Assistant's Matter fabric or a blocked IPv6 route.</p>
+          <p>A Home Assistant-managed border router is useful when you have no suitable border router, want Home Assistant to own and diagnose the Thread network, or have decided to migrate away from an unstable third-party route. That is a planned network choice. Adding it as a second, unrelated Thread network gives existing devices no extra range.</p>
+          <p>Use our <a href="/blog/which-thread-border-router-home-assistant-2026/">Thread border-router decision guide</a> before buying hardware, and our <a href="/blog/extend-thread-range-home-assistant-without-second-network/">range guide</a> if the map shows a real coverage gap.</p>
+
+          <h2 id="local-cloud">What Stays Local, and What May Still Need the Cloud?</h2>
+          <p>Once a device has been paired, normal Matter commands can travel locally from Home Assistant through the border router to the Thread device. Home Assistant automations can keep working during an internet outage, and the border router cannot read the encrypted Matter command it forwards.</p>
+          <p>The internet may still be used for vendor firmware, product accounts, remote access, voice assistants, certificate information during setup, and vendor-only features. An internet outage is therefore a useful clue: if local Home Assistant control stops but the Thread border router and home LAN stay powered, investigate the local path rather than assuming Thread itself requires cloud service.</p>
+
+          <h2 id="recommendation">Tara's Recommendation</h2>
+          <p>Build the diagnosis from the outside in: scope the failure, check Matter Server, confirm the correct Thread border router, verify local IPv6 and multicast, then inspect the affected mesh branch or device. Change the radio channel only with evidence. Repair one Matter fabric before erasing the device.</p>
+          <p>A calm Thread installation has one intentional network, stable powered routes, a recorded owner for its credentials, current firmware, and a backup made before changes. Tara packages those choices into a local-first plan so a restart does not become a weekend rebuild.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3>How long should I wait after restarting Home Assistant?</h3>
+          <p>There is no universal timer. Give powered Thread routers several minutes to form routes and sleepy battery devices time to check in. If nothing improves, stop waiting and use the symptom table: compare another controller, Matter-over-Wi-Fi, and one nearby Thread device.</p>
+
+          <h3>Will syncing Thread credentials bring an offline device back?</h3>
+          <p>Usually not. Credential syncing helps the phone place a new device onto the intended Thread network. An already paired device needs the existing border router, local IPv6 route, and Matter fabric to work. Sync credentials when pairing fails or the phone chooses the wrong network—not as the first repair for a device that was already working.</p>
+
+          <h3>Why does the device work in Apple Home but not Home Assistant?</h3>
+          <p>That is good evidence that the device, its power, and the Thread mesh are alive. Check Home Assistant's Matter Server, its fabric record, and the local IPv6 and mDNS path to the Apple border router. Do not reset a device that another controller can still reach.</p>
+
+          <h3>Can I add a second Thread border router for reliability?</h3>
+          <p>Yes, when it joins the same Thread network and uses the same credentials. Multiple border routers on one mesh can add resilience. A second router that creates a separate network does not help devices on the first mesh.</p>
+
+          <h3>Does Matter-over-Thread need the internet?</h3>
+          <p>Normal local control does not. Setup, remote access, firmware, accounts, and voice services may. See our guide to <a href="/blog/will-home-assistant-matter-work-without-internet/">Home Assistant and Matter without internet</a> for the exact boundary.</p>
+        </div>
+      </article>
+
+      <section class="block article-cta">
+        <p class="kicker">Plan once, recover calmly</p>
+        <h2>Want a Thread setup that stays understandable when one device drops offline?</h2>
+        <p>Tara can map the border routers, local network, radios, recovery path, and automations before hardware is installed.</p>
+        <a class="cta" href="/configurator/">Build your local smart-home plan</a>
+      </section>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <p><strong>Official documentation</strong></p>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread setup, preferred networks, IPv6, pairing, channels, and OpenThread Border Router log guidance</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter setup, multi-fabric sharing, device roles, and local Thread routing</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant's June 23, 2026 matter.js, Thread 1.4, reconnection, and network-map update</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2025/03/10/matter-certification/" target="_blank" rel="noopener noreferrer">Home Assistant Matter certification and IPv6 background</a></li>
+              <li><a href="https://www.home-assistant.io/faq/is-it-reliable/" target="_blank" rel="noopener noreferrer">Home Assistant on local protocols during cloud outages</a></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Protocol documentation</strong></p>
+            <ul>
+              <li><a href="https://threadgroup.org/Newsroom/Blog/multiple-thread-networks-and-the-seamless-interconnectivity-of-ip" target="_blank" rel="noopener noreferrer">Thread Group on one mesh, multiple border routers, and separate credential sets</a></li>
+              <li><a href="https://openthread.io/guides/border-router" target="_blank" rel="noopener noreferrer">OpenThread border-router roles and network functions</a></li>
+              <li><a href="https://openthread.io/guides/thread-primer/node-roles-and-types" target="_blank" rel="noopener noreferrer">OpenThread router, end-device, sleepy-device, and leader roles</a></li>
+              <li><a href="https://github.com/matter-js/matterjs-server/blob/main/packages/dashboard/README.md" target="_blank" rel="noopener noreferrer">Matter Server network-view interpretation and limitations</a></li>
+              <li><a href="https://github.com/matter-js/matterjs-server/blob/main/docs/os_requirements.md" target="_blank" rel="noopener noreferrer">Matter Server host networking, IPv6, firewall, and container requirements</a></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Community discussions and caveats</strong></p>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1uuxw6s/matter_over_thread_unreliable/" target="_blank" rel="noopener noreferrer">r/homeassistant: Apple border routers, ZBT-2, channels, and devices going offline, July 13, 2026</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1u951al/matter_over_thread_is_a_pain_after_ha_restart_all/" target="_blank" rel="noopener noreferrer">r/homeassistant: all Thread devices offline after a Home Assistant restart, June 18, 2026</a></li>
+              <li><a href="https://community.home-assistant.io/t/matter-over-thread-devices-all-offline/1012133" target="_blank" rel="noopener noreferrer">Home Assistant Community: separating border-router, host, and Matter Server failures</a></li>
+              <li><a href="https://community.home-assistant.io/t/matter-thread-onboarding-and-stability-issues-observations-from-real-world-home-network-environments/1015504" target="_blank" rel="noopener noreferrer">Home Assistant Community: real-world network isolation and stability observations</a></li>
+              <li><a href="https://github.com/home-assistant/addons/issues/3889" target="_blank" rel="noopener noreferrer">Home Assistant add-ons issue: Thread IPv6 network-unreachable commissioning evidence</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/123835" target="_blank" rel="noopener noreferrer">Home Assistant core issue: Matter-over-Thread devices unavailable only in Home Assistant</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/174699" target="_blank" rel="noopener noreferrer">Home Assistant core issue: duplicate entities after a Matter device is reset and added again</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/174891" target="_blank" rel="noopener noreferrer">Home Assistant core issue: orphaned node after device deletion and recommissioning</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related Tara Guides</p>
+        <div class="links">
+          <a href="/blog/home-assistant-matter-network-map-offline-devices/">Read the Matter network map</a>
+          <a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Recover Matter Server safely</a>
+          <a href="/blog/home-assistant-thread-channel-change-without-repairing/">Change a Thread channel safely</a>
+          <a href="/blog/extend-thread-range-home-assistant-without-second-network/">Extend one Thread mesh</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home planning.</span></footer>
+  </body>
+</html>
