@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why DIRIGERA Shows No Thread Credentials in Home Assistant | Tara Guides</title>
+    <meta name="description" content="Home Assistant can see IKEA DIRIGERA’s Thread network without holding its credentials. Learn when that is normal, how Matter sharing works, and what not to reset." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/" />
+    <meta property="og:title" content="Why DIRIGERA Shows No Thread Credentials in Home Assistant" />
+    <meta property="og:description" content="A missing key icon can be normal. Learn when Home Assistant can control IKEA Matter devices through DIRIGERA and when Thread credentials actually matter." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why DIRIGERA Shows No Thread Credentials in Home Assistant" />
+    <meta name="twitter:description" content="What the missing key icon means, how IKEA Matter sharing still works, and why you should not reset a healthy Thread network." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 900; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/#blogposting",
+          "headline": "Why Home Assistant Sees IKEA DIRIGERA’s Thread Network but Shows No Credentials",
+          "description": "Home Assistant can discover IKEA DIRIGERA’s Thread network without holding its credentials. Learn when that is normal, how Matter sharing still works, and when the credentials are actually needed.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/cover.png",
+          "datePublished": "2026-07-14",
+          "dateModified": "2026-07-14",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://support.apple.com/en-us/102135",
+            "https://support.google.com/googlehome/answer/12391458",
+            "https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/",
+            "https://www.ikea.com/us/en/p/dirigera-hub-for-smart-products-white-smart-50503414/",
+            "https://csa-iot.org/all-solutions/matter/matter-faq/",
+            "https://csa-iot.org/newsroom/peeking-under-the-hood-of-your-matter-smart-home/",
+            "https://threadgroup.org/Newsroom/Blog/securing-your-iot-network-how-border-routers-help",
+            "https://community.home-assistant.io/t/combining-border-routers-to-one-thread-network/981700",
+            "https://community.home-assistant.io/t/join-dirigera-to-ha-using-passcode/1005838",
+            "https://www.reddit.com/r/homeassistant/comments/1unwwan/thread_network_to_run_on_home_assistant/",
+            "https://www.reddit.com/r/homeassistant/comments/1txenhq/surprised_how_easy_is_to_add_ikea_matter_devices/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "DIRIGERA Thread network has no credentials", "item": "https://tarahome.ai/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why can Home Assistant see DIRIGERA’s Thread network but show no credentials?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant discovered the border router’s local network announcement, but DIRIGERA did not give Home Assistant the Thread network’s operational credentials. Discovery and possession of the network key are separate states, so the missing key icon can be normal." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Home Assistant need DIRIGERA’s Thread credentials to control an IKEA Matter device?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not when the device is already on DIRIGERA’s Thread network and has been shared to Home Assistant with Matter multi-admin. Home Assistant needs its own Matter relationship with the device and a working local IPv6 route through DIRIGERA, not necessarily a copy of DIRIGERA’s Thread credentials." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is the temporary IKEA Matter sharing code the Thread password?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. A temporary Matter sharing code lets another Matter platform become a controller of the device. Thread credentials let a device or border router join the Thread mesh. They solve different problems and should not be treated as interchangeable." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need a Home Assistant Connect ZBT-2 if DIRIGERA already runs Thread?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No, not just to control Matter devices that are already using DIRIGERA and have been shared to Home Assistant. A dedicated Home Assistant Thread radio is useful only if you deliberately want Home Assistant to own or join a Thread network." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I reset DIRIGERA or its Matter devices to make the key icon appear?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. If the IKEA app and Home Assistant both control the devices, leave the working Thread network alone. Check sharing, Matter Server, IPv6, and local discovery first. Reset only the one affected accessory as a last resort, not the entire DIRIGERA network." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>IKEA, Matter &amp; Thread</span><span>July 14, 2026</span><span>10 min read</span></p>
+            <h1>Why Home Assistant Sees IKEA DIRIGERA’s Thread Network but Shows No Credentials</h1>
+            <p class="lede">A DIRIGERA network listed under “Other networks” without a key icon is not automatically broken. Home Assistant may be able to control shared IKEA Matter devices through it without ever receiving the Thread network password.</p>
+          </div>
+          <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-ikea-dirigera-thread-network-no-credentials/cover.png" alt="IKEA DIRIGERA hub and BILRESA remote on a warm oak shelf for a Home Assistant Thread credentials guide" loading="eager" /></figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>No key icon can be normal:</strong> Home Assistant has discovered DIRIGERA’s Thread network announcement, but IKEA has not given it the network credentials.</li>
+              <li><strong>If both apps control the device, leave the network alone:</strong> Home Assistant can use Matter through DIRIGERA’s local Thread route without owning the Thread key.</li>
+              <li><strong>Use the IKEA Matter sharing code:</strong> generate a fresh temporary code for the device and add it as an already-used Matter device in Home Assistant. That code is not a Thread password.</li>
+              <li><strong>Do not buy another radio just for the icon:</strong> a Connect ZBT-2, ZBT-1, or Home Assistant Yellow is optional when DIRIGERA already provides a stable Thread route.</li>
+              <li><strong>Main caveat:</strong> importing or joining DIRIGERA’s Thread credentials is software-version dependent. Home Assistant’s official instructions currently document Apple and Google credential imports, not a guaranteed DIRIGERA import.</li>
+            </ul>
+          </aside>
+
+          <h2 id="answer">The Short Answer: Visible Does Not Mean Unlocked</h2>
+          <p><strong>Thread</strong> is the low-power wireless network used by many new IKEA sensors. <strong>DIRIGERA</strong> is the border router—the bridge between that device network and your normal Ethernet or Wi-Fi home network. <strong>Thread credentials</strong> are the network password and settings that let another device or border router join.</p>
+          <p>Home Assistant discovers Thread border routers through a small local announcement. That is enough to show a network name under <strong>Settings &gt; Devices &amp; services &gt; Thread</strong>, but the announcement does not include the private credentials. That is why DIRIGERA can appear under <strong>Other networks</strong> with no key icon.</p>
+          <p>If an IKEA Matter device is already joined to that network and you shared the device to Home Assistant, normal control can still work. The Matter controller relationship proves Home Assistant is allowed to control the device, while DIRIGERA routes the encrypted local traffic between Thread and your home network.</p>
+          <div class="callout">
+            <p><strong>What to do now:</strong> if IKEA Home smart and Home Assistant both work, do nothing. If only IKEA works, create a temporary Matter sharing code and add the already-used device to Home Assistant. Reset nothing yet.</p>
+            <p><strong>Why this works:</strong> a Thread border router carries local traffic, while a Matter controller relationship—often called a fabric—decides which platforms the device trusts. Home Assistant therefore does not need to own DIRIGERA’s Thread password merely to control a device that DIRIGERA already hosts and IKEA has shared through Matter.</p>
+          </div>
+
+          <h2 id="four-states">Four Similar-Looking States That Mean Different Things</h2>
+          <p>The easiest way to avoid an unnecessary reset is to separate discovery, Thread membership, and Matter control.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">What Home Assistant knows</th><th scope="col">What it means</th><th scope="col">What you can do</th></tr></thead>
+              <tbody>
+                <tr><td><strong>DIRIGERA network is visible</strong></td><td>Home Assistant heard the hub’s local border-router announcement.</td><td>Recognize that the network exists. This alone does not let Home Assistant add devices to it.</td></tr>
+                <tr><td><strong>A key icon appears</strong></td><td>Home Assistant has the Thread operational credentials.</td><td>Make that network preferred, commission compatible Thread devices to it, or use the credentials with supported border-router tools.</td></tr>
+                <tr><td><strong>An IKEA Matter device is in Home Assistant</strong></td><td>The device has trusted Home Assistant as a Matter controller.</td><td>Control and automate the device locally as long as the IPv6 route through its Thread border router is healthy.</td></tr>
+                <tr><td><strong>A Home Assistant border router joined the same mesh</strong></td><td>A Yellow or dedicated ZBT radio is routing the same Thread network too.</td><td>Add coverage and resilience. This is optional and should be done only with a supported credential-sharing or border-router joining method.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The third row is the one most households care about. A shared Matter device can work in Home Assistant even while the Thread page continues to show DIRIGERA without a key.</p>
+
+          <h2 id="codes">The Three Codes Are Not Interchangeable</h2>
+          <p>IKEA, Matter, and Thread screens can all show QR or numeric codes. Treating them as one universal password is the most common source of confusion.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Code</th><th scope="col">What it does</th><th scope="col">When to use it</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Printed Matter setup code</strong></td><td>Commissions a new or factory-reset device for its first Matter controller.</td><td>Use during a clean first setup. Do not assume the label can replace a fresh multi-admin code after the device is already in use.</td></tr>
+                <tr><td><strong>Temporary Matter sharing code</strong></td><td>Invites another platform, such as Home Assistant, into the device’s Matter fabric list.</td><td>Generate it in the app that already controls the device. This is the normal IKEA-first path and it expires.</td></tr>
+                <tr><td><strong>Thread border-router join passcode</strong></td><td>Lets another supported Thread 1.4 border router join an existing Thread mesh.</td><td>Use only when both products explicitly support that flow. It is not the Matter sharing code and is not needed for ordinary shared-device control.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Recent Home Assistant Community reports describe DIRIGERA firmware that exposes a separate nine-digit border-router joining passcode. Other households report missing options or unsuccessful joins. IKEA and Home Assistant do not currently publish one universal DIRIGERA-to-Home-Assistant joining procedure, so consider this an advanced, version-dependent path—not a required fix for the missing key icon.</p>
+
+          <h2 id="recommended-path">The Best Path for Most DIRIGERA Homes</h2>
+          <p>If a native IKEA Matter-over-Thread device already works in the IKEA Home smart app, keep DIRIGERA as the Thread owner and share only that Matter device. This is the smallest, safest change. Older IKEA Zigbee products exposed through DIRIGERA’s Matter bridge use the hub’s bridge-sharing path instead; they do not have their own Matter setup or sharing code.</p>
+          <ol>
+            <li><strong>Confirm the IKEA path first.</strong> Make sure DIRIGERA is powered, connected to the same trusted home network as Home Assistant, and still controls the device in IKEA Home smart.</li>
+            <li><strong>Open the device’s Matter sharing flow in IKEA Home smart.</strong> Generate a fresh code for connecting the already-used device to another smart-home platform. Menu wording can change between app versions.</li>
+            <li><strong>Start “Add Matter device” in the Home Assistant companion app.</strong> Choose the option for a device that is already in use, then scan or enter the temporary IKEA code.</li>
+            <li><strong>Test from both apps before building automations.</strong> If both work, the missing Thread key is only an ownership detail, not a fault.</li>
+            <li><strong>Choose one automation owner.</strong> Keep most routines in Home Assistant or in one other platform so the same light is not being turned on and off by duplicate schedules.</li>
+          </ol>
+          <p>If device-level sharing is not offered, check its current IKEA firmware and Matter support before changing anything. A newer native Matter device should have its own Matter path. An older Zigbee device may instead appear as part of the DIRIGERA Matter bridge, so look for the hub’s connect-to-another-platform flow.</p>
+
+          <h2 id="credentials-needed">When Home Assistant Actually Needs the Credentials</h2>
+          <p>The Thread credentials matter when you want Home Assistant to do more than control a device that DIRIGERA already hosts. You need a supported credential path when you want to:</p>
+          <ul>
+            <li>commission a new Thread device directly onto DIRIGERA’s existing Thread network from Home Assistant;</li>
+            <li>mark DIRIGERA’s network as Home Assistant’s preferred Thread network;</li>
+            <li>join a Home Assistant OpenThread border router to the same mesh for extra coverage; or</li>
+            <li>move ownership away from DIRIGERA while preserving one carefully planned Thread network.</li>
+          </ul>
+          <p>Home Assistant’s official Thread page currently explains how the companion app can import Thread credentials from Apple on iPhone and Google on Android. It does not promise that every third-party hub—including DIRIGERA—will export credentials into the phone in a form Home Assistant can import. Seeing the network name is not evidence that this import is available.</p>
+          <div class="callout">
+            <p><strong>Do not copy random dataset strings or reset a healthy mesh to force this.</strong> Thread credentials grant network membership. Back them up only through documented tools, and join another border router only when you have a reason beyond changing an icon.</p>
+          </div>
+
+          <h2 id="radio">Do You Need a ZBT-2, ZBT-1, or Home Assistant Yellow?</h2>
+          <p><strong>No—not for the normal DIRIGERA-first path.</strong> If DIRIGERA routes the Thread device and Home Assistant controls it through Matter, another radio adds no required permission. It may add coverage only if it can join the same Thread mesh through a supported method.</p>
+          <p>A dedicated Home Assistant Thread radio makes sense when you want Home Assistant to own the Thread network, commission devices directly, or keep using Thread without DIRIGERA. Current concrete options include <strong>Home Assistant Yellow</strong> and a dedicated <strong>Home Assistant Connect ZBT-1 or ZBT-2</strong> running OpenThread Border Router firmware. Plan that ownership before resetting accessories; creating a second unrelated Thread network does not strengthen devices that remain on DIRIGERA’s mesh.</p>
+
+          <h2 id="support-table">Official Support, Local Control, and Cross-Platform Paths</h2>
+          <p>This is the practical boundary for the products and connection choices discussed here.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Path</th><th scope="col">Official support and hardware</th><th scope="col">Local control and cloud</th><th scope="col">Matter or HomeKit path</th><th scope="col">Main caveat</th></tr></thead>
+              <tbody>
+                <tr><td><strong>DIRIGERA-owned Thread</strong></td><td>IKEA DIRIGERA hub, including IKEA article number 505.034.14, hosts supported IKEA devices; IKEA says the hub is recommended but not required for its new Matter devices.</td><td>Routine Matter traffic is local. Remote access, firmware delivery, and other online app services can still use the internet.</td><td>Share each supported Matter device from IKEA Home smart to Home Assistant, Apple Home, Google Home, Alexa, or SmartThings.</td><td>Home Assistant may discover the Thread network without receiving its credentials. That does not block an already-shared device.</td></tr>
+                <tr><td><strong>Home Assistant-owned Thread</strong></td><td>Home Assistant OS with the official Matter Server and OpenThread Border Router apps; Yellow or a dedicated ZBT-1/ZBT-2 supplies the radio.</td><td>Normal Matter control is local. Remote access and vendor-only updates remain separate choices.</td><td>Pair the Matter-over-Thread device to Home Assistant first, then use Matter multi-admin to share it outward.</td><td>Use a dedicated Thread radio. Do not expect a second independent mesh to extend DIRIGERA’s devices.</td></tr>
+                <tr><td><strong>Apple or Google as another controller</strong></td><td>Each platform still follows its own controller and hub rules; examples include HomePod mini or Apple TV 4K, and Nest Hub (2nd gen), Nest Wifi Pro, or Google TV Streamer.</td><td>Normal Matter commands can stay local; accounts, remote access, voice services, and some setup still use cloud services.</td><td>Use Matter multi-admin for the physical IKEA device. Home Assistant’s HomeKit Bridge is a separate way to expose Home Assistant entities to Apple Home.</td><td>Adding another Matter controller does not copy DIRIGERA’s Thread credentials or move the device to a different Thread mesh.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="offline">If the Device Is Offline, Not Just Keyless</h2>
+          <p>A missing key icon is harmless when control works. If the device is actually unavailable, diagnose the working layers in order:</p>
+          <ol>
+            <li><strong>Test IKEA Home smart.</strong> If it also fails, check device power, battery, range, DIRIGERA power, and the IKEA-recommended recovery steps first.</li>
+            <li><strong>Update Home Assistant and the official Matter Server app.</strong> Matter Server 9.0, released in June 2026, moves Home Assistant to the newer matter.js stack and includes faster reconnects and automatic migration from the previous server.</li>
+            <li><strong>Confirm the Matter device still exists in Home Assistant.</strong> An empty Thread credential field is not the same as a missing Matter device or removed Home Assistant fabric.</li>
+            <li><strong>Keep DIRIGERA and Home Assistant on the same normal home network.</strong> Do not isolate one on guest Wi-Fi or a separate network segment. Matter uses local IPv6 addresses and nearby-device discovery, which these network boundaries can block even when both boxes have internet access.</li>
+            <li><strong>Restart one layer at a time.</strong> Restart DIRIGERA or Home Assistant, wait for the Thread network to settle, then test before changing anything else.</li>
+            <li><strong>Re-share before resetting.</strong> If IKEA still works but Home Assistant does not, remove and rebuild only Home Assistant’s Matter relationship when the apps allow it. Reset the one affected accessory only after reversible checks fail.</li>
+          </ol>
+          <p>Home Assistant supports its bundled Matter Server on Home Assistant OS. A separately assembled Matter Server container can work for advanced users, but it is not the supported baseline for deciding whether DIRIGERA or Thread is at fault.</p>
+
+          <h2 id="local-cloud">What Stays Local and What Still Uses the Cloud?</h2>
+          <p>Once commissioned, Matter commands between Home Assistant and the IKEA device can stay inside the home. DIRIGERA forwards the local IPv6 traffic between Ethernet or Wi-Fi and Thread; it does not need to turn every light command into a cloud round trip.</p>
+          <p>That does not make every IKEA app feature offline-only. Remote access, software updates, product information, and other online services can still use the internet. Apple, Google, Alexa, and SmartThings likewise combine local Matter control with accounts, remote services, voice processing, and app synchronization. “Matter is local” describes the device-control path, not every service around it.</p>
+
+          <h2 id="recommendation">Tara’s Recommendation</h2>
+          <p>If DIRIGERA appears without credentials but your shared devices work, stop there. Keep DIRIGERA powered, keep Home Assistant and the hub on the same trusted LAN, and run your automations from one chosen platform. Do not buy a radio or rebuild a Thread network merely to make the key icon appear.</p>
+          <p>Only pursue credential import or border-router joining when you deliberately want one larger Thread mesh or Home Assistant-owned commissioning—and only through a method documented for the software versions you actually have. The safe default is simple: share the Matter device, preserve the working Thread owner, and reset last.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3>Why can Home Assistant see DIRIGERA’s Thread network but show no credentials?</h3>
+          <p>Home Assistant discovered DIRIGERA’s local border-router announcement, but the hub did not give it the private Thread operational dataset. Discovery and possession of the network key are separate, so the missing key icon can be normal.</p>
+
+          <h3>Does Home Assistant need DIRIGERA’s Thread credentials to control an IKEA Matter device?</h3>
+          <p>Not when the device is already on DIRIGERA’s network and has been shared through Matter. Home Assistant needs its own Matter controller relationship and a working local IPv6 route through DIRIGERA, not necessarily a copy of the Thread key.</p>
+
+          <h3>Is the temporary IKEA Matter sharing code the Thread password?</h3>
+          <p>No. The temporary Matter code lets another platform become a controller of the device. Thread credentials let a device or border router join the Thread mesh. They solve different problems.</p>
+
+          <h3>Do I need a Home Assistant Connect ZBT-2 if DIRIGERA already runs Thread?</h3>
+          <p>No, not just to control devices already routed by DIRIGERA and shared to Home Assistant. Add a dedicated Home Assistant Thread radio only if you deliberately want Home Assistant to own or join a Thread network.</p>
+
+          <h3>Should I reset DIRIGERA or its Matter devices to make the key icon appear?</h3>
+          <p>No. If IKEA Home smart and Home Assistant both work, leave the mesh alone. If control fails, check Matter sharing, Matter Server, local IPv6, and discovery first. Reset only the affected accessory as a last resort, not the whole DIRIGERA network.</p>
+        </div>
+      </article>
+
+      <section class="block article-cta">
+        <p class="kicker">Keep one clear owner</p>
+        <h2>Want an IKEA and Home Assistant plan that stays local without duplicate hubs or automations?</h2>
+        <p>Tara can map which hub owns Thread, which platforms control each Matter device, and what can be removed safely before you buy or reset anything.</p>
+        <a class="cta" href="/configurator/">Build your local smart-home plan</a>
+      </section>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <p><strong>Official documentation</strong></p>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread: discovered networks, credentials, preferred networks, border routers, and phone imports</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter: third-party Thread border routers, local IPv6, sharing, fabrics, and supported installation</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge: exposing Home Assistant entities to Apple Home as a separate integration path</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9.0, faster reconnects, automatic migration, and the Thread network map</a></li>
+              <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple Support: Matter accessories, sharing, and Apple home-hub requirements</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/12391458" target="_blank" rel="noopener noreferrer">Google Home Help: current Matter controller and Thread border-router models</a></li>
+              <li><a href="https://csa-iot.org/all-solutions/matter/matter-faq/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: Matter local control, multi-admin, and ecosystem basics</a></li>
+              <li><a href="https://csa-iot.org/newsroom/peeking-under-the-hood-of-your-matter-smart-home/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: commissioners, controllers, fabrics, and Thread border routers</a></li>
+              <li><a href="https://threadgroup.org/Newsroom/Blog/securing-your-iot-network-how-border-routers-help" target="_blank" rel="noopener noreferrer">Thread Group: how border routers connect a Thread mesh to the home IP network</a></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Product documentation</strong></p>
+            <ul>
+              <li><a href="https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/" target="_blank" rel="noopener noreferrer">IKEA: current Matter-compatible system, controller and Thread border-router requirements, and multi-platform setup</a></li>
+              <li><a href="https://www.ikea.com/us/en/p/dirigera-hub-for-smart-products-white-smart-50503414/" target="_blank" rel="noopener noreferrer">IKEA: DIRIGERA hub current product page and specifications</a></li>
+              <li><a href="https://www.ikea.com/global/en/newsroom/retail/the-new-smart-home-from-ikea-matter-compatible-251106/" target="_blank" rel="noopener noreferrer">IKEA newsroom: new Matter-over-Thread smart-home range and hub-optional direction</a></li>
+              <li><a href="https://www.ikea.com/global/en/newsroom/innovation/ikea-dirigera-matter-bridge-240911/" target="_blank" rel="noopener noreferrer">IKEA newsroom: DIRIGERA Matter bridge for existing IKEA smart products</a></li>
+              <li><a href="https://www.ikea.com/us/en/customer-service/product-support/smart-home-dirigera-hub/" target="_blank" rel="noopener noreferrer">IKEA Support: DIRIGERA setup, recovery, app, and product help</a></li>
+              <li><a href="https://www.ikea.com/us/en/p/bilresa-remote-control-white-smart-dual-button-80617876/" target="_blank" rel="noopener noreferrer">IKEA: BILRESA dual-button remote shown in the article cover</a></li>
+            </ul>
+          </div>
+          <div>
+            <p><strong>Community discussions and caveats</strong></p>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1unwwan/thread_network_to_run_on_home_assistant/" target="_blank" rel="noopener noreferrer">r/homeassistant: DIRIGERA network visible in Home Assistant without credentials, July 2026</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1txenhq/surprised_how_easy_is_to_add_ikea_matter_devices/" target="_blank" rel="noopener noreferrer">r/homeassistant: IKEA Matter devices shared to Home Assistant while DIRIGERA remains the Thread route, June 2026</a></li>
+              <li><a href="https://community.home-assistant.io/t/combining-border-routers-to-one-thread-network/981700" target="_blank" rel="noopener noreferrer">Home Assistant Community: combining border routers and the difference between Matter and Thread codes, February 2026</a></li>
+              <li><a href="https://community.home-assistant.io/t/join-dirigera-to-ha-using-passcode/1005838" target="_blank" rel="noopener noreferrer">Home Assistant Community: version-dependent DIRIGERA Thread 1.4 joining experiments, April 2026</a></li>
+              <li><a href="https://community.home-assistant.io/t/cant-connect-to-ikea-matter-devices-and-dirigera/971166" target="_blank" rel="noopener noreferrer">Home Assistant Community: preferred credentials do not cure every IKEA Matter commissioning problem, January 2026</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/160196" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: DIRIGERA-hosted Thread devices not visible in Home Assistant, December 2025</a></li>
+            </ul>
+          </div>
+        </div>
+        <p>Cover product imagery: current official IKEA renders of the DIRIGERA hub and BILRESA remote, used for editorial identification. TaraHome is independent and is not sponsored or endorsed by IKEA.</p>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related Tara Guides</p>
+        <div class="links">
+          <a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Decide whether to keep DIRIGERA</a>
+          <a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">Pair IKEA Matter without DIRIGERA</a>
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter across platforms</a>
+          <a href="/blog/home-assistant-thread-border-router-required/">Know when a Thread border router is required</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home planning.</span></footer>
+  </body>
+</html>
