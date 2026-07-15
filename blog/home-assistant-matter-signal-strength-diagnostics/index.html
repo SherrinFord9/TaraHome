@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can Home Assistant Show Matter Signal Strength? | Tara Guides</title>
+    <meta name="description" content="Enable Home Assistant 2026.7's hidden Matter diagnostics, read Wi-Fi RSSI correctly, and use Matter Server's map for Thread link quality." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-matter-signal-strength-diagnostics/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-matter-signal-strength-diagnostics/" />
+    <meta property="og:title" content="Can Home Assistant Show Matter Signal Strength? | Tara Guides" />
+    <meta property="og:description" content="Wi-Fi devices now get an RSSI sensor. Thread devices need a different, link-by-link view. Here is what to enable and what the numbers mean." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-signal-strength-diagnostics/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can Home Assistant Show Matter Signal Strength? | Tara Guides" />
+    <meta name="twitter:description" content="Wi-Fi devices now get an RSSI sensor. Thread devices need a different, link-by-link view. Here is what to enable and what the numbers mean." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-signal-strength-diagnostics/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .hero-copy { display: grid; gap: 18px; min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1.08; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.12; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article { max-width: 1160px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; min-width: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article > article, .article-hero, .article-hero > *, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .article-cta, .source-list, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.3; }
+      .related { border-bottom: 1px solid var(--line); }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-signal-strength-diagnostics/#blogposting",
+          "headline": "Can Home Assistant Show Matter Signal Strength? Enable the Hidden 2026.7 Diagnostics",
+          "description": "Enable Home Assistant 2026.7's hidden Matter diagnostics, read Wi-Fi RSSI correctly, and use Matter Server's map for Thread link quality.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-matter-signal-strength-diagnostics/cover.png",
+          "datePublished": "2026-07-15",
+          "dateModified": "2026-07-15",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-matter-signal-strength-diagnostics/" },
+          "citation": [
+            "https://www.home-assistant.io/changelogs/core-2026.7",
+            "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+            "https://github.com/home-assistant/core/pull/167853",
+            "https://github.com/home-assistant/core/blob/2026.7.2/homeassistant/components/matter/sensor.py",
+            "https://github.com/home-assistant/core/pull/169830",
+            "https://www.home-assistant.io/common-tasks/general/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/README.md#network-visualization",
+            "https://community.home-assistant.io/t/matter-over-thread-linkquality-sensor/958067",
+            "https://community.home-assistant.io/t/interpreting-the-matter-server-thread-network-mesh-visualisation/1013712",
+            "https://www.reddit.com/r/homeassistant/comments/1qymc6q/im_done_with_matter_over_thread/",
+            "https://www.reddit.com/r/homeassistant/comments/1r8fslh/an_update_on_im_done_with_matter_over_thread/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-signal-strength-diagnostics/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Technical Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Matter signal-strength diagnostics", "item": "https://tarahome.ai/blog/home-assistant-matter-signal-strength-diagnostics/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-signal-strength-diagnostics/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant show Matter-over-Thread signal strength?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant 2026.7 does not add one per-device Thread RSSI sensor. It adds Thread network name, channel, and routing role entities. Use Matter Server 9's Network page for link-by-link Thread LQI and available RSSI details." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is the Wi-Fi RSSI or Thread diagnostic entity missing?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The entities are disabled by default, and the Matter device must report that piece of diagnostic data. Enable the entity from the device or entity settings. If it is not offered at all, the device may not expose that diagnostic." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is minus 85 dBm always a failing Matter Wi-Fi signal?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Matter Server 9 colors Wi-Fi RSSI at minus 85 dBm or lower as weak, but that is a visualization boundary, not a universal failure guarantee. Compare the device with its own normal history and actual availability." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does sleepy end device mean a Thread sensor is broken?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Sleepy End Device is the normal power-saving role for many battery Thread devices. Thread leader and router roles can also change as the mesh reorganizes." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do Home Assistant Matter diagnostics require the cloud?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant reads these diagnostics locally through its own Matter pairing. Home Assistant Cloud is not required, although a device maker may still use its own app or cloud for setup, firmware, or extra features." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div class="hero-copy">
+            <p class="article-meta"><span>Matter diagnostics</span><span>July 15, 2026</span><span>11 min read</span></p>
+            <h1>Can Home Assistant Show Matter Signal Strength? Enable the Hidden 2026.7 Diagnostics</h1>
+            <p class="lede">Yes for Matter over Wi-Fi: Home Assistant 2026.7 can create a Wi-Fi RSSI sensor. Thread is different&mdash;Home Assistant exposes its network, channel, and role, while signal quality remains a link-by-link view in Matter Server 9.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-matter-signal-strength-diagnostics/cover.png" alt="Homeowner plugging in a smart plug near a local smart-home hub while checking Matter coverage" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>For Matter over Wi-Fi:</strong> Update to Home Assistant Core 2026.7 or later, then enable the device's hidden <strong>Wi-Fi RSSI</strong> diagnostic entity. A number closer to zero is stronger.</li>
+              <li><strong>For Matter over Thread:</strong> There is no single new Thread RSSI entity. Enable <strong>Thread network name</strong>, <strong>Thread channel</strong>, and <strong>Thread routing role</strong>, then use Matter Server 9's Network page to inspect each radio link.</li>
+              <li><strong>Best next step:</strong> Watch a device's normal history before setting an alert. Treat weak signal plus real dropouts as evidence; one low reading is not a reason to reset anything.</li>
+              <li><strong>What to avoid:</strong> Do not factory-reset a working device, restart it automatically, or rebuild the Thread network because of one number or a changing Thread role.</li>
+              <li><strong>Main caveat:</strong> A diagnostic appears only when the device reports that piece of data. A missing entity does not prove that the signal is good or bad.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Wi-Fi Gets a Number; Thread Gets a Map</h2>
+          <p>Home Assistant Core 2026.7, released on July 1, 2026, adds hidden diagnostic entities for Matter devices. A Matter-over-Wi-Fi device can expose <strong>Wi-Fi RSSI</strong> in dBm. That is the familiar signal number: <strong>-50 dBm is stronger than -80 dBm</strong> because a value closer to zero means the receiver hears a stronger signal.</p>
+          <p>A Matter-over-Thread device does not get one equivalent RSSI entity. Instead, Home Assistant can expose the device's <strong>Thread network name</strong>, <strong>Thread channel</strong>, and <strong>Thread routing role</strong>. To judge Thread radio quality, open Matter Server 9's Network page. Thread is a mesh, so the useful question is not just “How strong is this device?” It is “How well can this device hear each neighbor, and does it have a healthy route home?”</p>
+          <p>Every new entity is disabled by default. That keeps ordinary dashboards and databases from filling with specialist data. Enable only the diagnostics you will actually use. Home Assistant reads them locally through its own Matter pairing, so Home Assistant Cloud is not required.</p>
+
+          <div class="callout">
+            <p><strong>Do this first:</strong> Check <strong>Settings &gt; System &gt; Updates</strong>. You need Home Assistant Core 2026.7 or later for the entities described here. The link-by-link Network page comes from Matter Server 9, which Home Assistant announced separately on June 23, 2026.</p>
+          </div>
+
+          <h2 id="what-you-can-enable">What You Can Enable on a Matter Device</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th>Diagnostic</th><th>Where it applies</th><th>What it tells you</th><th>What it does not prove</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Wi-Fi RSSI</strong></td>
+                  <td>Matter over Wi-Fi, when the device reports its Wi-Fi diagnostics</td>
+                  <td>The received Wi-Fi signal in dBm. Closer to zero is stronger.</td>
+                  <td>A low number alone does not prove that the device is dropping offline.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thread network name</strong></td>
+                  <td>Matter over Thread</td>
+                  <td>Which Thread mesh the device says it joined.</td>
+                  <td>Matching names do not prove that every route is healthy or that platforms share credentials.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thread channel</strong></td>
+                  <td>Matter over Thread</td>
+                  <td>The radio channel used by that Thread mesh.</td>
+                  <td>The channel number alone does not diagnose interference.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thread routing role</strong></td>
+                  <td>Matter over Thread</td>
+                  <td>Whether the node is a leader, router, router-eligible end device, end device, or sleepy end device.</td>
+                  <td>A role change is not automatically a fault. Thread rearranges roles as conditions change.</td>
+                </tr>
+                <tr>
+                  <td><strong>Reboot count, uptime, and boot reason</strong></td>
+                  <td>Any Matter device that reports its built-in health data</td>
+                  <td>Whether the device restarted, how long it has been running, and why it says it booted.</td>
+                  <td>A reboot reason may be missing or vague, and not every product reports these details.</td>
+                </tr>
+                <tr>
+                  <td><strong>Active hardware, radio, and network faults</strong></td>
+                  <td>Any Matter device that reports its built-in health data</td>
+                  <td>Whether the device currently reports at least one fault in that category.</td>
+                  <td>A clear sensor does not rule out a brief fault that the device never reported.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Home Assistant creates one of these entities only when the device reports that specific piece of diagnostic data. Two devices on the same network can therefore show different lists. That is a product-reporting difference, not necessarily a Home Assistant bug.</p>
+
+          <h2 id="enable-hidden-entities">How to Enable the Hidden Diagnostics</h2>
+          <ol>
+            <li>Open <strong>Settings &gt; Devices &amp; services &gt; Matter</strong>.</li>
+            <li>Select the Matter device you want to investigate.</li>
+            <li>Expand the section that says there are entities not shown.</li>
+            <li>Select <strong>Wi-Fi RSSI</strong> for a Wi-Fi device, or the <strong>Thread network name</strong>, <strong>Thread channel</strong>, and <strong>Thread routing role</strong> entities for a Thread device.</li>
+            <li>Open the entity's settings, choose <strong>Enable</strong>, and select <strong>Update</strong>. Give Home Assistant roughly 30 seconds to add it to the device page.</li>
+          </ol>
+          <p>For several devices, open <strong>Settings &gt; Devices &amp; services &gt; Entities</strong>, filter for disabled Matter diagnostic entities, select only the ones you want, and use <strong>Enable</strong>. Start with one troublesome device rather than turning on everything in the house.</p>
+          <p>If the entity is not merely disabled but absent, confirm that the device is really Matter over Wi-Fi or Matter over Thread. A Matter bridge may expose a Zigbee child as a Matter device without passing through the child's radio statistics. A Matter-over-Ethernet controller also has no Wi-Fi or Thread signal to report.</p>
+
+          <h2 id="read-wifi-rssi">How to Read Wi-Fi RSSI Without Chasing One Number</h2>
+          <p>Matter Server 9 colors Wi-Fi links green above -70 dBm, orange from -70 through -85 dBm, and red at -85 dBm or lower. Those are useful display bands, not universal promises. A device with a stable -78 dBm reading may work for months. Another may fail at -68 dBm because of interference, poor firmware, a busy access point, or power trouble.</p>
+          <p>The practical value of an entity is its history. Enable RSSI, leave the device in its normal location, and watch it for several days. Compare the dips with the times Home Assistant marks the device unavailable or an automation fails. A repeated fall from its normal -60s into the -80s at the same time as dropouts is much stronger evidence than one red reading.</p>
+          <h3 id="safe-wifi-alert">A quiet alert that can actually help</h3>
+          <p>If a device normally sits well above -70 dBm, a reasonable first experiment is to notify only when it remains at or below -85 dBm for 10 to 15 minutes <strong>and</strong> the device has also become unavailable or missed a real command. Keep the alert informational. Do not have Home Assistant power-cycle, reset, or re-pair the device automatically.</p>
+          <p>Before moving hardware, check whether the low reading follows a predictable event: a closed metal door, an access point changing channel, a microwave running, or a plug hidden behind an appliance. Move the access point or add proper Wi-Fi coverage when several nearby devices show the same pattern. Move one device only when the problem belongs to that location.</p>
+
+          <h2 id="thread-is-link-by-link">Why Thread Signal Strength Is Link by Link</h2>
+          <p>Thread devices do not all talk straight to one hub. Mains-powered routers can relay traffic, and battery devices often sleep between reports. A single number attached to the device would hide which neighbor heard it and which direction was weak.</p>
+          <p>On Home Assistant OS, open <strong>Settings &gt; Apps &gt; Matter Server &gt; Open Web UI</strong>, then choose <strong>Thread</strong>. In Matter Server 9, Thread line color is based primarily on the link quality indicator, or LQI: green is greater than 2, orange is 2, red is 1, and gray is 0. Select a connection to see details such as LQI, available signal strength in dBm, direction, path cost, and whether both sides report a usable link.</p>
+          <p>A red or one-way line deserves attention when the same device is also missing updates. A gray line can be stale neighbor data. Use the map's refresh control and wait for a sleepy battery device to wake before drawing a conclusion. Tara's <a href="/blog/home-assistant-matter-network-map-offline-devices/">Matter Server network-map guide</a> explains the colors, arrows, unknown nodes, and refresh behavior in detail.</p>
+          <div class="callout">
+            <p><strong>“Sleepy End Device” is usually normal.</strong> It is the expected power-saving role for many battery sensors. Leader and router roles can also move around the mesh. Alert on a role label only when you understand that product's expected behavior; availability and missed reports are better homeowner signals.</p>
+          </div>
+
+          <h2 id="separate-signal-from-reboots">Use Reboot and Fault Data to Avoid Blaming the Radio</h2>
+          <p>Signal is only one possible cause of an unavailable Matter device. Home Assistant 2026.7 also adds disabled-by-default General Diagnostics entities. When a product reports them, <strong>reboot count</strong>, <strong>uptime</strong>, and <strong>boot reason</strong> can show whether the device actually restarted. Hardware, radio, and network fault entities can show whether the product itself declared a current problem.</p>
+          <p>Suppose a plug disappears every afternoon. If Wi-Fi RSSI stays steady but uptime starts over, investigate its power source, thermal load, firmware, or a brownout. If uptime remains steady while RSSI collapses and neighboring devices also weaken, investigate coverage or interference. If the network fault entity turns on while signal looks normal, save the device diagnostics and check the maker's firmware notes before moving your router.</p>
+          <p>These supporting entities are more useful when enabled for a device that is already misbehaving. Enabling every fault sensor across dozens of devices can create history you never read. Home Assistant disables them by default for exactly that sort of integration-specific reason.</p>
+
+          <h2 id="safe-troubleshooting-order">A Safe Troubleshooting Order</h2>
+          <ol>
+            <li><strong>Confirm the software boundary.</strong> Use Core 2026.7 or later for entity-level diagnostics and Matter Server 9 or later for the Network map.</li>
+            <li><strong>Enable only the useful entities.</strong> Start with Wi-Fi RSSI, or Thread name/channel/role, plus uptime and reboot count if the device offers them.</li>
+            <li><strong>Observe before changing anything.</strong> Give the device several normal days so you know its baseline.</li>
+            <li><strong>Match the reading to a real symptom.</strong> Look for unavailable periods, missed reports, failed commands, reboot changes, or a fault entity.</li>
+            <li><strong>For Thread, inspect the route.</strong> Refresh the Matter Server map and look at both directions of the weak link. Add or reposition a mains-powered Thread router only when the route evidence supports it.</li>
+            <li><strong>Fix power and placement before re-pairing.</strong> A stable network identity is worth preserving. Re-pairing rarely cures weak radio coverage and can break names or automations.</li>
+          </ol>
+          <p>If the device is genuinely dropping, use Tara's focused guides for <a href="/blog/home-assistant-matter-thread-devices-offline/">Matter-over-Thread devices going offline</a> or <a href="/blog/home-assistant-matter-wifi-devices-offline/">Matter-over-Wi-Fi devices going offline</a>. If the Thread route is weak at the edge of the house, the <a href="/blog/extend-thread-range-home-assistant-without-second-network/">Thread range guide</a> shows how to extend the existing mesh without accidentally creating another one.</p>
+
+          <h2 id="what-diagnostics-do-not-do">What These Diagnostics Do Not Do</h2>
+          <ul>
+            <li><strong>They do not turn a bridge child into a radio sensor.</strong> An IKEA, Aqara, Hue, or other bridge may expose basic child controls through Matter while keeping Zigbee signal details in its own system.</li>
+            <li><strong>They do not merge platform histories.</strong> Sharing one Matter accessory with Apple Home, Google Home, Alexa, or SmartThings does not copy Home Assistant's entity history into those apps.</li>
+            <li><strong>They do not merge Thread networks.</strong> Multi-admin shares a Matter device between controller fabrics; it does not automatically combine separate Thread credentials or meshes.</li>
+            <li><strong>They do not prove cloud independence for every feature.</strong> Home Assistant reads these Matter diagnostics locally, but a maker may still require an app or account for initial setup, firmware, or extra features.</li>
+            <li><strong>They do not make one threshold universal.</strong> Use RSSI and LQI as evidence alongside the device's real behavior, not as pass/fail certification.</li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Recommendation</h2>
+          <p>Enable diagnostics as a flashlight, not as another dashboard to maintain. For a Wi-Fi device, record RSSI long enough to learn what normal looks like. For Thread, confirm the device is on the intended network and channel, then judge the specific route in Matter Server's map. Add uptime and reboot count when the symptoms could also be power or firmware related.</p>
+          <p>Only act when the readings line up with a homeowner problem: missed motion, a light that stops responding, a lock that becomes unavailable, or repeated restarts. That keeps a useful diagnostic from turning into a weekend of resets&mdash;and it preserves the local Matter setup that is still working.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-thread-rssi">Can Home Assistant show Matter-over-Thread signal strength?</h3>
+          <p>Not as one new per-device RSSI entity in Home Assistant 2026.7. The release adds Thread network name, channel, and routing role entities. Use Matter Server 9's Network page to inspect each Thread link's LQI and the available RSSI details.</p>
+
+          <h3 id="faq-missing-entity">Why is the Wi-Fi RSSI or Thread diagnostic entity missing?</h3>
+          <p>First check whether it is disabled. If it is not offered at all, the Matter device may not report that diagnostic data. A bridge child and a Matter-over-Ethernet device may also have no matching radio statistic for Home Assistant to expose.</p>
+
+          <h3 id="faq-minus-85">Is -85 dBm always a failing Matter Wi-Fi signal?</h3>
+          <p>No. Matter Server 9 marks -85 dBm or lower as weak in its visualization, but that boundary is not a universal failure guarantee. Compare the device against its own history and actual unavailable periods.</p>
+
+          <h3 id="faq-sleepy">Does “Sleepy End Device” mean a Thread sensor is broken?</h3>
+          <p>No. It is the normal battery-saving role for many Thread sensors. Thread can also elect a different leader or change router roles as the mesh reorganizes.</p>
+
+          <h3 id="faq-cloud">Do these Matter diagnostics require Home Assistant Cloud?</h3>
+          <p>No. Home Assistant reads them locally through its own Matter pairing. A product maker may still use its own app or cloud for setup, firmware, or features outside Matter.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/changelogs/core-2026.7" target="_blank" rel="noopener noreferrer">Home Assistant Core 2026.7 full changelog</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.7 release notes</a></li>
+              <li><a href="https://github.com/home-assistant/core/pull/167853" target="_blank" rel="noopener noreferrer">Home Assistant Core: Thread and Wi-Fi diagnostic entities</a></li>
+              <li><a href="https://github.com/home-assistant/core/blob/2026.7.2/homeassistant/components/matter/sensor.py#L1618-L1710" target="_blank" rel="noopener noreferrer">Home Assistant Core 2026.7.2: exact Matter sensor definitions</a></li>
+              <li><a href="https://github.com/home-assistant/core/pull/169830" target="_blank" rel="noopener noreferrer">Home Assistant Core: General Diagnostics entities</a></li>
+              <li><a href="https://www.home-assistant.io/common-tasks/general/" target="_blank" rel="noopener noreferrer">Home Assistant common tasks: enabling entities</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration documentation</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Matter Server implementation documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9 network visualization</a></li>
+              <li><a href="https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/README.md#network-visualization" target="_blank" rel="noopener noreferrer">Matter Server 1.1.7 dashboard: network colors, LQI, RSSI, roles, and limitations</a></li>
+              <li><a href="https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/entity-disabled-by-default/" target="_blank" rel="noopener noreferrer">Home Assistant developer rule: why diagnostic entities can be disabled by default</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/matter-over-thread-linkquality-sensor/958067" target="_blank" rel="noopener noreferrer">Home Assistant Community: request for Matter-over-Thread signal visibility</a></li>
+              <li><a href="https://community.home-assistant.io/t/interpreting-the-matter-server-thread-network-mesh-visualisation/1013712" target="_blank" rel="noopener noreferrer">Home Assistant Community: interpreting the Thread mesh visualization</a></li>
+              <li><a href="https://community.home-assistant.io/t/matter-saver-monitor-diagnose-all-your-matter-thread-devices-in-one-dashboard/1000415" target="_blank" rel="noopener noreferrer">Home Assistant Community: diagnostic dashboard patterns and cautions</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1qymc6q/im_done_with_matter_over_thread/" target="_blank" rel="noopener noreferrer">r/homeassistant: troubleshooting Matter-over-Thread without enough visibility</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1r8fslh/an_update_on_im_done_with_matter_over_thread/" target="_blank" rel="noopener noreferrer">r/homeassistant: follow-up after gaining better Thread visibility</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Plan the whole path</p>
+        <h2>Want local control with diagnostics you can actually use?</h2>
+        <p>Tara plans device transport, Thread and Wi-Fi coverage, local automations, recovery paths, and homeowner handoff as one system&mdash;before the first hidden sensor becomes urgent.</p>
+        <a class="cta" href="/configurator/">Build your Tara setup</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Turn the numbers into a calm fix</h2>
+        <div class="links">
+          <a href="/blog/home-assistant-matter-network-map-offline-devices/">Read the Matter map</a>
+          <a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Thread devices offline</a>
+          <a href="/blog/home-assistant-matter-wifi-devices-offline/">Fix Wi-Fi devices offline</a>
+          <a href="/blog/extend-thread-range-home-assistant-without-second-network/">Extend Thread range</a>
+          <a href="/blog/home-assistant-thread-channel-change-without-repairing/">Choose a Thread channel</a>
+          <a href="/blog/matter-over-thread-vs-wifi-home-assistant/">Thread vs Wi-Fi</a>
+          <a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a>
+          <a href="/configurator/">Configurator</a>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span><a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></span></footer>
+  </body>
+</html>
