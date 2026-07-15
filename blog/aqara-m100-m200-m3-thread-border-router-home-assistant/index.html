@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aqara M100 vs M200 vs M3 for Home Assistant | Tara Guides</title>
+    <meta name="description" content="Compare Aqara M100, M200, and M3 for Home Assistant: Thread border routing, local control, cloud needs, Matter paths, prices, and the Other networks warning." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/" />
+    <meta property="og:title" content="Aqara M100 vs M200 vs M3 for Home Assistant | Tara Guides" />
+    <meta property="og:description" content="Pick the right Aqara hub—or skip one—for a local Home Assistant Thread and Matter setup." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aqara M100 vs M200 vs M3 for Home Assistant | Tara Guides" />
+    <meta name="twitter:description" content="Pick the right Aqara hub—or skip one—for a local Home Assistant Thread and Matter setup." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .hero-copy { display: grid; gap: 18px; min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1.08; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.12; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article { max-width: 1160px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; min-width: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article > article, .article-hero, .article-hero > *, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .article-cta, .source-list, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.3; }
+      .related { border-bottom: 1px solid var(--line); }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/#blogposting",
+          "headline": "Aqara M100 vs M200 vs M3 for Home Assistant: Which Thread Border Router Should You Buy?",
+          "description": "Compare Aqara M100, M200, and M3 for Home Assistant: Thread border routing, local control, cloud needs, Matter paths, prices, and the Other networks warning.",
+          "image": "https://tarahome.ai/assets/generated/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/cover.png",
+          "datePublished": "2026-07-15",
+          "dateModified": "2026-07-15",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/connect/zbt-2/",
+            "https://support.nabucasa.com/hc/en-us/articles/25742476767517",
+            "https://www.home-assistant.io/blog/2024/09/03/aqara-joins-works-with-home-assistant/",
+            "https://works-with.home-assistant.io/certified-products/",
+            "https://us.aqara.com/products/hub-m100",
+            "https://us.aqara.com/products/hub-m200",
+            "https://us.aqara.com/products/hub-m3",
+            "https://www.aqara.com/us/product/hub-m200/",
+            "https://community.home-assistant.io/t/aqara-m100-will-only-add-to-other-networks/1002320",
+            "https://community.home-assistant.io/t/aqara-m100-matter-over-thread/926755",
+            "https://community.home-assistant.io/t/help-with-aqara-m100-hub-as-thread-border-router/937788",
+            "https://www.reddit.com/r/homeassistant/comments/1rv6fx8/cheapest_option_out_of_box_for_thread_border/",
+            "https://www.reddit.com/r/homeassistant/comments/1rzg5i8/hubs_whatnot_aqara_m100/",
+            "https://www.reddit.com/r/homeassistant/comments/1mfc5uc/open_thread_border_router_cant_be_this_difficult/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Technical Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Aqara M100 vs M200 vs M3", "item": "https://tarahome.ai/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Which Aqara hub is best for Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Choose the M100 as the least expensive of these three. Choose the M200 when Ethernet or PoE and Aqara Home infrared or speaker functions are useful. Choose the M3 only when its Works with Home Assistant certification, encrypted storage, Aqara hub migration, or larger capacity justifies the price. If you only need a Home Assistant-managed Thread network, use a dedicated Home Assistant Connect ZBT-2 or Yellow Thread radio and migrate Zigbee first if that radio already runs it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does an Aqara hub appear under Other networks in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant discovers Thread border routers through local announcements, but those announcements do not include the Thread network credentials. Without the credentials, Home Assistant can list the Aqara network but cannot mark it preferred. That display alone does not prove the hub or Matter devices are broken." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can the Aqara M100, M200, or M3 be Home Assistant's Thread border router?",
+              "acceptedAnswer": { "@type": "Answer", "text": "They can route Thread traffic that Home Assistant uses, but Home Assistant may not be able to import, configure, or make their vendor-created Thread network preferred. For a Home Assistant-managed network, ZBT-2 or Yellow needs manual OpenThread setup and a radio dedicated to Thread; migrate Zigbee first if necessary." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will Aqara hub devices keep working if the internet is down?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Core Matter control and supported Aqara hub automations can run locally. Aqara-first setup, remote notifications, firmware updates, and some vendor features can require Aqara's app or cloud, but the certified M3 can be commissioned directly to Home Assistant without an Aqara account." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should Aqara Matter-over-Thread devices pair to the hub or directly to Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Pair directly to Home Assistant when you want Home Assistant to own commissioning and local control. For Aqara-first setup, Zigbee child devices reach Home Assistant through the hub's Matter bridge, while native Matter devices already in Aqara Home are shared through Matter multi-admin." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Matter multi-admin merge the Aqara and Home Assistant Thread networks?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Multi-admin shares control of a Matter device between ecosystems. It does not merge Thread meshes, copy network credentials, or make an Aqara Thread network manageable by Home Assistant." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div class="hero-copy">
+            <p class="article-meta"><span>Aqara hub comparison</span><span>July 15, 2026</span><span>11 min read</span></p>
+            <h1>Aqara M100 vs M200 vs M3 for Home Assistant: Which Thread Border Router Should You Buy?</h1>
+            <p class="lede">Buy the M100 for a low-cost Aqara bridge, the M200 for Ethernet, PoE, and Aqara Home infrared control, or the M3 for its premium Aqara features and official certification. If you only need Home Assistant-owned Thread, skip all three.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/aqara-m100-m200-m3-thread-border-router-home-assistant/cover.png" alt="Black Aqara Hub M200 on a warm wooden table in a bright residential room" loading="eager" style="object-position: 60% center;" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Choose M100</strong> if you want the least expensive of these three. It is $29.99 and supports up to 20 Aqara Zigbee plus 20 Thread devices.</li>
+              <li><strong>Choose M200</strong> if Ethernet or one-cable Power over Ethernet (PoE), infrared, and a speaker matter inside Aqara Home. At $69.99, it supports up to 40 Aqara Zigbee plus 40 Thread devices.</li>
+              <li><strong>Choose M3</strong> only if its Works with Home Assistant certification, encrypted local storage, older-hub migration, or capacity for up to 127 Aqara Zigbee plus 127 Thread devices justifies $159.99.</li>
+              <li><strong>Avoid all three</strong> if you only need a Thread network managed by Home Assistant. Use a dedicated Home Assistant Connect ZBT-2 or Yellow radio instead; do not convert your only Zigbee radio without a migration plan. An Aqara hub can still work while appearing under <em>Other networks</em>.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Buy for the Hub Features, Not the Thread Logo</h2>
+          <p>For a Home Assistant home, the <strong>Aqara Hub M200</strong> is the sensible middle choice when you actually want an Aqara hub. Its Ethernet and Power over Ethernet connection is more dependable than placing a tiny Wi-Fi hub behind furniture, and it adds infrared and speaker functions in Aqara Home. Choose the <strong>M100</strong> when price and compact USB-A power matter more. Choose the <strong>M3</strong> when you need its larger Aqara feature set, encrypted storage, older-hub migration, or the extra confidence of its official Works with Home Assistant listing.</p>
+          <p>But none of these is the best purchase when your only goal is to give Home Assistant its own Thread network. In that case, use a <strong>Home Assistant Connect ZBT-2</strong> or <strong>Home Assistant Yellow</strong> running the OpenThread Border Router app. Home Assistant can configure that network, store its credentials, and send those credentials to your phone. Thread setup is still a manual, evolving Home Assistant path, and the radio should be dedicated to Thread; plan a separate Zigbee coordinator before converting a radio that already runs your Zigbee devices.</p>
+          <div class="callout">
+            <p><strong>“Other networks” is not the same as “not working.”</strong> It means Home Assistant heard the Aqara border router announce its network but does not hold that network's credentials. A Matter device shared from Aqara can still work locally in Home Assistant.</p>
+          </div>
+
+          <h2 id="why-now">Why This Choice Is Confusing in 2026</h2>
+          <p>Aqara now sells three hubs that all combine an Aqara Zigbee hub, Matter controller, Matter bridge, and Thread border router. Current U.S. prices are $29.99 for the M100, $69.99 for the M200, and $159.99 for the M3. Those shared labels make them look interchangeable, yet their network connections, extras, certification status, and reason for existing are different.</p>
+          <p>Recent r/homeassistant and Home Assistant Community questions show the same homeowner problem: people buy an M100, add it to Aqara Home, see its Thread network under <em>Other networks</em> in Home Assistant, and assume they missed a switch that makes it preferred. Others confuse adding the hub as a Matter bridge with giving Home Assistant the hub's Thread credentials. Those are separate operations.</p>
+
+          <h2 id="comparison">M100 vs M200 vs M3: The Practical Comparison</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th>Model and current U.S. price</th><th>Network and power</th><th>What you are paying for</th><th>Home Assistant position</th><th>Best fit</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Aqara Hub M100<br />$29.99</strong></td>
+                  <td>2.4 GHz Wi-Fi 6; USB-A power</td>
+                  <td>Aqara Zigbee hub, Matter controller and bridge, Thread border router, local Aqara automations; up to 20 Aqara Zigbee plus 20 Thread devices</td>
+                  <td>Aqara lists Home Assistant compatibility. It is not on the Works with Home Assistant certified list.</td>
+                  <td>A small or budget Aqara setup where Wi-Fi placement is reliable</td>
+                </tr>
+                <tr>
+                  <td><strong>Aqara Hub M200<br />$69.99</strong></td>
+                  <td>Ethernet with PoE or dual-band Wi-Fi; USB-C power</td>
+                  <td>Everything above, plus wired placement, Aqara Home infrared and 90 dB speaker functions, flexible mounting; up to 40 Aqara Zigbee plus 40 Thread devices</td>
+                  <td>Aqara advertises advanced Matter bridging into Home Assistant. It is not on the certified list.</td>
+                  <td>Most homeowners who need an Aqara hub and value a wired connection</td>
+                </tr>
+                <tr>
+                  <td><strong>Aqara Hub M3<br />$159.99</strong></td>
+                  <td>Ethernet with PoE or dual-band Wi-Fi; USB-C power</td>
+                  <td>Aqara hub-cluster leadership and migration, infrared control, 8 GB encrypted local storage, flexible mounting; up to 127 Aqara Zigbee plus 127 Thread devices</td>
+                  <td>Listed as a Works with Home Assistant Matter-over-Thread hub, model HM-G01E/D.</td>
+                  <td>A larger Aqara household or someone who specifically values certification and migration</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Prices and capacities were checked on Aqara's current U.S. store and global comparison on July 15, 2026 and can change. All three hubs support Aqara, Apple Home, Google Home, Alexa, and SmartThings paths through their current Matter platform features. The M100 page explicitly lists Home Assistant, the M200 page advertises Home Assistant advanced bridging, and the M3 has the stronger third-party signal: Home Assistant tested and listed that exact hub model.</p>
+          <div class="callout">
+            <p><strong>Do not buy the M200 for Home Assistant infrared or speaker entities.</strong> Those are primarily Aqara Home functions. Aqara specifically documents supported infrared air conditioners being exposed through Matter; broader infrared and speaker controls are not guaranteed to appear in Home Assistant.</p>
+          </div>
+
+          <h2 id="support">Official Support Is Not the Same Across All Three</h2>
+          <p><strong>The M3 is the only one of these three on Home Assistant's certified-products list.</strong> Home Assistant says that certification means it tested the product and received a support and maintenance commitment from the manufacturer. The list also notes that new hubs can no longer enter that program, so the missing M100 and M200 entries are not proof that they are incompatible.</p>
+          <p>Aqara's own pages describe the M100 and M200 as Home Assistant-capable Matter bridges. Treat that as <strong>vendor-declared compatibility</strong>, not the same independent assurance as the M3 listing. Home Assistant's official Thread documentation makes another distinction: it can use any working Thread border router, but it can configure and control only compatible OpenThread border routers that expose the required REST interface.</p>
+
+          <h2 id="roles">One Box, Four Jobs</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th>Hub job</th><th>What it actually does</th><th>What it does not guarantee</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Aqara Zigbee hub</strong></td>
+                  <td>Pairs supported Aqara Zigbee devices and runs supported Aqara automations.</td>
+                  <td>It is not a general-purpose Zigbee coordinator for every brand, and it does not move those devices into ZHA or Zigbee2MQTT.</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter controller</strong></td>
+                  <td>Adds supported third-party Matter devices to Aqara Home.</td>
+                  <td>It does not automatically add those devices to Home Assistant, Apple Home, or Google Home.</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter bridge</strong></td>
+                  <td>Exposes supported Aqara hub devices and scenes to another Matter controller such as Home Assistant.</td>
+                  <td>It does not expose every Aqara-only feature, setting, or firmware tool.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thread border router</strong></td>
+                  <td>Routes IPv6 traffic between a low-power Thread mesh and Ethernet or Wi-Fi.</td>
+                  <td>It does not control the device by itself, hand Home Assistant its credentials, or merge separate Thread networks.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="pick">Which One Should You Pick?</h2>
+          <h3 id="pick-m100">Pick the M100 for the lowest cost</h3>
+          <p>The M100 is the easy recommendation when you have a handful of Aqara Zigbee or Matter-over-Thread devices, dependable 2.4 GHz Wi-Fi, and no need for infrared control. Its USB-A body can plug into a power adapter, computer, power bank, or router. That flexibility is useful, but do not hide it behind a metal cabinet or at the back of a crowded router shelf: the location also affects its Thread and Zigbee radios.</p>
+          <h3 id="pick-m200">Pick the M200 for the best balance</h3>
+          <p>The M200 earns its extra $40 with Ethernet, PoE, dual-band Wi-Fi, infrared control, a speaker, and twice the M100's listed device capacity. A single Ethernet cable can carry both data and power, letting you put the hub near the center of the house or near an infrared-controlled air conditioner without depending on Wi-Fi. That makes it the model Tara would choose for most new Aqara-plus-Home Assistant installations, provided those infrared and speaker features are useful in Aqara Home.</p>
+          <h3 id="pick-m3">Pick the M3 for premium Aqara needs</h3>
+          <p>The M3 makes sense when it will lead a larger Aqara installation, migrate compatible devices from older Aqara hubs, or store more hub data locally. It is also the one with a named Works with Home Assistant certification and can pair directly to Home Assistant without an Aqara account. Do not pay $159.99 only to get Thread into Home Assistant: the cheaper models route Thread too, and Home Assistant's own radio path gives Home Assistant more direct ownership.</p>
+
+          <h2 id="other-networks">Why the Aqara Hub Says “Other Networks”</h2>
+          <p>Home Assistant discovers Thread border routers through <strong>mDNS</strong>, a local announcement system. The announcement says that a border router and Thread network exist, but it does not reveal the network's credentials. Home Assistant therefore can show an Aqara network under <em>Other networks</em> without offering a <em>Make preferred</em> button.</p>
+          <ul>
+            <li><strong>Discovered:</strong> Home Assistant can see the network's name and border router.</li>
+            <li><strong>Credentials unknown:</strong> Home Assistant does not know the Thread dataset, which is similar to a Wi-Fi network name and password bundled together.</li>
+            <li><strong>Not preferred:</strong> Home Assistant can mark only a network whose credentials it knows as preferred.</li>
+          </ul>
+          <p>Home Assistant's documentation also warns that its preferred-network feature is not fully implemented. During Matter commissioning, the phone's preferred Thread network can win. Therefore, moving an Aqara hub into the preferred box is neither a universal fix nor a requirement for every working device.</p>
+          <p>If a device was added in Aqara Home and then shared to Home Assistant, test the device itself. If commands work after the internet is disconnected, the core local path is healthy even if the Aqara network remains under <em>Other networks</em>. If you want Home Assistant to commission new Thread devices onto a network it owns, a manually configured, dedicated ZBT-2 or Yellow Thread radio is the cleaner path.</p>
+
+          <h2 id="platform-paths">Official Support, Local Control, Cloud, and Pairing Paths</h2>
+
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th>Path</th><th>Official Home Assistant path</th><th>Local control</th><th>Cloud dependency</th><th>Matter / HomeKit path</th><th>Main caveat</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home Assistant-first Thread</strong></td>
+                  <td>Documented ZBT-2 or Yellow OpenThread Border Router path</td>
+                  <td>Home Assistant controls paired Matter devices locally</td>
+                  <td>No vendor cloud is needed for normal Matter control. Some products require a vendor app or account to enable Matter, and firmware or update checks can need internet.</td>
+                  <td>Pair the Matter device directly to Home Assistant, then use Matter multi-admin to share it to Apple Home, Google Home, Alexa, or SmartThings</td>
+                  <td>Best when Home Assistant should own Thread. Aqara-only settings and updates may require temporarily sharing the device to Aqara Home.</td>
+                </tr>
+                <tr>
+                  <td><strong>Aqara bridge to Home Assistant</strong></td>
+                  <td>M3 is Works with Home Assistant certified; M100 and M200 are vendor-declared Home Assistant paths</td>
+                  <td>Supported Matter commands and Aqara hub automations can run locally</td>
+                  <td>Aqara-first setup, remote notifications, firmware, and some extras can need Aqara's app or cloud. The certified M3 can also pair directly to Home Assistant without an Aqara account.</td>
+                  <td>Expose Aqara Zigbee child devices and scenes through the hub's Matter bridge. Share native Matter devices already commissioned in Aqara Home through Matter multi-admin.</td>
+                  <td>Neither path imports the Aqara Thread credentials. Not every Aqara feature becomes a Home Assistant entity.</td>
+                </tr>
+                <tr>
+                  <td><strong>Apple Home and HomeKit</strong></td>
+                  <td>Home Assistant supports Matter multi-admin and its separate HomeKit Device integration</td>
+                  <td>Matter and HomeKit accessory control are normally local</td>
+                  <td>Apple account, Siri, remote access, and vendor setup remain separate services</td>
+                  <td>All three hubs advertise Apple Home support through current Matter features; the M3 also explicitly advertises HomeKit. A true HomeKit pairing can appear in Home Assistant only when the accessory advertises that protocol and is available to pair.</td>
+                  <td>An Apple Home logo does not prove a device offers a separate HomeKit code. Do not add both Matter and HomeKit bridge paths unless duplicate devices are intentional.</td>
+                </tr>
+                <tr>
+                  <td><strong>Google Home, Alexa, or SmartThings</strong></td>
+                  <td>Home Assistant supports sharing a compatible Matter device to another Matter controller</td>
+                  <td>Each controller gets its own encrypted local Matter relationship where the platform supports local control</td>
+                  <td>Voice, remote access, notifications, accounts, and some routines can use the platform cloud</td>
+                  <td>Use Matter multi-admin from the controller that already owns the device</td>
+                  <td>Sharing control does not merge Thread networks, move automations, or copy vendor-only features.</td>
+                </tr>
+                <tr>
+                  <td><strong>Aqara Home only</strong></td>
+                  <td>No Home Assistant path until the bridge or device is shared</td>
+                  <td>Aqara says supported automations run on the hub</td>
+                  <td>Initial setup, remote push notifications, firmware, and some services require Aqara's app or cloud</td>
+                  <td>Pair Aqara Zigbee or Matter devices to Aqara Home and keep them there</td>
+                  <td>Home Assistant cannot automate a device it has not received through a supported local integration or bridge.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="setup-paths">Use One of These Three Setup Paths</h2>
+          <h3 id="home-assistant-first">1. Home Assistant-first: best for local ownership</h3>
+          <ol>
+            <li>Use a dedicated ZBT-2 or Yellow radio as Home Assistant's OpenThread border router and make its network preferred. If that radio currently runs Zigbee, migrate Zigbee first.</li>
+            <li>Sync the Home Assistant Thread credentials to the phone through the Companion app.</li>
+            <li>Pair new Matter-over-Thread devices directly in Home Assistant.</li>
+            <li>Add an Aqara hub only if its Zigbee bridge, infrared control, firmware tools, or Aqara-only settings add real value.</li>
+            <li>Share individual Matter devices to Aqara Home or another ecosystem only when you need that platform.</li>
+          </ol>
+          <h3 id="aqara-first">2. Aqara-first: best for Aqara features</h3>
+          <ol>
+            <li>Install the hub in Aqara Home, update its firmware, and position it where Thread and Zigbee coverage are useful.</li>
+            <li>Add Aqara devices in the Aqara app. Confirm the local automations you care about run with internet access temporarily disconnected.</li>
+            <li>Expose supported Aqara Zigbee child devices and scenes through the hub's Matter bridge. For a native Matter device already commissioned in Aqara Home, use Matter multi-admin to share that device with Home Assistant.</li>
+            <li>Keep the Aqara app for firmware, advanced settings, remote notifications, and recovery.</li>
+            <li>Ignore <em>Other networks</em> if the shared Home Assistant devices work. Do not reset a working home merely to change that label.</li>
+          </ol>
+          <h3 id="mixed-home">3. Mixed home: best for voice and family apps</h3>
+          <p>Pick one platform to commission each Matter device first, then use Matter multi-admin to share control. Put automations in one place whenever possible so a motion sensor does not trigger both an Aqara scene and a Home Assistant automation. Multi-admin does not merge the Aqara, Apple, Google, or Home Assistant Thread meshes; the device remains on the Thread network it joined during commissioning.</p>
+
+          <h2 id="avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not buy an M3 only because it says Thread.</strong> The M100 and M200 also route Thread, while a manually configured, dedicated ZBT-2 or Yellow Thread radio gives Home Assistant a network it can manage directly.</li>
+            <li><strong>Do not assume Matter bridge pairing imports Thread credentials.</strong> It adds supported devices to Home Assistant; it does not hand over the Aqara mesh.</li>
+            <li><strong>Do not run the same automation twice.</strong> If Aqara Home and Home Assistant both turn on a light from the same sensor, delays and double actions become hard to diagnose.</li>
+            <li><strong>Do not discard setup codes.</strong> Save the hub and device Matter codes with a Home Assistant backup before resetting or moving anything.</li>
+            <li><strong>Do not promise every feature through Matter.</strong> Vendor-specific settings, infrared functions, firmware updates, lock calibration, or scene exposure can remain in Aqara Home.</li>
+          </ul>
+          <p>Community reports on the M100 range from successful third-party Thread devices and reliable local control to confusing credential displays and commissioning failures. Use those reports as warnings about setup details, not as a substitute for the current product pages or Home Assistant documentation.</p>
+
+          <h2 id="local-cloud">What Works Locally and What Still Needs Cloud</h2>
+          <p>Normal Matter commands between Home Assistant and a shared device are local. Aqara also says key M100 automations and M200 or M3 hub automations can run locally. That means a supported light, sensor, or thermostat path can keep responding when the internet service is down, provided the hub, Home Assistant, router, and local power remain available.</p>
+          <p>The first setup is different from day-to-day control. An Aqara-first installation, remote push notifications, firmware downloads, and some vendor-only functions can need Aqara Home or internet access. The certified M3 can instead be commissioned directly to Home Assistant without an Aqara account, although that route does not unlock every Aqara-only feature. Siri, Google Assistant, Alexa, SmartThings remote features, and remote Home Assistant access have their own dependencies. Test an outage by disconnecting internet at the router while leaving the local network powered, then record exactly which commands and automations still work.</p>
+
+          <h2 id="tara-recommendation">Tara's Recommendation</h2>
+          <p><strong>Buy the M200 when the house genuinely needs an Aqara hub.</strong> Ethernet and PoE are practical reliability upgrades, while its infrared and speaker features add value inside Aqara Home. Buy the M100 for a small budget installation. Buy the M3 when its certified status, larger capacity, encrypted storage, and migration tools solve a specific larger-Aqara problem.</p>
+          <p><strong>Use a dedicated ZBT-2 or Yellow Thread radio when the real goal is Home Assistant-owned Thread.</strong> Its OpenThread setup is still manual and evolving, so migrate any Zigbee network on that radio first. Keep the Aqara hub as an optional bridge for Aqara-only features instead of making it the foundation by accident. Whichever route you choose, commission one non-critical sensor first, test it without internet, and document which app owns its setup and automations before adding the rest of the house.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-best">Which Aqara hub is best for Home Assistant?</h3>
+          <p>The M200 is the best-balanced choice when you need an Aqara hub because it adds Ethernet, PoE, higher capacity, and Aqara Home infrared and speaker functions without the M3's price. The M100 is the budget pick. The M3 is for a larger Aqara installation or buyers who value its Works with Home Assistant certification and migration features.</p>
+
+          <h3 id="faq-other-networks">Why does my Aqara hub appear under Other networks?</h3>
+          <p>Home Assistant discovered the hub's Thread announcement but does not know that network's credentials. It cannot make an unknown-credential network preferred. This label alone does not mean shared Matter devices are broken.</p>
+
+          <h3 id="faq-border-router">Can M100, M200, or M3 be Home Assistant's Thread border router?</h3>
+          <p>They can route Thread traffic used by Home Assistant, but Home Assistant may not be able to import, configure, or prefer the Aqara-created network. If you want Home Assistant to manage Thread, ZBT-2 or Yellow needs manual OpenThread setup and a radio dedicated to Thread. Migrate Zigbee or add another radio first if necessary.</p>
+
+          <h3 id="faq-outage">Will the Aqara setup work without internet?</h3>
+          <p>Core Matter control and supported hub automations can run locally. Aqara-first setup, remote push notifications, firmware updates, voice services, and some vendor-only features may still need cloud access. The certified M3 can pair directly to Home Assistant without an Aqara account.</p>
+
+          <h3 id="faq-pair-first">Should Aqara Thread devices pair to Aqara or Home Assistant first?</h3>
+          <p>Pair to Home Assistant first when local ownership and direct commissioning matter most. In an Aqara-first setup, expose Aqara Zigbee child devices through the hub's Matter bridge; share native Matter devices already in Aqara Home through Matter multi-admin.</p>
+
+          <h3 id="faq-multi-admin">Does Matter multi-admin merge the Aqara and Home Assistant Thread networks?</h3>
+          <p>No. It gives another ecosystem control of the same Matter device. It does not merge Thread meshes, copy credentials, or make the Aqara network manageable by Home Assistant.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread: border routers, IPv6, credentials, and preferred networks</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter: local commissioning, sharing, and device control</a></li>
+              <li><a href="https://www.home-assistant.io/connect/zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZBT-2: Zigbee or Thread radio modes and migration guidance</a></li>
+              <li><a href="https://support.nabucasa.com/hc/en-us/articles/25742476767517" target="_blank" rel="noopener noreferrer">Nabu Casa: switching Home Assistant Yellow from Zigbee to Thread</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2024/09/03/aqara-joins-works-with-home-assistant/" target="_blank" rel="noopener noreferrer">Home Assistant: Aqara joins Works with Home Assistant</a></li>
+              <li><a href="https://works-with.home-assistant.io/certified-products/" target="_blank" rel="noopener noreferrer">Works with Home Assistant: certified products and Aqara Hub M3 listing</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://us.aqara.com/products/hub-m100" target="_blank" rel="noopener noreferrer">Aqara Hub M100: current price, Thread, Matter, local automation, and network specifications</a></li>
+              <li><a href="https://us.aqara.com/products/hub-m200" target="_blank" rel="noopener noreferrer">Aqara Hub M200: current price, PoE, infrared, speaker, and platform specifications</a></li>
+              <li><a href="https://us.aqara.com/products/hub-m3" target="_blank" rel="noopener noreferrer">Aqara Hub M3: current price, migration, storage, Matter, Thread, and network specifications</a></li>
+              <li><a href="https://www.aqara.com/us/product/hub-m200/" target="_blank" rel="noopener noreferrer">Aqara global M200 comparison: M100, M200, and M3 device capacities and feature differences</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/aqara-m100-will-only-add-to-other-networks/1002320" target="_blank" rel="noopener noreferrer">Home Assistant Community: M100 under Other networks, with an eventual IPv6 finding on a separate ZBT-2</a></li>
+              <li><a href="https://community.home-assistant.io/t/aqara-m100-matter-over-thread/926755" target="_blank" rel="noopener noreferrer">Home Assistant Community: M100 Matter-over-Thread and preferred-network questions</a></li>
+              <li><a href="https://community.home-assistant.io/t/help-with-aqara-m100-hub-as-thread-border-router/937788" target="_blank" rel="noopener noreferrer">Home Assistant Community: using M100 as a Thread border router</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1rv6fx8/" target="_blank" rel="noopener noreferrer">r/homeassistant: inexpensive Thread border router choices, including M100 and ZBT-2</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1rzg5i8/" target="_blank" rel="noopener noreferrer">r/homeassistant: real-world M100 with Aqara and third-party devices</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1mfc5uc/" target="_blank" rel="noopener noreferrer">r/homeassistant: confusion between an Aqara border router and Home Assistant OpenThread</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Choose the whole system</p>
+        <h2>Want the right hub without collecting a shelf of them?</h2>
+        <p>Tara plans the Home Assistant hardware, Aqara bridge, Thread network, device pairing order, local automations, and cloud boundaries as one understandable setup.</p>
+        <a class="cta" href="/configurator/">Build your Tara setup</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Build one reliable Matter and Thread path</h2>
+        <div class="links">
+          <a href="/blog/aqara-matter-thread-home-assistant-without-aqara-hub/">Aqara without a hub</a>
+          <a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread router</a>
+          <a href="/blog/home-assistant-thread-border-router-required/">Thread router required</a>
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter devices</a>
+          <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Which app pairs first?</a>
+          <a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a>
+          <a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Thread devices offline</a>
+          <a href="/configurator/">Configurator</a>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span><a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></span></footer>
+  </body>
+</html>
