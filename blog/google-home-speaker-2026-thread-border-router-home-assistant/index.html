@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Home Speaker Thread with Home Assistant | Tara Guides</title>
+    <meta name="description" content="Google's 2026 Home Speaker has Thread 1.3, but Home Assistant does not yet list it as known to work. Learn the safest setup and when to keep ZBT-2." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/google-home-speaker-2026-thread-border-router-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/google-home-speaker-2026-thread-border-router-home-assistant/" />
+    <meta property="og:title" content="Can the Google Home Speaker Be a Thread Router for Home Assistant? | Tara Guides" />
+    <meta property="og:description" content="Google officially gives the 2026 Home Speaker a Thread border router. Home Assistant can use Google Thread, but this new model is not yet on its known-to-work list." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/google-home-speaker-2026-thread-border-router-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Google Home Speaker (2026) Thread with Home Assistant" />
+    <meta name="twitter:description" content="A plain-English compatibility and setup guide for the new Google Home Speaker, Thread, Matter, Home Assistant, and Apple Home." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/google-home-speaker-2026-thread-border-router-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article-meta span { min-width: 0; overflow-wrap: break-word; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .article-meta { column-gap: 8px; max-width: 100%; row-gap: 6px; } .article-meta span { font-size: 0.78rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/google-home-speaker-2026-thread-border-router-home-assistant/#blogposting",
+          "headline": "Can the Google Home Speaker (2026) Be a Thread Border Router for Home Assistant?",
+          "description": "Google's 2026 Home Speaker has Thread 1.3, but Home Assistant does not yet list it as known to work. Learn the safest setup and when to keep ZBT-2.",
+          "image": "https://tarahome.ai/assets/generated/blog/google-home-speaker-2026-thread-border-router-home-assistant/cover.png",
+          "datePublished": "2026-07-14",
+          "dateModified": "2026-07-14",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/google-home-speaker-2026-thread-border-router-home-assistant/" },
+          "citation": [
+            "https://store.google.com/product/google_home_speaker_specs?hl=en-US",
+            "https://blog.google/products-and-platforms/devices/google-nest/google-home-speaker-gemini-features/",
+            "https://support.google.com/googlehome/answer/12391458?hl=en",
+            "https://support.google.com/googlehome/answer/13127223?hl=en",
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/connect/zbt-2/",
+            "https://www.home-assistant.io/integrations/google_assistant/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://www.reddit.com/r/homeassistant/comments/1ulfhxw/new_google_home_speaker_is_it_better_with_ha/",
+            "https://www.reddit.com/r/homeassistant/comments/1um3b8c/setting_thread_preferred_network/",
+            "https://www.reddit.com/r/googlehome/comments/1upyala/new_google_home_speaker_as_thread_border_router/",
+            "https://www.reddit.com/r/googlehome/comments/1ugs5zb/new_google_home_speaker_successfully_merged_to/",
+            "https://community.home-assistant.io/t/gemini-for-home-update-does-it-works-with-google-assistant-integration/1014229",
+            "https://github.com/home-assistant/core/issues/147616"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/google-home-speaker-2026-thread-border-router-home-assistant/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Google Home Speaker Thread with Home Assistant", "item": "https://tarahome.ai/blog/google-home-speaker-2026-thread-border-router-home-assistant/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/google-home-speaker-2026-thread-border-router-home-assistant/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does the Google Home Speaker (2026) have a Thread border router?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Google officially lists the 2026 Google Home Speaker as a Matter hub with a Thread 1.3 border router. Home Assistant's current known-to-work list does not yet name this new model, so treat direct Home Assistant use as an early compatibility path rather than a documented guarantee." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does the Google Home Speaker replace Home Assistant Connect ZBT-2?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not automatically. It may provide the Thread route in a Google-first home, but Connect ZBT-2 or Home Assistant Yellow is the clearer choice when Home Assistant should own and configure the Thread network. Do not replace a stable radio until the speaker has been tested with your actual devices." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does adding the speaker make Home Assistant devices available to Gemini?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Thread routing and Google voice exposure are separate jobs. To control Home Assistant devices with Google voice, use Home Assistant Cloud or the official manual Google Assistant integration and expose only the devices you want." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will Home Assistant Matter devices work if the internet is down?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Routine Home Assistant Matter control is local and can continue if Home Assistant, the Thread border router, the home network, and the end device remain powered and reachable. Google setup, Gemini, remote access, account services, and some update paths still require the internet." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can the Google Home Speaker join an existing Home Assistant Thread network?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Do not assume it will. Some early owners report the speaker joining an existing third-party Thread network, but Home Assistant still warns that different vendors can create separate networks. Keep the current border router online until Home Assistant shows the expected network and real devices pass an outage test." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does the Google Home Speaker act as an Apple Home or HomeKit hub?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. It is a Google Home Matter hub and Thread border router, not an Apple home hub. A Matter device can still be shared with Apple Home through Matter multi-admin, but the speaker does not provide Apple-specific HomeKit features." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Google Thread</span><span>July 14, 2026</span><span>12 min read</span></p>
+            <h1>Can the Google Home Speaker (2026) Be a Thread Border Router for Home Assistant?</h1>
+            <p class="lede">Yes for Google Home; cautiously yes for Home Assistant. The new speaker has built-in Thread 1.3 hardware, but Home Assistant has not yet added this model to its known-to-work list.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/google-home-speaker-2026-thread-border-router-home-assistant/cover.png" alt="Google Home Speaker 2026 in pale sage fabric on a warm oak living-room console" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Direct answer:</strong> Google officially says the 2026 Home Speaker includes Thread 1.3. In plain English, it can bridge low-power Thread devices onto the home network. Home Assistant can use that kind of third-party route, but its current known-to-work list does not yet name this new speaker.</li>
+              <li><strong>Best next step:</strong> If you already want the speaker for Google Home, set it up, leave your existing border router online, and test one non-critical Matter-over-Thread plug or bulb before moving anything.</li>
+              <li><strong>What to avoid:</strong> Do not buy it only to replace Connect ZBT-2, reset a working Thread network, or assume adding the speaker automatically exposes Home Assistant devices to Gemini.</li>
+              <li><strong>Main caveat:</strong> Thread routing and normal Home Assistant Matter commands are local, meaning they stay inside the home. Google setup, Gemini, remote access, accounts, and some updates still depend on Google's cloud.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: It Has the Right Hardware, but Home Assistant Has Not Verified It Yet</h2>
+          <p><strong>The Google Home Speaker (2026) is officially a Thread border router for Google Home.</strong> Matter is a common smart-home compatibility standard. Thread is the low-power local network used by many Matter devices, and a border router is the bridge that carries their traffic onto the regular home network. Google's product specifications list <strong>Thread 1.3</strong>, Matter support, and operation as a Google Home Matter hub. That is different from older speakers such as Nest Audio and Nest Mini, which can act as Google Matter hubs for Wi-Fi devices but do not provide Thread hardware.</p>
+          <p><strong>For Home Assistant, call it a cautious yes rather than a guaranteed yes.</strong> Home Assistant says it can use third-party Thread border routers to pass encrypted Matter traffic, and one early owner has seen the new speaker join a Thread network visible in Home Assistant. But as of <strong>July 14, 2026</strong>, Home Assistant's named “known to work” Google list includes Google TV Streamer (4K), Nest Hub (2nd gen), Nest Hub Max, Nest Wifi Pro, and Nest Wifi&mdash;not the new Google Home Speaker. If you already want the speaker, test it. If you only need a dependable Home Assistant Thread radio, use a listed model or Home Assistant Connect ZBT-2 instead.</p>
+
+          <div class="callout">
+            <p><strong>Tara's recommendation:</strong> buy the Google Home Speaker for the combined speaker, Google Home, and Thread jobs. Do not buy it solely as Home Assistant infrastructure until Home Assistant names the model or your own one-device test proves the exact path. Connect ZBT-2 is the more controllable Home Assistant option, but it must be dedicated to either Thread or Zigbee, the older local device network; one adapter cannot run both at once.</p>
+          </div>
+
+          <h2 id="three-jobs">One Speaker, Three Different Smart-Home Jobs</h2>
+          <p>The confusion starts because “hub” can mean several things. Keep these jobs separate:</p>
+          <ul>
+            <li><strong>Thread border router:</strong> moves encrypted local traffic between the low-power Thread network and the home's Wi-Fi or Ethernet network. It does not run your Home Assistant automations.</li>
+            <li><strong>Matter controller:</strong> gives Google Home permission to control a Matter device. Home Assistant has its own Matter controller, called Matter Server.</li>
+            <li><strong>Google voice speaker:</strong> listens for voice requests and uses Gemini for Home. This is the cloud-and-account side of the product, not the Thread routing job.</li>
+          </ul>
+          <p>Adding the speaker to Google Home does not create a new Home Assistant connection, expose Home Assistant devices and controls to Google voice, or make Google the owner of Home Assistant's automations. An automation is simply a rule that runs by itself. These are separate setup choices.</p>
+
+          <h2 id="support-status">Official Support, Local Control, and the Practical Caveat</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th scope="col">Hardware</th><th scope="col">Official Thread status</th><th scope="col">Home Assistant path</th><th scope="col">Local and cloud boundary</th><th scope="col">Choose it when</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Google Home Speaker (2026)</strong></td><td>Google lists a Thread 1.3 border router and Matter hub.</td><td>Not yet named on Home Assistant's known-to-work list. Use as an early Google third-party route and test before relying on it.</td><td>Thread routing and in-home Matter commands are local. Setup, Gemini, remote control, account services, and some updates use Google.</td><td>You want the new speaker and Google Home anyway, and you are comfortable validating the Home Assistant path.</td></tr>
+                <tr><td><strong>Google TV Streamer (4K)</strong></td><td>Google lists Matter and Thread.</td><td>Named by Home Assistant as known to work.</td><td>Local Thread route; Google account and services still manage the product.</td><td>You want the most clearly documented Google streaming-and-Thread combination.</td></tr>
+                <tr><td><strong>Nest Hub (2nd gen) or Nest Hub Max</strong></td><td>Google lists both as Thread border routers.</td><td>Both are on Home Assistant's known-to-work list.</td><td>Local Thread route plus Google cloud features for the display and voice assistant.</td><td>You already own one or want a screen as well as Thread.</td></tr>
+                <tr><td><strong>Nest Wifi Pro</strong></td><td>Google lists a built-in Thread border router.</td><td>Named by Home Assistant as known to work.</td><td>Local Thread route, but replacing it also changes the home's Wi-Fi infrastructure.</td><td>You already use Nest Wifi Pro. Do not replace a good router just to collect another Thread radio.</td></tr>
+                <tr><td><strong>Home Assistant Connect ZBT-2 or Yellow</strong></td><td>Home Assistant's own OpenThread path. Both start in Zigbee mode and must be switched to Thread.</td><td>Home Assistant can configure the OpenThread Border Router app and network directly. ZBT-2 must be dedicated to either Thread or Zigbee, not both.</td><td>Local and independent of a Google account. It does not provide Google voice or a Google Matter hub.</td><td>Home Assistant should own the Thread network, recovery plan, and troubleshooting path.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The support split matters more than the hardware spec. A Thread chip can be present and still depend on vendor setup, saved network details, phone behavior, local IPv6, and device software. Home Assistant can discover many border routers on the home network, but discovery alone does not prove it has the saved Thread network key&mdash;the private details used to join&mdash;or that the new speaker joined the Thread network you intended.</p>
+
+          <h2 id="google-first">The Safest Google-First Setup</h2>
+          <p><strong>Use this path when the family wants both Google Home and Home Assistant to control the device.</strong> It keeps the speaker inside Google's officially documented job and uses Matter multi-admin&mdash;the feature that lets one physical device trust more than one controller.</p>
+          <ol>
+            <li><strong>Update first.</strong> Update Home Assistant, the Matter Server app, the Google Home app, and the speaker before adding an accessory.</li>
+            <li><strong>Set up the speaker in Google Home.</strong> Google says no special switch is required for supported hub devices; connect it to the home Wi-Fi and let it finish setup and updates.</li>
+            <li><strong>Keep the network simple.</strong> Put the speaker, phone, and Home Assistant on the same ordinary home network. Matter uses IPv6 inside the home plus mDNS, the network traffic that lets devices find one another. Guest Wi-Fi and isolated smart-device networks are common failure points.</li>
+            <li><strong>Add one non-critical Matter-over-Thread device to Google Home.</strong> Confirm it responds before involving Home Assistant.</li>
+            <li><strong>Share it to Home Assistant.</strong> In the Home Assistant Companion app, go to <strong>Settings &gt; Matter &gt; Add device</strong>, choose <strong>Yes, it's already in use</strong>, select Google Home, and follow the sharing flow.</li>
+            <li><strong>Put the automation in one place.</strong> If Home Assistant turns the hallway light on, do not build the same rule again in Google Home.</li>
+          </ol>
+          <p>The device receives a separate secure connection to each controller. Google Home and Home Assistant do not copy rooms, names, users, scenes, or automations between one another.</p>
+
+          <h2 id="ha-first">When Home Assistant Should Own Thread Instead</h2>
+          <p><strong>Use Connect ZBT-2 or Home Assistant Yellow as the Thread border router when local ownership is the main goal.</strong> This gives Home Assistant the clearest view of the network and avoids making a Google account part of Thread recovery.</p>
+          <ol>
+            <li>Enable Thread on the Home Assistant radio with the documented OpenThread Border Router app flow.</li>
+            <li>Mark the Home Assistant Thread network as the one new devices should join, then send its saved network details to the setup phone.</li>
+            <li>Add the Matter-over-Thread accessory directly to Home Assistant.</li>
+            <li>If Google voice or the Google Home app also needs that device, use Home Assistant's <strong>Share device</strong> action to add Google as another Matter controller.</li>
+          </ol>
+          <p>The Google Home Speaker can still be Google's Matter hub and voice endpoint. It does not need to become the owner of the same Thread network for Google to be another Matter controller. Do not assume the speaker will merge its Thread network with Home Assistant's just because both devices use Thread.</p>
+
+          <h2 id="already-have-thread">If You Already Have Google, Apple, Eero, or Home Assistant Thread</h2>
+          <p>Leave the working border router online when you add the speaker. Home Assistant's current Thread documentation says vendors can create separate networks with separate saved details, and devices do not roam between them automatically. Some early Google Home Speaker owners report that the new speaker joined an existing Eero or Aqara Thread network. That is encouraging, but it is a community observation, not a promise for every account, phone, speaker-software version, or network.</p>
+          <p>After setup, open <strong>Settings &gt; Devices &amp; services &gt; Thread</strong> in Home Assistant. Check which network name the speaker appears under and whether Home Assistant knows that network's credentials. A border router can appear because of a local announcement while the key remains unknown. For a Google-created network, Home Assistant's documented import path uses an Android phone signed into Google.</p>
+          <p>Only test retiring the old border router after powered and battery devices, important automations, and a short internet-outage test all pass. Restore the old router immediately if devices vanish. Do not start by factory-resetting the speaker, the old router, or every Matter accessory.</p>
+
+          <h2 id="local-cloud">What Is Local, and What Still Needs Google?</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th scope="col">Part of the system</th><th scope="col">Local or cloud?</th><th scope="col">What this means at home</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Speaker acting as a Thread border router</strong></td><td>Local network job.</td><td>It routes encrypted traffic between Thread and the home network. It is not reading Home Assistant's Matter commands.</td></tr>
+                <tr><td><strong>Home Assistant controlling a Matter device</strong></td><td>Local.</td><td>Commands stay on the home network when Home Assistant, the route, and the accessory remain available.</td></tr>
+                <tr><td><strong>Google Home controlling a Matter device while you are home</strong></td><td>Google documents local delivery through its Matter hub.</td><td>The device-manufacturer cloud is not required for the normal Matter command.</td></tr>
+                <tr><td><strong>Google Home Speaker setup, Gemini, remote control, accounts, and subscriptions</strong></td><td>Cloud-dependent features.</td><td>The product is not a no-account or fully no-cloud speaker. Some advanced Gemini features require Google Home Premium.</td></tr>
+                <tr><td><strong>Home Assistant devices and controls in Google voice</strong></td><td>Separate connection.</td><td>Use Home Assistant Cloud or the official manual Google Assistant integration. The Thread radio does not expose those devices and controls.</td></tr>
+                <tr><td><strong>Apple Home or HomeKit</strong></td><td>Separate ecosystem.</td><td>The speaker is not an Apple home hub. Share real Matter devices with Apple Home through multi-admin; use Apple hardware for Apple-specific features.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The speaker has a physical microphone mute switch, but muting the microphone does not make the Google account, setup, or remote-service side local. If privacy or independence is the deciding requirement, use a Home Assistant-owned Thread radio and expose only the few devices that the household needs in Google Home.</p>
+
+          <h2 id="homekit">The Matter and HomeKit Boundary</h2>
+          <p>A device with the <strong>Matter</strong> logo can be shared with Home Assistant, Google Home, and Apple Home as separate Matter controllers when each platform supports that device type. The device stays one physical accessory. Multi-admin does not copy automations and does not turn the Google speaker into an Apple home hub.</p>
+          <p>A <strong>HomeKit-over-Thread</strong> accessory is different. It uses Apple's older HomeKit connection over Thread, not Matter. The Google Home Speaker does not add Apple Home support to it. Use Home Assistant's HomeKit Device connection or supported Apple hardware, depending on where the accessory should live.</p>
+          <p>For an iPhone-only home, a HomePod or supported Apple TV is usually the cleaner third-party Thread choice. Home Assistant's current Google credential-import procedure is documented around Android, while its Apple procedure is documented around iPhone.</p>
+
+          <h2 id="troubleshooting">If the Speaker Appears but Pairing Still Fails</h2>
+          <ol>
+            <li><strong>Check the model.</strong> The new 2026 Google Home Speaker has Thread. Nest Audio, Nest Mini, Google Home Mini, and the original Google Home are Wi-Fi Matter hubs, not Thread border routers.</li>
+            <li><strong>Check the Home Assistant status honestly.</strong> The new speaker is not yet on Home Assistant's named known-to-work list. If a listed Google device is available, compare with it before resetting accessories.</li>
+            <li><strong>Check IPv6 inside the home.</strong> Home Assistant does not need IPv6 internet service, but local IPv6 must be enabled and able to move between Home Assistant, the border router, and the Matter device.</li>
+            <li><strong>Use one home network.</strong> Put the phone, speaker, Home Assistant host, and border router on the same simple network during setup. Read Tara's <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">main-network versus isolated-device-network guide</a> before adding advanced router rules.</li>
+            <li><strong>Use the right pairing flow.</strong> A factory-new device uses its printed Matter code. A device already in Google Home uses Google's fresh sharing code and Home Assistant's already-in-use option.</li>
+            <li><strong>Check the saved Thread network.</strong> A visible network name does not mean Home Assistant knows the private credentials. Import the intended Google network with the documented Android flow when needed.</li>
+            <li><strong>Reset last.</strong> Reboot the speaker and Home Assistant once, then retry one accessory. Do not wipe a stable Thread network to make the Thread screen look tidy.</li>
+          </ol>
+
+          <div class="callout">
+            <p><strong>Safety boundary:</strong> use a lamp or plug as the first test device, not a door lock, leak alarm, smoke alarm, garage door, or HVAC safety control. Keep physical keys, audible alarms, and manufacturer-approved controls available while validating a new border-router path.</p>
+          </div>
+
+          <h2 id="recommendation">Tara's Recommendation</h2>
+          <p>If you already want the Google Home Speaker for Google Home and Gemini, its Thread hardware is a useful bonus. Set it up without disturbing the existing Thread network, pair one low-risk device through Google, share that device to Home Assistant, and verify local control. Keep the older border router powered until several days of normal use and an outage test are boring.</p>
+          <p>If your only goal is Home Assistant Thread, choose Home Assistant Connect ZBT-2, Yellow, or a Google model that Home Assistant already names as known to work. A smart home should not depend on an undocumented hardware path merely to avoid one small adapter.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3>Does the Google Home Speaker (2026) have a Thread border router?</h3>
+          <p>Yes. Google officially lists a Thread 1.3 border router and Matter hub. Home Assistant has not yet added the new speaker to its named known-to-work list, so test the Home Assistant path before relying on it.</p>
+
+          <h3>Does it replace Home Assistant Connect ZBT-2?</h3>
+          <p>Not automatically. It may provide the Thread route in a Google-first home. Keep ZBT-2 or Yellow when Home Assistant should own, configure, and recover the Thread network.</p>
+
+          <h3>Does adding the speaker expose Home Assistant devices to Gemini?</h3>
+          <p>No. Thread routing and Google voice exposure are separate. Use Home Assistant Cloud or the official manual Google Assistant integration, then expose only the devices and controls the household needs.</p>
+
+          <h3>Will Home Assistant Matter devices work without internet?</h3>
+          <p>Routine Home Assistant Matter control can stay local if Home Assistant, the Thread route, the home network, and the accessory remain powered. Google setup, Gemini, remote access, account services, and some update paths still require internet.</p>
+
+          <h3>Can the speaker join an existing Home Assistant Thread network?</h3>
+          <p>Do not assume it will. Early owners report successful cross-brand joining in some homes, but Home Assistant still warns that vendors can create separate networks. Keep the existing router online until the expected network and real devices are proven.</p>
+
+          <h3>Does it work as an Apple Home or HomeKit hub?</h3>
+          <p>No. It is a Google Home hub. A real Matter device can still be shared with Apple Home, but the speaker does not provide Apple-specific HomeKit, Siri, or Apple home-hub features.</p>
+
+          <h2 id="related">Related Tara Guides</h2>
+          <p>For a Google model already named by Home Assistant, read the <a href="/blog/google-tv-streamer-thread-border-router-home-assistant/">Google TV Streamer Thread guide</a>. Compare every major option in Tara's <a href="/blog/which-thread-border-router-home-assistant-2026/">2026 Thread border-router guide</a>. Then choose the <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">first Matter controller</a> and use <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a> without duplicating automations.</p>
+        </div>
+      </article>
+
+      <section class="block article-cta">
+        <p class="kicker">Plan the radio path</p>
+        <h2>Use the hubs already in the house without creating three Thread networks.</h2>
+        <p>Tara plans the local controller, Thread coverage, Google or Apple handoff, and recovery notes as one maintainable system.</p>
+        <a class="cta" href="/configurator/">Configure your Tara system</a>
+      </section>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread documentation, known border routers, credentials, and preferred networks</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter setup, encrypted third-party routing, sharing, and local-network requirements</a></li>
+              <li><a href="https://www.home-assistant.io/connect/zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZBT-2 product details and the Zigbee-or-Thread limitation</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant's June 23, 2026 Matter Server 9 update</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/google_assistant/" target="_blank" rel="noopener noreferrer">Home Assistant Google Assistant integration, Cloud setup, manual setup, and local fulfillment</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Google product documentation</h3>
+            <ul>
+              <li><a href="https://store.google.com/product/google_home_speaker_specs?hl=en-US" target="_blank" rel="noopener noreferrer">Google Home Speaker specifications: Thread 1.3, Matter hub, Wi-Fi, microphones, and physical mute</a></li>
+              <li><a href="https://blog.google/products-and-platforms/devices/google-nest/google-home-speaker-gemini-features/" target="_blank" rel="noopener noreferrer">Google's June 2026 launch announcement for the new Google Home Speaker</a></li>
+              <li><a href="https://store.google.com/product/google_home_speaker?hl=en-US" target="_blank" rel="noopener noreferrer">Official Google Home Speaker product page and product-photo reference</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/12391458?hl=en" target="_blank" rel="noopener noreferrer">Google's current Matter hub and Thread border-router model list</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en" target="_blank" rel="noopener noreferrer">Google Matter setup, local in-home control, remote control, and multi-admin sharing</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1ulfhxw/new_google_home_speaker_is_it_better_with_ha/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: new Google Home Speaker and Home Assistant expectations</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1um3b8c/setting_thread_preferred_network/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Google Thread networks and Home Assistant's preferred-network screen</a></li>
+              <li><a href="https://www.reddit.com/r/googlehome/comments/1upyala/new_google_home_speaker_as_thread_border_router/" target="_blank" rel="noopener noreferrer">Reddit r/googlehome: replacing Google TV Streamer with the new speaker as border router</a></li>
+              <li><a href="https://www.reddit.com/r/googlehome/comments/1ugs5zb/new_google_home_speaker_successfully_merged_to/" target="_blank" rel="noopener noreferrer">Reddit r/googlehome: early cross-brand Thread network observation</a></li>
+              <li><a href="https://community.home-assistant.io/t/gemini-for-home-update-does-it-works-with-google-assistant-integration/1014229" target="_blank" rel="noopener noreferrer">Home Assistant Community: Gemini for Home and the separate Google Assistant integration</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/147616" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: third-party Thread commissioning, IPv6, and virtualized-network caveats</a></li>
+            </ul>
+          </div>
+        </div>
+        <p>The cover is a new TaraHome editorial image generated from Google's official Google Home Speaker product photograph so the current hardware remains recognizable. TaraHome is not affiliated with or endorsed by Google.</p>
+      </section>
+
+      <section class="block related">
+        <div class="links"><a href="/blog/google-tv-streamer-thread-border-router-home-assistant/">Google TV Streamer Thread</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread border router</a><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose the first Matter app</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter devices</a><a href="/blog/home-assistant-thread-border-router-required/">Fix the border-router error</a><a href="/blog/extend-thread-range-home-assistant-without-second-network/">Extend Thread range</a><a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a><a href="/configurator/">Configurator</a></div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home planning.</span></footer>
+  </body>
+</html>
