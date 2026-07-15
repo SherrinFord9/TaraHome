@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Why a Deleted Matter Device Won't Re-Add to Home Assistant | Tara Guides</title>
+    <meta name="description" content="Fix a Matter device that will not re-add to Home Assistant, including stale fabrics, duplicate entities, ghost map entries, and the NOC already exists error." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-matter-device-wont-readd-fabric-exists/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-matter-device-wont-readd-fabric-exists/" />
+    <meta property="og:title" content="Why a Deleted Matter Device Won't Re-Add to Home Assistant | Tara Guides" />
+    <meta property="og:description" content="Remove the old Home Assistant pairing first, then share or reset one accessory without rebuilding the Thread network." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-device-wont-readd-fabric-exists/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Why a Deleted Matter Device Won't Re-Add to Home Assistant | Tara Guides" />
+    <meta name="twitter:description" content="Remove the old Home Assistant pairing first, then share or reset one accessory without rebuilding the Thread network." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-device-wont-readd-fabric-exists/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .hero-copy { display: grid; gap: 18px; min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1.08; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.12; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article { max-width: 1160px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; min-width: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article > article, .article-hero, .article-hero > *, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .article-cta, .source-list, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.3; }
+      .related { border-bottom: 1px solid var(--line); }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-device-wont-readd-fabric-exists/#blogposting",
+          "headline": "Why a Deleted Matter Device Won't Re-Add to Home Assistant",
+          "description": "Fix a Matter device that will not re-add to Home Assistant, including stale fabrics, duplicate entities, ghost map entries, and the NOC already exists error.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-matter-device-wont-readd-fabric-exists/cover.png",
+          "datePublished": "2026-07-14",
+          "dateModified": "2026-07-14",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-matter-device-wont-readd-fabric-exists/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://support.apple.com/en-us/102135",
+            "https://support.google.com/googlehome/answer/13127223?hl=en",
+            "https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/README.md",
+            "https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/ws-controller/src/controller/ControllerCommandHandler.ts",
+            "https://github.com/matter-js/matter.js/blob/v0.17.4/packages/matter.js/src/CommissioningController.ts",
+            "https://community.home-assistant.io/t/cant-re-add-deleted-device-trying-to-add-a-noc-for-a-fabric-that-already-exists/889114",
+            "https://community.home-assistant.io/t/thread-matter-ghost-devices/913989",
+            "https://www.reddit.com/r/homeassistant/comments/1sik3hx/issues_with_already_added_matter_devices_adding_a/",
+            "https://github.com/home-assistant/core/issues/127693"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-device-wont-readd-fabric-exists/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Technical Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Matter device re-add recovery", "item": "https://tarahome.ai/blog/home-assistant-matter-device-wont-readd-fabric-exists/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-device-wont-readd-fabric-exists/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why does Home Assistant say a Matter fabric already exists?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant may have forgotten its local node record while the accessory still stores Home Assistant's Matter fabric. Remove that connected service from another controller if possible, then generate a fresh sharing code and add the device as already in use." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I factory-reset the Matter device before re-adding it?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only when no working controller can remove or share the stale fabric and you have saved the device's original setup code. Reset only that accessory using its manufacturer's instructions, not the Thread border router or the whole Matter Server." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does a deleted device remain as an orange external node in the Thread map?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Orange external nodes are inferred from Thread neighbor reports and are not commissioned Home Assistant Matter nodes. Refresh the reporting neighbors and allow their tables to age; there is no supported delete button for an inferred external entry." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will deleting and re-adding a Matter device break Home Assistant automations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It can. A fresh commission may create new device and entity identifiers, so record the old names and review automations, scenes, dashboards, voice exposure, and safety routines after the device returns." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div class="hero-copy">
+            <p class="article-meta"><span>Matter recovery</span><span>July 14, 2026</span><span>11 min read</span></p>
+            <h1>Why a Deleted Matter Device Won't Re-Add to Home Assistant</h1>
+            <p class="lede">Home Assistant can forget a device while the accessory still remembers Home Assistant. Remove that old pairing first, then share or reset one device&mdash;not the whole Matter or Thread setup.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-matter-device-wont-readd-fabric-exists/cover.png" alt="Homeowner photographing a Matter smart plug setup code before re-adding the device" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Most likely fix:</strong> If Apple Home lists the old Home Assistant service&mdash;or Google Home offers a clearly labeled individual unlink control&mdash;remove only that relationship. Then create a fresh sharing code from a working Matter app and add the accessory to Home Assistant as <em>already in use</em>.</li>
+              <li><strong>Before any reset:</strong> Save the printed QR code or numeric setup code, note the Home Assistant control names used by your automations, and list the scenes and voice routines that use the device.</li>
+              <li><strong>What to avoid:</strong> Do not remove Matter from Home Assistant, wipe its saved Matter data, reset the Thread border router (the hub that links Thread devices to your home network), or remove the accessory from every service.</li>
+              <li><strong>Main caveat:</strong> Deleting an offline device can remove it from Home Assistant while the accessory still thinks Home Assistant is connected. Other app menus vary, so use only a clearly labeled per-service control; factory-reset one accessory only when no working Matter app can remove the old pairing.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: The Record and the Device Can Disagree</h2>
+          <p><strong>If a deleted Matter device will not re-add, first assume Home Assistant and the accessory disagree about whether they are still paired.</strong> Matter calls each controller relationship a <strong>fabric</strong>. Home Assistant may no longer show the old device, while the accessory still stores Home Assistant's fabric. That mismatch can produce errors such as <code>Trying to add a NOC for a fabric that already exists</code>. NOC is Matter's technical name for the credential that lets a device trust a controller.</p>
+          <p>If Apple Home still operates the accessory, use Apple's individual connected-service removal. In Google Home, use an individual unlink only if <strong>Linked Matter apps &amp; services</strong> clearly offers one for Home Assistant. Then ask a working Matter controller to create a <strong>fresh sharing code</strong>. In the Home Assistant Companion app, add the accessory as a Matter device that is already in use.</p>
+          <p>If only Alexa, SmartThings, or a manufacturer app still controls it, first confirm that the app lists the accessory as Matter and offers Matter sharing or connected-service controls. Ordinary cloud or Bluetooth control does not make an app a Matter controller. If no Matter app or platform still lists the device, save its setup code and factory-reset only that accessory using the manufacturer's instructions. A fresh add can create new Home Assistant control names, so review automations and dashboards afterward.</p>
+
+          <div class="callout">
+            <p><strong>Tara's rule:</strong> remove one controller relationship, prove one device works, and only then clean up old names or automations. A tidy screen is not worth rebuilding a working house.</p>
+          </div>
+
+          <h2 id="three-things">Three Different Things Can Look Like a Ghost</h2>
+          <p>Before deleting anything else, identify which layer still shows the accessory. The same word&mdash;device&mdash;is used for several records that do not have the same cleanup method.</p>
+          <p>The <strong>Matter integration</strong> is Home Assistant's software connection for all your Matter devices. <strong>Matter Server</strong> is the controller software behind those screens. <strong>Commissioning</strong> is Matter's word for securely pairing a device to a controller.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>What you still see</th><th>What it means</th><th>Safe next step</th><th>Do not do this</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>A device under Settings &gt; Matter &gt; Devices</strong></td>
+                  <td>Home Assistant still has a paired Matter device record.</td>
+                  <td>Use <strong>Manage fabrics</strong> to remove one other controller, or <strong>Delete</strong> to remove the device from Home Assistant.</td>
+                  <td>Do not remove the entire Matter integration.</td>
+                </tr>
+                <tr>
+                  <td><strong>The accessory is gone from Home Assistant, but another app lists Home Assistant as a connected service</strong></td>
+                  <td>The accessory may still store Home Assistant's fabric even though Home Assistant forgot its node.</td>
+                  <td>Remove only the stale Home Assistant service in the working controller, then generate a fresh sharing code.</td>
+                  <td>Do not choose <em>remove from all services</em> unless you intend to erase every controller.</td>
+                </tr>
+                <tr>
+                  <td><strong>An orange Unknown or External item in Matter Server's Thread map</strong></td>
+                  <td>It is inferred from a neighbor table. It is not a commissioned Home Assistant Matter node.</td>
+                  <td>Refresh the reporting neighbors, wait for stale table data to age, and ignore it when real devices work.</td>
+                  <td>Do not reset the mesh to make the drawing prettier.</td>
+                </tr>
+                <tr>
+                  <td><strong>Old unavailable controls, called entities, ending in _2 or _3 after a re-add</strong></td>
+                  <td>The fresh pairing created new Home Assistant records while old control names or automation references remain.</td>
+                  <td>Confirm which device is live, repair automations, then remove or disable only the stale entities.</td>
+                  <td>Do not edit Home Assistant storage files by hand.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="why-delete-can-leave-fabric">Why Delete Can Leave a Fabric Behind</h2>
+          <p>Home Assistant's official Matter page separates two actions. <strong>Manage fabrics</strong> removes a chosen controller relationship from the accessory. <strong>Delete</strong> removes the device from Home Assistant itself. When the device is online, the current Matter Server attempts to tell the accessory to remove Home Assistant's fabric and then clears the local node record.</p>
+          <p>The important edge case is an offline or unreachable accessory. The stable Matter Server implementation skips the remote unpairing step when a device is offline. Even when an online removal attempt fails, the server can still forget its local record. In plain English, disappearance from Home Assistant proves that Home Assistant no longer lists the device; it does not always prove that the accessory received the fabric-removal command.</p>
+          <p>That behavior is sensible for a controller that must let you forget dead hardware, but it explains the re-add trap. The accessory can reject a new Home Assistant credential because it still has the old one. The safe recovery is to use a surviving controller to remove that stale fabric. Only use a model-specific factory reset when there is no surviving controller path.</p>
+
+          <h2 id="recovery-order">The Safe Recovery Order</h2>
+          <h3 id="freeze-automations">1. Pause the consequences, not the whole house</h3>
+          <p>Disable only automations that could operate the affected accessory while you work. For a lock, garage door, alarm, heater, water valve, shade, or plug powering important equipment, keep manual control and an alternate safe path available. Do not use a critical front door or shutoff valve as the first test device.</p>
+
+          <h3 id="save-code">2. Save the original setup code and the old Home Assistant names</h3>
+          <p>Photograph the accessory's Matter QR label and copy the numeric code somewhere private. A temporary sharing code is not a permanent replacement for the original label after a factory reset. Also record the Home Assistant device name, entity names, area, and every automation, scene, dashboard, notification, or voice routine that uses it. Tara's <a href="/blog/lost-matter-qr-code-home-assistant/">lost Matter setup-code guide</a> explains why this step comes before reset.</p>
+
+          <h3 id="find-live-controller">3. Find any controller that still works</h3>
+          <p>Try the accessory in Home Assistant, Apple Home, Google Home, Alexa, SmartThings, and the manufacturer's app. Count an app as a surviving Matter controller only if it identifies the accessory as Matter and offers Matter sharing or connected-service controls. A vendor app that controls the device only through its cloud, Bluetooth, or another native connection cannot remove a Matter fabric. Matter's <strong>multi-admin</strong> feature means one accessory can trust several controllers, so deleting it from one app does not necessarily remove it from the others.</p>
+
+          <h3 id="remove-stale-service">4. Remove only the stale Home Assistant fabric</h3>
+          <p>If Home Assistant still shows the device, open <strong>Settings &gt; Matter &gt; Devices</strong>. Use <strong>Manage fabrics</strong> when you intend to remove a particular controller. Use <strong>Delete</strong> only when you intend to remove the node from Home Assistant.</p>
+          <p>If Home Assistant already forgot the device but Apple still owns it, open <strong>Settings &gt; General &gt; Matter Accessories</strong> on the iPhone or iPad. Choose the accessory, tap <strong>Edit</strong>, tap the delete button, and choose <strong>Remove From [Connected Service]</strong> for the service that identifies your Home Assistant installation. Do not choose <strong>Remove From All Services</strong>.</p>
+          <p>If Google Home still owns the accessory, open its <strong>Linked Matter apps &amp; services</strong> screen. Google's current help page documents this list and the sharing flow, but not an individual unlink sequence. Use an individual unlink control only when it clearly names the stale Home Assistant relationship. If that control is absent, do not remove the whole device; use Google's current help or device-maker support.</p>
+          <p>Alexa, SmartThings, and manufacturer apps do not share one standard menu. Continue only if the app identifies the accessory as Matter and clearly names the Home Assistant relationship you intend to remove. If it does not, stop and ask the platform or device maker for model-specific help instead of guessing.</p>
+
+          <h3 id="share-fresh">5. Create a new sharing code and add it as already in use</h3>
+          <p>From the controller that still works, open its Matter sharing flow and create a new temporary code. In the Home Assistant Companion app, choose to add a Matter device and confirm that it is <strong>already in use</strong>. Use the new sharing code, not the factory QR printed on the accessory. Keep the phone near the device during commissioning.</p>
+          <p>After it appears, operate the device from Home Assistant and confirm state changes in both directions. Then open <strong>Manage fabrics</strong> and make sure the expected controllers are listed. Tara's <a href="/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/">share-first migration guide</a> covers the planned version of this handoff.</p>
+
+          <h3 id="factory-reset-last">6. Factory-reset one accessory only when no controller survives</h3>
+          <p>If the device is absent from every controller, no platform can remove the stale fabric or open a sharing window. With the original setup code safely stored, follow the manufacturer's exact reset procedure for that model. A power cycle is not always a factory reset, and holding the wrong button can change a different setting. Re-add the accessory as new and expect Home Assistant to create a fresh identity.</p>
+          <p>Do not reset Matter Server, its saved data, the Home Assistant Matter integration, the Thread network, or the border router. Those actions can turn one orphaned accessory into many unavailable devices. If the whole controller was lost rather than one device deleted, start with Tara's <a href="/blog/home-assistant-backup-restore-matter-devices-without-repairing/">Matter backup and restore guide</a>.</p>
+
+          <h3 id="repair-references">7. Repair names and automations before deleting old entities</h3>
+          <p>Test the new device page first. Then repair each automation, scene, dashboard card, voice exposure, and notification that pointed at the old device or entity identifier. Rename the live entity only after you know which record is responding. When everything works through a normal day, delete or disable the stale record.</p>
+
+          <h2 id="orange-map-entry">An Orange External Node Is a Different Problem</h2>
+          <p>Matter Server 9's Thread map is a diagnostic picture assembled from devices' neighbor and route reports. An orange <strong>Unknown</strong> or <strong>External Router</strong> entry is not commissioned to Home Assistant's fabric. It might be another controller's device, a HomeKit-only Thread accessory, a border router, a non-Matter Thread device, a second radio identity, or an address that a neighbor still remembers.</p>
+          <p>There is no supported delete button for an inferred external entry because it is not stored as a Home Assistant Matter node. Select the commissioned neighbors that report it, update their connections, and allow their tables to age. The dashboard documentation notes that restarting the reporting device can sometimes refresh obsolete data, but do that only when the device is clearly identified and safe to restart. No fixed expiration time is guaranteed.</p>
+          <p>If the old accessory is absent from both Home Assistant's Matter device list and Matter Server's <strong>Nodes</strong> list, real control works, and only an orange map item remains, stop. The map is stale evidence, not a security alarm. Tara's <a href="/blog/home-assistant-matter-network-map-offline-devices/">Matter Server network-map guide</a> explains the colors and refresh controls in detail.</p>
+
+          <h2 id="local-cloud-homekit">What Is Local, What Uses Cloud, and Where HomeKit Fits</h2>
+          <p><strong>Local control</strong> means Home Assistant can still control the device over your home network when the internet is down.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th>Path</th><th>Official support</th><th>Local control</th><th>Cloud or account dependency</th><th>Matter / HomeKit boundary</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home Assistant Matter fabric</strong></td>
+                  <td>Official Matter integration; Home Assistant OS with the Matter Server app is the supported server path.</td>
+                  <td>Normal Matter control is local over Wi-Fi, Ethernet, or Thread.</td>
+                  <td>No vendor cloud is required by Matter itself, although a maker may require an account for setup or updates.</td>
+                  <td>Deleting Home Assistant's fabric does not factory-reset the accessory or erase other Matter controllers.</td>
+                </tr>
+                <tr>
+                  <td><strong>Apple or Google as a surviving Matter controller</strong></td>
+                  <td>Both platforms officially support Matter multi-admin and connected services.</td>
+                  <td>In-home Matter commands can use the local network.</td>
+                  <td>Account sync, remote access, voice, and some app features use platform services.</td>
+                  <td>Apple's Matter accessory list is not the same as a HomeKit-only accessory. HomeKit-only devices do not use Matter fabrics.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thread border router</strong></td>
+                  <td>Home Assistant, Apple, Google, Amazon, SmartThings, and vendors support different models and setup paths.</td>
+                  <td>It forwards encrypted local Thread traffic.</td>
+                  <td>Its vendor app may use an account, but the radio role is local transport.</td>
+                  <td>Resetting the border router does not selectively remove one Matter controller fabric.</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter bridge</strong><br />A hub that exposes its attached devices through Matter.</td>
+                  <td>Supported when the bridge and child types are supported by the controller.</td>
+                  <td>Basic Matter control can stay local.</td>
+                  <td>Bridge setup, richer features, and updates may still use the vendor app or cloud.</td>
+                  <td>One bridge node can represent many child devices. Removing it can affect the entire group, so do not treat one child as a standalone accessory.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="do-not-do">Five Cleanup Moves to Avoid</h2>
+          <ul>
+            <li><strong>Do not delete the whole Matter integration.</strong> That risks the controller relationship for every Matter device, not only the stale one.</li>
+            <li><strong>Do not wipe Matter Server storage.</strong> Its saved controller identity and fabric data are part of Home Assistant's trust relationship with the house.</li>
+            <li><strong>Do not reset the Thread border router or rotate Thread credentials.</strong> A Matter fabric error is not proof that the radio network is wrong.</li>
+            <li><strong>Do not choose “remove from all services” casually.</strong> That can remove Apple, Google, Home Assistant, and other controller access together.</li>
+            <li><strong>Do not hand-edit hidden Home Assistant storage.</strong> Use the supported Matter UI, save diagnostics, and report a reproducible bug when removal is rejected.</li>
+          </ul>
+
+          <h2 id="final-recommendation">The Calm Homeowner Recommendation</h2>
+          <p>When a deleted Matter device refuses to return, treat it as a controller-record mismatch until proven otherwise. Save the setup code. Find a controller that still works. Remove only the stale Home Assistant fabric. Generate a fresh sharing code. Test the device before cleaning old entity names.</p>
+          <p>Factory-reset only the one accessory when every controller path is gone, and use the maker's exact instructions. Leave Matter Server, Thread credentials, and border routers alone unless the evidence shows a separate system-wide failure. That order preserves the parts of the home that still work and makes recovery explainable to the next person.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-fabric-exists">Why does Home Assistant say a Matter fabric already exists?</h3>
+          <p>Home Assistant may have forgotten its local node record while the accessory still stores Home Assistant's fabric. Remove the stale Home Assistant connected service from another controller when possible, then create a fresh sharing code and add the device as already in use.</p>
+
+          <h3 id="faq-reset-first">Should I factory-reset the Matter device before re-adding it?</h3>
+          <p>Only when no working controller can remove or share the stale fabric and you have saved the original setup code. Reset only that accessory with its manufacturer's instructions. Do not reset the border router, Matter Server, or the whole Thread network.</p>
+
+          <h3 id="faq-orange-node">Why does a deleted device remain as an orange external node?</h3>
+          <p>The Thread map builds orange external entries from neighbor reports. They are not commissioned Home Assistant Matter nodes and may be stale, belong to another fabric, or represent non-Matter Thread infrastructure. Refresh the reporting neighbors and allow their tables to age.</p>
+
+          <h3 id="faq-automations">Will re-adding break my automations?</h3>
+          <p>It can. A fresh commission may create new device and entity identifiers. Record the old names first, then review automations, scenes, dashboards, voice exposure, and safety routines after the live device returns.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter: multi-fabric, sharing, removal, and setup-code guidance</a></li>
+              <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple: view and remove individual Matter connected services</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en" target="_blank" rel="noopener noreferrer">Google Home: linked Matter apps, sharing, and whole-device removal</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Matter Server documentation</h3>
+            <ul>
+              <li><a href="https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/dashboard/README.md" target="_blank" rel="noopener noreferrer">Matter Server 1.1.7 dashboard: commissioned and external Thread nodes</a></li>
+              <li><a href="https://github.com/matter-js/matterjs-server/blob/v1.1.7/packages/ws-controller/src/controller/ControllerCommandHandler.ts#L1212-L1235" target="_blank" rel="noopener noreferrer">Matter Server 1.1.7 node-removal path</a></li>
+              <li><a href="https://github.com/matter-js/matter.js/blob/v0.17.4/packages/matter.js/src/CommissioningController.ts#L515-L558" target="_blank" rel="noopener noreferrer">matter.js 0.17.4 decommission and local-removal behavior</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/cant-re-add-deleted-device-trying-to-add-a-noc-for-a-fabric-that-already-exists/889114" target="_blank" rel="noopener noreferrer">Home Assistant Community: stale fabric blocks re-adding a deleted device</a></li>
+              <li><a href="https://community.home-assistant.io/t/thread-matter-ghost-devices/913989" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter nodes left after controller changes</a></li>
+              <li><a href="https://community.home-assistant.io/t/how-can-i-remove-old-matter-device-config-for-an-aqara-hub-i-have-gotten-rid-of/907002" target="_blank" rel="noopener noreferrer">Home Assistant Community: current Matter device removal screen</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1sik3hx/issues_with_already_added_matter_devices_adding_a/" target="_blank" rel="noopener noreferrer">r/homeassistant: duplicate Matter and HomeKit records after a re-add</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/127693" target="_blank" rel="noopener noreferrer">Home Assistant GitHub: duplicate entities after reset and re-add</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Plan for recovery</p>
+        <h2>Want every setup code, controller, and fallback documented?</h2>
+        <p>Tara plans local control, Matter fabrics, Thread ownership, backups, safe reset order, and homeowner handoff before one failed accessory becomes a weekend rebuild.</p>
+        <a class="cta" href="/configurator/">Build your Tara setup</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Keep the recovery path boring</h2>
+        <div class="links">
+          <a href="/blog/lost-matter-qr-code-home-assistant/">Lost Matter setup code</a>
+          <a href="/blog/move-matter-devices-apple-google-to-home-assistant-without-reset/">Move Matter without reset</a>
+          <a href="/blog/home-assistant-backup-restore-matter-devices-without-repairing/">Restore Matter from backup</a>
+          <a href="/blog/home-assistant-matter-network-map-offline-devices/">Read the Matter map</a>
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a>
+          <a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Thread devices offline</a>
+          <a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server recovery</a>
+          <a href="/configurator/">Configurator</a>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span><a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></span></footer>
+  </body>
+</html>
