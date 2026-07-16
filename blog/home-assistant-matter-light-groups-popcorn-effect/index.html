@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can Home Assistant Group Matter Lights Without the Popcorn Effect? | Tara Guides</title>
+    <meta name="description" content="Home Assistant can show Matter bulbs as one light, but not yet send a true Matter groupcast. Learn what reduces stagger and which lighting path to choose." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-matter-light-groups-popcorn-effect/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-matter-light-groups-popcorn-effect/" />
+    <meta property="og:title" content="Can Home Assistant Group Matter Lights Without the Popcorn Effect? | Tara Guides" />
+    <meta property="og:description" content="A Home Assistant Light Group gives you one tile, but it is not a true Matter groupcast. See the practical fixes for staggered bulbs." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-light-groups-popcorn-effect/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Matter Light Groups and the Popcorn Effect" />
+    <meta name="twitter:description" content="What Home Assistant can group today, why Matter bulbs still turn on one by one, and which local lighting path is smoother." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-light-groups-popcorn-effect/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .hero-copy { display: grid; gap: 18px; min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1.08; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.12; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article { max-width: 1160px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; min-width: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 1120px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.94rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article > article, .article-hero, .article-hero > *, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .article-cta, .source-list, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.3; }
+      .related { border-bottom: 1px solid var(--line); }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-light-groups-popcorn-effect/#blogposting",
+          "headline": "Can Home Assistant Group Matter Lights Without the Popcorn Effect?",
+          "description": "Home Assistant can show Matter bulbs as one light, but not yet send a true Matter groupcast. Learn what reduces stagger and which lighting path to choose.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-matter-light-groups-popcorn-effect/cover.png",
+          "datePublished": "2026-07-16",
+          "dateModified": "2026-07-16",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-matter-light-groups-popcorn-effect/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/group/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/zha/",
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://github.com/matter-js/matterjs-server/issues/635",
+            "https://github.com/matter-js/matterjs-server/pull/757",
+            "https://developers.home.google.com/matter/primer/interaction-model",
+            "https://csa-iot.org/newsroom/matter-1-3-specification-released/",
+            "https://nanoleaf.me/en-US/products/essentials/bulbs/",
+            "https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-450-lumen-smart-white-spectrum-clear-globe-40611490/",
+            "https://www.philips-hue.com/en-us/p/hue-white-ambiance-a60-e26-smart-bulb-1100/046677591106",
+            "https://www.reddit.com/r/homeassistant/comments/1ukooy7/is_there_an_equivalent_in_matterthread_to_zigbees/",
+            "https://community.home-assistant.io/t/light-groups-in-matter/922586",
+            "https://community.home-assistant.io/t/matter-over-thread-lighting-groups/1000214"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-light-groups-popcorn-effect/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Matter light groups", "item": "https://tarahome.ai/blog/home-assistant-matter-light-groups-popcorn-effect/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-matter-light-groups-popcorn-effect/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant create a group of Matter lights?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, Home Assistant can create a Light Group helper that appears as one light. As of July 16, 2026, it does not create and manage a true Matter protocol groupcast, so the individual bulbs can still react at slightly different times." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Matter 1.3 command batching remove the popcorn effect in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not automatically. Matter 1.3 added scenes and command batching to the standard, but a controller must implement and expose those features. Home Assistant Matter Server's group-management feature is still open with no milestone." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will a better Thread border router make Matter lights turn on together?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It can reduce retries when the Thread mesh is weak, but it cannot turn a Home Assistant helper into Matter groupcast. A good network helps reliability; protocol-level grouping is the missing synchronization feature." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can one Home Assistant light group contain Matter-over-Thread, Matter-over-Wi-Fi, Hue, and Zigbee lights?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. A Home Assistant Light Group can combine supported light entities from different integrations. Because the commands travel through different radios, bridges, and device firmware, a mixed group is more likely to show visible timing differences." }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the smoothest local lighting group in Home Assistant today?",
+              "acceptedAnswer": { "@type": "Answer", "text": "If synchronized switching is the priority, use a native ZHA Zigbee group or keep Philips Hue lights on the local Hue Bridge integration. Use direct Matter bulbs when cross-platform compatibility matters more than perfectly simultaneous changes." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div class="hero-copy">
+            <p class="article-meta"><span>Matter light groups</span><span>July 16, 2026</span><span>14 min read</span></p>
+            <h1>Can Home Assistant Group Matter Lights Without the Popcorn Effect?</h1>
+            <p class="lede">Home Assistant can give several Matter bulbs one light tile, but it cannot yet turn them into a true Matter groupcast. That is why one bulb may glow before the next.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-matter-light-groups-popcorn-effect/cover.png" alt="Four matching pendant lights in a warm dining room caught at different brightness levels during a staggered smart-light command" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Direct answer:</strong> create a Home Assistant Light Group for one tile and one automation target, but expect a little stagger because it is not a true Matter radio group.</li>
+              <li><strong>What to do now:</strong> target only that group, remove duplicate per-bulb rules, test one brief fade, and investigate the network only when lights lag by seconds or miss commands.</li>
+              <li><strong>Best path for perfect timing:</strong> use a native Zigbee group in Home Assistant or the local Philips Hue Bridge path when a chandelier or room must change together.</li>
+              <li><strong>What to avoid:</strong> do not add per-bulb delays, reset a working room, or assume a newer Matter version automatically gives Home Assistant groupcast.</li>
+              <li><strong>Main caveat:</strong> Matter supports one shared group message, called groupcast, plus scenes and batching, but Home Assistant does not yet expose Matter group creation.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: One Light Tile, Yes; One Matter Groupcast, Not Yet</h2>
+          <p><strong>Home Assistant can combine Matter bulbs into a Light Group, but that helper is a logical group inside Home Assistant.</strong> Matter is the cross-brand smart-home standard those bulbs use for local control. The helper gives the dashboard, an automation&mdash;a rule that runs by itself&mdash;or a voice assistant one controllable light entry, which Home Assistant calls an entity. It does not put the bulbs into a protocol-level Matter group that receives one simultaneous message. The commands still have to reach the underlying lights, so a row of bulbs can turn on in a visible sequence&mdash;the “popcorn effect.”</p>
+          <p>For bulbs you already own, create one Light Group and use it everywhere. Remove separate actions that also target the individual bulbs. A short fade, called a transition, can make a small difference less obvious, but adding a delay between bulbs makes the sequence worse. If the final bulb is seconds late or sometimes stays off, treat that as a reliability problem as well as a grouping limitation.</p>
+          <p>As of <strong>July 16, 2026</strong>, Matter itself defines group communication, and Matter 1.3 added scenes and command batching intended to improve synchronized lighting. Home Assistant's current Matter Server 9 uses Matter 1.5.1, but its public feature request for creating and managing Matter groups remains open with no milestone. Updating to Matter Server 9 improves the Matter foundation; it does not add a homeowner-facing groupcast button.</p>
+
+          <div class="callout">
+            <p><strong>The plain-English difference:</strong> a Home Assistant Light Group is one remote control that presses several buttons. A true Matter or Zigbee group is one radio message that every chosen light hears together.</p>
+          </div>
+
+          <h2 id="three-groups">Three Different Things Called a Light Group</h2>
+          <p>The word <strong>group</strong> is doing too many jobs. Knowing which kind you created explains both the timing and what must stay running.</p>
+          <ul>
+            <li><strong>Home Assistant Light Group:</strong> a helper that combines lights from Matter, Hue, Zigbee, Wi-Fi, or several connection methods, which Home Assistant calls integrations. Home Assistant remains the automation brain and sends control through each member's connection.</li>
+            <li><strong>Matter groupcast:</strong> devices share a Matter group ID and listen on one local IPv6 multicast address&mdash;a private network destination shared by every member. One group command can reach several lights without a separate message for each bulb.</li>
+            <li><strong>Native bridge or radio group:</strong> a Hue room or scene, or a ZHA Zigbee group, is managed by that lighting system. Home Assistant can control the native group as one entity or command when the integration exposes it.</li>
+          </ul>
+          <p>A Matter <strong>fabric</strong> is something else again: it is one controller's trusted relationship with its devices. Apple Home, Google Home, Alexa, SmartThings, and Home Assistant each use their own fabric. Matter's multi-admin sharing feature adds another controller to the same bulb; it does not copy a Home Assistant Light Group, room, scene, name, or automation into that controller.</p>
+
+          <h2 id="why-popcorn">Why the Bulbs Turn On One by One</h2>
+          <p>Without groupcast, the controller has more work to do. It addresses each light, the command crosses Wi-Fi or a Thread mesh&mdash;the low-power radio network used by many Matter bulbs&mdash;the bulb processes it, and the new state returns to Home Assistant. Those paths are short, but they are not identical. A mixed group may also cross a Hue Bridge, a Thread border router that connects that radio mesh to the home network, and direct Wi-Fi before the room is finished.</p>
+          <p>The stagger can come from four layers:</p>
+          <ul>
+            <li><strong>Controller timing:</strong> the Light Group must reach each member rather than issue one protocol-level group command.</li>
+            <li><strong>Network timing:</strong> a weak Thread route, congested Wi-Fi, retries, or a slow bridge can widen the gap.</li>
+            <li><strong>Device timing:</strong> different bulb models and internal device software, called firmware, can apply on, brightness, color temperature, and fade commands at different speeds.</li>
+            <li><strong>Automation overlap:</strong> a dashboard group, a per-bulb automation, and an Apple or Google routine can all react to the same event and make the sequence look unpredictable.</li>
+          </ul>
+          <p>Thread is not automatically the culprit. Matter groupcast itself uses local IPv6 multicast. The immediate Home Assistant limitation is that the controller does not yet provide group creation and management. A healthy Thread mesh still matters because slow routes and retries can turn a slight sequence into an annoying one.</p>
+
+          <h2 id="path-table">Which Lighting Path Actually Changes the Timing?</h2>
+          <div class="comparison-table" role="region" aria-label="Home Assistant lighting group path comparison" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Path and concrete examples</th>
+                  <th>Official support boundary</th>
+                  <th>Local control and cloud dependency</th>
+                  <th>Matter and HomeKit path</th>
+                  <th>Choose or avoid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home Assistant Light Group</strong><br />Nanoleaf Essentials Matter A19, IKEA KAJPLATS, or any mix of supported light entities</td>
+                  <td>The official Group integration creates one light helper. It does not document protocol-level Matter group creation.</td>
+                  <td>The helper and Home Assistant Matter commands run locally. Home Assistant must be available, along with each bridge, border router, and radio path used by the members.</td>
+                  <td>Direct Matter bulbs keep their own Matter relationships. Home Assistant HomeKit Bridge can expose the group as one Apple Home tile, but it does not change how Home Assistant reaches the bulbs.</td>
+                  <td>Choose for existing or mixed lights and simple dashboards. Avoid expecting exact synchronization across several protocols.</td>
+                </tr>
+                <tr>
+                  <td><strong>ZHA Zigbee group</strong><br />A set of compatible IKEA TRÅDFRI or other standard Zigbee bulbs using ZHA, Home Assistant's built-in Zigbee connection</td>
+                  <td>Home Assistant officially supports ZHA groups and says one group command can improve visual responsiveness. Device support and firmware still vary.</td>
+                  <td>Local. A command from Home Assistant needs Home Assistant running; a compatible remote bound directly to the Zigbee group can keep basic control working without it.</td>
+                  <td>Not Matter or native HomeKit. You can expose the resulting group entity to Apple Home through HomeKit Bridge.</td>
+                  <td>Choose when synchronized local lighting is more important than direct cross-ecosystem Matter pairing. Avoid moving a stable room without a backup and test plan.</td>
+                </tr>
+                <tr>
+                  <td><strong>Native Philips Hue path</strong><br />Hue Bridge with Hue White Ambiance A60/E26 bulbs</td>
+                  <td>Home Assistant's Matter documentation recommends the native Hue integration because it is local and exposes richer Hue features than adding the bridge through Matter.</td>
+                  <td>Home Assistant-to-Bridge control is local. Hue remote access, account features, and outside voice services can add cloud dependencies.</td>
+                  <td>The Hue Bridge can provide its own Apple Home path, or Home Assistant can expose selected Hue entities through HomeKit Bridge. Matter bridging is available but is not the best Home Assistant path.</td>
+                  <td>Choose when an existing Hue room or scene already changes cleanly. Avoid re-adding the Bridge through Matter solely for a newer logo.</td>
+                </tr>
+                <tr>
+                  <td><strong>Direct Matter bulbs</strong><br />Nanoleaf Essentials Matter A19 over Thread or IKEA KAJPLATS over Thread</td>
+                  <td>Official Home Assistant Matter control is local, but current group-management support is still an open Matter Server feature.</td>
+                  <td>Routine commands stay local. Thread bulbs need a working Thread border router; vendor apps may still be useful for setup, firmware, or product-only effects.</td>
+                  <td>Matter multi-admin can share each bulb with Apple, Google, Alexa, or SmartThings. Platform groups and scenes remain separate and are not copied into Home Assistant.</td>
+                  <td>Choose for cross-platform control and vendor flexibility. Avoid buying a roomful when perfectly simultaneous changes are a hard requirement.</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter binding</strong><br />One compatible Matter wall control bound to one compatible light endpoint</td>
+                  <td>Matter Server 9 exposes an experimental binding editor for devices that implement the required clusters. Binding several individual lights is not the same as creating a groupcast.</td>
+                  <td>After setup, compatible devices can communicate locally without Home Assistant Core making the decision. Their Wi-Fi or Thread path and power still have to work.</td>
+                  <td>Binding belongs to the Matter fabric where it was configured. Other ecosystems do not automatically receive or manage that relationship.</td>
+                  <td>Choose for a tested switch-to-light path. Avoid treating it as a polished whole-room group editor.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="setup-helper">Set Up the Cleanest Matter Light Group Home Assistant Can Make Today</h2>
+          <ol>
+            <li><strong>Update and back up first.</strong> Install current stable Home Assistant and Matter Server releases, then make a Home Assistant backup. Do not reset working bulbs for this test.</li>
+            <li><strong>Confirm each bulb works alone.</strong> Turn every light on, off, and to the same brightness from its Home Assistant entity. Fix unavailable or slow individual bulbs before grouping them.</li>
+            <li><strong>Create one Light Group.</strong> Go to <strong>Settings &gt; Devices &amp; services &gt; Helpers &gt; Create helper &gt; Group &gt; Light group</strong>. Select the bulbs and give the group a room-based name.</li>
+            <li><strong>Target only the group.</strong> Use that group entity in dashboards, voice exposure, scripts, and automations. Remove or disable older actions that target the same member bulbs for the same trigger.</li>
+            <li><strong>Send one complete light action.</strong> Put on/off, brightness, color temperature, and a supported transition in one <strong>Light: Turn on</strong> action where practical. Do not build a loop with a pause between bulbs.</li>
+            <li><strong>Test three real cases.</strong> Test from fully off, from a different brightness, and from a different color temperature. Watch whether the same bulb is always last or whether the order changes.</li>
+            <li><strong>Use a transition only as a cosmetic tool.</strong> A modest fade can hide a small arrival difference. It is not groupcast and will not repair a light that misses commands.</li>
+          </ol>
+          <p>If the gap is barely visible and every bulb ends in the right state, you have reached the practical limit of the current helper path. If a light is seconds behind, changes in a different order each time, or sometimes stays off, continue with network and device checks.</p>
+
+          <h2 id="troubleshoot">When the Delay Is More Than a Missing Group Feature</h2>
+          <ol>
+            <li><strong>Find the slow member.</strong> Control each bulb directly several times. One consistently slow bulb points to that device, its firmware, or its route.</li>
+            <li><strong>Separate mixed paths for one test.</strong> Make a temporary group containing only Matter-over-Thread bulbs, only Wi-Fi Matter bulbs, or only one bridge. A smoother same-path group tells you where the extra delay enters.</li>
+            <li><strong>Check Thread evidence.</strong> For Matter-over-Thread lights, use the Matter Server network view and Home Assistant Thread page. Look for weak links, the wrong Thread network, or a shared powered router that is offline.</li>
+            <li><strong>Check Wi-Fi and discovery.</strong> Matter-over-Wi-Fi depends on local IPv6 and multicast discovery. Keep Home Assistant, the bulbs, and the controller path on a simple reachable network before blaming the lamp.</li>
+            <li><strong>Update one pilot bulb.</strong> Verify its permanent Matter setup code is saved, update one device through a supported path, and retest before changing the whole room.</li>
+            <li><strong>Download diagnostics before resetting.</strong> In the Matter integration, save integration- and device-level diagnostics if one model behaves badly. A factory reset destroys useful evidence and can place the bulb on the wrong Thread network.</li>
+          </ol>
+          <p>Buying another Thread border router is not a universal fix. More routers help only when they join the same Thread network and improve a weak path. A second network or an uncoordinated border router can add more confusion without giving Home Assistant Matter groupcast.</p>
+
+          <h2 id="perfect-sync">If Perfectly Synchronized Light Is Non-Negotiable</h2>
+          <p>Choose the control architecture before buying the room. For a chandelier, kitchen row, theater, or staircase where every lamp must change together, a native group is a feature requirement, not a cosmetic preference.</p>
+          <ul>
+            <li><strong>Already using ZHA:</strong> create a native Zigbee group under <strong>Settings &gt; Zigbee &gt; Groups</strong>. Home Assistant sends one group command, and the official ZHA docs specifically call out improved visual responsiveness.</li>
+            <li><strong>Already using Philips Hue:</strong> keep the Hue Bridge on its native local integration and use the room, zone, or scene behavior the Bridge exposes. Home Assistant itself warns that Hue over Matter loses useful native features.</li>
+            <li><strong>Building a fixed white-light circuit:</strong> consider one properly rated listed smart wall switch controlling ordinary compatible bulbs. That gives electrical simultaneity, but it is mains wiring: confirm neutral, load, dimmer, fixture, and local-code requirements with a qualified electrician.</li>
+            <li><strong>Need color bulbs plus Matter sharing:</strong> buy one sample first. Confirm acceptable timing, colors, updates, and Apple/Google/Alexa/SmartThings exposure before purchasing the whole room.</li>
+          </ul>
+          <p>Do not put smart bulbs behind an ordinary wall dimmer unless both manufacturers explicitly support that combination. Smart bulbs normally need steady power so their radios remain reachable. Keep a physical control path that family members and guests can understand.</p>
+
+          <h2 id="ecosystems">What Apple Home, Google Home, Alexa, and SmartThings Change</h2>
+          <p>Matter multi-admin can let several platforms control the same physical bulb, but each platform maintains its own rooms, groups, scenes, names, and automations. A group built in Apple Home is not imported as a Matter group into Home Assistant. The same is true for Google Home, Alexa, and SmartThings.</p>
+          <p>For an Apple household, Home Assistant's official <strong>HomeKit Bridge</strong> can publish the Home Assistant Light Group as one accessory. That gives the family one tile and one Siri target. The actual command still returns to Home Assistant and follows the group's underlying Matter, Hue, or Zigbee paths, so the bridge does not guarantee simultaneous lighting.</p>
+          <p>Keep one platform responsible for each real automation. Home Assistant's Light Group, Matter control, ZHA, and native Hue integration can all run locally. Voice processing, remote control, household invitations, vendor firmware, and app-only scenes may still involve Apple, Google, Amazon, Samsung, Philips, Nanoleaf, or IKEA services. Test an internet outage separately from a Home Assistant restart; they prove different things.</p>
+
+          <h2 id="avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not confuse one dashboard tile with one radio message.</strong> A Light Group improves organization, not the Matter transport.</li>
+            <li><strong>Do not assume a newer Matter version enables every feature in every controller.</strong> Matter 1.3 scenes and batching exist in the standard, while Home Assistant group management remains unexposed.</li>
+            <li><strong>Do not add per-bulb delays.</strong> They create an intentional sequence and make the popcorn effect more obvious.</li>
+            <li><strong>Do not build the same lighting automation in several ecosystems.</strong> Duplicate triggers cause repeated commands, wrong colors, and harder troubleshooting.</li>
+            <li><strong>Do not factory-reset a working room to make a map or group look tidy.</strong> Save codes and diagnostics, then make one reversible change at a time.</li>
+            <li><strong>Do not use a decorative smart-light scene as the only safety lighting.</strong> Stairs, exits, workshops, and essential task lighting need a dependable physical fallback.</li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p><strong>For Matter lights you already own, make one Home Assistant Light Group and stop there unless the stagger is truly disruptive.</strong> Keep all related automations in Home Assistant, use one clean action, and troubleshoot any bulb that is much slower than its neighbors. That produces the simplest local setup without resetting a working room.</p>
+          <p>For a new room where simultaneous light is part of the design, choose a native group path before buying: ZHA Zigbee groups, the native Hue Bridge integration, or one listed wall control for ordinary bulbs. Choose direct Matter bulbs for their real strengths&mdash;local control and cross-ecosystem sharing&mdash;while treating polished controller-side groupcast as a feature Home Assistant still needs to expose.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/matter-binding-home-assistant-switch-light-offline/">Can a Matter switch control a light if Home Assistant is down?</a></li>
+            <li><a href="/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/">IKEA KAJPLATS: Matter over Thread or Zigbee?</a></li>
+            <li><a href="/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/">Nanoleaf Matter and Thread lights outside Apple Home</a></li>
+            <li><a href="/blog/philips-hue-home-assistant-bridge-matter-zigbee/">Philips Hue in Home Assistant: Bridge, Matter, or Zigbee?</a></li>
+            <li><a href="/blog/home-assistant-matter-signal-strength-diagnostics/">How to check Matter signal and connection evidence</a></li>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How Matter multi-admin works across platforms</a></li>
+          </ul>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-create-group">Can Home Assistant create a group of Matter lights?</h3>
+          <p>Yes, Home Assistant can create a Light Group helper that appears as one light. As of July 16, 2026, it does not create and manage a true Matter protocol groupcast, so the individual bulbs can still react at slightly different times.</p>
+
+          <h3 id="faq-batching">Does Matter 1.3 command batching remove the popcorn effect in Home Assistant?</h3>
+          <p>Not automatically. Matter 1.3 added scenes and command batching to the standard, but a controller must implement and expose those features. Home Assistant Matter Server's group-management request is still open with no milestone.</p>
+
+          <h3 id="faq-border-router">Will a better Thread border router make Matter lights turn on together?</h3>
+          <p>It can reduce retries when the Thread mesh is weak, but it cannot turn a Home Assistant helper into Matter groupcast. A good network helps reliability; protocol-level grouping is the missing synchronization feature.</p>
+
+          <h3 id="faq-mixed">Can one light group contain Thread, Wi-Fi, Hue, and Zigbee lights?</h3>
+          <p>Yes. Home Assistant can combine supported light entities from different integrations. Because commands travel through different radios, bridges, and device firmware, a mixed group is more likely to show visible timing differences.</p>
+
+          <h3 id="faq-smoothest">What is the smoothest local lighting group in Home Assistant today?</h3>
+          <p>If synchronized switching is the priority, use a native ZHA Zigbee group or keep Philips Hue lights on the local Hue Bridge integration. Use direct Matter bulbs when cross-platform compatibility matters more than perfectly simultaneous changes.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/group/" target="_blank" rel="noopener noreferrer">Home Assistant Group integration and Light Group helper</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter: local control, multi-admin, diagnostics, and native-integration guidance</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/zha/" target="_blank" rel="noopener noreferrer">Home Assistant ZHA: native Zigbee groups, group commands, and device binding</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge: expose Home Assistant entities to Apple Home</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9, Matter 1.5.1, and the current matter.js foundation</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Matter implementation and standards</h3>
+            <ul>
+              <li><a href="https://github.com/matter-js/matterjs-server/issues/635" target="_blank" rel="noopener noreferrer">Matter Server open feature: create and manage Matter groups</a></li>
+              <li><a href="https://github.com/matter-js/matterjs-server/pull/757" target="_blank" rel="noopener noreferrer">Matter Server binding and access-control editor implementation</a></li>
+              <li><a href="https://developers.home.google.com/matter/primer/interaction-model" target="_blank" rel="noopener noreferrer">Google Matter primer: groupcast, IPv6 multicast, and the popcorn effect</a></li>
+              <li><a href="https://csa-iot.org/newsroom/matter-1-3-specification-released/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: Matter 1.3 scenes and command batching</a></li>
+            </ul>
+
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://nanoleaf.me/en-US/products/essentials/bulbs/" target="_blank" rel="noopener noreferrer">Nanoleaf Essentials Matter-over-Thread A19 bulbs</a></li>
+              <li><a href="https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-450-lumen-smart-white-spectrum-clear-globe-40611490/" target="_blank" rel="noopener noreferrer">IKEA KAJPLATS Matter smart bulb</a></li>
+              <li><a href="https://www.philips-hue.com/en-us/p/hue-white-ambiance-a60-e26-smart-bulb-1100/046677591106" target="_blank" rel="noopener noreferrer">Philips Hue White Ambiance A60/E26 smart bulb</a></li>
+            </ul>
+
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1ukooy7/is_there_an_equivalent_in_matterthread_to_zigbees/" target="_blank" rel="noopener noreferrer">r/homeassistant: Matter and Thread lights versus Zigbee groups</a></li>
+              <li><a href="https://community.home-assistant.io/t/light-groups-in-matter/922586" target="_blank" rel="noopener noreferrer">Home Assistant Community: Light groups in Matter?</a></li>
+              <li><a href="https://community.home-assistant.io/t/matter-over-thread-lighting-groups/1000214" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter-over-Thread lighting groups and direct control</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Make every light path intentional</p>
+        <h2>Want lighting that feels like part of the house?</h2>
+        <p>Tara plans the fixture, radio, physical control, local automation, family app, and outage behavior together&mdash;before a room fills up with bulbs that almost agree.</p>
+        <a class="cta" href="/configurator/">Open the configurator</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related Tara pages</p>
+        <div class="links"><a href="/smart-lighting-kit/">Smart lighting kit</a><a href="/home-assistant-smart-home-kit/">Home Assistant smart home kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/matter-binding-home-assistant-switch-light-offline/">Matter binding</a><a href="/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/">IKEA KAJPLATS</a><a href="/blog/nanoleaf-matter-thread-home-assistant-without-apple-home/">Nanoleaf Matter lights</a><a href="/blog/philips-hue-home-assistant-bridge-matter-zigbee/">Philips Hue paths</a><a href="/configurator/">Configurator</a></div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
