@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKEA KAJPLATS in Home Assistant: Matter or Zigbee? | Tara Guides</title>
+    <meta name="description" content="Choose Matter over Thread or KAJPLATS' community Zigbee mode in Home Assistant. Compare hubs, local control, cloud needs, models, and caveats." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/" />
+    <meta property="og:title" content="IKEA KAJPLATS in Home Assistant: Matter or Zigbee? | Tara Guides" />
+    <meta property="og:description" content="Matter over Thread is the supported KAJPLATS path. The community Zigbee option can work, but it comes with model, firmware, and update caveats." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IKEA KAJPLATS in Home Assistant: Matter or Zigbee? | Tara Guides" />
+    <meta name="twitter:description" content="Matter over Thread is the supported KAJPLATS path. The community Zigbee option can work, but it comes with model, firmware, and update caveats." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .hero-copy { display: grid; gap: 18px; min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1.08; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.12; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article { max-width: 1160px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; min-width: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 980px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article > article, .article-hero, .article-hero > *, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .article-cta, .source-list, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.3; }
+      .related { border-bottom: 1px solid var(--line); }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/#blogposting",
+          "headline": "IKEA KAJPLATS in Home Assistant: Matter over Thread or Zigbee?",
+          "description": "Choose Matter over Thread or KAJPLATS' community Zigbee mode in Home Assistant. Compare hubs, local control, cloud needs, models, and caveats.",
+          "image": "https://tarahome.ai/assets/generated/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/cover.png",
+          "datePublished": "2026-07-15",
+          "dateModified": "2026-07-15",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/" },
+          "citation": [
+            "https://www.ikea.com/global/en/newsroom/retail/the-new-smart-home-from-ikea-matter-compatible-251106/",
+            "https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/",
+            "https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-450-lumen-smart-white-spectrum-clear-globe-40611490/",
+            "https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-1100-lumen-smart-color-and-white-spectrum-globe-opal-30611462/",
+            "https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-1600-lumen-smart-white-spectrum-globe-opal-white-40611305/",
+            "https://www.ikea.com/us/en/p/kajplats-led-bulb-gu10-517-lm-smart-color-and-white-spectrum-80611474/",
+            "https://www.ikea.com/us/en/manuals/kajplats-led-bulb-e26-450-lumen-smart-white-spectrum-clear-globe__AA-2672138-1-100.pdf",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.zigbee2mqtt.io/devices/KAJPLATS_CWS.html",
+            "https://www.zigbee2mqtt.io/devices/KAJPLATS_WS.html",
+            "https://www.zigbee2mqtt.io/devices/KAJPLATS_WS_clear.html",
+            "https://community.home-assistant.io/t/ikea-kajplats-zigbee-mode/960714",
+            "https://community.home-assistant.io/t/ha-matter-ikea-kajplats/991849",
+            "https://www.reddit.com/r/homeassistant/comments/1usz7ug/ikea_kajplats_matter_bulb_refuses_to_pair_with/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Technical Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "IKEA KAJPLATS: Matter or Zigbee", "item": "https://tarahome.ai/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does IKEA KAJPLATS officially support Zigbee?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. IKEA sells and documents KAJPLATS as Matter over Thread. Zigbee2MQTT documents an unofficial Zigbee mode for several KAJPLATS families, but warns that the mode has reduced functionality and could be removed by IKEA." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do you need IKEA DIRIGERA to use KAJPLATS with Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant OS can pair KAJPLATS directly. It needs the Matter integration and official Matter Server app, plus a usable Thread network and a Thread border router that links that network to the home network. DIRIGERA is optional." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can one KAJPLATS bulb use Matter and Zigbee at the same time?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Do not plan on simultaneous Matter and Zigbee operation. Treat them as alternative pairing modes. Changing paths requires resetting and pairing the bulb again, which can also break device names and automations." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can KAJPLATS work in Apple Home and Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Add the bulb to one Matter controller, then use Matter's built-in sharing feature, called multi-admin, to add the other. KAJPLATS joins Apple Home as a Matter accessory, not through the older native HomeKit pairing path." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant update KAJPLATS firmware?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant shows over-the-air updates only when the bulb supports Matter updating and IKEA publishes a compatible update. This is not guaranteed for every KAJPLATS model or Thread setup. Home Assistant may also be unable to deliver an update through an Apple Thread border router, although Apple Home may update the bulb. The unofficial Zigbee mode does not provide KAJPLATS software updates." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div class="hero-copy">
+            <p class="article-meta"><span>IKEA smart lighting</span><span>July 15, 2026</span><span>12 min read</span></p>
+            <h1>IKEA KAJPLATS in Home Assistant: Matter over Thread or Zigbee?</h1>
+            <p class="lede">Use Matter over Thread unless you deliberately want to test an unofficial workaround. It is the path IKEA supports, Home Assistant can control it inside your home even when the internet is down, and it does not require DIRIGERA when you already have the right Matter and Thread setup.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/ikea-kajplats-home-assistant-matter-thread-vs-zigbee/cover.png" alt="Two real IKEA KAJPLATS clear smart bulbs glowing above a warm residential kitchen counter" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>What to do:</strong> Pair KAJPLATS by Matter over Thread. That is IKEA's documented path, and Home Assistant can control it inside your home even when the internet is down.</li>
+              <li><strong>You do not need DIRIGERA.</strong> Home Assistant OS needs its two Matter software pieces, a usable Thread network, and a Thread border router&mdash;the hub or radio that links the bulb's Thread network to your home network.</li>
+              <li><strong>What to avoid:</strong> Do not buy a roomful of bulbs because one community Zigbee report worked. IKEA does not officially support that mode, and reports for Home Assistant's built-in Zigbee option, called ZHA, are especially uneven.</li>
+              <li><strong>Main caveat:</strong> KAJPLATS sockets, brightness ratings, the bulb's internal software (firmware), and even community Zigbee instructions vary by model and country. Test one exact regional model before buying many.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Choose Matter over Thread</h2>
+          <p>For a normal Home Assistant installation, pair IKEA KAJPLATS as a <strong>Matter-over-Thread bulb</strong>. Matter is the shared smart-home control standard. Thread is the bulb's low-power local wireless network. A Thread border router is the always-on hub or radio that links that network to your regular Ethernet or Wi-Fi home network. This is how IKEA sells and documents KAJPLATS, and <strong>DIRIGERA is optional</strong>.</p>
+          <p>The direct path needs Home Assistant OS, a working Thread border router, and a phone running the Home Assistant Companion app for setup. It also uses two Home Assistant software pieces: the <strong>Matter Server app</strong>, which talks to Matter devices, and the <strong>Matter integration</strong>, which puts those devices into Home Assistant. Everyday light control stays inside the home without the IKEA cloud.</p>
+          <p>KAJPLATS also contains a community-discovered Zigbee mode. <strong>Zigbee2MQTT</strong>&mdash;community software that connects Zigbee devices to Home Assistant&mdash;now recognizes many KAJPLATS model numbers, but its own pages call this support unofficial. They warn that the Zigbee mode has reduced functionality, receives no KAJPLATS software updates over Zigbee, and could disappear in a future IKEA update. Reports for <strong>ZHA</strong>, Home Assistant's built-in Zigbee option, are thinner and depend on the exact bulb, software version, Zigbee USB adapter or hub, and its configuration.</p>
+          <p>So the decision is not “Which radio is always better?” It is “Do I want the supported product path, or am I willing to maintain an undocumented fallback?” Choose Matter for the first answer. Try Zigbee on one inexpensive, returnable bulb only if you knowingly choose the second.</p>
+
+          <div class="callout">
+            <p><strong>Tara's default:</strong> If Home Assistant is the automation brain, pair KAJPLATS to Home Assistant first. After it works, use Matter's built-in sharing feature, called multi-admin, to add it to Apple Home, Google Home, Alexa, or SmartThings as needed. That keeps automations in one place and reduces duplicate routines.</p>
+          </div>
+
+          <h2 id="path-comparison">Five Ways to Use KAJPLATS</h2>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th>Pairing path</th><th>Official support</th><th>Local control</th><th>Hub, account, or cloud</th><th>Matter or HomeKit path</th><th>Main caveat</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Matter directly to Home Assistant</strong></td>
+                  <td>IKEA's supported Matter-over-Thread design and Home Assistant's supported Matter path</td>
+                  <td>Yes, through Home Assistant</td>
+                  <td>Needs Home Assistant Matter Server and a Thread border router; no IKEA account or cloud for daily control</td>
+                  <td>Share later to Apple, Google, Alexa, or SmartThings with Matter's built-in multi-admin sharing</td>
+                  <td>Home Assistant must have a usable Thread network, not merely see another platform's network name</td>
+                </tr>
+                <tr>
+                  <td><strong>DIRIGERA first, then Home Assistant</strong></td>
+                  <td>Official IKEA setup; share the native Matter bulb separately to Home Assistant</td>
+                  <td>Basic control remains local; internet is needed for some remote services and updates</td>
+                  <td>Needs DIRIGERA and IKEA Home smart; an IKEA account may be used for cloud features</td>
+                  <td>Use the bulb's Matter sharing flow; adding DIRIGERA's Matter bridge&mdash;the feature that shares older IKEA devices with another platform&mdash;does not automatically add native KAJPLATS bulbs</td>
+                  <td>Extra hub and app, but a clearer IKEA-managed firmware path</td>
+                </tr>
+                <tr>
+                  <td><strong>Apple, Google, Alexa, or SmartThings first</strong></td>
+                  <td>Official Matter ecosystem path</td>
+                  <td>Each Matter controller&mdash;the app or hub that operates the bulb&mdash;can control it on the home network; voice and remote features may use that platform's cloud</td>
+                  <td>Needs both a Matter-controller role and a Thread-border-router role, although one hub may provide both; usually needs the platform account</td>
+                  <td>Share to Home Assistant with a new Matter setup code; Apple uses Matter here, not legacy HomeKit pairing</td>
+                  <td>Do not create duplicate schedules in several apps</td>
+                </tr>
+                <tr>
+                  <td><strong>Community Zigbee with Zigbee2MQTT</strong></td>
+                  <td>Not supported or documented by IKEA; recognized by current Zigbee2MQTT device definitions</td>
+                  <td>Yes, through the Zigbee USB radio or hub that runs the Zigbee network</td>
+                  <td>Needs that Zigbee radio or hub; no Thread border router or cloud for daily control</td>
+                  <td>No Matter sharing or native Apple Home path; Home Assistant's HomeKit Bridge feature can show the light in Apple Home</td>
+                  <td>Reduced features, model-specific behavior, and no Zigbee firmware updates</td>
+                </tr>
+                <tr>
+                  <td><strong>Direct IKEA remote pairing</strong></td>
+                  <td>Official, documented bulb-to-remote setup</td>
+                  <td>Yes, from the remote</td>
+                  <td>No hub, account, or cloud</td>
+                  <td>It does not add the bulb to Home Assistant, Matter, or the Zigbee USB radio or hub running Home Assistant's Zigbee network</td>
+                  <td>Useful for simple lighting, but not a smart-home integration path</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="official-models">What IKEA Officially Supports</h2>
+          <p>IKEA launched KAJPLATS as a family of Matter-over-Thread bulbs, with socket shapes and brightness levels that vary by market. As of July 15, 2026, IKEA's US catalog includes concrete options such as the <strong>E26 450-lumen clear white-spectrum bulb, article 406.114.90</strong>; the <strong>E26 1100-lumen color-and-white bulb, article 306.114.62</strong>; the <strong>E26 1600-lumen white-spectrum bulb, article 406.113.05</strong>; and the <strong>GU10 517-lumen color-and-white bulb, article 806.114.74</strong>.</p>
+          <p>European stores use different sockets, including E27 and E14, and some product pages show slightly different lumen labels for otherwise similar positions in the range. Do not use an E26 forum success story as proof that an E27, E14, E12, or GU10 bulb will behave identically. Check the article number printed on the box and the regional IKEA product page.</p>
+          <p>IKEA's public support material calls KAJPLATS a Matter product and contrasts it with older TRÅDFRI Zigbee lighting. Product pages say phone and app control requires a Thread border router, with DIRIGERA given as an example rather than a requirement. IKEA also says a compatible Matter system from another brand can pair the bulb.</p>
+
+          <h2 id="direct-matter-setup">How to Pair KAJPLATS Directly to Home Assistant</h2>
+          <ol>
+            <li><strong>Confirm the foundation.</strong> On Home Assistant OS, install or update the official Matter Server app and add the Matter integration. Confirm that Home Assistant has a working Thread border router. It also needs the Thread network credentials&mdash;the network name and password-like details&mdash;and your phone needs the same details.</li>
+            <li><strong>Use a safe test lamp.</strong> Unplug the table lamp before installing or removing the bulb, let the bulb cool before handling it, then plug it in near the phone and within good Thread range.</li>
+            <li><strong>Open the Home Assistant Companion app.</strong> Choose the option to add a Matter device and scan the QR code from the bulb or its paperwork. Bluetooth on the phone helps with pairing; it is not the bulb's everyday control path.</li>
+            <li><strong>Keep the setup code.</strong> Photograph or store the original QR and numeric code somewhere private. The first Matter app can generate a new sharing code for a second controller.</li>
+            <li><strong>Name and test the bulb.</strong> Turn it on, dim it, and change color temperature or color when the model supports those features. Then test an automation while the internet is disconnected but the local network remains on.</li>
+            <li><strong>Share only after it is stable.</strong> Use Matter's “add to another controller” flow to add Apple Home, Google Home, Alexa, or SmartThings. Build schedules in one place to avoid lights firing twice.</li>
+          </ol>
+          <p>If Home Assistant can see an Apple, Google, Amazon, or DIRIGERA Thread network but does not have its credentials, the network name alone is not enough. In the Companion app, open <strong>Settings &gt; Devices &amp; services &gt; Thread</strong>. To import an existing Google or Apple network into Home Assistant, Android offers <strong>Configure &gt; Import Credentials</strong>, while iPhone offers <strong>Send credentials to Home Assistant</strong>. Then make that network preferred. If Home Assistant created the network, sync in the other direction: Android uses <strong>Settings &gt; Companion app &gt; Troubleshooting &gt; Sync Thread credentials</strong>; iPhone uses <strong>Send credentials to phone</strong> in the Thread integration.</p>
+          <p>If the network details still cannot be shared, pair the bulb to the platform that owns the Thread network first, then share the Matter device to Home Assistant. Tara's guide to <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">choosing which Matter app should pair first</a> covers that decision.</p>
+
+          <h2 id="dirigera-path">When DIRIGERA Still Makes Sense</h2>
+          <p>You do not need DIRIGERA for basic KAJPLATS control in Home Assistant. It can still be the right first controller when the IKEA Home smart app, IKEA support flow, or IKEA-managed firmware experience matters more than minimizing hubs.</p>
+          <p>One detail catches people: DIRIGERA's Matter bridge is mainly a way to expose compatible older IKEA devices to another platform. A native Matter-over-Thread KAJPLATS bulb is not automatically included just because Home Assistant added the DIRIGERA bridge. Pair KAJPLATS in IKEA Home smart, open its Matter sharing flow, and add the bulb to Home Assistant as another controller.</p>
+          <p>IKEA says basic home functions remain available without internet, while firmware, security, remote, and cloud-connected features can need an internet connection. That is different from sending every on/off command over the internet.</p>
+
+          <h2 id="community-zigbee">When the Community Zigbee Mode Is Reasonable</h2>
+          <p>The community Zigbee mode is reasonable only when you already run a healthy Zigbee2MQTT network, understand that this is outside IKEA's support path, and accept a future reset back to Matter. Current Zigbee2MQTT definitions recognize many white-spectrum, color-and-white, and clear KAJPLATS variants. That means Zigbee2MQTT knows how to control those bulbs, but it is still not an IKEA promise.</p>
+          <p>Zigbee2MQTT warns that this mode exists for limited compatibility with older IKEA controls, uses reduced Zigbee software, and may disappear. Its pages also say KAJPLATS does not receive software updates while operating on Zigbee. Moving back to Matter for an update means resetting and pairing the bulb again. Home Assistant device names, groups, scenes, fade behavior, power-on behavior, and whether the bulb reconnects after power loss can differ from what you expect from a normal IKEA Zigbee bulb.</p>
+          <p>The entry sequence is not universal. Current Zigbee2MQTT pages describe a factory reset by switching the bulb off and back on six times, followed by a separate repeated off-and-on sequence for Zigbee mode; some KAJPLATS families say 12 repetitions and a clear-bulb page says 15. Follow the page for the exact family and model number rather than copying a sequence from a different bulb.</p>
+          <div class="callout">
+            <p><strong>Safe experiment:</strong> Use one accessible table lamp, not a ladder-height fixture or an entire switched circuit. Unplug the lamp before handling the bulb, let the bulb cool, keep the receipt, and verify pairing, groups, scenes, power recovery, and a full week of normal use before buying more.</p>
+          </div>
+
+          <h3 id="zha-caveat">What about ZHA?</h3>
+          <p>Some owners report that a KAJPLATS bulb paired with ZHA, while others report bulbs that would not pair, disconnected immediately, or behaved differently after changing Zigbee adapters. ZHA does not publish a KAJPLATS-specific compatibility promise. Treat ZHA pairing as an experiment, not a guarantee for every KAJPLATS model. If you want the community Zigbee route today, Zigbee2MQTT has the clearer model pages and caveat list.</p>
+
+          <h2 id="remote-is-not-zigbee-integration">Direct Remote Pairing Is Not Home Assistant Zigbee Pairing</h2>
+          <p>IKEA's KAJPLATS manual documents a no-hub setup with a compatible IKEA remote: press the remote's pairing button four times, keep it close to the bulb, and pair for about 30 seconds. This gives you local button control without IKEA Home smart.</p>
+          <p>That direct link does not mean the bulb has joined ZHA or Zigbee2MQTT. It does not create a Home Assistant device, a Matter connection, or an Apple Home accessory. Think of it as a simple standalone lighting option. If you later want Home Assistant control, reset the bulb and pair it through the path you actually plan to keep.</p>
+
+          <h2 id="local-cloud-matter-homekit">Local Control, Cloud Use, Matter, and HomeKit</h2>
+          <ul>
+            <li><strong>Direct Home Assistant Matter:</strong> Everyday commands and automations stay local. Home Assistant Cloud and an IKEA account are not required. A vendor or platform may still use internet access for firmware, remote access, voice services, or extras.</li>
+            <li><strong>DIRIGERA:</strong> Basic local behavior can continue without internet, but the IKEA path adds a hub and app, and some updates and remote features need internet.</li>
+            <li><strong>Apple Home:</strong> KAJPLATS joins as a Matter accessory. It is not using the old HomeKit QR path. Add it to Apple Home first and share to Home Assistant, or pair to Home Assistant first and share to Apple.</li>
+            <li><strong>HomeKit Bridge from Home Assistant:</strong> This Home Assistant feature shows one of its devices in Apple Home and can be useful for the unofficial Zigbee route. It is not Matter's multi-admin sharing, and Apple controls the Home Assistant copy rather than holding its own Matter connection to the bulb.</li>
+            <li><strong>Google Home, Alexa, and SmartThings:</strong> All can be additional Matter controllers when the specific platform has a compatible Matter hub and Thread border router. Their voice and away-from-home services may rely on their clouds even though Home Assistant's own control remains local.</li>
+          </ul>
+
+          <h2 id="what-to-avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not assume every KAJPLATS is the same.</strong> Match the socket, article number, lumen rating, region, and firmware before relying on somebody else's result.</li>
+            <li><strong>Do not call community Zigbee an IKEA feature.</strong> IKEA's supported specification is Matter over Thread.</li>
+            <li><strong>Do not build duplicate automations.</strong> A sunrise routine in Home Assistant plus another in Apple Home or Alexa can make the same bulb appear unreliable.</li>
+            <li><strong>Do not confuse a Thread border router with a Matter controller.</strong> The border router moves messages between Thread and the home network; the controller operates the bulb. The setup needs both functions, even when one hub provides both. Seeing a Thread network does not guarantee Home Assistant has its password-like details.</li>
+            <li><strong>Do not throw away the Matter code.</strong> Keep the original code even after pairing, and use a freshly generated sharing code when adding another controller.</li>
+            <li><strong>Do not buy dozens before a real-room test.</strong> Test power recovery, wall-switch habits, range, groups, color behavior, and family acceptance for one week.</li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Recommendation</h2>
+          <p>Buy KAJPLATS for its advertised Matter-over-Thread path. Pair one bulb directly to Home Assistant when Home Assistant will own the automations, then share it outward only to the platforms the household actually uses. This provides local control without requiring DIRIGERA and avoids scattering schedules across several apps.</p>
+          <p>Choose DIRIGERA first when IKEA's app and firmware path are worth an extra hub. Choose the community Zigbee route only as a deliberate hobbyist experiment, preferably with Zigbee2MQTT, one exact regional model, and a return option. The hidden mode is interesting; it is not a dependable buying promise.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-zigbee-support">Does IKEA KAJPLATS officially support Zigbee?</h3>
+          <p>No. IKEA sells and documents KAJPLATS as Matter over Thread. Zigbee2MQTT documents an unofficial Zigbee mode for several KAJPLATS families, but warns that it has reduced functionality and could be removed.</p>
+
+          <h3 id="faq-dirigera">Do I need IKEA DIRIGERA for KAJPLATS in Home Assistant?</h3>
+          <p>No. Home Assistant OS can pair KAJPLATS directly when its Matter integration and official Matter Server app are running and it has a usable Thread network through a Thread border router. DIRIGERA is optional.</p>
+
+          <h3 id="faq-simultaneous">Can one KAJPLATS bulb use Matter and Zigbee at the same time?</h3>
+          <p>Do not plan on that. Treat Matter and the community Zigbee mode as alternative pairing paths. Changing paths requires a reset and fresh pairing, which can also affect names, groups, scenes, and automations.</p>
+
+          <h3 id="faq-apple-home">Can KAJPLATS work in both Apple Home and Home Assistant?</h3>
+          <p>Yes. Add the bulb to one Matter controller, then use Matter's built-in sharing feature, called multi-admin, to add the other. In Apple Home, KAJPLATS is a Matter accessory rather than a legacy native HomeKit accessory.</p>
+
+          <h3 id="faq-firmware">Can Home Assistant update KAJPLATS firmware?</h3>
+          <p>Home Assistant shows over-the-air updates only when the bulb supports Matter updating and IKEA publishes a compatible update. That is not guaranteed for every KAJPLATS model or Thread setup. Home Assistant also documents a current limitation when a Thread device uses an Apple border router: Home Assistant may be unable to deliver the update, although Apple Home may update the bulb from its side. IKEA's own controller offers the clearest IKEA-managed path. The community Zigbee mode does not provide KAJPLATS software updates.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official IKEA documentation</h3>
+            <ul>
+              <li><a href="https://www.ikea.com/global/en/newsroom/retail/the-new-smart-home-from-ikea-matter-compatible-251106/" target="_blank" rel="noopener noreferrer">IKEA: KAJPLATS launch and global model family</a></li>
+              <li><a href="https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/" target="_blank" rel="noopener noreferrer">IKEA: Matter products, compatible platforms, and whether DIRIGERA is required</a></li>
+              <li><a href="https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-450-lumen-smart-white-spectrum-clear-globe-40611490/" target="_blank" rel="noopener noreferrer">IKEA KAJPLATS E26 450-lumen clear bulb, article 406.114.90</a></li>
+              <li><a href="https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-1100-lumen-smart-color-and-white-spectrum-globe-opal-30611462/" target="_blank" rel="noopener noreferrer">IKEA KAJPLATS E26 1100-lumen color bulb, article 306.114.62</a></li>
+              <li><a href="https://www.ikea.com/us/en/p/kajplats-led-bulb-e26-1600-lumen-smart-white-spectrum-globe-opal-white-40611305/" target="_blank" rel="noopener noreferrer">IKEA KAJPLATS E26 1600-lumen bulb, article 406.113.05</a></li>
+              <li><a href="https://www.ikea.com/us/en/p/kajplats-led-bulb-gu10-517-lm-smart-color-and-white-spectrum-80611474/" target="_blank" rel="noopener noreferrer">IKEA KAJPLATS GU10 517-lumen color bulb, article 806.114.74</a></li>
+              <li><a href="https://www.ikea.com/us/en/manuals/kajplats-led-bulb-e26-450-lumen-smart-white-spectrum-clear-globe__AA-2672138-1-100.pdf" target="_blank" rel="noopener noreferrer">IKEA KAJPLATS manual: Matter, reset, sharing, and direct remote pairing</a></li>
+              <li><a href="https://www.ikea.com/us/en/customer-service/privacy-security/home-smart-policy/" target="_blank" rel="noopener noreferrer">IKEA Home smart policy: local functions, internet use, and updates</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Home Assistant and compatibility documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration: setup, local control, sharing, and over-the-air update notes</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread integration and border-router guidance</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: 2026 Matter and Thread stack update</a></li>
+              <li><a href="https://www.zigbee2mqtt.io/devices/KAJPLATS_CWS.html" target="_blank" rel="noopener noreferrer">Zigbee2MQTT KAJPLATS color-and-white models and unofficial-support warning</a></li>
+              <li><a href="https://www.zigbee2mqtt.io/devices/KAJPLATS_WS.html" target="_blank" rel="noopener noreferrer">Zigbee2MQTT KAJPLATS white-spectrum models and pairing caveats</a></li>
+              <li><a href="https://www.zigbee2mqtt.io/devices/KAJPLATS_WS_clear.html" target="_blank" rel="noopener noreferrer">Zigbee2MQTT KAJPLATS clear models and model-specific pairing notes</a></li>
+              <li><a href="https://github.com/Koenkk/zigbee-herdsman-converters/pull/11155" target="_blank" rel="noopener noreferrer">Zigbee2MQTT converter project: initial named KAJPLATS support</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/ikea-kajplats-zigbee-mode/960714" target="_blank" rel="noopener noreferrer">Home Assistant Community: KAJPLATS Zigbee-mode experiences</a></li>
+              <li><a href="https://community.home-assistant.io/t/ikea-kajplats-smart-bulb-zigbee-pairing-mode-power-cycle/988507" target="_blank" rel="noopener noreferrer">Home Assistant Community: model and reset-sequence differences</a></li>
+              <li><a href="https://community.home-assistant.io/t/ha-matter-ikea-kajplats/991849" target="_blank" rel="noopener noreferrer">Home Assistant Community: KAJPLATS Matter pairing problems</a></li>
+              <li><a href="https://community.home-assistant.io/t/ikea-kajplats-thread-bulbs-pairing-issues-with-connect-zbt-2-and-smartthings-workaround/990080" target="_blank" rel="noopener noreferrer">Home Assistant Community: Thread pairing and multi-admin workaround</a></li>
+              <li><a href="https://github.com/zigpy/zha-device-handlers/issues/4686" target="_blank" rel="noopener noreferrer">ZHA device-handler issue: model- and Zigbee-adapter-dependent result</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/160196" target="_blank" rel="noopener noreferrer">Home Assistant issue: native Matter bulbs and the DIRIGERA bridge boundary</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1sgstis/90_cri_1500lm_e27_zigbee_bulb_for_999_yes_with/" target="_blank" rel="noopener noreferrer">r/homeassistant: E27 KAJPLATS Zigbee testing and mixed reports</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1sfp1vv/ikea_kajplats_gu10_has_been_a_nightmare_zigbee/" target="_blank" rel="noopener noreferrer">r/homeassistant: large GU10 Zigbee installation caveats</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1usz7ug/ikea_kajplats_matter_bulb_refuses_to_pair_with/" target="_blank" rel="noopener noreferrer">r/homeassistant: recent Matter pairing trouble</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Plan the whole path</p>
+        <h2>Want smart lighting that stays understandable after setup?</h2>
+        <p>Tara plans the bulbs, hubs, local automations, wall controls, and household app handoff as one system&mdash;so a connection choice does not become a maintenance hobby.</p>
+        <a class="cta" href="/configurator/">Build your Tara setup</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Build the rest of the local lighting path</h2>
+        <div class="links">
+          <a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">Pair IKEA Matter without DIRIGERA</a>
+          <a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Decide whether you need DIRIGERA</a>
+          <a href="/blog/ikea-bilresa-direct-pairing-vs-home-assistant/">Pair BILRESA remotes</a>
+          <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose which Matter app pairs first</a>
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter across platforms</a>
+          <a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">Compare ZHA and Zigbee2MQTT</a>
+          <a href="/blog/will-home-assistant-matter-work-without-internet/">Use Matter without internet</a>
+          <a href="/configurator/">Configurator</a>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span><a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></span></footer>
+  </body>
+</html>
