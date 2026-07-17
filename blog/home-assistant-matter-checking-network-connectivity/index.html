@@ -329,7 +329,7 @@
 
 <h3 id="wifi-vs-thread">1. Confirm whether it is Wi-Fi Matter or Matter over Thread</h3>
 <p>Home Assistant's Matter docs say to look for both the <strong>Matter logo</strong> and either the <strong>Wi-Fi</strong> or <strong>Thread</strong> logo on the packaging. That first split changes the whole troubleshooting path. <strong>Wi-Fi Matter does not need a Thread border router.</strong> Matter over Thread does.</p>
-<p>If you are actually seeing the separate Home Assistant message that says <strong>"Your device requires a Thread border router"</strong>, start with Tara's dedicated guide for that error at <a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says "Your Device Requires a Thread Border Router"</a>. This article is about the later <strong>network-connectivity stall</strong>, which can happen on Wi-Fi Matter or Thread Matter.</p>
+<p>If you are actually seeing the separate Home Assistant message that says <strong>"Your device requires a Thread border router"</strong>, start with Tara's dedicated guide for that error at <a href="/blog/home-assistant-thread-border-router-required/">Home Assistant: Thread Border Router Required Fix</a>. This article is about the later <strong>network-connectivity stall</strong>, which can happen on Wi-Fi Matter or Thread Matter.</p>
 
 <h3 id="put-phone-on-right-network">2. Put the phone on the right network and in the right physical place</h3>
 <p>Home Assistant's Matter docs say that if you are adding a <strong>Wi-Fi-based Matter device</strong>, your phone should be on the <strong>same 2.4 GHz network</strong> where you want that device to operate. Many Matter accessories still rely on 2.4 GHz Wi-Fi during onboarding. If the phone is on a guest SSID, a differently isolated SSID, or a fancy network that hides multicast, the pairing flow can reach the network step and still fail.</p>
@@ -350,7 +350,7 @@
 
 <h3 id="flatten-network-first">6. Flatten the network until it works once</h3>
 <p>Home Assistant's Matter docs are unusually direct here: Matter is designed for <strong>regular residential network setups</strong> and may not integrate well with enterprise-style features like <strong>VLANs, multicast filtering, and malfunctioning IGMP snooping</strong>. They also say a router or access-point setting that tries to "optimize" multicast can actively hurt Matter discovery traffic.</p>
-<p>For troubleshooting, use the simplest proof path first. Put the <strong>phone</strong>, <strong>Home Assistant</strong>, and the relevant <strong>Wi-Fi Matter device or Thread border router</strong> on the same ordinary LAN or VLAN. Disable guest isolation. If you use UniFi, Omada, Eero, or another mesh platform with multicast enhancement, client isolation, or aggressive optimization features, simplify before you conclude the accessory is bad. After the device pairs cleanly once, you can reintroduce segmentation deliberately, using the network-placement guidance in <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a>.</p>
+<p>For troubleshooting, use the simplest proof path first. Put the <strong>phone</strong>, <strong>Home Assistant</strong>, and the relevant <strong>Wi-Fi Matter device or Thread border router</strong> on the same ordinary LAN or VLAN. Disable guest isolation. If you use UniFi, Omada, Eero, or another mesh platform with multicast enhancement, client isolation, or aggressive optimization features, simplify before you conclude the accessory is bad. After the device pairs cleanly once, you can reintroduce segmentation deliberately, using the network-placement guidance in <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Be on an IoT VLAN?</a>.</p>
 
 <h3 id="check-rf-after-network">7. Only after the basics check out, inspect Thread channel and RF interference</h3>
 <p>If the device pairs once but onboarding is still unreliable or previously joined Thread devices go flaky, the official Thread docs say to inspect the <strong>Thread channel</strong> and 2.4 GHz interference. Thread shares spectrum with Wi-Fi and Bluetooth. The docs say <strong>channel 26</strong> is least likely to experience Wi-Fi interference, with channel 25 also helping in many homes. They also call out repeated <code>ChannelAccessFailure</code> messages as a sign that the channel is too busy.</p>
@@ -384,11 +384,11 @@
 <h2 id="related-reading">Related Tara Reading</h2>
 <p>If this stall is pushing you into bigger Thread, Matter, or network-design decisions, these guides cover the adjacent choices that usually create it.</p>
 <ul>
-  <li><a href="/blog/home-assistant-thread-border-router-required/">Why Home Assistant Says "Your Device Requires a Thread Border Router"</a></li>
+  <li><a href="/blog/home-assistant-thread-border-router-required/">Home Assistant: Thread Border Router Required Fix</a></li>
   <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should You Pair Matter Devices to Home Assistant or Apple/Google First?</a></li>
   <li><a href="/blog/apple-tv-homepod-thread-border-router-home-assistant/">Can Apple TV or HomePod Be Your Thread Border Router for Home Assistant?</a></li>
   <li><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">How to Pair IKEA Matter-over-Thread Devices in Home Assistant Without Cloud</a></li>
-  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Live on Your Main Network or IoT VLAN?</a></li>
+  <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Should Home Assistant Be on an IoT VLAN?</a></li>
   <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
   <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Matter vs Thread vs Zigbee vs Z-Wave for Homeowners</a></li>
   <li><a href="/blog/matter-protocol-explained/">Matter Protocol Explained: The Future of Smart Homes</a></li>
