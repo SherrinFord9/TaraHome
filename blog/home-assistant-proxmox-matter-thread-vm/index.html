@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can Matter and Thread Work With Home Assistant in Proxmox? | Tara Guides</title>
+    <meta name="description" content="Yes, Matter and Thread can work in a Proxmox Home Assistant VM. Use HAOS, bridged Ethernet, local IPv6, and one stable Thread border-router path." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-proxmox-matter-thread-vm/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-proxmox-matter-thread-vm/" />
+    <meta property="og:title" content="Can Matter and Thread Work With Home Assistant in Proxmox? | Tara Guides" />
+    <meta property="og:description" content="The supported Home Assistant VM path, the two sensible Thread choices, and the IPv6 checks to make before resetting a device." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-proxmox-matter-thread-vm/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Matter and Thread in a Proxmox VM" />
+    <meta name="twitter:description" content="Use HAOS, a bridged LAN connection, local IPv6, and either USB passthrough or an external Thread border router." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-proxmox-matter-thread-vm/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .hero-copy { display: grid; gap: 18px; min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1.08; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.12; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article { max-width: 1160px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; min-width: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 860px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 1120px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.94rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article > article, .article-hero, .article-hero > *, .article-body { min-width: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .article-cta, .source-list, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.3; }
+      .related { border-bottom: 1px solid var(--line); }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-proxmox-matter-thread-vm/#blogposting",
+          "headline": "Can Matter and Thread Work With Home Assistant in Proxmox?",
+          "description": "Yes, Matter and Thread can work in a Proxmox Home Assistant VM. Use HAOS, bridged Ethernet, local IPv6, and one stable Thread border-router path.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-proxmox-matter-thread-vm/cover.png",
+          "datePublished": "2026-07-16",
+          "dateModified": "2026-07-16",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-proxmox-matter-thread-vm/" },
+          "citation": [
+            "https://www.home-assistant.io/installation/alternative/",
+            "https://www.home-assistant.io/installation/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/blog/2025/05/22/deprecating-core-and-supervised-installation-methods-and-32-bit-systems/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://github.com/home-assistant/addons/blob/master/openthread_border_router/DOCS.md",
+            "https://pve.proxmox.com/wiki/Network_Configuration",
+            "https://pve.proxmox.com/pve-docs/pve-admin-guide.pdf",
+            "https://support.apple.com/en-us/102557",
+            "https://support.google.com/googlenest/answer/12391458?hl=en",
+            "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+            "https://github.com/home-assistant/addons/issues/3889",
+            "https://www.reddit.com/r/homeassistant/comments/1t6d7nl/adding_thread_matter_devices_does_not_work/",
+            "https://www.reddit.com/r/homeassistant/comments/1sk95f9/adding_new_matter_devices_issues/",
+            "https://community.home-assistant.io/t/matter-thread-commissioning-fails-on-proxmox-vm-haos-with-zbt-2-address-unreachable-after-pase/1013449"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-proxmox-matter-thread-vm/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Matter and Thread in Proxmox", "item": "https://tarahome.ai/blog/home-assistant-proxmox-matter-thread-vm/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-proxmox-matter-thread-vm/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant Matter work in a Proxmox VM?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Home Assistant OS in a Proxmox VM is a supported installation path. Use the official Matter Server app, give the VM a bridged LAN connection, and keep local IPv6 working between Home Assistant, the Matter device, and any Thread border router." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Matter need internet IPv6 to work in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant says internet IPv6 and DHCPv6 are not required. Matter does require IPv6 on the local network, so disabling IPv6 on the Home Assistant VM, Proxmox bridge, or host can break commissioning and control." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does a Proxmox Home Assistant VM need a USB Thread radio?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only if Home Assistant will run its own OpenThread Border Router. Matter-over-Wi-Fi needs no Thread radio, and Matter-over-Thread can instead use a compatible external Thread border router on the same local network." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant use an Apple or Google Thread border router from a VM?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. A compatible Apple or Google Thread border router can provide the radio path while Home Assistant remains the Matter controller. The VM must reach it over the local IPv6 network, and the phone used for setup must have the correct Thread network details." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does USB passthrough stop a Home Assistant VM from moving to another Proxmox host?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A VM using a physically attached USB radio is tied to that Proxmox host while the radio is passed through. Proxmox documents that USB passthrough prevents online migration, so plan a shutdown and reconnect the radio before moving the VM." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div class="hero-copy">
+            <p class="article-meta"><span>Home Assistant in a VM</span><span>July 16, 2026</span><span>15 min read</span></p>
+            <h1>Can Matter and Thread Work With Home Assistant in Proxmox?</h1>
+            <p class="lede">Yes. The reliable path is Home Assistant OS in a VM that appears directly on the home network, the official Matter Server app, working local IPv6, and one clear plan for the Thread border router.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-proxmox-matter-thread-vm/cover.png" alt="Compact home server, Ethernet switch, and a Thread USB radio on a warm oak utility shelf" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Use the supported path:</strong> install Home Assistant OS from the official Proxmox-compatible image, give the VM a wired connection that makes it appear as a normal device on the home network, and install the official Matter Server app.</li>
+              <li><strong>Choose the right Thread path:</strong> Matter-over-Wi-Fi needs no Thread radio; Matter-over-Thread needs either a USB radio passed into the VM or an external Thread border router that links Thread devices to the normal home network.</li>
+              <li><strong>Keep local IPv6 on:</strong> leave IPv6 set to Automatic in Home Assistant and make sure Proxmox does not block it inside your home. Your internet provider does not need to offer IPv6.</li>
+              <li><strong>Avoid extra network layers:</strong> do not begin with separate Matter and OpenThread containers, a VM hidden behind a second virtual router, or a Thread radio forwarded over an unreliable network link.</li>
+              <li><strong>Main caveat:</strong> passing a USB radio directly into the VM ties that VM to one Proxmox host; an external border router is easier to keep during a VM move, but its app, setup keys, and optional cloud services remain a separate ecosystem.</li>
+            </ul>
+          </aside>
+
+          <h2 id="direct-answer">Yes&mdash;Proxmox Is Not the Problem by Itself</h2>
+          <p><strong>Matter and Thread can work reliably with Home Assistant in Proxmox.</strong> Home Assistant officially provides a KVM/Proxmox image for Home Assistant OS, often shortened to HAOS. A virtual machine, or VM, simply lets Home Assistant run as a complete computer inside the Proxmox host. The important part is making that virtual computer look like an ordinary device on your home network.</p>
+          <p>Use a bridged network connection so the HAOS VM gets its own local address and can exchange IPv6 and the device-finding traffic used on the home network. For Matter-over-Thread, also give Home Assistant a dependable path to a Thread border router&mdash;the hub that links the Thread mesh to the normal home network. Either pass a dedicated USB Thread radio into the VM and run Home Assistant's OpenThread Border Router app, or use a compatible border router that already lives on that network.</p>
+          <p>Matter control remains local. Proxmox does not turn it into a cloud system. The first things to check are an extra network layer that stops devices seeing one another, disabled local IPv6, missing Thread network details on the setup phone, and an unstable USB-radio path&mdash;not virtualization alone.</p>
+
+          <h2 id="roles">Four Pieces That Are Easy to Mix Up</h2>
+          <ul>
+            <li><strong>Proxmox host:</strong> the physical mini PC or server that runs the VM. Its network bridge and USB hardware sit underneath Home Assistant.</li>
+            <li><strong>Home Assistant OS VM:</strong> the supported Home Assistant appliance. It runs Home Assistant Core plus managed apps such as Matter Server and OpenThread Border Router.</li>
+            <li><strong>Matter controller:</strong> Home Assistant plus Matter Server. It commissions devices and sends local Matter commands over IPv6.</li>
+            <li><strong>Thread border router:</strong> the bridge between the low-power Thread mesh and the normal Ethernet or Wi-Fi home network. It is needed only for Matter-over-Thread devices.</li>
+          </ul>
+          <p>A Thread border router is not the same thing as a Matter controller. A HomePod mini can provide the Thread radio path while Home Assistant controls the device. A Home Assistant Connect ZBT-2 can also provide that path without adding Apple, Google, or SmartThings as a controller, but it ships in Zigbee mode. Dedicate the radio to Thread and follow Home Assistant's official enable-Thread steps before using the OpenThread Border Router app.</p>
+
+          <h2 id="paths">Which Proxmox Setup Should You Choose?</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Setup path and current examples</th>
+                  <th>Official support</th>
+                  <th>Local control and cloud dependency</th>
+                  <th>Matter, Apple Home, and other platforms</th>
+                  <th>Community caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>HAOS VM plus a passed-through Thread radio</strong><br />Home Assistant Connect ZBT-2, or ZBT-1 for existing owners, with the official OpenThread Border Router app</td>
+                  <td>Home Assistant's recommended OS path supports the official Matter Server and OpenThread Border Router apps. Its Thread documentation lists ZBT-2 and ZBT-1, while describing the Home Assistant border-router integration with Matter as work in progress.</td>
+                  <td>Matter commands and Thread routing stay local. No Apple, Google, or Samsung account is required. Remote Home Assistant access is a separate, optional choice.</td>
+                  <td>Pair devices to Home Assistant directly. Share them later through Matter multi-admin, or expose selected Home Assistant entities to Apple Home with HomeKit Bridge.</td>
+                  <td>ZBT-2 and ZBT-1 start in Zigbee mode. Follow the official enable-Thread flow and dedicate this radio to Thread rather than trying to run Zigbee and Thread on it here. USB passthrough also binds the VM to that physical host.</td>
+                </tr>
+                <tr>
+                  <td><strong>HAOS VM plus an external Thread border router</strong><br />Apple HomePod mini, HomePod (2nd gen), or Apple TV 4K (3rd gen, Wi-Fi + Ethernet); Google Nest Hub (2nd gen), Nest Wifi Pro, or Google TV Streamer (4K)</td>
+                  <td>Home Assistant supports compatible third-party Thread border routers. Apple and Google document these models as Thread border routers for their own platforms.</td>
+                  <td>Home Assistant's Matter commands remain local. The external platform may require an account for setup, credential sharing, remote control, updates, or its own automations.</td>
+                  <td>The border-router role does not force Apple Home or Google Home to control the device. Add those platforms separately through Matter multi-admin or use HomeKit Bridge for Apple.</td>
+                  <td>The setup phone must hold the right Thread network details, and all pieces need local IPv6 reachability. Several border routers can help only when they belong to the intended Thread network.</td>
+                </tr>
+                <tr>
+                  <td><strong>HAOS VM plus SmartThings infrastructure</strong><br />SmartThings 2018 Hub or Aeotec Smart Home Hub, with a compatible Thread border router where required</td>
+                  <td>SmartThings documents both hubs as Matter controllers. Its support page says older models without Thread need a separate compatible border router.</td>
+                  <td>Home Assistant Matter control stays local. SmartThings setup, remote features, and its own automations use the SmartThings app and services.</td>
+                  <td>Share the same Matter device between Home Assistant and SmartThings with a new multi-admin code. Do not reuse the printed factory code after first pairing.</td>
+                  <td>Model capabilities differ: being a Matter controller does not guarantee a built-in Thread radio. Check the exact hub before relying on it as the border router.</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter-over-Wi-Fi or Ethernet only</strong><br />No Thread radio or Thread border router</td>
+                  <td>The official Matter Server app supports Matter devices on the regular IP network. Thread is not required for Wi-Fi or Ethernet Matter devices.</td>
+                  <td>Routine control is local. A vendor account may still be needed for firmware, optional features, or first-party remote access.</td>
+                  <td>Matter multi-admin and HomeKit Bridge choices are the same as above. The transport is Wi-Fi or Ethernet instead of Thread.</td>
+                  <td>Local IPv6 and device-discovery traffic still matter. Skipping Thread hardware does not make a VM hidden behind a second virtual router or an isolated network a safe design.</td>
+                </tr>
+                <tr>
+                  <td><strong>Home Assistant Container plus separate Matter or OTBR containers</strong></td>
+                  <td>Home Assistant calls a separately managed Matter Server an unsupported path. Container installs also lack the out-of-box app experience of HAOS.</td>
+                  <td>It can remain local, but every container network, IPv6 route, multicast boundary, permission, and update becomes the homeowner's responsibility.</td>
+                  <td>Standard Matter sharing can still work after a correct build. HomeKit Bridge remains a separate Home Assistant integration.</td>
+                  <td>Choose only when you already operate IPv6-aware containers and accept manual recovery. It is a poor first fix for a VM that merely needs a bridge or working IPv6.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="recommended-build">The Lowest-Drama Home Assistant VM Build</h2>
+          <ol>
+            <li><strong>Start with Home Assistant OS.</strong> Download the official KVM/Proxmox-compatible disk image. Home Assistant lists 2 GB RAM and two virtual CPUs as the minimum; give a busy installation more headroom.</li>
+            <li><strong>Use the wired Proxmox bridge.</strong> Connect the host by Ethernet and attach the VM to the normal LAN bridge, commonly named <code>vmbr0</code>. The goal is for Home Assistant to appear directly on the same home network as the phone and border router.</li>
+            <li><strong>Finish HAOS and take a backup.</strong> Confirm ordinary integrations and local access work before adding Matter. Keep the Proxmox console available in case a network change removes browser access.</li>
+            <li><strong>Install the official Matter Server app.</strong> Add the Matter integration through Home Assistant and follow its supported app flow. Do not substitute an arbitrary Docker image just because Proxmox can run one.</li>
+            <li><strong>Set local IPv6 to Automatic.</strong> In <strong>Settings &gt; System &gt; Network</strong>, select the active adapter and use <strong>Automatic</strong> for IPv6. This does not require your internet provider to offer IPv6.</li>
+            <li><strong>Add Thread only if the device needs it.</strong> For a local Home Assistant border router, pass a dedicated USB radio to the HAOS VM, follow Home Assistant's official procedure to enable Thread on that exact adapter, and install the OpenThread Border Router app. Do not reuse that radio for Zigbee in this design. For an existing external border router, confirm it is on the same home network and import or use the correct Thread network details during setup.</li>
+            <li><strong>Pair one non-critical device first.</strong> A plug, lamp, or contact sensor is a safer test than a lock, alarm, garage door, or thermostat. Save its Matter setup code before doing anything else.</li>
+          </ol>
+
+          <div class="callout">
+            <p><strong>Do not change Proxmox host networking from a remote-only session without a recovery path.</strong> A bridge or IPv6 mistake can disconnect every VM and the host itself. Keep a local console, a current backup, and the original configuration before making one change at a time.</p>
+          </div>
+
+          <h2 id="network">What to Check on the Proxmox Network</h2>
+          <p>Proxmox's Linux bridge acts like a virtual Ethernet switch. That is what you want: the HAOS VM should sit on the household LAN, not behind a second NAT router created only for the VM. A wired host connection is the simplest choice because bridging through Wi-Fi clients can add platform and access-point limits.</p>
+          <p>Matter uses IPv6 locally even when the rest of the household thinks in IPv4. Home Assistant explicitly says DHCPv6 and public internet IPv6 are not required. Matter devices still need local IPv6 addresses that work across the Proxmox bridge between Matter Server, the border router, and the device.</p>
+          <p>Recent Proxmox community cases have traced failed commissioning to IPv6 being disabled on the host or bridge. Treat that as a diagnostic clue, not as a universal command to paste. Inspect the Proxmox host, the bridge, any VLAN firewall, and HAOS together. If one layer drops IPv6 or multicast discovery, changing a setting only inside Home Assistant will not repair the full path.</p>
+
+          <h3 id="network-checklist">A safe network checklist</h3>
+          <ul>
+            <li>Does the HAOS VM have its own LAN address on the same ordinary network as the setup phone and border router?</li>
+            <li>Is IPv6 set to Automatic on the active Home Assistant adapter?</li>
+            <li>Has IPv6 been disabled globally on the Proxmox host or on the bridge?</li>
+            <li>Do VLAN, guest-network, or firewall rules block IPv6, multicast DNS, or traffic between the VM and border router?</li>
+            <li>Can the phone remain on the intended home Wi-Fi during commissioning, with Bluetooth enabled for the first setup exchange?</li>
+          </ul>
+          <p>If a Matter Server log line says <strong>Network is unreachable</strong> while trying to send to an IPv6 address, that attempt had no working IPv6 route. A user-filed Matter Server issue shows this exact symptom, but other messages and pairing failures can have different causes. Save diagnostics before changing the network.</p>
+
+          <h2 id="usb">Make USB Passthrough Boring and Stable</h2>
+          <p>When Home Assistant runs its own Thread border router, the clean arrangement is a dedicated Thread radio physically connected to the Proxmox host and passed through to the HAOS VM. Bind it by a stable physical port when identical USB devices share the same vendor and product ID. A short extension cable also moves the radio away from the computer's metal case and USB 3 interference.</p>
+          <p>Proxmox documents an important tradeoff: USB passthrough prevents online migration because the hardware belongs to one host. That is acceptable for many homes, but write it into the recovery plan. Shut down the VM, reconnect or reassign the radio on the destination host, and verify Thread before moving critical automations.</p>
+          <p>Do not confuse an external Thread border router with a raw radio sent over TCP/IP. Home Assistant's OpenThread Border Router documentation warns that running the radio coprocessor across a network is timing-sensitive and can leave stale routes after a failure. Put the OTBR service beside the physical radio. If the radio needs to live elsewhere, use a complete, supported border router on the LAN.</p>
+
+          <h2 id="troubleshooting">Troubleshoot in This Order</h2>
+          <ol>
+            <li><strong>Name the transport.</strong> Check whether the device is Matter-over-Wi-Fi, Matter-over-Ethernet, or Matter-over-Thread. A Thread fix cannot help a Wi-Fi device.</li>
+            <li><strong>Confirm the supported services are healthy.</strong> Update Home Assistant, Matter Server, and OpenThread Border Router where used. Check their logs and download Matter diagnostics before a reset.</li>
+            <li><strong>Verify the VM bridge.</strong> Make sure HAOS is directly reachable on the home LAN and not hidden behind a container-only bridge, NAT layer, or isolated guest network.</li>
+            <li><strong>Verify local IPv6 end to end.</strong> Check HAOS, the Proxmox bridge and host, and any VLAN firewall. Do not stop after seeing one IPv6 address on one screen.</li>
+            <li><strong>Check the Thread network details and border routers.</strong> The setup phone must know the intended Thread network. Confirm the border router is online and that Home Assistant is not steering the device toward a second accidental Thread network.</li>
+            <li><strong>Check the physical radio path.</strong> Confirm USB passthrough still points to the correct VM and that the OTBR app sees the radio. Avoid hubs, network-forwarded serial links, and loose ports while testing.</li>
+            <li><strong>Remove network isolation for one controlled test.</strong> Temporarily place the phone, HAOS VM, and border router on one trusted LAN only if you understand the firewall change and can restore it. This is a diagnosis, not a permanent reason to abandon segmentation.</li>
+            <li><strong>Reset last.</strong> Reboot the relevant service or device after saving evidence. Factory-reset only when the network path is proven and the permanent Matter code is safely stored.</li>
+          </ol>
+          <p>A device working in Apple Home, Google Home, or its vendor app does not prove that the HAOS VM can reach it. That other controller may have a different IPv6 path, different Thread network details, or its own Matter pairing. Test each role separately.</p>
+
+          <h2 id="local-cloud">What Stays Local, and What Can Still Use the Cloud?</h2>
+          <p><strong>Home Assistant's routine Matter commands are local.</strong> Matter Server talks to devices over the LAN, and a Thread border router routes packets locally between Thread and that LAN. Neither Proxmox nor Thread requires a cloud relay for a light switch or sensor update.</p>
+          <p>Cloud services can still appear around that local core. A vendor may require its app or account for firmware and device-only features. Apple Home, Google Home, Alexa, and SmartThings use their own accounts for household sharing, voice processing, remote access, or platform automations. Home Assistant remote access is also a separate choice, whether through Home Assistant Cloud or a user-managed VPN.</p>
+          <p>For Apple Home, choose one of two clear paths. <strong>Matter multi-admin</strong> gives Apple and Home Assistant separate direct Matter control of the same device. <strong>HomeKit Bridge</strong> publishes the Home Assistant entity to Apple, so Apple sends control through Home Assistant. Neither choice determines which Thread border router carries the packets, and automations do not copy between platforms.</p>
+
+          <h2 id="avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not assume the VM needs its own Thread radio.</strong> Matter-over-Wi-Fi does not use Thread, and an existing compatible border router can serve Matter-over-Thread.</li>
+            <li><strong>Do not disable IPv6 because your internet service is IPv4-only.</strong> Matter still needs local IPv6.</li>
+            <li><strong>Do not build the first installation from separate Matter, OTBR, and Home Assistant containers.</strong> It creates more IPv6 and multicast boundaries than a supported HAOS VM.</li>
+            <li><strong>Do not forward a raw Thread radio over an unreliable network.</strong> Pass it directly to HAOS or use a full external border router.</li>
+            <li><strong>Do not create the same automation in Home Assistant, Apple Home, Google Home, Alexa, and SmartThings.</strong> Multi-admin shares device control, not one shared automation brain.</li>
+            <li><strong>Do not test the design first on a lock, alarm, garage door, or essential thermostat.</strong> Keep a physical fallback and prove the network with a non-critical device.</li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p><strong>For most Proxmox homes, use Home Assistant OS as one bridged VM and keep Matter Server inside that supported appliance.</strong> If the home already has a healthy Apple or Google Thread network, try that compatible external border-router path before adding another radio. If Home Assistant should own the Thread network, pass a dedicated Connect ZBT-2 or ZBT-1 directly into the VM, follow the official enable-Thread procedure for that adapter, and run the official OTBR app. Home Assistant still describes this border-router integration with Matter as work in progress.</p>
+          <p>Whichever route you choose, document four things: the VM bridge, the local IPv6 setting, where the Thread network details live, and whether a USB radio ties the VM to one host. That small diagram is far more useful than factory-resetting devices whenever commissioning hangs.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Which Thread border router should Home Assistant use?</a></li>
+            <li><a href="/blog/thread-1-4-home-assistant-one-mesh/">Can Thread 1.4 put Home Assistant and other hubs on one mesh?</a></li>
+            <li><a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Matter-over-Thread devices that go offline</a></li>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">How Matter multi-admin works across platforms</a></li>
+            <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Should you pair a Matter device to Home Assistant first?</a></li>
+            <li><a href="/blog/replace-thread-border-router-without-repairing-matter-devices/">Replace a Thread border router without re-pairing devices</a></li>
+          </ul>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-proxmox">Can Home Assistant Matter work in a Proxmox VM?</h3>
+          <p>Yes. Home Assistant OS in a Proxmox VM is a supported installation path. Use the official Matter Server app, give the VM a bridged LAN connection, and keep local IPv6 working between Home Assistant, the Matter device, and any Thread border router.</p>
+
+          <h3 id="faq-ipv6">Does Matter need internet IPv6?</h3>
+          <p>No. Home Assistant says internet IPv6 and DHCPv6 are not required. Matter does require IPv6 on the local network, so disabling it on the HAOS VM, Proxmox bridge, or host can break commissioning and control.</p>
+
+          <h3 id="faq-radio">Does the Home Assistant VM need a USB Thread radio?</h3>
+          <p>Only if Home Assistant will run its own OpenThread Border Router. Matter-over-Wi-Fi needs no Thread radio, and Matter-over-Thread can instead use a compatible external Thread border router on the same local network.</p>
+
+          <h3 id="faq-external-router">Can Home Assistant use an Apple or Google Thread border router from a VM?</h3>
+          <p>Yes. A compatible Apple or Google Thread border router can provide the radio path while Home Assistant remains the Matter controller. The VM must reach it over the local IPv6 network, and the phone used for setup must have the correct Thread network details.</p>
+
+          <h3 id="faq-migration">Can a VM with USB passthrough move to another Proxmox host?</h3>
+          <p>Not while it is running with that physical radio attached. Proxmox documents that USB passthrough prevents online migration. Shut down the VM, reconnect or reassign the radio on the new host, and verify Thread before relying on it again.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/installation/alternative/" target="_blank" rel="noopener noreferrer">Home Assistant OS virtual machine image and Proxmox installation guidance</a></li>
+              <li><a href="https://www.home-assistant.io/installation/" target="_blank" rel="noopener noreferrer">Home Assistant installation types and the recommended Home Assistant OS path</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter: supported server path, local IPv6, Thread, and multi-admin</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread: border routers, credentials, and multiple networks</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2025/05/22/deprecating-core-and-supervised-installation-methods-and-32-bit-systems/" target="_blank" rel="noopener noreferrer">Home Assistant: Home Assistant OS in a Proxmox VM as a recommended alternative</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9 and current Matter and Thread improvements</a></li>
+              <li><a href="https://github.com/home-assistant/addons/blob/master/openthread_border_router/DOCS.md" target="_blank" rel="noopener noreferrer">Official OpenThread Border Router app: supported radios and radio-over-network warning</a></li>
+            </ul>
+
+            <h3>Platform product documentation</h3>
+            <ul>
+              <li><a href="https://support.apple.com/en-us/102557" target="_blank" rel="noopener noreferrer">Apple: Thread-enabled home hubs for Matter accessories</a></li>
+              <li><a href="https://support.google.com/googlenest/answer/12391458?hl=en" target="_blank" rel="noopener noreferrer">Google: Matter hubs with built-in Thread border routers</a></li>
+              <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings: Matter controller and Thread border-router requirements by hub</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Virtualization documentation</h3>
+            <ul>
+              <li><a href="https://pve.proxmox.com/wiki/Network_Configuration" target="_blank" rel="noopener noreferrer">Proxmox VE network configuration and Linux bridge behavior</a></li>
+              <li><a href="https://pve.proxmox.com/pve-docs/pve-admin-guide.pdf" target="_blank" rel="noopener noreferrer">Proxmox VE Administration Guide: USB passthrough and migration limits</a></li>
+            </ul>
+
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://github.com/home-assistant/addons/issues/3889" target="_blank" rel="noopener noreferrer">User-filed Matter Server issue: Network is unreachable on one missing IPv6 route</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/147616" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: local IPv6 routes and Thread border-router reachability</a></li>
+              <li><a href="https://github.com/orgs/openthread/discussions/10311" target="_blank" rel="noopener noreferrer">OpenThread discussion: virtualized OTBR, multicast, and network topology</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1t6d7nl/adding_thread_matter_devices_does_not_work/" target="_blank" rel="noopener noreferrer">r/homeassistant: Matter-over-Thread commissioning after moving HAOS to Proxmox</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1sk95f9/adding_new_matter_devices_issues/" target="_blank" rel="noopener noreferrer">r/homeassistant: new Matter devices failing in a Proxmox VM and IPv6 checks</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1r5gohj/issues_with_getting_matter_running_on_haos_in_a/" target="_blank" rel="noopener noreferrer">r/homeassistant: discovery trouble with HAOS in a VM</a></li>
+              <li><a href="https://community.home-assistant.io/t/matter-thread-commissioning-fails-on-proxmox-vm-haos-with-zbt-2-address-unreachable-after-pase/1013449" target="_blank" rel="noopener noreferrer">Home Assistant Community: Proxmox bridge IPv6 blocking Matter commissioning</a></li>
+              <li><a href="https://community.home-assistant.io/t/solved-matter-over-thread-commissioning-stalled-on-home-assistant-vm-ugreen-nas-fix-was-enabling-ipv6-for-haos-docker/1006775" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter-over-Thread commissioning stalled in a VM</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Make the invisible network understandable</p>
+        <h2>Want a local smart home that is easy to recover?</h2>
+        <p>Tara plans the host, VM, radios, network, platform sharing, physical controls, and outage behavior as one household system.</p>
+        <a class="cta" href="/configurator/">Open the configurator</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related Tara pages</p>
+        <div class="links"><a href="/home-assistant-smart-home-kit/">Home Assistant kit</a><a href="/local-smart-home-hub/">Local smart home hub</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Thread border routers</a><a href="/blog/thread-1-4-home-assistant-one-mesh/">Thread 1.4 and one mesh</a><a href="/blog/home-assistant-matter-thread-devices-offline/">Offline Thread devices</a><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a><a href="/blog/replace-thread-border-router-without-repairing-matter-devices/">Replace a border router</a><a href="/configurator/">Configurator</a></div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Configured smart-home kits from Spokane, Washington.</span>
+      <span>&copy; 2026 Tara Home. All rights reserved.</span>
+    </footer>
+  </body>
+</html>
