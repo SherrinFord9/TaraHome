@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKEA ALPSTUGA Time Sync in Home Assistant | Tara Guides</title>
+    <meta name="description" content="Matter Server 9.1 can sync an IKEA ALPSTUGA clock in Home Assistant. Update, leave time_sync on auto, and allow 30–60 minutes after it starts." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/ikea-alpstuga-home-assistant-time-sync/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/ikea-alpstuga-home-assistant-time-sync/" />
+    <meta property="og:title" content="IKEA ALPSTUGA Time Sync in Home Assistant | Tara Guides" />
+    <meta property="og:description" content="Use Matter Server 9.1's native time sync for an ALPSTUGA clock, then wait for its scheduled push instead of factory-resetting the sensor." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/ikea-alpstuga-home-assistant-time-sync/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IKEA ALPSTUGA Time Sync in Home Assistant | Tara Guides" />
+    <meta name="twitter:description" content="Update Matter Server, keep time_sync on auto, and allow 30–60 minutes for the first ALPSTUGA clock update." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/ikea-alpstuga-home-assistant-time-sync/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { max-width: 100%; padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/ikea-alpstuga-home-assistant-time-sync/#blogposting",
+      "headline": "IKEA ALPSTUGA Clock Wrong? Use Home Assistant Time Sync",
+      "description": "Matter Server 9.1 can synchronize the clock on a compatible IKEA ALPSTUGA in Home Assistant. Update the official app, use its safe automatic mode, and allow time for the scheduled push.",
+      "image": "https://tarahome.ai/assets/generated/blog/ikea-alpstuga-home-assistant-time-sync/cover.png",
+      "datePublished": "2026-07-17",
+      "dateModified": "2026-07-17",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/ikea-alpstuga-home-assistant-time-sync/"
+      },
+      "citation": [
+        "https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md",
+        "https://github.com/home-assistant/addons/blob/master/matter_server/DOCS.md",
+        "https://github.com/home-assistant/addons/blob/master/matter_server/rootfs/etc/s6-overlay/s6-rc.d/matter-server/run",
+        "https://github.com/matter-js/matterjs-server/blob/main/CHANGELOG.md",
+        "https://github.com/matter-js/matterjs-server/blob/main/packages/ws-controller/src/controller/TimeSyncManager.ts",
+        "https://github.com/matter-js/matterjs-server/blob/main/packages/ws-controller/src/controller/timeSyncCommands.ts",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://www.ikea.com/us/en/p/alpstuga-air-quality-sensor-smart-70609396/",
+        "https://www.ikea.com/us/en/manuals/alpstuga-air-quality-sensor-smart__AA-2664585-3-100.pdf",
+        "https://www.reddit.com/r/homeassistant/comments/1q0y8nk/ikea_alpstuga_time_sync_with_matter_over_thread/",
+        "https://community.home-assistant.io/t/matter-sync-time-with-matter-devices-e-g-ikea-alpstuga/969461",
+        "https://community.home-assistant.io/t/hooray-for-matter-server-9-1-0-time-feature/1017613"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/ikea-alpstuga-home-assistant-time-sync/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "IKEA ALPSTUGA Time Sync in Home Assistant", "item": "https://tarahome.ai/blog/ikea-alpstuga-home-assistant-time-sync/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/ikea-alpstuga-home-assistant-time-sync/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can Home Assistant set the IKEA ALPSTUGA clock automatically?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Matter Server app 9.1.0 added native time synchronization for compatible Matter devices. Leave time_sync on its default auto setting and make sure the Home Assistant host has a correct, NTP-synchronized clock." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does ALPSTUGA still show 00:00 after the update?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The first scheduled pass runs 30 to 60 minutes after Matter Server starts, then every 24 hours. After that startup window, reconnecting ALPSTUGA may trigger an immediate attempt. If the server recently tried that sensor, it may instead wait for the daily pass. Matter Server always sends UTC; time-zone and daylight-saving data depend on what the device supports and requests." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I still need the Matter Time Sync custom integration?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Usually not on Home Assistant OS with the official Matter Server app 9.1.0 or newer. Use the native stable feature first. The older custom integration remains community-supported and should not be the default for a new setup." }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need IKEA DIRIGERA for ALPSTUGA time sync in Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. A directly paired ALPSTUGA can use Home Assistant's official Matter controller and a compatible Thread border router. DIRIGERA is optional when you prefer IKEA's app, support, or firmware path." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the new time sync preserve every ALPSTUGA display setting?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No such promise is documented. Matter Server always sends UTC. It adds time-zone data when the device exposes that feature and daylight-saving offsets when the device requests them. Treat 12- or 24-hour format, Celsius or Fahrenheit, display mode, brightness behavior, and calibration as separate device or firmware settings." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>IKEA ALPSTUGA &amp; Matter</span><span>July 17, 2026</span><span>10 min read</span></p>
+            <h1>IKEA ALPSTUGA Clock Wrong? Use Home Assistant Time Sync</h1>
+            <p class="lede">Matter Server 9.1 can now set the clock on a compatible ALPSTUGA automatically. Update the official app and keep its safe time setting on auto. The first scheduled pass runs 30 to 60 minutes after Matter Server starts, then daily; a sensor that reconnects later may get an immediate attempt or wait for that daily pass.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/ikea-alpstuga-home-assistant-time-sync/cover.png" alt="IKEA ALPSTUGA air-quality sensor showing 00:00 on a warm oak bedside table while a homeowner checks a phone" loading="eager" />
+          </figure>
+        </header>
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Use the native fix:</strong> Update the official Home Assistant Matter Server app to <strong>9.1.0 or newer</strong>. Do not enable Beta or install a custom component just to set the clock.</li>
+              <li><strong>Keep the safe default:</strong> In the Matter Server app configuration, leave <code>time_sync</code> on <code>auto</code>. It checks the Home Assistant computer's clock when the app starts. If you repair the computer's clock or network time setting later, restart Matter Server so it checks again.</li>
+              <li><strong>Wait before troubleshooting:</strong> The first scheduled pass happens <strong>30 to 60 minutes after Matter Server starts</strong>, then every 24 hours. A reconnecting ALPSTUGA may get an immediate attempt, but if Matter Server recently tried that sensor, it may wait for the daily pass.</li>
+              <li><strong>Avoid the destructive fixes:</strong> Do not factory-reset a working sensor, delete its Matter connection, or force a wrong host time. The main caveat is that time sync does not promise to restore 12/24-hour format, temperature units, display mode, or calibration.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer</h2>
+          <p><strong>If an IKEA ALPSTUGA shows 00:00 or the wrong time after a power outage, update Home Assistant's official Matter Server app to version 9.1.0 or newer, leave <code>time_sync</code> set to <code>auto</code>, and wait 30 to 60 minutes after Matter Server starts.</strong> Matter Server is the local controller service Home Assistant uses to talk to Matter devices. Version 9.1 added a native clock update, so a new Home Assistant OS setup no longer needs the community Matter Time Sync component or a hand-written low-level command for this job.</p>
+          <p>The wait is the part most people miss. The first scheduled pass runs 30 to 60 minutes after Matter Server starts, then every 24 hours. After that startup window, reconnecting ALPSTUGA may trigger an immediate attempt. Matter Server limits those reconnect-triggered attempts for each sensor to one in 24 hours, so a recent attempt can leave the clock waiting for the periodic pass. Restarting Matter Server starts a new 30-to-60-minute window, but it briefly interrupts Matter control. Matter Server always sends the standard world time, called UTC. It adds time-zone data when ALPSTUGA exposes that feature and daylight-saving offsets when the sensor requests them.</p>
+
+          <h2 id="what-changed">What Changed in Matter Server 9.1</h2>
+          <p>IKEA's ALPSTUGA, article <strong>706.093.96</strong>, is a USB-C-powered Matter-over-Thread air-quality sensor. Matter is the shared smart-home control standard; Thread is the low-power local radio network ALPSTUGA uses. It measures CO₂, PM2.5, temperature, and humidity, and its front display can also act as a clock. IKEA's manual explains how to set that clock with physical buttons, but a power interruption can leave owners doing the same button sequence again.</p>
+          <p>Home Assistant's official Matter Server app changelog now lists a direct fix in <strong>9.1.0</strong>: compatible Matter devices can receive synchronized time. The app adds a <code>time_sync</code> choice with three modes:</p>
+          <ul>
+            <li><strong><code>auto</code>:</strong> the default and the right choice for most homes. At startup, it turns synchronization on only when the host clock is synchronized through NTP.</li>
+            <li><strong><code>on</code>:</strong> forces the feature and warns when NTP is not synchronized. A wrong Home Assistant clock can then become a wrong device clock.</li>
+            <li><strong><code>off</code>:</strong> disables Matter time pushes.</li>
+          </ul>
+          <p><strong>NTP</strong> is the network time service that keeps the computer running Home Assistant on the correct date and time. The safety check matters: automatic synchronization is useful only when its source clock is trustworthy.</p>
+
+          <h2 id="steps">Fix the ALPSTUGA Clock in This Order</h2>
+          <ol>
+            <li><strong>Confirm the sensor is otherwise healthy.</strong> In Home Assistant, make sure ALPSTUGA readings are updating and the device is not unavailable. Time sync cannot repair a broken Thread connection.</li>
+            <li><strong>Make a Home Assistant backup.</strong> If Matter Server is still on 8.x, the move to 9.x includes a controller-data migration. Follow Tara's <a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server 9 upgrade guide</a> instead of rushing the migration for a clock.</li>
+            <li><strong>Install the current stable Matter Server update.</strong> Open <strong>Settings &gt; Apps &gt; Matter Server</strong> and update to 9.1.0 or later. Keep Beta off; native time sync is in the stable app.</li>
+            <li><strong>Check the configuration.</strong> In the Matter Server app's Configuration tab, leave <code>time_sync</code> on <code>auto</code>. Confirm Home Assistant itself shows the correct time and time zone before Matter Server starts, because <code>auto</code> makes its NTP decision at startup.</li>
+            <li><strong>Let Matter Server start normally.</strong> Keep ALPSTUGA powered and reachable. Wait a full 60 minutes before judging the first synchronization.</li>
+            <li><strong>Verify tomorrow as well.</strong> The server repeats the push every 24 hours. A correct clock after the first window and again the next day is better evidence than a single lucky display update.</li>
+          </ol>
+          <div class="callout">
+            <p><strong>If you only power-cycled ALPSTUGA:</strong> Matter Server may try the clock as soon as the sensor reconnects after the startup window. If it already made a reconnect-triggered attempt for that sensor within the previous 24 hours, ALPSTUGA may instead wait for the periodic pass. That does not prove the feature failed. A planned Matter Server restart begins a new 30-to-60-minute window, but it briefly interrupts Matter control, so do it only when the household can tolerate that interruption.</p>
+          </div>
+
+          <h2 id="still-wrong">If It Still Shows 00:00</h2>
+          <p>Do these checks in order. Stop when the clock corrects itself:</p>
+          <ol>
+            <li><strong>Read the exact Matter Server version.</strong> Home Assistant Core and the Matter Server app are separate updates. A current Home Assistant dashboard can still be connected to an older Matter Server.</li>
+            <li><strong>Confirm <code>time_sync</code> is not off.</strong> If the option is missing, the app update is not installed. The <code>auto</code> setting checks the host's NTP state when Matter Server starts, not continuously. After fixing the host date, time zone, or NTP setting, restart Matter Server so it checks again.</li>
+            <li><strong>Allow the whole first window.</strong> The official matterjs-server changelog says 30 to 60 minutes, not “on device startup.”</li>
+            <li><strong>Check that ALPSTUGA is online.</strong> Look for fresh CO₂, PM2.5, temperature, or humidity readings. If all readings are stale, use the <a href="/blog/home-assistant-matter-thread-devices-offline/">Matter-over-Thread offline checklist</a> first.</li>
+            <li><strong>Review the Matter Server startup log.</strong> Look for <code>Time sync 'auto': host NTP is synchronized, enabling time sync</code> or <code>host NTP is not synchronized, leaving time sync disabled</code>. The second message is informational, not a warning. Do not paste private Matter security details, QR codes, or full logs containing home-network details into a public post.</li>
+            <li><strong>Update the ALPSTUGA device software when Home Assistant offers an Update row.</strong> That device software is called firmware. Home Assistant warns that its Matter update path does not currently work for Thread devices on a network with any Apple border router. In that case, use an update offered through Apple or IKEA, or follow Home Assistant's documented border-router workaround. Do not sideload an unknown firmware file.</li>
+          </ol>
+          <p>A factory reset belongs at the very end of a genuine pairing failure, not a clock problem. Resetting removes the device relationship, can disturb entity names and automations, and does not make Matter Server send time any faster.</p>
+
+          <h2 id="control-paths">Official Support, Local Control, Cloud, and Apple Home</h2>
+          <p>ALPSTUGA is one product, but the surrounding controller path changes what the homeowner should expect. A Thread border router carries the sensor's local radio traffic; a Matter controller operates it. One hub can perform both jobs. Current examples include an Apple HomePod mini, Apple TV 4K (2nd generation), Apple TV 4K (3rd generation, Wi-Fi + Ethernet), Google Nest Hub (2nd generation), Google TV Streamer (4K), and IKEA DIRIGERA. Home Assistant Yellow or Home Assistant Green with Connect ZBT-2 can also provide both roles, but Yellow and ZBT-2 run Zigbee out of the box. They need manual Thread setup and the OpenThread Border Router app first; Home Assistant still labels its own Thread border-router integration with Matter as work in progress.</p>
+          <div class="comparison-table">
+            <table>
+              <thead><tr><th>ALPSTUGA path</th><th>Official support</th><th>Local and cloud boundary</th><th>Matter / HomeKit path</th><th>Main caveat</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Direct to Home Assistant</strong><br />Official Matter Server app 9.1+</td>
+                  <td>Home Assistant's official Matter integration and IKEA's certified Matter product path. Home Assistant OS with the official app is the supported server installation.</td>
+                  <td>Daily readings, control, and automations stay local. No IKEA account is required. NTP, controller updates, certificates, and firmware downloads can need internet access.</td>
+                  <td>Pair ALPSTUGA through Matter over Thread. Apple Home can be added later through Matter sharing; legacy HomeKit pairing and Home Assistant's HomeKit Bridge are not required.</td>
+                  <td>Time is scheduled, not instant. Home Assistant must know the device and the sensor must support Matter's clock feature.</td>
+                </tr>
+                <tr>
+                  <td><strong>Apple or Google first, then shared to Home Assistant</strong></td>
+                  <td>IKEA lists Apple and Google among compatible Matter systems; Home Assistant supports adding a Matter device already in use.</td>
+                  <td>Home Assistant receives its own local Matter relationship. Apple or Google accounts, voice, remote access, and vendor management keep their separate cloud boundaries.</td>
+                  <td>Use a fresh Matter sharing code from the first platform. This is Matter multi-admin, not a cloud import and not HomeKit Bridge.</td>
+                  <td>Time synchronization should be eligible when Home Assistant can access the compatible Matter clock feature, but exact controller and firmware behavior must be verified on the device.</td>
+                </tr>
+                <tr>
+                  <td><strong>DIRIGERA and IKEA Home smart</strong></td>
+                  <td>IKEA's own hub, app, support, and firmware path.</td>
+                  <td>The IKEA path adds its hub and app. Basic in-home behavior can be local, while setup, remote features, support, and updates can involve IKEA services.</td>
+                  <td>ALPSTUGA is a native Matter-over-Thread device. Share the individual device to Home Assistant when two-controller access is wanted.</td>
+                  <td>Adding DIRIGERA as a Matter bridge does not guarantee that every native Matter device appears automatically.</td>
+                </tr>
+                <tr>
+                  <td><strong>Standalone, no smart system</strong></td>
+                  <td>IKEA documents local use and physical clock buttons.</td>
+                  <td>No account, hub, or cloud is needed. The display and measurements work locally from USB-C power.</td>
+                  <td>No Matter controller, Apple Home, Google Home, Alexa, SmartThings, or Home Assistant connection.</td>
+                  <td>Set the time manually. There is no automatic Home Assistant synchronization.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The Apple path is worth spelling out: ALPSTUGA uses <strong>Matter over Thread</strong>. In Apple Home it is a Matter accessory, not an older HomeKit-only accessory. Matter sharing can give Home Assistant its own controller relationship without moving the sensor off the existing Apple Thread network.</p>
+
+          <h2 id="custom-integration">What About the Matter Time Sync Custom Integration?</h2>
+          <p>Before Matter Server 9.1, Home Assistant users built a community integration to write time to Matter devices such as ALPSTUGA. That work solved a real gap and helped prove the use case. It is no longer the first step for a normal Home Assistant OS installation.</p>
+          <p><strong>For a new setup, use the official stable feature first.</strong> It has a documented NTP safety check, lives inside Matter Server, and does not require exposing or scripting the server's low-level WebSocket control connection. If the custom component is already installed, make a backup, disable its automation, and verify one native synchronization window before deciding whether to remove it. Avoid two independent jobs writing the same setting while you are troubleshooting.</p>
+          <p>A custom external Matter Server or Home Assistant Container deployment is different. Home Assistant's official docs call the Home Assistant OS app the supported Matter Server path. Automatic time synchronization entered <strong>matterjs-server 1.2.0</strong>; an advanced external server needs that version or newer and its own <code>--enable-time-sync</code> configuration. Home Assistant's Matter Server app 9.1.0 bundles matterjs-server 1.2.6. Do not copy the app's update or restore steps onto an unsupported container without that server's documentation.</p>
+
+          <h2 id="does-not-fix">What Time Sync Does Not Fix</h2>
+          <p>The new feature always sends <strong>UTC</strong>. It adds time-zone data when the device exposes that feature and daylight-saving offsets when the device requests them. It is not a general ALPSTUGA settings backup. IKEA's manual treats these as separate physical controls:</p>
+          <ul>
+            <li>12-hour versus 24-hour clock format</li>
+            <li>Celsius versus Fahrenheit</li>
+            <li>Which reading remains on the display</li>
+            <li>Manual hour and minute adjustment</li>
+          </ul>
+          <p>Do not promise that time synchronization restores those choices after every outage. Display brightness, sensor calibration, firmware behavior, and whether a preference survives power loss are also separate issues. If the time becomes correct but the display returns to the wrong mode or temperature unit, the time-sync feature worked; the remaining problem belongs to ALPSTUGA firmware or its exposed Matter features.</p>
+
+          <h2 id="safety">A Small Air-Quality Safety Boundary</h2>
+          <p>Clock accuracy does not validate sensor accuracy. ALPSTUGA is a consumer indoor air-quality monitor, not a smoke alarm, carbon-monoxide alarm, medical device, or emergency ventilation controller. Keep code-required smoke and CO alarms in place, do not block ALPSTUGA's rear air openings, and do not let one questionable reading trigger unsafe HVAC behavior. IKEA says a newly powered unit can take up to 12 hours to settle on an accurate CO₂ reading.</p>
+
+          <h2 id="recommendation">Tara's Recommendation</h2>
+          <p>Use the current stable Home Assistant and Matter Server app, keep <code>time_sync</code> on <code>auto</code>, and let the full first hour pass. Keep ALPSTUGA paired to the controller that runs the home's real automations, then share it only to the other household apps that are actually useful. This preserves local control and avoids adding DIRIGERA or a custom integration solely to repair the clock.</p>
+          <p>If the clock remains wrong after the scheduled window, prove three things before changing the device: the Home Assistant host time is correct, Matter Server is 9.1.0 or newer, and ALPSTUGA readings are live. Those checks separate a time-source problem from an offline Thread sensor without sacrificing a working pairing.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3>Can Home Assistant set the IKEA ALPSTUGA clock automatically?</h3>
+          <p>Yes. Matter Server app 9.1.0 added native time synchronization for compatible Matter devices. Leave <code>time_sync</code> on its default <code>auto</code> setting and make sure the Home Assistant host has a correct, NTP-synchronized clock.</p>
+          <h3>Why does ALPSTUGA still show 00:00 after the update?</h3>
+          <p>The first scheduled pass runs 30 to 60 minutes after Matter Server starts, then every 24 hours. After that startup window, reconnecting ALPSTUGA may trigger an immediate attempt. If Matter Server already made a reconnect-triggered attempt for that sensor within 24 hours, it may instead wait for the periodic pass. Restarting Matter Server begins a new 30-to-60-minute window but briefly interrupts Matter control.</p>
+          <h3>Do I still need the Matter Time Sync custom integration?</h3>
+          <p>Usually not on Home Assistant OS with the official Matter Server app 9.1.0 or newer. Use the native stable feature first. The older custom integration remains a community-supported option for unusual or older deployments, not the default homeowner fix.</p>
+          <h3>Do I need IKEA DIRIGERA for this?</h3>
+          <p>No. A directly paired ALPSTUGA can use Home Assistant's Matter controller and a compatible Thread border router. DIRIGERA is optional when IKEA's app, support, or firmware path is important to you.</p>
+          <h3>Does time sync preserve 12/24-hour format or Fahrenheit?</h3>
+          <p>No such promise is documented. Matter Server always sends UTC. It adds time-zone data when the device exposes that feature and daylight-saving offsets when the device requests them. Treat clock format, temperature unit, display choice, brightness, and calibration as separate device or firmware settings.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant documentation</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/matter_server/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Matter Server app changelog: version 9.1.0 and time_sync modes</a></li>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/matter_server/DOCS.md" target="_blank" rel="noopener noreferrer">Matter Server app configuration documentation</a></li>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/matter_server/rootfs/etc/s6-overlay/s6-rc.d/matter-server/run" target="_blank" rel="noopener noreferrer">Matter Server app source: startup NTP decision and log messages</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/blob/main/CHANGELOG.md" target="_blank" rel="noopener noreferrer">matterjs-server changelog: version 1.2.0, time payload, and schedule</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/blob/main/packages/ws-controller/src/controller/TimeSyncManager.ts" target="_blank" rel="noopener noreferrer">matterjs-server source: reconnect attempts and 24-hour cooldown</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/blob/main/packages/ws-controller/src/controller/timeSyncCommands.ts" target="_blank" rel="noopener noreferrer">matterjs-server source: UTC, time-zone, and daylight-saving rules</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration, supported installation path, and Apple border-router update caveat</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread setup and border-router status</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: the 2026 matter.js Matter Server upgrade</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product documentation</h3>
+              <ul>
+                <li><a href="https://www.ikea.com/us/en/p/alpstuga-air-quality-sensor-smart-70609396/" target="_blank" rel="noopener noreferrer">IKEA ALPSTUGA air quality sensor, article 706.093.96</a></li>
+                <li><a href="https://www.ikea.com/us/en/manuals/alpstuga-air-quality-sensor-smart__AA-2664585-3-100.pdf" target="_blank" rel="noopener noreferrer">IKEA ALPSTUGA manual: clock buttons, Matter setup, Thread, and safety</a></li>
+                <li><a href="https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/" target="_blank" rel="noopener noreferrer">IKEA Matter-compatible system and controller choices</a></li>
+                <li><a href="https://on.dcl.csa-iot.org/dcl/model/versions/4476/12289/16777242" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance production record: ALPSTUGA firmware 1.0.26</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1q0y8nk/ikea_alpstuga_time_sync_with_matter_over_thread/" target="_blank" rel="noopener noreferrer">r/homeassistant: ALPSTUGA time after direct Matter-over-Thread pairing</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-sync-time-with-matter-devices-e-g-ikea-alpstuga/969461" target="_blank" rel="noopener noreferrer">Home Assistant Community: the pre-9.1 Matter time-sync workaround</a></li>
+                <li><a href="https://community.home-assistant.io/t/hooray-for-matter-server-9-1-0-time-feature/1017613" target="_blank" rel="noopener noreferrer">Home Assistant Community: ALPSTUGA result and the scheduled wait in 9.1.0</a></li>
+                <li><a href="https://github.com/Loweack/Matter-Time-Sync/" target="_blank" rel="noopener noreferrer">Community Matter Time Sync integration for older or unusual setups</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">A calmer local setup</p>
+          <h2>Want Matter, Thread, and updates planned before the box arrives?</h2>
+          <p>Tara packages the local controller, Thread coverage, device records, backups, update path, and household handoff so a small power outage does not become a weekend of re-pairing.</p>
+          <a class="cta" href="/configurator/">Plan your Tara kit</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related guides</p>
+          <div class="links"><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">Pair IKEA Matter locally</a><a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Do you need DIRIGERA?</a><a href="/blog/update-matter-device-firmware-home-assistant/">Matter firmware updates</a><a href="/blog/home-assistant-matter-server-9-stuck-starting-offline/">Matter Server 9 recovery</a><a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread router</a><a href="/blog/home-assistant-matter-thread-devices-offline/">Fix offline Thread devices</a><a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a><a href="/configurator/">Configurator</a></div>
+        </section>
+      </article>
+    </main>
+    <footer><span>© 2026 Tara Home</span><span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span></footer>
+  </body>
+</html>
