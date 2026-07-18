@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKEA MYGGSPRAY in Home Assistant: Setup and Offline Fixes</title>
+    <meta name="description" content="Pair IKEA MYGGSPRAY directly with Home Assistant, fix unavailable motion updates, and decide whether you need DIRIGERA or another Thread border router." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/ikea-myggspray-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/ikea-myggspray-home-assistant/" />
+    <meta property="og:title" content="IKEA MYGGSPRAY in Home Assistant: Setup and Offline Fixes" />
+    <meta property="og:description" content="Pair MYGGSPRAY directly, find the motion entity, and fix pairing or dropout problems without resetting the whole Thread network." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/ikea-myggspray-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IKEA MYGGSPRAY in Home Assistant: Setup and Offline Fixes" />
+    <meta name="twitter:description" content="A supported setup order, symptom-by-symptom fixes, and the honest reliability caveat for IKEA's Matter-over-Thread motion sensor." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/ikea-myggspray-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { max-width: 100%; padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/ikea-myggspray-home-assistant/#blogposting",
+          "headline": "IKEA MYGGSPRAY in Home Assistant: Setup and Offline Fixes",
+          "description": "Pair IKEA MYGGSPRAY directly with Home Assistant, fix unavailable motion updates, and decide whether you need DIRIGERA or another Thread border router.",
+          "image": "https://tarahome.ai/assets/generated/blog/ikea-myggspray-home-assistant/cover.png",
+          "datePublished": "2026-07-17",
+          "dateModified": "2026-07-17",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/ikea-myggspray-home-assistant/" },
+          "citation": [
+            "https://www.ikea.com/us/en/p/myggspray-wireless-motion-sensor-smart-80619451/",
+            "https://www.ikea.com/us/en/manuals/myggspray-wireless-motion-sensor-smart__AA-2664594-3-100.pdf",
+            "https://csa-iot.org/csa_product/myggspray-wrlss-mtn-sensor-3/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://github.com/home-assistant/core/issues/162230",
+            "https://github.com/home-assistant/core/issues/164839",
+            "https://www.reddit.com/r/homeassistant/comments/1ugh0c3/ikea_myggspray_sensor/",
+            "https://www.reddit.com/r/homeassistant/comments/1rxf7yk/ikea_myggspray_home_assistant/",
+            "https://community.home-assistant.io/t/cant-connect-ikea-myggspray-to-home-assistant-green-using-zbt-2/1010693",
+            "https://community.home-assistant.io/t/ikea-dirigera-and-matter-integration-issues/974887"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/ikea-myggspray-home-assistant/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "IKEA MYGGSPRAY in Home Assistant", "item": "https://tarahome.ai/blog/ikea-myggspray-home-assistant/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/ikea-myggspray-home-assistant/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does IKEA MYGGSPRAY work directly with Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. MYGGSPRAY is a Matter-over-Thread sensor. Home Assistant can receive its readings and run local automations through the official Matter integration when the home has a working Thread border router and the setup phone has the correct Thread network settings." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need IKEA DIRIGERA for MYGGSPRAY?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. DIRIGERA is optional for the IKEA Home smart app and IKEA's support path. Direct Home Assistant pairing instead needs its Matter software connection, a Thread border router, and a phone ready to add the device." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why does MYGGSPRAY show Occupancy instead of Motion in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant may label the motion on/off row Occupancy rather than Motion. Test that row when you walk in front of the sensor; a current Home Assistant issue tracks improving the label." }
+            },
+            {
+              "@type": "Question",
+              "name": "What should I do when MYGGSPRAY becomes unavailable?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Update the stable Matter Server and border-router software, test fresh matched batteries, use the Matter network map, and temporarily move the sensor near a known border router or powered Thread device on the same mesh. Reset only after checking the Thread connection and Home Assistant's connection to the sensor." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I use MYGGSPRAY outdoors?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, within IKEA's limits for your exact unit and region. IKEA's current U.S. page describes indoor and outdoor use, and the current revision-3 manual lists IP67. The manual also says never submerge it, avoid direct sun and heat, mount no higher than 2 meters, and use it from 32 to 104 degrees Fahrenheit (0 to 40 degrees Celsius)." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>IKEA MYGGSPRAY &amp; Matter</span><span>July 17, 2026</span><span>11 min read</span></p>
+            <h1>IKEA MYGGSPRAY in Home Assistant: Setup and Offline Fixes</h1>
+            <p class="lede">MYGGSPRAY can pair directly with Home Assistant and run motion automations locally without DIRIGERA. The setup still needs an always-on hub or radio called a Thread border router, the Thread network password and settings on your phone, and a short reliability test before you mount or buy several sensors.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/ikea-myggspray-home-assistant/cover.png" alt="IKEA MYGGSPRAY motion sensor mounted on a warm entryway wall beside oak furniture and a restrained dark-green door" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Direct answer:</strong> Pair IKEA MYGGSPRAY directly with Home Assistant if Home Assistant will run the automations. You do not need DIRIGERA, but you do need an always-on Thread border router&mdash;the hub or radio linking the sensor mesh to your home network&mdash;and Home Assistant's Matter software connection.</li>
+              <li><strong>Set it up cleanly:</strong> Install current stable Home Assistant, Matter Server 9.0 or newer, and current border-router software. Sync the intended Thread network settings&mdash;the credentials, much like a Wi-Fi password&mdash;to the phone, use fresh matched AAA batteries, and pair beside the phone and border router.</li>
+              <li><strong>Test before resetting:</strong> Home Assistant may call the motion sensor row <strong>Occupancy</strong>. If updates stop, check that row, the battery, the device details, and the network map; move the sensor closer temporarily before deleting it.</li>
+              <li><strong>Avoid two hidden problems:</strong> Do not create another Thread network just for this sensor or duplicate the same automation in several apps. Reports remain mixed, so test one unit for several days and do not use it as a security or life-safety detector.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Short Answer: Yes, but Test One Before You Trust It</h2>
+          <p><strong>IKEA MYGGSPRAY works with Home Assistant as a Matter-over-Thread motion sensor.</strong> Matter is the common control language. Thread is the low-power wireless mesh that carries the messages. A <strong>Thread border router</strong>&mdash;for example Home Assistant Connect ZBT-2 running the OpenThread Border Router app, a compatible Apple TV or HomePod, or a supported Google Nest hub&mdash;connects that mesh to the normal home network. Home Assistant's Matter Server app is the local controller software that turns those messages into useful states and automations.</p>
+          <p>For a Home Assistant-centered house, the clean path is direct pairing through the Home Assistant Companion app. Daily motion detection and automations then stay local, meaning the command can run inside the house without waiting for IKEA's cloud. DIRIGERA is optional when you want the IKEA Home smart app, IKEA-guided maintenance, or an IKEA-first support path. This guide covers U.S. article <strong>806.194.51</strong>, model <strong>MYGGSPRAY</strong>, technical type <strong>E2494</strong>. The certification registry separately lists hardware revision P2.0 and Matter product ID 0x3000 (12288); that registry number is not the IKEA model name.</p>
+          <p>The honest caveat is reliability. Some owners report easy pairing and stable operation; others report failed setup&mdash;called <strong>commissioning</strong> in Matter&mdash;delayed motion, or a sensor that becomes unavailable while it still works in IKEA, Apple, or Google. Home Assistant's June 23, 2026 Matter Server 9.0 release improved reconnection and stability. An open community-filed Home Assistant issue still contains MYGGSPRAY dropout reports as of July 17, but it does not confirm one current cause; related cases have involved DIRIGERA device software or custom network and firewall settings. Buy or install one, update the supported software, and prove it in the intended location before relying on several.</p>
+
+          <div class="callout">
+            <p><strong>Tara's rule:</strong> let one platform own the automations, let one Thread mesh carry the sensor, and reset only the part that is actually broken.</p>
+          </div>
+
+          <h2 id="choose-path">Choose One Pairing Path</h2>
+          <p>All three paths can be reasonable. The important distinction is who supplies the Thread network, where the automations live, and which optional cloud or app features you accept. Matter <strong>multi-admin</strong> is the safe sharing method that lets another controller form its own secure relationship&mdash;called a <strong>fabric</strong>&mdash;with the same device. MYGGSPRAY is a Matter device in Apple Home; it is not a legacy HomeKit-only accessory.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Path</th>
+                  <th>Official support</th>
+                  <th>Local control and cloud dependency</th>
+                  <th>Matter or HomeKit path</th>
+                  <th>Community caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home Assistant first</strong><br />Best when Home Assistant runs the automations.</td>
+                  <td>MYGGSPRAY is Matter-certified. Home Assistant's interface and the Open Home Foundation Matter Server each have their own Connectivity Standards Alliance certification. Home Assistant OS with the official Matter Server app is the supported setup.</td>
+                  <td>Normal Matter control and Home Assistant automations are local. Remote access, phone notifications away from home, and software downloads are separate services.</td>
+                  <td>Add it in <strong>Settings &gt; Matter</strong> with the Companion app. If Apple or Google already owns the Thread mesh, import or use those credentials instead of making a second mesh.</td>
+                  <td>Best local-first choice only after the phone and border router are using the intended Thread network. Custom containers, separate smart-device networks (often called VLANs), and third-party border-router setups add their own local network variables.</td>
+                </tr>
+                <tr>
+                  <td><strong>Apple, Google, Alexa, or SmartThings first</strong><br />Useful when that ecosystem already owns a stable Thread mesh.</td>
+                  <td>IKEA lists Amazon, Apple, Google, Homey, and Samsung as compatible Matter systems. Exact hub and Thread support depends on the platform model.</td>
+                  <td>Matter device commands can be local, but voice, remote access, accounts, notifications, and some routines remain platform features and can use cloud services.</td>
+                  <td>Pair once, then use Matter multi-admin to create a fresh sharing code for Home Assistant. Apple Home is controlling a Matter accessory here; HomeKit Bridge is the separate Home Assistant feature that exports Home Assistant controls to Apple Home.</td>
+                  <td>Do not commission the sticker code separately in every app or recreate the same motion automation everywhere. Sharing another Matter fabric should not create another Thread mesh.</td>
+                </tr>
+                <tr>
+                  <td><strong>IKEA DIRIGERA first</strong><br />Useful for IKEA Home smart and IKEA's support path.</td>
+                  <td>IKEA documents MYGGSPRAY with DIRIGERA and says the hub unlocks additional app features. DIRIGERA is also a Thread border router and Matter controller.</td>
+                  <td>In-home IKEA control is hub-based. IKEA app accounts, remote features, voice integrations, and some maintenance can add internet or cloud dependencies.</td>
+                  <td>Pair in IKEA Home smart, then share the individual Matter device where supported. Do not assume DIRIGERA's bridge automatically imports every new Thread child into Home Assistant.</td>
+                  <td>Native Matter sensors need individual sharing; the DIRIGERA bridge is a separate path for supported bridged products. Some earlier event-delivery reports resolved through DIRIGERA updates, so check current hub software before blaming the sensor.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="setup-order">Pair MYGGSPRAY in This Order</h2>
+          <ol>
+            <li><strong>Save the setup code.</strong> Photograph the Matter QR code on the sensor or manual and label it with the room. A factory reset needs that code again.</li>
+            <li><strong>Update the stable stack.</strong> Update Home Assistant, the official Matter Server app, and the OpenThread Border Router app or third-party border-router device software (firmware). Matter Server 9.0 is the major replacement announced on June 23, 2026; use the current stable version, not an old beta workaround from a forum post.</li>
+            <li><strong>Confirm one Thread network.</strong> In Home Assistant, open <strong>Settings &gt; Devices &amp; services &gt; Thread</strong>. If Home Assistant created the network, follow the official Thread instructions to make it preferred and send its credentials to the phone. If Apple or Google already has the mesh you intend to keep, import or use that network instead of quietly creating another. Use an iPhone to import Apple's Thread network details or Android to import Google's. Home Assistant warns that the phone's preferred Thread network currently drives setup, so check it deliberately.</li>
+            <li><strong>Pair close to the working equipment.</strong> Put the phone, MYGGSPRAY, and a known border router close together. Insert two fresh, matching AAA batteries. IKEA says the sensor enters pairing mode for 15 minutes; a pulsing white light indicates pairing.</li>
+            <li><strong>Add it from the Companion app.</strong> Open <strong>Settings &gt; Matter &gt; Add device</strong>, choose that it is new, scan the code, and add it to Home Assistant. On Android, choose Home Assistant if the phone asks which app should handle Matter setup.</li>
+            <li><strong>Name and test before mounting.</strong> Give it a room-specific name, trigger motion repeatedly, watch the light-level reading if exposed, and leave it running near the border router before moving it to the final wall.</li>
+          </ol>
+
+          <h3 id="pairing-mode">How to Put It Back in Pairing Mode</h3>
+          <p>If the 15-minute window closes, open the battery compartment and press the system button once to reopen pairing mode. IKEA says the white LED pulses while it is available and blinks twice after it connects.</p>
+
+          <h3 id="factory-reset">Use the Official Reset Only as a Last Step</h3>
+          <p>IKEA's manual says to hold the system button for <strong>10 seconds, or until the red LED stops blinking</strong>. The sensor restarts and becomes available for pairing for another 15 minutes. Do that only when the sensor is genuinely new, has been removed from its old controller, or the fabric is known to be stale. Resetting first can turn one connection problem into renamed entities and broken automations.</p>
+
+          <h2 id="occupancy-name">Why Motion May Be Named “Occupancy”</h2>
+          <p>After pairing, look for a binary sensor named <strong>Occupancy</strong> as well as any entity named Motion. A <strong>binary sensor</strong> is simply an on/off state on the device page, and Home Assistant calls each individual state or control an <strong>entity</strong>. Home Assistant currently labels Matter's standard motion feature as Occupancy. A Home Assistant GitHub issue opened March 5, 2026 tracks using the sensor's passive infrared (PIR) hardware detail to label it as Motion instead.</p>
+          <p>In the house, the label is less important than the state change. Walk in front of the sensor and confirm that the binary sensor changes to detected/on, then later returns to clear/off. Use that entity as the trigger for a Home Assistant automation. If you also use the illuminance reading, add it as a condition so the light turns on only when the room is actually dim.</p>
+
+          <h2 id="fix-by-symptom">Fix the Symptom You Actually Have</h2>
+
+          <h3 id="pairing-fails">Pairing Never Finishes</h3>
+          <ul>
+            <li>Confirm the official Matter integration and Matter Server app are installed and current.</li>
+            <li>Confirm the phone has Bluetooth enabled and the intended Thread credentials. On a Home Assistant-owned mesh, use the official <strong>Sync Thread credentials</strong> or <strong>Send credentials to phone</strong> step.</li>
+            <li>Move the phone, sensor, and border router close together for commissioning. The final location can be tested later.</li>
+            <li>Use fresh matched batteries and reopen pairing mode. If the unit has belonged to another controller, remove that relationship cleanly before using the 10-second reset.</li>
+            <li>If Home Assistant runs in a container, virtual machine, or segmented network, compare the setup with Home Assistant's supported Home Assistant OS (HAOS) path. Matter needs local IPv6, its network-addressing system, and multicast discovery, the way nearby devices announce themselves. Copying a terminal command from a different router or VM can make the network less predictable.</li>
+          </ul>
+
+          <h3 id="no-motion">It Pairs, but Motion Never Changes</h3>
+          <p>First look for <strong>Occupancy</strong>, not only Motion. Trigger movement several times, then check the device page rather than a dashboard card that may be pointing at the wrong entity. Download the device diagnostics from the Matter integration if the state never changes. Those diagnostics include technical device and network information with sensitive details redacted.</p>
+          <p>Matter Server normally identifies battery-powered MYGGSPRAY as a <strong>sleepy end device</strong>: it saves power by turning its radio off between check-ins. That does not mean repeated missing motion reports or a permanently unavailable entity is normal. If light level changes but occupancy does not, or another ecosystem sees motion while Home Assistant does not, treat it as a Home Assistant reporting or mapping problem rather than weak motion detection.</p>
+
+          <h3 id="goes-unavailable">It Works, Then Becomes Unavailable</h3>
+          <ol>
+            <li><strong>Update first.</strong> Matter Server 9.0 and later were designed to recover devices faster and make the network more stable. Also update the border router and use a supported MYGGSPRAY firmware path when one is offered.</li>
+            <li><strong>Check the new network map.</strong> Matter Server 9 can show Thread nodes and connection quality when the needed network details are available. Compare MYGGSPRAY with another working device; one failing sensor and a healthy mesh is different from every Thread device dropping together.</li>
+            <li><strong>Move it temporarily.</strong> Put MYGGSPRAY near a known border router or a powered Thread plug or light that extends the same mesh. If it stays stable there, improve same-mesh coverage before changing controllers.</li>
+            <li><strong>Restart one service once.</strong> Restart Matter Server and retest. This briefly interrupts every Matter device connected to Home Assistant, so choose a safe time and keep manual control available for locks, heating or cooling, and other important equipment. Repeatedly rebooting the whole home, deleting the device, and creating new Thread networks hides the evidence.</li>
+            <li><strong>Stop if one current unit still fails.</strong> If fresh batteries, current stable software, a strong same-mesh path, and direct testing do not help, return or exchange that sensor rather than designing a critical automation around battery pulls.</li>
+          </ol>
+
+          <h3 id="works-elsewhere">It Works in IKEA, Apple, or Google but Not Home Assistant</h3>
+          <p>That result proves the sensor detects motion and reaches at least one controller; it does not prove the Home Assistant fabric is healthy. If the sensor is already commissioned elsewhere, open a fresh Matter sharing window in the working controller and add it to Home Assistant as an already-used device. Do not factory-reset it or rescan the original sticker just to repair one platform.</p>
+          <p>DIRIGERA adds one more distinction: the hub can be the Thread border router, the IKEA controller, and a bridge for some products. A new Thread sensor visible in IKEA Home does not automatically have to appear as a child of the DIRIGERA Matter bridge. Use direct pairing or individual multi-admin sharing where the current app supports it.</p>
+
+          <h3 id="firmware">A Firmware Update Appears or Fails</h3>
+          <p>The Connectivity Standards Alliance record certified MYGGSPRAY firmware <strong>1.1.4</strong> on April 28, 2026 under Matter 1.4. Firmware is the software stored inside the sensor. That record does not guarantee the sensor in your hand has that version or that every controller can deliver it. If Home Assistant offers an update entity, try the current stable Matter path and keep the sensor near reliable Thread coverage.</p>
+          <p>Home Assistant's current Matter documentation warns that its Matter over-the-air updates do not work on a Thread network while <strong>any Apple border router</strong> is present, even when another brand's border router is also available. Prefer an update path offered by Apple or IKEA. On a mixed network, Home Assistant's documented workaround is to power down every Apple border router, wait at least 30 minutes, and retry through the other border router; do that only when a temporary Thread interruption is safe. Avoid switching to beta software solely because an old comment says it fixed one household.</p>
+
+          <h2 id="placement">Outdoor Placement: Stay Inside IKEA's Limits</h2>
+          <p>IKEA's current U.S. product page describes MYGGSPRAY as suitable indoors or outdoors, and its current revision-3 manual lists IP67&mdash;an enclosure rating for dust and water exposure. The same manual says never to submerge it, keep it out of direct sunlight and away from heat sources, mount no higher than 2 meters, and use it from 32&ndash;104&deg;F (0&ndash;40&deg;C). Follow the current instructions for your exact unit and region, and discard a damaged sensor as IKEA directs.</p>
+          <p>The manual estimates about 15 months from two new IKEA LADDA AAA batteries, but walls, placement, reporting, temperature, firmware, and battery choice change real life. Use two matched batteries, do not mix ages or types, and test low-battery reporting. MYGGSPRAY is useful for convenience lighting; it is not a certified burglar alarm, emergency detector, or life-safety sensor.</p>
+
+          <h2 id="recommendation">The Practical Recommendation</h2>
+          <p>MYGGSPRAY is an appealing low-cost sensor for a closet, hall, utility room, or other non-critical lighting automation. Pair it directly to Home Assistant when Home Assistant is the automation brain. Use an existing Apple, Google, Alexa, SmartThings, or DIRIGERA Thread path only when that path is already stable and documented.</p>
+          <p>Buy or install one first. Test pairing, Occupancy updates, light level, battery reporting, recovery after a Home Assistant restart, and stability in the final location for several days. If it passes, expand. If it needs repeated battery pulls on a healthy current setup, exchange it or choose a sensor with a more mature path instead of treating unreliable motion as a normal Matter tradeoff.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="works-directly">Does IKEA MYGGSPRAY work directly with Home Assistant?</h3>
+          <p>Yes. It uses Matter over Thread. Home Assistant can receive its readings and run local automations through the official Matter integration when the home has a working Thread border router and the setup phone has the correct Thread network settings.</p>
+
+          <h3 id="need-dirigera">Do I need IKEA DIRIGERA?</h3>
+          <p>No. DIRIGERA is optional for the IKEA Home smart app, IKEA-specific features, and IKEA's support path. Direct Home Assistant pairing instead needs Matter, a Thread border router, and the Companion app.</p>
+
+          <h3 id="which-entities">Which MYGGSPRAY entities should appear?</h3>
+          <p>Expect a motion-related binary sensor that may be labeled Occupancy, plus light level and battery information when the current firmware and Home Assistant mapping expose them. Treat the exact entity list as version-dependent and verify it on the device page before building automations.</p>
+
+          <h3 id="apple-border-router">Can an Apple TV or HomePod carry MYGGSPRAY for Home Assistant?</h3>
+          <p>Yes, supported Apple Thread border routers can carry encrypted Thread traffic for Home Assistant. The sensor does not have to be controlled by Apple Home just because Apple supplies the radio path. Home Assistant's own Matter updates do not work on a Thread network while any Apple border router is present, so plan maintenance through Apple, IKEA, or the documented safe workaround.</p>
+
+          <h3 id="cloud-free">Is MYGGSPRAY cloud-free in Home Assistant?</h3>
+          <p>Normal direct Matter control and Home Assistant automations are local. Initial setup, remote access, voice assistants, app accounts, security checks during setup, and device updates can still involve internet or platform services. Keep those maintenance paths separate from the daily motion automation.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://www.ikea.com/us/en/p/myggspray-wireless-motion-sensor-smart-80619451/" target="_blank" rel="noopener noreferrer">IKEA: MYGGSPRAY product page and current compatibility details</a></li>
+              <li><a href="https://www.ikea.com/us/en/manuals/myggspray-wireless-motion-sensor-smart__AA-2664594-3-100.pdf" target="_blank" rel="noopener noreferrer">IKEA: MYGGSPRAY advice and instructions, revision 3</a></li>
+              <li><a href="https://csa-iot.org/csa_product/myggspray-wrlss-mtn-sensor-3/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: MYGGSPRAY certification record</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Official Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration, setup, diagnostics, and OTA notes</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread networks, credentials, and border routers</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9.0 and the matter.js upgrade</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Issue tracking</h3>
+            <ul>
+              <li><a href="https://github.com/home-assistant/core/issues/162230" target="_blank" rel="noopener noreferrer">GitHub: MYGGSPRAY and MYGGBETT connection reports</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/164839" target="_blank" rel="noopener noreferrer">GitHub: Matter occupancy versus motion device-class mapping</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/160196" target="_blank" rel="noopener noreferrer">GitHub: DIRIGERA Thread devices and Matter bridge expectations</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1ugh0c3/ikea_myggspray_sensor/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: MYGGSPRAY commissioning on a VM and Thread setup</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1rxf7yk/ikea_myggspray_home_assistant/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: mixed MYGGSPRAY stability reports</a></li>
+              <li><a href="https://community.home-assistant.io/t/cant-connect-ikea-myggspray-to-home-assistant-green-using-zbt-2/1010693" target="_blank" rel="noopener noreferrer">Home Assistant Community: Green and ZBT-2 pairing trouble</a></li>
+              <li><a href="https://community.home-assistant.io/t/ikea-dirigera-and-matter-integration-issues/974887" target="_blank" rel="noopener noreferrer">Home Assistant Community: DIRIGERA and MYGGSPRAY reporting caveats</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Tara setup</p>
+        <h2>Want Matter and Thread set up as one understandable system?</h2>
+        <p>Tara plans the controller, Thread coverage, local automations, device labels, update path, backups, and household handoff before the kit ships.</p>
+        <a class="cta" href="/configurator/">Plan your home</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Continue with the exact path your home uses</h2>
+        <div class="links">
+          <a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">IKEA Matter without DIRIGERA</a>
+          <a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Do you need DIRIGERA?</a>
+          <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Which app should pair first?</a>
+          <a href="/blog/home-assistant-matter-thread-devices-offline/">Matter-over-Thread offline fixes</a>
+          <a href="/blog/home-assistant-matter-network-map-offline-devices/">Read the Matter network map</a>
+          <a href="/blog/update-matter-device-firmware-home-assistant/">Update Matter firmware</a>
+          <a href="/local-smart-home-hub/">Local smart home hub</a>
+          <a href="/configurator/">Configurator</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
