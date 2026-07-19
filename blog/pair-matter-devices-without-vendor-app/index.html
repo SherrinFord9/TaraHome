@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can You Pair Matter Devices Without a Vendor App?</title>
+    <meta name="description" content="Pair many Matter devices directly in Home Assistant without the maker's app. See which products still need an app for setup, updates, or extra features." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/pair-matter-devices-without-vendor-app/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/pair-matter-devices-without-vendor-app/" />
+    <meta property="og:title" content="Can You Pair Matter Devices Without a Vendor App?" />
+    <meta property="og:description" content="Pair many Matter devices directly in Home Assistant without the maker's app. See which products still need an app for setup, updates, or extra features." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/pair-matter-devices-without-vendor-app/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Can You Pair Matter Devices Without a Vendor App?" />
+    <meta name="twitter:description" content="Pair many Matter devices directly in Home Assistant without the maker's app. See which products still need an app for setup, updates, or extra features." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/pair-matter-devices-without-vendor-app/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 980px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero > div, .article-cover { max-width: 100%; min-width: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { max-width: 100%; padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/pair-matter-devices-without-vendor-app/#blogposting",
+          "headline": "Can You Pair Matter Devices Without a Vendor App?",
+          "description": "Pair many Matter devices directly in Home Assistant without the maker's app. See which products still need an app for setup, updates, or extra features.",
+          "image": "https://tarahome.ai/assets/generated/blog/pair-matter-devices-without-vendor-app/cover.png",
+          "datePublished": "2026-07-19",
+          "dateModified": "2026-07-19",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/pair-matter-devices-without-vendor-app/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://csa-iot.org/all-solutions/matter/matter-faq/",
+            "https://handbook.buildwithmatter.com/certification/certifying-a-product/development/",
+            "https://csa-iot.org/newsroom/a-smarter-start-matter-1-4-1-makes-setup-easier/",
+            "https://www.home-assistant.io/integrations/homekit_controller/",
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://www.home-assistant.io/integrations/eve/",
+            "https://www.home-assistant.io/integrations/hue/",
+            "https://www.ikea.com/us/en/p/myggspray-wireless-motion-sensor-smart-80619451/",
+            "https://www.evehome.com/en/eve-energy-works-with-home-assistant",
+            "https://www.philips-hue.com/en-us/support/article/philips-hue-and-matter-complete-setup-and-support-guide/000012",
+            "https://www.philips-hue.com/en-us/p/hue-white-and-color-ambiance-essential-a19-e26-smart-bulb-800-lm-88w/046677592530",
+            "https://support.switch-bot.com/hc/en-us/articles/35927178604311-How-to-Connect-SwitchBot-Devices-to-Third-Party-Platforms-Matter-over-Bridge",
+            "https://www.reddit.com/r/homeassistant/comments/1nob3gn/matter_works_with_home_assistant_is_a_scam/",
+            "https://www.reddit.com/r/homeassistant/comments/1pwd1w8/why_did_everybody_praise_inferior_technology_like/",
+            "https://www.reddit.com/r/MatterProtocol/comments/1kbnmdq/",
+            "https://community.home-assistant.io/t/nuki-joins-works-with-home-assistant/907488/40",
+            "https://community.home-assistant.io/t/ikea-just-announced-21-new-affordable-matter-over-thread-smart-home-devices-which-may-also-support-zigbee-too/948187?page=5"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/pair-matter-devices-without-vendor-app/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Can You Pair Matter Devices Without a Vendor App?", "item": "https://tarahome.ai/blog/pair-matter-devices-without-vendor-app/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/pair-matter-devices-without-vendor-app/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I use the Home Assistant app instead of the manufacturer app?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, when the exact product ships ready for Matter, has a Matter setup code, and can enter pairing mode without the manufacturer app. Use the Home Assistant Companion app to scan the code. A bridge or device that needs a firmware upgrade may still require the maker's app." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Matter require a vendor account?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Matter itself does not require a device-maker account for local control. A manufacturer can still require an account to enable Matter on a bridge, install an upgrade, select bridged child devices, or use brand-only features." }
+            },
+            {
+              "@type": "Question",
+              "name": "What if the Matter code appears only in the vendor app?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use the vendor's documented flow to expose or create the code. An app-only code usually means the product is a bridge, an upgraded device, or a product whose Matter mode must be enabled first. Save the code outside the app afterward if the instructions allow it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I delete the vendor app after pairing?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Keep it until you have checked how firmware, calibration, history, maps, scenes, child-device selection, and factory recovery work. Then remove it only if the official instructions and your own test show that nothing you need depends on it. Basic Matter control can remain local while those extra jobs still depend on the vendor app or cloud." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is a HomeKit code the same as a Matter code?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. HomeKit and Matter are separate setup paths, even when both use Thread. A product labeled only Works with Apple Home or HomeKit cannot be assumed to support Matter, and the HomeKit code is not a Matter commissioning code." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will firmware update without the vendor app?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only if the model supports Matter over-the-air updates and its manufacturer publishes the update through a path Home Assistant can use. Some products still use the vendor app for firmware, so verify the exact model before removing the app." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter Setup &amp; Local Control</span><span>July 19, 2026</span><span>11 min read</span></p>
+            <h1>Can You Pair Matter Devices Without a Vendor App?</h1>
+            <p class="lede">Often, yes. If the exact device ships ready for Matter with a setup code, Home Assistant can usually pair it directly. Bridges, upgraded devices, device software updates, and brand-only features are the exceptions.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/pair-matter-devices-without-vendor-app/cover.png" alt="Phone scanning a blank setup card beside an unbranded smart plug, motion sensor, local hub, router, and warm lamp" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Direct answer:</strong> Yes, if the exact device is ready for Matter, has its own setup code, and can enter pairing mode by button or reset. Scan it in the Home Assistant Companion app.</li>
+              <li><strong>Check the exact model:</strong> Look for a Matter code on the device, box, or printed guide&mdash;not merely “Matter compatible” on a product-family page.</li>
+              <li><strong>Avoid this assumption:</strong> Bridges and devices upgraded to Matter often need the maker's app or account to enable Matter, select child devices, or create a setup code.</li>
+              <li><strong>Main caveat:</strong> The basic Matter controls can keep working inside your home without the internet, while device software updates, maps, history, scenes, calibration, and other extras still depend on the brand's app or cloud.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Yes&mdash;When the Device Arrives Ready for Matter</h2>
+          <p><strong>You can pair many Matter devices to Home Assistant without installing the device maker's app.</strong> The Home Assistant Companion app on your iPhone or Android phone acts as the setup tool: open <strong>Settings &gt; Matter</strong>, add a new device, and scan its Matter QR code or type the numeric code. Matter calls this first secure setup <strong>commissioning</strong>. Your phone uses Bluetooth only for that nearby handoff; normal control then moves to local Wi-Fi, Ethernet, or Thread.</p>
+          <p>A direct setup needs three things from the exact product in your hand: it already runs Matter, it has a valid setup code, and you can put it into pairing mode without visiting the maker's app. Matter-over-Thread devices also need a working <strong>Thread border router</strong>, the always-on radio that connects the low-power Thread network to Home Assistant. The Home Assistant phone app is still an app, but it is your chosen Matter controller's app&mdash;not the device maker's account or cloud.</p>
+          <p>The warning is the phrase <strong>“Matter compatible.”</strong> It can describe a device that needs a conversion of its built-in software (firmware), a brand hub that translates other devices into Matter, or a product whose Matter code appears only after setup in the vendor app. In those cases, basic control can be local after commissioning while the maker's app remains part of setup, updates, recovery, or extra features.</p>
+
+          <div class="callout">
+            <p><strong>The quick test:</strong> If you can find the Matter code and the physical pairing instructions before creating a vendor account, direct Home Assistant setup is likely. If the instructions begin with “install our app,” treat that app as a real dependency until the vendor says otherwise.</p>
+          </div>
+
+          <h2 id="four-paths">The Four Product Paths That Look Like “Matter”</h2>
+
+          <h3 id="factory-ready">1. Factory-Ready Matter Device</h3>
+          <p>This is the clean path. The exact plug, bulb, sensor, lock, thermostat, or appliance already runs certified Matter firmware&mdash;the software built into the device. Its unique setup code is on the device, packaging, printed guide, display, or another permanent place, and its manual explains how to enter pairing mode. You scan it with Home Assistant and do not need the maker's app for standard Matter controls.</p>
+
+          <h3 id="app-enabled">2. Device That Must Be Upgraded or Switched to Matter</h3>
+          <p>Some older products shipped with HomeKit or a brand protocol and gained Matter later. The original app may be required to update the firmware, accept migration warnings, or reveal the new Matter code. That one-time conversion can also be irreversible. Afterward, daily Matter control may be local, but a future reset or firmware update can still send you back to the vendor instructions.</p>
+
+          <h3 id="matter-bridge">3. Matter Bridge</h3>
+          <p>A bridge exposes other devices to Matter. Home Assistant's documentation names SwitchBot Hub 2, Aqara Hub M2, IKEA DIRIGERA, and Philips Hue Bridge as examples. SwitchBot's current product documentation also covers Hub 3. Home Assistant talks locally to the bridge, while the bridge talks to its connected products. The brand app commonly decides which child devices are exposed, handles new-device setup, and updates the bridge.</p>
+
+          <h3 id="homekit-only-path">4. HomeKit-Only or Thread-Only Device</h3>
+          <p>Thread is the network, not proof of Matter. Older Eve products and other devices may use HomeKit over Thread without speaking Matter. They can follow Home Assistant's separate <strong>HomeKit Device</strong> path, or may have a vendor-supported migration, but a HomeKit code cannot be scanned as a Matter code. Look for the Matter mark and exact model documentation rather than assuming every Thread product is cross-platform.</p>
+
+          <h2 id="current-examples">Current Products Show the Difference</h2>
+          <p>The model and generation matter more than the brand name. These examples use current official documentation available on July 19, 2026.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Exact product or path</th>
+                  <th>Official support and setup</th>
+                  <th>Vendor app or account?</th>
+                  <th>Local or cloud after setup?</th>
+                  <th>Home Assistant, Matter, and HomeKit caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Eve Energy with Matter</strong><br />Current US/Canada 4th-generation model</td>
+                  <td>Eve carries the Works With Home Assistant badge and says Eve Energy connects directly to Home Assistant over Thread. A Thread border router is required.</td>
+                  <td><strong>No Eve account or app for core setup.</strong> Eve says its products use no Eve cloud, subscription, registration, or tracking. Its optional app adds graphs, cost calculations, schedules, and button settings.</td>
+                  <td>Matter control and energy data are local. Supported firmware can be delivered through Matter controllers including Home Assistant.</td>
+                  <td>This statement is for the current Matter model. An older HomeKit-only Eve Energy follows a different path and may need Eve's migration process. Home Assistant currently cannot deliver Matter updates to Thread devices on a Thread network containing an Apple border router; Apple Home may offer the update instead.</td>
+                </tr>
+                <tr>
+                  <td><strong>IKEA MYGGSPRAY</strong><br />Article 806.194.51</td>
+                  <td>IKEA documents it as Matter over Thread and says it can join DIRIGERA or other well-known systems. It needs a Thread border router.</td>
+                  <td><strong>No IKEA app or account for the direct Matter scan.</strong> DIRIGERA and the IKEA Home smart app add IKEA-side control and features.</td>
+                  <td>The direct Matter path is local. The IKEA app path adds a brand hub and app.</td>
+                  <td>IKEA's US product page names Amazon, Apple, Google, Homey, and Samsung, but not Home Assistant. Home Assistant can commission standard Matter devices; IKEA's page is not a brand-specific HA support promise.</td>
+                </tr>
+                <tr>
+                  <td><strong>New Matter-enabled Philips Hue bulbs</strong><br />Including Hue Essential A19 examples</td>
+                  <td>Hue documents direct setup by scanning the bulb's Matter code in Apple Home, Google Home, or Alexa, without a Hue Bridge. It separately documents the Hue Bridge path.</td>
+                  <td><strong>No Hue app or account for the documented direct path.</strong> The Hue app is required for the Bridge path and its advanced Hue features.</td>
+                  <td>Direct Matter control stays inside the home. Home Assistant's direct Hue Bridge connection also runs locally and exposes more Hue-specific features.</td>
+                  <td>Hue's direct-setup support page does not name Home Assistant. A certified Matter bulb should follow Home Assistant's standard commissioning path, but official brand support may point to the platforms Hue lists.</td>
+                </tr>
+                <tr>
+                  <td><strong>SwitchBot Hub 2 or Hub 3 as a Matter bridge</strong></td>
+                  <td>SwitchBot documents the hub as a bridge. Current Hub 2 instructions include a physical button sequence for Matter setup; supported SwitchBot child devices are then exposed through the bridge.</td>
+                  <td><strong>Yes.</strong> This is not a vendor-app-free path: the hub must first be set up and updated in SwitchBot's app, which is also where users select secondary devices. Firmware and brand features remain vendor-managed.</td>
+                  <td>Daily controls exposed to Home Assistant are local. Initial setup, child-device selection, updates, and brand-only features still use SwitchBot's app and internet service.</td>
+                  <td>Not every SwitchBot device or feature is exposed. Check the current compatibility list for the exact hub firmware and child model before relying on Matter.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="pair-directly">How to Pair a Direct Matter Device to Home Assistant</h2>
+          <ol>
+            <li><strong>Confirm the exact device is ready for Matter.</strong> Find the Matter mark, model number, QR or numeric setup code, and physical pairing or reset instructions. A Thread mark alone is not enough.</li>
+            <li><strong>Prepare Home Assistant.</strong> On Home Assistant OS, add the official Matter integration&mdash;Home Assistant's connection for Matter devices&mdash;if it is not already installed. Update Home Assistant and the Companion app first.</li>
+            <li><strong>Prepare the network.</strong> For Matter over Wi-Fi, keep the phone on the intended home network. For Matter over Thread, confirm Home Assistant can use a compatible Thread border router and bring the phone near the device and border router.</li>
+            <li><strong>Put the device into pairing mode.</strong> A new device may enter it when powered on. Otherwise, use the manufacturer's documented button sequence. Do not improvise a factory reset on a device that is already working in another platform.</li>
+            <li><strong>Scan it in Home Assistant.</strong> In the Companion app, open <strong>Settings &gt; Matter &gt; Add device</strong>, choose that it is new, and scan the Matter QR code or enter the numeric commissioning code.</li>
+            <li><strong>Name, place, and test it.</strong> Assign the device to the correct room, test every control and sensor reading you plan to use&mdash;Home Assistant calls each one an entity&mdash;and compare them with the product description before building automations.</li>
+            <li><strong>Save the setup code.</strong> Photograph the code with the device and model label, then keep a second copy somewhere safe. Home Assistant warns that a reset device cannot be commissioned again without its QR or numeric code.</li>
+          </ol>
+          <p>If the device is already in Apple Home, Google Home, Alexa, or SmartThings, do not reset it merely to make Home Assistant first. Open pairing mode from its existing Matter controller and use <strong>Matter's multi-admin sharing feature</strong> to share it to Home Assistant. That preserves the first platform while adding Home Assistant as another local controller.</p>
+
+          <h2 id="vendor-app-still-needed">When the Vendor App Is Still Part of the System</h2>
+          <ul>
+            <li><strong>Matter must be enabled:</strong> a hub or existing device may hide Matter mode until the vendor app updates it or creates a code.</li>
+            <li><strong>Child devices must be selected:</strong> a Matter bridge may need the vendor app to choose which blinds, locks, sensors, or lights Home Assistant can see.</li>
+            <li><strong>Firmware uses the vendor route:</strong> Matter over-the-air updates are optional. Home Assistant can offer an update when the device supports the feature and its maker publishes compatible firmware, but many models still update only in the maker's app.</li>
+            <li><strong>Extra features are proprietary:</strong> robot maps, camera recordings, energy-cost graphs, light effects, adaptive schedules, calibration, and diagnostics may sit outside the standardized Matter controls.</li>
+            <li><strong>Support and warranty use the brand record:</strong> registration may not be needed for control but may still matter for a warranty claim, recall notice, or support case.</li>
+          </ul>
+          <p>Matter 1.4.1 added an Enhanced Setup Flow that can show a maker's terms and consent inside a compatible controller's setup. That can reduce the need to jump into another app, but it does not rewrite older products or force every manufacturer to use the newer flow. Follow the exact model's current instructions.</p>
+
+          <h2 id="local-cloud">Matter Is Local; the Whole Product May Not Be</h2>
+          <p>Home Assistant's official Matter documentation is clear: Matter device control is local and does not need the vendor cloud. A standard command travels between Home Assistant and the device over the home network. A Thread border router passes encrypted network traffic; it is not the device maker's cloud.</p>
+          <p>That statement covers the Matter function, not every promise on the box. A smart plug can switch and report power locally while the vendor app calculates electricity cost in the cloud. A bridge can expose blinds locally while new blind setup still begins in the brand app. A light can offer on, off, brightness, and color through Matter while animated scenes remain in its native system.</p>
+          <div class="callout">
+            <p><strong>Use two labels in your device list:</strong> “daily control path” and “maintenance path.” A product can be local for daily control but vendor-dependent for firmware, reset recovery, and advanced settings.</p>
+          </div>
+
+          <h2 id="matter-vs-homekit">Matter and HomeKit Are Different Setup Paths</h2>
+          <p>A HomeKit code is not a Matter code, even if the product uses Thread. A box marked only <strong>Works with Apple Home</strong> or <strong>Works with HomeKit</strong> may be a HomeKit-over-Thread device rather than Matter. Home Assistant can often add an unpaired HomeKit accessory through its <strong>HomeKit Device</strong> integration, but that is a separate local protocol and setup flow.</p>
+          <p>Home Assistant's <strong>HomeKit Bridge</strong> integration points in the other direction: it exports entities already in Home Assistant to Apple Home. It does not turn a HomeKit code into a Matter code and is not the tool for adding a Matter accessory. Current Matter devices can instead be shared safely among controllers through Matter's sharing feature.</p>
+          <p>Older Eve products make the generation problem concrete. A current Matter Eve Energy connects directly to Home Assistant. An older HomeKit model may require an official Eve conversion before it speaks Matter, and that migration has its own platform and reset rules. Read the model's current protocol label before opening either setup screen.</p>
+
+          <h2 id="before-you-start">What to Check Before You Install or Buy Another One</h2>
+          <ol>
+            <li><strong>Match the model, region, and generation.</strong> “Eve Energy,” “Hue bulb,” or “SwitchBot hub” is not precise enough. Hardware revisions can use different protocols and update paths.</li>
+            <li><strong>Find the code before checkout or installation.</strong> Product documentation should say where the Matter code lives and how pairing mode starts. If the code is created only in an app, record that dependency.</li>
+            <li><strong>Check official Home Assistant support separately.</strong> A Works With Home Assistant badge is stronger than general Matter interoperability. When a vendor page does not name Home Assistant, standard Matter may still work, but the maker may limit its support to listed platforms.</li>
+            <li><strong>Write down the hub path.</strong> Direct Matter over Wi-Fi, direct Matter over Thread, and Matter through a bridge have different hardware and recovery needs.</li>
+            <li><strong>Compare the feature list.</strong> Confirm that the controls and sensor readings Home Assistant exposes cover the job. Use a direct local connection when it is better&mdash;Home Assistant specifically recommends its direct, local Hue Bridge connection over Hue's Matter bridge for richer features.</li>
+            <li><strong>Check the update path.</strong> Ask whether Home Assistant, the controller platform, or the vendor app supplies firmware and whether that path needs an account or internet access.</li>
+            <li><strong>Avoid duplicate automations.</strong> Put each schedule or motion rule in one place. Leaving the same rule in Home Assistant and the vendor app can produce double actions and make cloud failures harder to understand.</li>
+          </ol>
+
+          <h2 id="recommendation">The Practical Recommendation</h2>
+          <p>For the simplest local setup, choose a factory-ready Matter model with a permanent setup code, physical pairing instructions, and standardized features that cover the household's real need. Pair it in the Home Assistant Companion app, save the code, document whether it uses Wi-Fi or Thread, and keep important automations in Home Assistant.</p>
+          <p>Use the vendor app when the exact product genuinely needs it for a firmware conversion, bridge setup, child-device selection, or a feature you value. Do not confuse that maintenance dependency with the everyday Matter control path. The useful goal is not “zero apps at any cost.” It is knowing which app is optional, which is temporary, and which will still be needed after the light, plug, sensor, or bridge appears in Home Assistant.</p>
+
+          <h2 id="faq">FAQ</h2>
+
+          <h3 id="ha-app-instead">Can I Use the Home Assistant App Instead of the Manufacturer App?</h3>
+          <p>Yes, when the exact product ships ready for Matter, has a Matter setup code, and can enter pairing mode without the manufacturer app. Use the Home Assistant Companion app to scan the code. A bridge or device that needs a firmware upgrade may still require the maker's app.</p>
+
+          <h3 id="vendor-account">Does Matter Require a Vendor Account?</h3>
+          <p>Matter itself does not require a device-maker account for local control. A manufacturer can still require an account to enable Matter on a bridge, install an upgrade, select bridged child devices, or use brand-only features.</p>
+
+          <h3 id="app-only-code">What If the Matter Code Appears Only in the Vendor App?</h3>
+          <p>Use the vendor's documented flow to expose or create the code. An app-only code usually means the product is a bridge, an upgraded device, or a product whose Matter mode must be enabled first. Save the code outside the app afterward if the instructions allow it.</p>
+
+          <h3 id="delete-app">Can I Delete the Vendor App After Pairing?</h3>
+          <p>Keep it until you have checked how firmware, calibration, history, maps, scenes, child-device selection, and factory recovery work. Then remove it only if the official instructions and your own test show that nothing you need depends on it. Basic Matter control can remain local while those extra jobs still depend on the vendor app or cloud.</p>
+
+          <h3 id="homekit-code">Is a HomeKit Code the Same as a Matter Code?</h3>
+          <p>No. HomeKit and Matter are separate setup paths, even when both use Thread. A product labeled only Works with Apple Home or HomeKit cannot be assumed to support Matter, and the HomeKit code is not a Matter commissioning code.</p>
+
+          <h3 id="firmware-without-app">Will Firmware Update Without the Vendor App?</h3>
+          <p>Only if the model supports Matter over-the-air updates and its manufacturer publishes the update through a path Home Assistant can use. Some products still use the vendor app for firmware, so verify the exact model before removing the app.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Matter and Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter setup, local control, bridges, multi-platform sharing, and updates</a></li>
+              <li><a href="https://csa-iot.org/all-solutions/matter/matter-faq/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: Matter setup from a maker app or chosen platform</a></li>
+              <li><a href="https://handbook.buildwithmatter.com/certification/certifying-a-product/development/" target="_blank" rel="noopener noreferrer">Matter Handbook: per-device onboarding codes and update methods</a></li>
+              <li><a href="https://csa-iot.org/newsroom/a-smarter-start-matter-1-4-1-makes-setup-easier/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: Matter 1.4.1 Enhanced Setup Flow</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://www.ikea.com/us/en/p/myggspray-wireless-motion-sensor-smart-80619451/" target="_blank" rel="noopener noreferrer">IKEA: MYGGSPRAY 806.194.51 Matter-over-Thread specifications</a></li>
+              <li><a href="https://www.evehome.com/en/eve-energy-works-with-home-assistant" target="_blank" rel="noopener noreferrer">Eve: Eve Energy support for Home Assistant, local control, and updates</a></li>
+              <li><a href="https://www.philips-hue.com/en-us/support/article/philips-hue-and-matter-complete-setup-and-support-guide/000012" target="_blank" rel="noopener noreferrer">Philips Hue: direct Matter bulbs versus the Hue Bridge path</a></li>
+              <li><a href="https://www.philips-hue.com/en-us/p/hue-white-and-color-ambiance-essential-a19-e26-smart-bulb-800-lm-88w/046677592530" target="_blank" rel="noopener noreferrer">Philips Hue: current Essential A19 Matter bulb example</a></li>
+              <li><a href="https://support.switch-bot.com/hc/en-us/articles/35927178604311-How-to-Connect-SwitchBot-Devices-to-Third-Party-Platforms-Matter-over-Bridge" target="_blank" rel="noopener noreferrer">SwitchBot: Hub Matter setup and bridged child-device selection</a></li>
+              <li><a href="https://support.switch-bot.com/hc/en-us/articles/38979658026519-SwitchBot-Device-Matter-Compatibility" target="_blank" rel="noopener noreferrer">SwitchBot: current hub and child-device Matter compatibility</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>HomeKit and update documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant: adding Works with HomeKit accessories locally</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant: exporting entities through HomeKit Bridge</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/eve/" target="_blank" rel="noopener noreferrer">Home Assistant: current Works With Home Assistant Eve models</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/hue/" target="_blank" rel="noopener noreferrer">Home Assistant: local Philips Hue integration and features</a></li>
+              <li><a href="https://www.evehome.com/en-us/upgrade-to-matter" target="_blank" rel="noopener noreferrer">Eve: upgrading eligible older HomeKit devices to Matter</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: current Matter Server and commissioning behavior</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1nob3gn/matter_works_with_home_assistant_is_a_scam/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: bridge features and vendor-app expectations</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1pwd1w8/why_did_everybody_praise_inferior_technology_like/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: direct commissioning versus app-enabled Matter</a></li>
+              <li><a href="https://www.reddit.com/r/MatterProtocol/comments/1kbnmdq/" target="_blank" rel="noopener noreferrer">Reddit r/MatterProtocol: when a manufacturer app is mandatory</a></li>
+              <li><a href="https://community.home-assistant.io/t/nuki-joins-works-with-home-assistant/907488/40" target="_blank" rel="noopener noreferrer">Home Assistant Community: certified support and app-account caveats</a></li>
+              <li><a href="https://community.home-assistant.io/t/ikea-just-announced-21-new-affordable-matter-over-thread-smart-home-devices-which-may-also-support-zigbee-too/948187?page=5" target="_blank" rel="noopener noreferrer">Home Assistant Community: direct IKEA Matter setup questions</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Tara setup</p>
+        <h2>Want the local path documented before devices are installed?</h2>
+        <p>Tara plans the controller, Matter and Thread path, app and account dependencies, update route, local automations, setup-code record, and household handoff as one working system.</p>
+        <a class="cta" href="/configurator/">Plan your home</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Choose the cleanest setup path for each device</h2>
+        <div class="links">
+          <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose the first Matter app</a>
+          <a href="/blog/matter-device-missing-features-home-assistant/">Find missing Matter features</a>
+          <a href="/blog/do-you-need-switchbot-hub-home-assistant/">Choose a SwitchBot path</a>
+          <a href="/blog/eve-matter-thread-home-assistant-without-apple-home/">Use Eve without Apple Home</a>
+          <a href="/blog/philips-hue-home-assistant-bridge-matter-zigbee/">Choose the Hue path</a>
+          <a href="/blog/update-matter-device-firmware-home-assistant/">Update Matter firmware</a>
+          <a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Understand HomeKit Device and Bridge</a>
+          <a href="/configurator/">Plan a local Tara system</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
