@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tado X With Home Assistant: Matter Setup and Limits</title>
+    <meta name="description" content="Connect tado X to Home Assistant through Matter, see what stays local, which features are missing, and when the tado app or Bridge X is still needed." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/tado-x-home-assistant-matter/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/tado-x-home-assistant-matter/" />
+    <meta property="og:title" content="tado X With Home Assistant: Matter Setup and Limits" />
+    <meta property="og:description" content="Connect tado X to Home Assistant through Matter, see what stays local, which features are missing, and when the tado app or Bridge X is still needed." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/tado-x-home-assistant-matter/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="tado X With Home Assistant: Matter Setup and Limits" />
+    <meta name="twitter:description" content="Connect tado X to Home Assistant through Matter, see what stays local, which features are missing, and when the tado app or Bridge X is still needed." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/tado-x-home-assistant-matter/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { max-width: 100%; padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/tado-x-home-assistant-matter/#blogposting",
+          "headline": "tado X With Home Assistant: Matter Setup and Limits",
+          "description": "Connect tado X to Home Assistant through Matter, see what stays local, which features are missing, and when the tado app or Bridge X is still needed.",
+          "image": "https://tarahome.ai/assets/generated/blog/tado-x-home-assistant-matter/cover.png",
+          "datePublished": "2026-07-18",
+          "dateModified": "2026-07-18",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/tado-x-home-assistant-matter/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/tado/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://help.tado.com/en/articles/9090800-do-i-need-a-tado-bridge-x",
+            "https://help.tado.com/en/articles/9242001-where-can-i-find-the-matter-setup-code-for-my-tado-x-device",
+            "https://help.tado.com/en/articles/10264759-how-can-i-set-up-my-tado-x-devices-in-a-matter-app",
+            "https://help.tado.com/en/articles/10264695-how-can-i-fix-a-greyed-out-matter-linking-button-or-other-linking-errors",
+            "https://help.tado.com/en/articles/9263876-is-tado-x-compatible-with-other-tado-product-lines",
+            "https://help.tado.com/en/articles/8925897-what-are-the-individual-tado-x-devices-used-for",
+            "https://help.tado.com/en/articles/9229568-how-do-i-set-up-a-room-smart-schedule-for-my-tado-x-home",
+            "https://help.tado.com/en/articles/14400353-how-can-i-make-sure-that-all-my-tado-devices-are-up-to-date",
+            "https://help.tado.com/en/articles/12182463-what-is-ai-assist",
+            "https://support.tado.com/en/articles/12165739-limitation-for-rest-api-usage",
+            "https://community.home-assistant.io/t/using-tado-smart-thermostat-x-through-matter/736576",
+            "https://community.home-assistant.io/t/tado-integration-add-support-for-tado-x-devices/735971",
+            "https://github.com/home-assistant/core/issues/151223",
+            "https://www.reddit.com/r/homeassistant/comments/1qhx4lk/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/tado-x-home-assistant-matter/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "tado X With Home Assistant", "item": "https://tarahome.ai/blog/tado-x-home-assistant-matter/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/tado-x-home-assistant-matter/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does tado X work with Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Home Assistant officially directs tado X owners to the Matter integration. This gives local basic climate control and readings, but it does not reproduce every feature in the tado app." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I use the Tado integration or Matter for tado X?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use Matter. Home Assistant's Tado integration is a cloud-polling integration for older product lines and explicitly does not support tado X." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need Bridge X for Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "You need a Thread border router, but it does not always have to be a separate Bridge X. A Wireless Receiver X, Heat Pump Optimizer X, or a compatible third-party Thread border router can fill that network role. Bridge X remains the simplest vendor-supported route for the full tado app experience." }
+            },
+            {
+              "@type": "Question",
+              "name": "Which tado X devices can I add to Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Add each Smart Thermostat X, Smart Radiator Thermostat X, and Wireless Temperature Sensor X separately through Matter. Bridge X, Wireless Receiver X, and Heat Pump Optimizer X do not have Matter setup codes and are not added as Matter devices." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will tado X still heat if the internet goes down?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Basic Home Assistant Matter control remains local when Home Assistant, the home network, Thread border router, and tado devices are running. A schedule already saved to a tado X room device also continues locally. Remote app access and cloud features need the internet." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can tado X control hot water from Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Do not buy it on that assumption. Current Home Assistant community reports still describe hot-water control and other advanced tado features as missing from the Matter view. Use the tado app or receiver controls for functions that Matter does not expose." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter &amp; Heating</span><span>July 18, 2026</span><span>12 min read</span></p>
+            <h1>tado X With Home Assistant: Matter Setup and Limits</h1>
+            <p class="lede">Yes, tado X works with Home Assistant, but the correct route is Matter&mdash;the shared smart-home standard&mdash;not Home Assistant's older Tado connection. The local controls are useful, while heating setup, device-software updates, schedules, hot water, and tado's smarter features still need a careful split between Home Assistant and the tado app.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/tado-x-home-assistant-matter/cover.png" alt="Official tado X thermostat, radiator valve, bridge, sensor, and receiver family arranged on a warm oak sideboard" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Direct answer:</strong> tado X works with Home Assistant through Matter, the shared smart-home standard. Control is local; current owner reports commonly show temperature, humidity, a target temperature, and basic heating control, but the exact controls vary by model and software version.</li>
+              <li><strong>Set up tado first:</strong> Finish the boiler, room, schedule, and device-software updates in the tado app. Then create a fresh Matter linking code for each thermostat or room sensor and add it to Home Assistant as a device that is already in use.</li>
+              <li><strong>Avoid this:</strong> Do not use the older Tado integration, try to add Bridge X or the receiver as Matter devices, or factory-reset a working heating system because one linking attempt failed.</li>
+              <li><strong>Main caveat:</strong> You need a Thread border router&mdash;a small hub that connects tado's low-power network to your normal home network. Bridge X is the simplest tado-supported choice, but listed alternatives can work. Keep a tado-supported internet path for dependable app access, device updates, hot-water controls, advanced tado features, and vendor support.</li>
+            </ul>
+          </aside>
+
+          <h2 id="yes-use-matter">Yes&mdash;tado X Works With Home Assistant Through Matter</h2>
+          <p>The official answer is unusually clear. Home Assistant calls each built-in connection to a device or service an <strong>integration</strong>. <a href="https://www.home-assistant.io/integrations/tado/" target="_blank" rel="noopener noreferrer">Its Tado documentation</a> says new tado X devices are not supported by the older Tado integration and must use Matter instead. The older connection checks tado's online service; normal Matter commands stay inside the home.</p>
+          <p>This applies to the current Smart Thermostat X, Smart Radiator Thermostat X, and Wireless Temperature Sensor X. Owner reports commonly show room temperature and humidity, a target-temperature control, and basic thermostat control. Owners using recent Smart Radiator Thermostat X device software, called firmware, also report a simple &ldquo;needs battery replacement&rdquo; warning. Exact controls vary by model and software version. They are enough for a local dashboard and an automation&mdash;an automatic rule&mdash;such as lowering the target when a separate window sensor stays open.</p>
+          <p>Use this order: finish the boiler, rooms, schedules, and updates in the tado app, then share each thermostat or room sensor to Home Assistant. Do not try to add Bridge X, Wireless Receiver X, or Heat Pump Optimizer X as Matter devices; those products have no Matter setup code.</p>
+          <p>It is not the whole tado experience. Home Assistant does not receive tado's room schedules, Auto or Away behavior, detailed heating activity, installer settings, or every receiver function through Matter. <a href="https://community.home-assistant.io/t/using-tado-smart-thermostat-x-through-matter/736576" target="_blank" rel="noopener noreferrer">Current owner reports</a> still describe domestic hot-water control as missing. Think of Matter as the dependable local control layer, not a copy of the tado app.</p>
+
+          <div class="comparison-table" role="region" aria-label="tado X connection choices" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Connection path</th>
+                  <th>Official support for tado X</th>
+                  <th>Local or cloud</th>
+                  <th>What it is for</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home Assistant Matter</strong></td>
+                  <td>Yes. This is Home Assistant's official route for X.</td>
+                  <td>Local control over your home network and Thread.</td>
+                  <td>Current reports commonly show temperature, humidity, a target temperature, and basic climate control; exact controls vary by model and software version.</td>
+                </tr>
+                <tr>
+                  <td><strong>Home Assistant Tado integration</strong></td>
+                  <td>No for X. It is for earlier tado product lines.</td>
+                  <td>Checks tado's online service on a schedule.</td>
+                  <td>Do not choose it to add tado X.</td>
+                </tr>
+                <tr>
+                  <td><strong>tado app</strong></td>
+                  <td>Yes. It is tado's supported setup and management path.</td>
+                  <td>Schedules are stored locally after setup; remote access and richer services use tado's cloud.</td>
+                  <td>Heating-system installation, rooms, zone controllers, schedules, app features, support, and the safest device-update path.</td>
+                </tr>
+                <tr>
+                  <td><strong>Community integrations</strong></td>
+                  <td>Unofficial. Support can change.</td>
+                  <td>An online data connection, not local control.</td>
+                  <td>Extra data for advanced users, with online request limits and more maintenance. Matter should remain the basic control path.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="bridge-x">Do You Need Bridge X?</h2>
+          <p>You need a <strong>Thread border router</strong>: a small hub that connects tado X's low-power Thread network to your normal home network. You do not always need a separate Bridge X.</p>
+          <p><a href="https://help.tado.com/en/articles/9090800-do-i-need-a-tado-bridge-x" target="_blank" rel="noopener noreferrer">tado's current Bridge X guidance</a> says a Wireless Receiver X or Heat Pump Optimizer X can provide that function. Its third-party examples include Google Nest Wifi Pro, Apple HomePod mini and selected Apple TV 4K models, Home Assistant Connect ZBT-1, Home Assistant Yellow, SmartThings, eero, and IKEA Dirigera. It does not yet name the newer Home Assistant Connect ZBT-2. Bridge X remains the least confusing choice when you want the full tado app and tado support path.</p>
+          <p>Home Assistant can provide this hub function when a compatible Thread radio is running the OpenThread Border Router app. For devices to remain online in the tado app, tado says a third-party border router must support <strong>NAT64</strong>&mdash;a network translation service that lets a Thread device reach internet services. Without NAT64, the devices may appear only in the third-party platform. Verify tado app visibility and the device-update path before removing a working tado border router.</p>
+          <div class="callout">
+            <p><strong>Simple recommendation:</strong> Keep Bridge X, Wireless Receiver X, or Heat Pump Optimizer X in a new tado heating system unless you are comfortable maintaining Home Assistant's Thread network. tado lists Connect ZBT-1 and Home Assistant Yellow as compatible hubs, but says it can support devices only when they remain available in the tado app. Removing a working bridge rarely improves local Home Assistant control.</p>
+          </div>
+
+          <h2 id="models">What Each tado X Model Does in Home Assistant</h2>
+          <p>tado separates its room controls from the equipment that connects to the boiler or internet. That is why you add the thermostat and sensors to Matter, not every box in the starter kit.</p>
+
+          <div class="comparison-table" role="region" aria-label="tado X model compatibility with Home Assistant" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Current model</th>
+                  <th>Official role</th>
+                  <th>Matter code?</th>
+                  <th>Home Assistant and cloud caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Smart Thermostat X</strong></td>
+                  <td>Wired room thermostat for a boiler, zone, or underfloor heating.</td>
+                  <td>Yes. Add each one to Home Assistant.</td>
+                  <td>Basic local climate control through Matter; wiring, boiler configuration, schedules, and advanced behavior stay in the tado setup.</td>
+                </tr>
+                <tr>
+                  <td><strong>Smart Radiator Thermostat X</strong></td>
+                  <td>Rechargeable smart valve head for a compatible radiator valve.</td>
+                  <td>Yes. Add each valve separately.</td>
+                  <td>Local target and room data through Matter. The tado app remains useful for rooms, schedules, firmware, and valve setup.</td>
+                </tr>
+                <tr>
+                  <td><strong>Wireless Temperature Sensor X</strong></td>
+                  <td>Room temperature sensor and setpoint control placed away from the radiator.</td>
+                  <td>Yes. Add each sensor separately.</td>
+                  <td>Basic room data and target control. It relies on the tado system's zone setup to operate the correct boiler or valve.</td>
+                </tr>
+                <tr>
+                  <td><strong>Bridge X</strong></td>
+                  <td>tado Thread border router and internet path.</td>
+                  <td>No.</td>
+                  <td>Do not search for it as a Home Assistant Matter device. It supports the tado network and app.</td>
+                </tr>
+                <tr>
+                  <td><strong>Wireless Receiver X</strong></td>
+                  <td>Boiler and, on suitable versions, hot-water controller; also a Thread border router.</td>
+                  <td>No.</td>
+                  <td>Not directly added through Matter. Current Matter reports do not show its full hot-water and installer controls in Home Assistant.</td>
+                </tr>
+                <tr>
+                  <td><strong>Heat Pump Optimizer X</strong></td>
+                  <td>Connects supported heat pumps and can provide the Thread border-router role.</td>
+                  <td>No.</td>
+                  <td>Its detailed heat-pump features are managed through tado, not exposed as a general Home Assistant Matter device.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="setup">How to Add tado X to Home Assistant</h2>
+          <ol>
+            <li><strong>Check heating compatibility before opening the box.</strong> Use tado's product finder for the exact boiler, wiring method, radiator valve, or heat pump. tado X does not mix with V3+ or earlier tado products on the same account.</li>
+            <li><strong>Complete the tado app setup first.</strong> Add the bridge or receiver, install each room device, assign rooms and zone controllers, and confirm that every room heats the correct zone. Leave the devices connected to tado's servers long enough for automatic updates, then check their firmware versions in the tado app. Create any tado schedule you want to keep.</li>
+            <li><strong>Prepare Home Assistant.</strong> Update Home Assistant and the Companion app. Under <strong>Settings &gt; Devices &amp; services</strong>, confirm that Matter is installed. Open the Thread integration, choose <strong>Configure</strong>, and check that the intended Thread network appears. Keep the phone on the normal home Wi-Fi&mdash;not guest Wi-Fi.</li>
+            <li><strong>Create a new code in the tado app.</strong> Open <strong>Settings &gt; Rooms and Devices &gt; Matter device linking</strong>, select one Smart Thermostat X, Smart Radiator Thermostat X, or Wireless Temperature Sensor X, and generate its linking code.</li>
+            <li><strong>Add a device that is already in use.</strong> In the Home Assistant Companion app, open <strong>Settings &gt; Matter</strong>, choose <strong>Add device</strong>, and select <strong>Yes, it's already in use</strong>. Follow the prompts and enter the fresh code from tado.</li>
+            <li><strong>Repeat for every room control.</strong> Each thermostat, radiator valve, and wireless sensor must be shared separately. Do not try to pair Bridge X, Wireless Receiver X, or Heat Pump Optimizer X as Matter devices.</li>
+            <li><strong>Test one safe change.</strong> Adjust a target temperature by a small amount in Home Assistant, verify the expected room and heating zone respond, then restore the normal target. Name the device and its controls clearly before building automations.</li>
+          </ol>
+          <p>After a tado X device has joined its first Matter system, the printed QR code is not the normal way to add a second controller. Generate a fresh code from the tado app. tado notes that joining more Matter systems can slightly reduce battery life, so share only with the platforms the household actually uses.</p>
+          <p><strong>Apple Home and other platforms:</strong> tado X joins Apple Home through Matter, not through a separate HomeKit-only connection. To share a room device with Apple Home, Google Home, Alexa, or SmartThings after the tado setup, generate a fresh linking code for that device and add it in the other platform. Keep each daily schedule in one app so two platforms do not send competing commands.</p>
+
+          <div class="callout">
+            <p><strong>Heating safety:</strong> A radiator valve head may be a reasonable do-it-yourself replacement when tado confirms the valve is compatible. A wired thermostat, Wireless Receiver X, zone valve, boiler, or heat pump can involve mains electricity, control wiring, and frost-protection settings. Follow the model-specific instructions and use a qualified heating installer or electrician when the circuit or terminals are not already known. Home Assistant should never be the only frost or over-temperature protection.</p>
+          </div>
+
+          <h2 id="local-cloud">What Still Works Locally, and What Needs tado</h2>
+          <ul>
+            <li><strong>Local in Home Assistant:</strong> Matter readings, target-temperature changes, basic climate control, dashboards, and automations run on the home network when Home Assistant, Thread, and the heating devices are powered.</li>
+            <li><strong>Local in the tado devices:</strong> tado says a room schedule that has already been saved to an X device continues if the internet connection is lost. Manual control on the thermostat or valve also remains important.</li>
+            <li><strong>tado app and online service:</strong> Remote access, room and zone management, activity reports, support diagnostics, and tado's richer features use its app and online service. <a href="https://help.tado.com/en/articles/12182463-what-is-ai-assist" target="_blank" rel="noopener noreferrer">tado documents AI Assist as a paid subscription</a>; basic Matter control and a saved Smart Schedule do not require it.</li>
+            <li><strong>Firmware:</strong> tado says X firmware is downloaded and installed automatically from its servers, so the devices need a working tado-supported internet or NAT64 path. Home Assistant supports Matter updates in principle, but that does not guarantee delivery of tado firmware. Do not assume the Home Assistant connection replaces the vendor update path.</li>
+            <li><strong>Community cloud add-ons:</strong> Unofficial integrations may expose more data, but they use tado's cloud API&mdash;its online data interface. tado currently limits third-party API access to 100 requests per day, rising to 20,000 for Auto-Assist and AI Assist subscribers, so these add-ons are not a substitute for local Matter control.</li>
+          </ul>
+          <p>To test the local path, disconnect the home's outside internet connection while leaving the router, Home Assistant, Thread border router, and tado system powered. Change one room target from the local Home Assistant dashboard and confirm a saved tado schedule still runs. Reconnect the internet after the test. Do not switch off the router or bridge, because that tests a power failure rather than a cloud outage.</p>
+
+          <h2 id="missing-features">The Important Matter Limits</h2>
+          <p>As of July 2026, Home Assistant owners consistently describe the tado X Matter view as basic. Current reports commonly show temperature, humidity, a target temperature, and climate control. Owners with recent Smart Radiator Thermostat X firmware also report a simple yes-or-no &ldquo;needs battery replacement&rdquo; control. The exact controls and readings shown in Home Assistant vary by model, device-software version, and Matter Server version.</p>
+          <p>Do not expect tado Smart Schedules, Auto/Away status, Boost, heating-activity charts, room and zone-controller configuration, installer menus, detailed battery percentage, or every device diagnostic to appear. The Wireless Receiver X is particularly important: community reports through June 2026 still say domestic hot-water control is not available through the Matter connection.</p>
+          <p>If one of those features is essential, keep it in the tado app and put each automation in one place. For example, let tado own the room schedule and let Home Assistant lower targets when the house is in vacation mode. Do not create the same morning and away schedule in both systems; competing controllers make heating behavior harder to understand.</p>
+
+          <h2 id="troubleshooting">Fix the Common Pairing and Control Problems</h2>
+
+          <h3 id="no-code">There Is No Matter Code on Bridge X or the Receiver</h3>
+          <p>That is expected. <a href="https://help.tado.com/en/articles/9242001-where-can-i-find-the-matter-setup-code-for-my-tado-x-device" target="_blank" rel="noopener noreferrer">tado only provides Matter codes for its room-control devices</a>. Add each Smart Thermostat X, Smart Radiator Thermostat X, and Wireless Temperature Sensor X. The bridge, receiver, and heat-pump controller stay behind the scenes.</p>
+
+          <h3 id="code-fails">The Printed Code or Old Linking Code Fails</h3>
+          <p>Open the device in the tado app and generate a fresh linking code. Then choose Home Assistant's path for a device that is already in use. Reusing the box QR as though the device were new, or choosing the new-device flow for a device already joined to tado, is the common wrong turn.</p>
+
+          <h3 id="linking-grey">Matter Device Linking Is Greyed Out</h3>
+          <p>tado recommends waiting 15 to 20 minutes after setup, keeping the phone on the same Wi-Fi, moving Bridge X closer if Thread coverage is weak, and restarting the phone and router before considering a reset. Update the tado app and phone first. A factory reset erases a working heating setup, so use it only after the official checks and when you have time to rebuild every room and zone.</p>
+
+          <h3 id="network">Home Assistant Hangs While Adding the Device</h3>
+          <p>Check that Home Assistant's Matter page opens without an error, the phone is on the normal home Wi-Fi, and the Thread border router is online. Guest Wi-Fi or network isolation&mdash;a router setting that prevents devices from talking to each other&mdash;can block pairing even when the code is correct. If you deliberately use separate networks, called VLANs, follow TaraHome's <a href="/blog/home-assistant-matter-checking-network-connectivity/">Matter network-connectivity checklist</a> before resetting the thermostat.</p>
+
+          <h3 id="wrong-zone">The Home Assistant Control Appears, but the Correct Room Does Not Heat</h3>
+          <p>Verify the room and Zone Controller in the tado app. Home Assistant is changing the room target; tado's configured receiver, thermostat, radiator valves, and boiler relationship decides how heat is delivered. Do not move receiver wires or change installer settings merely because a Matter control appears.</p>
+
+          <h3 id="hot-water">Heating Works, but Hot Water Is Missing</h3>
+          <p>This is a current feature limit, not a reason to add tado X through the older Tado integration. Keep hot-water schedules and manual override in the tado app or Wireless Receiver X unless tado and Home Assistant later document Matter support for your exact receiver and firmware.</p>
+
+          <h2 id="before-buying">Check These Things Before Buying tado X</h2>
+          <ol>
+            <li><strong>Product generation:</strong> X cannot share a tado home with V3+, V3, or earlier devices, and the older Internet Bridge does not work with X.</li>
+              <li><strong>Boiler or valve compatibility:</strong> Use tado's current product finder for the exact model. tado says X broadly supports relay and OpenTherm, two common boiler-control methods, but its compatibility with brand-specific modulating controls is narrower than the earlier line.</li>
+              <li><strong>Thread coverage:</strong> Decide whether Bridge X, Wireless Receiver X, Heat Pump Optimizer X, or an officially listed alternative such as Google Nest Wifi Pro, HomePod mini, Home Assistant Connect ZBT-1, or Home Assistant Yellow will cover every floor and radiator location.</li>
+            <li><strong>Required features:</strong> Buy it for local temperatures, targets, and basic Home Assistant automations. Do not buy on the assumption that hot water, tado schedules, installer controls, detailed battery data, or every app feature will appear in Home Assistant.</li>
+            <li><strong>One automation owner:</strong> Decide whether tado or Home Assistant runs the daily schedule, away behavior, and window response. A clear split is more reliable than duplicated rules.</li>
+            <li><strong>Manual fallback:</strong> Confirm the household can still change a thermostat, valve, or receiver and that the heating system keeps its built-in frost and safety controls if Home Assistant is unavailable.</li>
+          </ol>
+
+          <h2 id="recommendation">The Practical Setup to Choose</h2>
+          <p>For most homeowners, use tado's supported hardware path for the heating system and Home Assistant Matter for local visibility and automations. Install and update the X system in the tado app, keep Bridge X or the Thread-router function already built into the receiver or heat-pump controller, and share each room-control device to Home Assistant.</p>
+          <p>That arrangement avoids the cloud-polling Tado integration for daily control without pretending the vendor app is unnecessary. Home Assistant owns the local rules you care about; tado owns heating-system configuration, saved room schedules, firmware, and any feature Matter does not expose. If you want a Home Assistant-only Thread network, treat it as an advanced path and verify tado app access, firmware, and recovery before removing anything.</p>
+
+          <h2 id="faq">FAQ</h2>
+
+          <h3 id="does-it-work">Does tado X Work With Home Assistant?</h3>
+          <p>Yes. Use Home Assistant's official Matter integration. It provides local basic climate control and room readings, but it does not reproduce every tado feature.</p>
+
+          <h3 id="tado-or-matter">Should I Use the Tado Integration or Matter?</h3>
+          <p>Use Matter for tado X. Home Assistant's Tado integration is a cloud-polling integration for earlier tado generations and explicitly excludes X.</p>
+
+          <h3 id="need-bridge">Do I Need Bridge X?</h3>
+          <p>You need a Thread border router, but not always a separate Bridge X. Wireless Receiver X, Heat Pump Optimizer X, or a compatible third-party border router can provide Thread. Bridge X is still the simplest vendor-supported choice for the full tado app and support path.</p>
+
+          <h3 id="which-devices">Which tado X Devices Do I Add?</h3>
+          <p>Add every Smart Thermostat X, Smart Radiator Thermostat X, and Wireless Temperature Sensor X separately. Bridge X, Wireless Receiver X, and Heat Pump Optimizer X have no Matter setup code.</p>
+
+          <h3 id="offline">Will Heating Work Without the Internet?</h3>
+          <p>Basic Home Assistant Matter control stays local when Home Assistant, the home network, Thread router, and tado devices are running. A schedule already saved to a tado X room device also continues locally. Remote app access and cloud features need the internet.</p>
+
+          <h3 id="hot-water-faq">Can Home Assistant Control tado X Hot Water?</h3>
+          <p>Do not count on it. Current community reports still describe hot-water control and other advanced receiver functions as missing through Matter. Use the tado app or receiver controls for functions Home Assistant does not expose.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/tado/" target="_blank" rel="noopener noreferrer">Home Assistant: Tado integration and the official Matter route for tado X</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter setup, multi-admin, local control, and firmware caveats</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant: Thread networks, border routers, and preferred-network behavior</a></li>
+              <li><a href="https://help.tado.com/en/articles/9090800-do-i-need-a-tado-bridge-x" target="_blank" rel="noopener noreferrer">tado: when Bridge X or another Thread border router is needed</a></li>
+              <li><a href="https://help.tado.com/en/articles/9242001-where-can-i-find-the-matter-setup-code-for-my-tado-x-device" target="_blank" rel="noopener noreferrer">tado: which X devices have Matter codes and how to create a linking code</a></li>
+              <li><a href="https://help.tado.com/en/articles/10264759-how-can-i-set-up-my-tado-x-devices-in-a-matter-app" target="_blank" rel="noopener noreferrer">tado: Matter multi-admin setup and battery caveat</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://help.tado.com/en/articles/8925897-what-are-the-individual-tado-x-devices-used-for" target="_blank" rel="noopener noreferrer">tado: current X device roles, local schedules, and Matter-enabled room controls</a></li>
+              <li><a href="https://help.tado.com/en/articles/9263876-is-tado-x-compatible-with-other-tado-product-lines" target="_blank" rel="noopener noreferrer">tado: X versus earlier product lines and heating-system compatibility</a></li>
+              <li><a href="https://help.tado.com/en/articles/9229568-how-do-i-set-up-a-room-smart-schedule-for-my-tado-x-home" target="_blank" rel="noopener noreferrer">tado: Smart Schedules stored locally on X devices</a></li>
+              <li><a href="https://help.tado.com/en/articles/14400353-how-can-i-make-sure-that-all-my-tado-devices-are-up-to-date" target="_blank" rel="noopener noreferrer">tado: automatic firmware updates and server-connectivity requirement</a></li>
+              <li><a href="https://help.tado.com/en/articles/12182463-what-is-ai-assist" target="_blank" rel="noopener noreferrer">tado: AI Assist subscription features and requirements</a></li>
+              <li><a href="https://help.tado.com/en/articles/10264695-how-can-i-fix-a-greyed-out-matter-linking-button-or-other-linking-errors" target="_blank" rel="noopener noreferrer">tado: official Matter-linking troubleshooting</a></li>
+              <li><a href="https://support.tado.com/en/articles/12165739-limitation-for-rest-api-usage" target="_blank" rel="noopener noreferrer">tado: current third-party REST API request limits</a></li>
+              <li><a href="https://www.tado.com/en/products/compatibility" target="_blank" rel="noopener noreferrer">tado: current boiler, radiator, heat-pump, Matter, and Thread compatibility</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/using-tado-smart-thermostat-x-through-matter/736576" target="_blank" rel="noopener noreferrer">Home Assistant Community: current tado X Matter entities, firmware, battery, and hot-water reports</a></li>
+              <li><a href="https://community.home-assistant.io/t/tado-integration-add-support-for-tado-x-devices/735971" target="_blank" rel="noopener noreferrer">Home Assistant Community: tado X support request and Matter-versus-cloud discussion</a></li>
+              <li><a href="https://github.com/home-assistant/core/issues/151223" target="_blank" rel="noopener noreferrer">Home Assistant Core: tado API limits and the local-Matter recommendation</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1qhx4lk/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Bridge X, Thread, Matter, and app setup experiences</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1g0ipn6/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: tado X integration and Thread questions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Related TaraHome guides</h3>
+            <ul>
+              <li><a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Which app should pair a Matter device first?</a></li>
+              <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Fix Matter's checking-network-connectivity error</a></li>
+              <li><a href="/blog/update-matter-device-firmware-home-assistant/">Update Matter firmware without guessing</a></li>
+              <li><a href="/blog/will-home-assistant-matter-work-without-internet/">What Matter does during an internet outage</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Tara setup</p>
+        <h2>Want heating automations with a clear local fallback?</h2>
+        <p>Tara plans the Home Assistant controller, Thread coverage, thermostat path, local schedules, safe fallback, updates, and household controls before the kit ships.</p>
+        <a class="cta" href="/configurator/">Plan your home</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Build a local heating and Matter setup that stays understandable</h2>
+        <div class="links">
+          <a href="/blog/best-smart-thermostat-home-assistant-2026/">Choose a Home Assistant thermostat</a>
+          <a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread border router</a>
+          <a href="/blog/matter-device-missing-features-home-assistant/">Understand missing Matter features</a>
+          <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose the first Matter app</a>
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter across platforms</a>
+          <a href="/blog/home-automation-without-cloud/">Plan no-cloud automations</a>
+          <a href="/no-subscription-smart-home/">Avoid subscription traps</a>
+          <a href="/local-smart-home-hub/">Choose a local smart-home hub</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
