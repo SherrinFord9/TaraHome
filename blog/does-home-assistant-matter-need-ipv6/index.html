@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Does Home Assistant Matter Need IPv6?</title>
+    <meta name="description" content="Yes—Matter needs IPv6 on your local network, but not from your ISP. Set Home Assistant to Automatic and keep local multicast working." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/does-home-assistant-matter-need-ipv6/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/does-home-assistant-matter-need-ipv6/" />
+    <meta property="og:title" content="Does Home Assistant Matter Need IPv6?" />
+    <meta property="og:description" content="Yes—Matter needs IPv6 on your local network, but not from your ISP. Set Home Assistant to Automatic and keep local multicast working." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/does-home-assistant-matter-need-ipv6/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Does Home Assistant Matter Need IPv6?" />
+    <meta name="twitter:description" content="Yes—Matter needs IPv6 on your local network, but not from your ISP. Set Home Assistant to Automatic and keep local multicast working." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/does-home-assistant-matter-need-ipv6/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 980px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero > div, .article-cover { max-width: 100%; min-width: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { max-width: 100%; padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/does-home-assistant-matter-need-ipv6/#blogposting",
+      "headline": "Does Home Assistant Matter Need IPv6?",
+      "description": "Yes—Matter needs IPv6 on your local network, but not from your ISP. Set Home Assistant to Automatic and keep local multicast working.",
+      "image": "https://tarahome.ai/assets/generated/blog/does-home-assistant-matter-need-ipv6/cover.png",
+      "datePublished": "2026-07-19",
+      "dateModified": "2026-07-19",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/does-home-assistant-matter-need-ipv6/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://www.home-assistant.io/blog/2025/03/10/matter-certification/",
+        "https://csa-iot.org/all-solutions/matter/matter-faq/",
+        "https://csa-iot.org/developer-resource/specifications-download-request/",
+        "https://csa-iot.org/wp-content/uploads/2024/11/24-27349-006_Matter-1.4-Core-Specification.pdf",
+        "https://developers.home.google.com/matter/primer/thread-and-ipv6",
+        "https://www.threadgroup.org/Portals/0/documents/support/ThreadBorderRouterWhitePaper_07192022_4001_1.pdf",
+        "https://openthread.io/guides/border-router",
+        "https://www.reddit.com/r/homeassistant/comments/1r3konn/why_internet_access_for_ipv6/",
+        "https://www.reddit.com/r/homeassistant/comments/1tr8c6q/help_matter_thread_ipv6/",
+        "https://www.reddit.com/r/homeassistant/comments/1qxs9ej/as_a_matter_of_fact_i_am_an_idiot/",
+        "https://community.home-assistant.io/t/matter-over-thread-cannot-commission-ikea-device-ipv6-routing-issue/1011544",
+        "https://community.home-assistant.io/t/matter-over-thread-devices-periodically-go-unavailable-host-has-no-ipv6-route-to-thread-subnet-homepod-mini-tbr-apple-home-unaffected/1011614",
+        "https://github.com/home-assistant/core/issues/145819"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/does-home-assistant-matter-need-ipv6/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Does Home Assistant Matter Need IPv6?",
+          "item": "https://tarahome.ai/blog/does-home-assistant-matter-need-ipv6/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/does-home-assistant-matter-need-ipv6/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Matter need IPv6 internet service?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant needs IPv6 working on the local home network, but Matter does not require IPv6 service from your ISP, a DHCPv6 server, an open inbound port, or port forwarding."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Matter use IPv4 instead of IPv6?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Matter's operational device traffic uses IPv6. Your phone, Home Assistant web page, and other services may still use IPv4, but an IPv4 address does not replace the local IPv6 path Matter needs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I set Home Assistant IPv6 to Automatic?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes for most normal home networks. In Settings, System, Network, open the active adapter and set IPv6 to Automatic. Use a static IPv6 setup only when you already manage the network's IPv6 routes intentionally."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do Matter devices work in Apple Home but not Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The device and Thread mesh may be healthy while Home Assistant has lost or cannot receive the local IPv6 route advertised by the Thread border router. Check Home Assistant's local IPv6 setting, network placement, border-router reachability, and Matter Server logs before resetting devices."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I disable IPv6 after a Matter device is paired?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Bluetooth helps with nearby setup, but normal Matter control continues over local IPv6 on Wi-Fi, Ethernet, or Thread. Disabling IPv6 can make devices unavailable after a restart or route refresh."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter Networking &amp; Troubleshooting</span><span>July 19, 2026</span><span>11 min read</span></p>
+            <h1>Does Home Assistant Matter Need IPv6?</h1>
+            <p class="lede">Yes. Matter needs IPv6 inside your home, but it does not need IPv6 service from your internet provider. For most homes, set Home Assistant IPv6 to Automatic and leave WAN settings alone.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/does-home-assistant-matter-need-ipv6/cover.png" alt="Unbranded home router and local smart-home hub connected by a green Ethernet cable on a warm oak console" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Direct answer:</strong> Matter needs IPv6 on your local home network. It does not need IPv6 from your ISP, a public IPv6 address, DHCPv6, port forwarding, or an open inbound port.</li>
+              <li><strong>Do this first:</strong> In Home Assistant, open <strong>Settings &gt; System &gt; Network</strong>, choose the active adapter, and set IPv6 to <strong>Automatic</strong> unless you intentionally manage static IPv6 routes.</li>
+              <li><strong>Keep setup simple:</strong> While testing, keep Home Assistant, Wi-Fi Matter devices, and the Thread border router on the same main home network so local IPv6 and device discovery can move freely.</li>
+              <li><strong>Avoid the expensive reset:</strong> If several Matter devices fail together, check the local IPv6 route and Matter Server logs before factory-resetting devices. Separate IoT networks, virtual machines, and standalone containers add the main caveat.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Yes—But It Is Local IPv6, Not Internet IPv6</h2>
+          <p><strong>Home Assistant Matter needs IPv6 working inside your house.</strong> It does not require IPv6 service from your internet provider, and you do not need to expose Home Assistant or a smart device to the internet. Matter uses IPv6 as the local language that its controller&mdash;Home Assistant in this case&mdash;and devices use to reach one another over Wi-Fi, Ethernet, or Thread.</p>
+          <p>For a normal Home Assistant OS installation on one home network, the practical setting is simple: go to <strong>Settings &gt; System &gt; Network</strong>, open the network adapter Home Assistant actually uses, and set IPv6 to <strong>Automatic</strong>. Home Assistant's current Matter documentation explicitly says there is no requirement for an IPv6 internet connection or a DHCPv6 address server. It also says local IPv6 multicast&mdash;one message sent to nearby devices that need it&mdash;must reach the Home Assistant host.</p>
+          <p>Start with Home Assistant, Matter Wi-Fi devices, and the Wi-Fi or Ethernet side of your Thread border router on the same local network. If devices become unavailable after a restart, or pairing stops near the end, do not assume the accessory is broken. A missing local IPv6 route or blocked <strong>mDNS</strong>—the local discovery traffic devices use to find one another—can create the same symptoms.</p>
+
+          <div class="callout">
+            <p><strong>The homeowner version:</strong> Matter needs an IPv6 hallway inside the house. It does not need an IPv6 driveway to the public internet.</p>
+          </div>
+
+          <h2 id="which-ipv6">The Three IPv6 Questions People Accidentally Mix Together</h2>
+          <p>The word <em>IPv6</em> describes several different parts of a network. Matter needs the local parts. That is why a router screen asking about your ISP can send you in the wrong direction.</p>
+
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Network piece</th>
+                  <th>Does Matter need it?</th>
+                  <th>What it means in the house</th>
+                  <th>What to do</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>IPv6 enabled on Home Assistant</strong></td>
+                  <td><strong>Yes</strong></td>
+                  <td>Home Assistant can hold local IPv6 addresses, listen for discovery, and reach Matter devices.</td>
+                  <td>Use <strong>Automatic</strong> on the active Home Assistant network adapter unless you manage static routes.</td>
+                </tr>
+                <tr>
+                  <td><strong>Local IPv6 on Wi-Fi or Ethernet</strong></td>
+                  <td><strong>Yes</strong></td>
+                  <td>Matter-over-Wi-Fi and Ethernet devices can communicate with the controller on the home LAN.</td>
+                  <td>Keep local IPv6 and multicast enabled; test on one flat LAN first.</td>
+                </tr>
+                <tr>
+                  <td><strong>IPv6 route to a Thread mesh</strong></td>
+                  <td><strong>Yes, for Matter over Thread</strong></td>
+                  <td>The Thread border router tells the LAN how to reach battery sensors, locks, bulbs, and other Thread devices.</td>
+                  <td>Keep the border router reachable from Home Assistant and do not block its route or discovery announcements.</td>
+                </tr>
+                <tr>
+                  <td><strong>Internet-facing IPv6 from the ISP or WAN</strong></td>
+                  <td><strong>No</strong></td>
+                  <td>Your internet provider does not have to give the house a public IPv6 range for local Matter control.</td>
+                  <td>Do not change WAN settings just to make Matter work.</td>
+                </tr>
+                <tr>
+                  <td><strong>Router's DHCPv6 address server</strong></td>
+                  <td><strong>No</strong></td>
+                  <td>Matter can use automatically created local addresses and routes instead of waiting for a DHCPv6 lease.</td>
+                  <td>Do not add a DHCPv6 project to a simple home setup.</td>
+                </tr>
+                <tr>
+                  <td><strong>Port forwarding or an open inbound port</strong></td>
+                  <td><strong>No</strong></td>
+                  <td>Normal Matter control stays local. Remote access is a separate controller or Home Assistant decision.</td>
+                  <td>Do not open router ports for Matter.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="normal-home-setup">What to Set in a Normal Home Assistant OS Setup</h2>
+          <p>This is the safest order for a homeowner with one router, one main LAN, and Home Assistant OS. It keeps the changes reversible and follows the current official documentation.</p>
+
+          <h3 id="step-update">1. Update the supported Home Assistant path first</h3>
+          <p>Use a current Home Assistant OS release, the official Matter Server app, and a current Companion app. Home Assistant moved the official server to its matter.js-based Matter Server 9 on <strong>June 23, 2026</strong>, with faster startup and recovery plus new network diagnostics. Updating first rules out issues that newer releases have already fixed before you redesign the network.</p>
+
+          <h3 id="step-automatic">2. Set the active Home Assistant adapter to IPv6 Automatic</h3>
+          <p>Open <strong>Settings &gt; System &gt; Network</strong>. Select the Ethernet or Wi-Fi adapter Home Assistant actually uses. Set IPv6 to <strong>Automatic</strong> if it is disabled or if you are unsure. Save the setting and let Home Assistant finish applying it. A static IPv6 address is not a reliability upgrade unless you also understand the prefixes and routes that must remain valid.</p>
+
+          <h3 id="step-flat-lan">3. Put the first test on one simple LAN</h3>
+          <p>Keep Home Assistant, the phone used for setup, Wi-Fi Matter devices, and the network side of any Thread border router on the same ordinary home network, or <strong>local area network (LAN)</strong>, while testing. Avoid guest Wi-Fi, client isolation, a separate IoT network, or multicast optimization features for the first device. Once one device works and survives a restart, add complexity deliberately.</p>
+
+          <h3 id="step-check-device">4. Check one Matter device before resetting anything</h3>
+          <p>Go to <strong>Settings &gt; Matter &gt; Devices</strong> and open the device. Current Home Assistant shows its network type and IP addresses. Multiple IPv6 addresses can be normal. An address beginning with <code>fe80::</code> is a <strong>link-local</strong> address: it works only on its local network link and is not a public internet address.</p>
+
+          <h3 id="step-logs">5. Match the symptom to the path</h3>
+          <p>If every Thread device fails together and Matter Server reports <code>address is unreachable</code> or repeated timeouts, investigate the IPv6 route between Home Assistant and the Thread border router. If one battery sensor fails while the rest work, check that device's battery, wake procedure, and Thread coverage instead. A shared outage points to infrastructure; a single-device outage usually does not.</p>
+
+          <h2 id="why-no-isp">Why Matter Works Without IPv6 From Your ISP</h2>
+          <p>The Matter specification separates local reachability from public internet access. On one Wi-Fi or Ethernet network, Matter devices can use automatically created link-local IPv6 addresses. The public Matter 1.4 core specification says that when all nodes are attached to the same Wi-Fi or Ethernet link, link-local addressing is sufficient and no additional IPv6 network infrastructure is required.</p>
+          <p>Home Assistant's documentation turns that technical rule into a clear setup instruction: no IPv6-enabled internet connection and no DHCPv6 server are required, but IPv6 support must be enabled on Home Assistant and local multicast must travel freely. The Connectivity Standards Alliance also describes Matter as a local connectivity technology. Internet access may still be used for remote control, account services, firmware downloads, voice assistants, or vendor-only features, but it is not the path for normal local Matter commands.</p>
+          <p>This distinction is also why disabling IPv6 after setup is not a valid privacy strategy. Bluetooth helps the phone perform the nearby handoff during pairing. Normal operation then moves to local IPv6. If you remove that local path, devices can fail immediately or appear to fail only after Home Assistant, a router, or a border router restarts and rebuilds its connections.</p>
+
+          <h2 id="wifi-vs-thread">Matter over Wi-Fi and Matter over Thread Use IPv6 Differently</h2>
+          <p><strong>Matter over Wi-Fi or Ethernet</strong> usually stays on the same local network as Home Assistant. A link-local IPv6 address can be enough when both devices are on that one link. Local mDNS lets the controller discover the device, and encrypted Matter traffic carries the actual commands.</p>
+          <p><strong>Matter over Thread</strong> crosses two local networks: the low-power Thread mesh and the home's Wi-Fi or Ethernet LAN. A <strong>Thread border router</strong> is the always-on device that connects those two IPv6 networks. Google and the Thread Group document that the border router configures local prefixes and routes, then publishes discovery records on behalf of sleepy Thread devices.</p>
+          <p>This creates an important troubleshooting clue. A Thread sensor can work perfectly in Apple Home or Google Home while Home Assistant cannot reach it. The radio mesh and device may be healthy; Home Assistant may simply be missing the local IPv6 route to that mesh. A Home Assistant Community report from <strong>May 25, 2026</strong> showed exactly that pattern: Apple Home still worked while Home Assistant logged an unreachable Thread prefix.</p>
+
+          <div class="callout">
+            <p><strong>Do not confuse the jobs:</strong> a Thread border router carries encrypted packets between local networks. A Matter controller such as Home Assistant, Apple Home, Google Home, Alexa, or SmartThings owns the device relationship and automations. One box can perform both jobs, but the jobs remain separate.</p>
+          </div>
+
+          <h2 id="troubleshooting-order">Use This Troubleshooting Order</h2>
+
+          <h3 id="checking-network">Pairing stops at “Checking network connectivity”</h3>
+          <ol>
+            <li>Confirm Home Assistant's active adapter is set to IPv6 <strong>Automatic</strong>.</li>
+            <li>Update Home Assistant OS, Matter Server, and the Companion app.</li>
+            <li>Move the phone, Home Assistant, Wi-Fi Matter device, and border router onto the same simple LAN for the test.</li>
+            <li>If the phone or device is on guest Wi-Fi or an isolated IoT network, retry on the main household network. Do not weaken isolation settings unless you know how to restore them.</li>
+            <li>Read the Matter Server log before factory-resetting the device.</li>
+          </ol>
+          <p>If this is your exact symptom, use the focused <a href="/blog/home-assistant-matter-checking-network-connectivity/">“Checking network connectivity” guide</a> for the phone, Bluetooth, credential, and QR-code checks that come before network surgery.</p>
+
+          <h3 id="several-offline">Several Matter devices become unavailable together</h3>
+          <p>Look for what they share. If all Wi-Fi Matter devices fail, check the LAN, IPv6 setting, mDNS, and Matter Server. If all Thread devices fail but Wi-Fi Matter remains available, check the border router, its LAN connection, and the route to the Thread network's IPv6 address range. Do not delete and rebuild the device's Matter relationship&mdash;called its fabric&mdash;or create a second Thread network as the first fix. The <a href="/blog/home-assistant-matter-network-map-offline-devices/">Matter network map guide</a> explains the current diagnostic view.</p>
+
+          <h3 id="apple-google-still-work">Apple Home or Google Home still works</h3>
+          <p>That is useful evidence, not a contradiction. It proves the device and at least one controller path are alive. Check Home Assistant's IPv6 route and local network placement before touching the accessory. If Home Assistant sits on a separate server network while the border router sits elsewhere, a same-network test can strongly point to routing or multicast as the cause; it is not absolute proof. Moving a Home Assistant host can interrupt the app, integrations, and automations, so make a backup and use a maintenance window if you are not already comfortable changing its network.</p>
+
+          <h3 id="one-device">Only one device is offline</h3>
+          <p>Start with device power, battery, wake behavior, and signal. Do not blame the entire IPv6 setup when twenty devices work and one does not. For Thread devices, a powered Thread router in the same mesh may improve coverage; a Zigbee plug or a router on a different Thread network will not.</p>
+
+          <h2 id="vlans-vms-containers">The Main Caveat: Separate Networks and Virtual Installations</h2>
+          <p>Matter assumes a friendly residential LAN. A <strong>VLAN</strong>, or virtual local area network, separates devices into another network segment. Home Assistant's official troubleshooting section warns that VLANs, multicast filtering, and malfunctioning snooping features can break discovery or reachability. Router and switch pages may call those features <strong>IGMP snooping</strong> or, for IPv6 multicast, <strong>MLD snooping</strong>. A bad implementation or aggressive “optimization” can hide the announcements Matter needs.</p>
+          <p>Link-local IPv6 stays on one network segment. It does not cross a VLAN just because ordinary IPv4 routing and ping work. A multi-network design needs a real local IPv6 route, the required multicast discovery path, and firewall rules that allow only the intended traffic. Read the <a href="/blog/matter-thread-iot-vlan-home-assistant/">Matter and Thread IoT VLAN guide</a> before separating the controller and border router.</p>
+          <p>A <strong>virtual machine (VM)</strong> is a software-hosted computer, while a <strong>container</strong> is an isolated software package running on a host. Both add another network boundary. Home Assistant OS with the official Matter Server app is the supported path. A VM should use a normal bridged connection to the LAN rather than a private NAT-only network. Running Matter Server as a standalone container is currently unsupported by Home Assistant and requires the host, container, IPv6 routes, and mDNS to be configured correctly.</p>
+          <p>Avoid copying a random <code>sysctl</code>, router advertisement, or static-route command from a forum without matching it to your installation. Those changes can solve one topology and damage another. First prove the device works on one flat LAN; then document the route you actually need.</p>
+
+          <h2 id="security">Does Enabling IPv6 Expose the Smart Home?</h2>
+          <p>Not when you follow the local setup described here. Matter does not ask you to enable IPv6 on the internet-facing side of the router, often called the <strong>WAN</strong>, request a public IPv6 prefix, forward a port, or allow unsolicited inbound internet traffic. A local link-local address is not reachable from the public internet.</p>
+          <p>If your household already uses IPv6 internet service for other reasons, keep the router's stateful firewall and device update practices in place. Public IPv6 security is a separate network-administration decision. It is not a prerequisite for Matter, so there is no reason to change that decision during a basic Home Assistant pairing session.</p>
+          <p>For locks, alarms, cameras, garage doors, heating and cooling, and safety automations, keep a manual control path available, tell the household before a maintenance window, and restart Home Assistant, the router, and the Thread border router only one at a time. Do not depend on remote access until the local path behaves predictably.</p>
+
+          <h2 id="what-not-to-do">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not enable port forwarding for Matter.</strong> It is unnecessary and creates avoidable exposure.</li>
+            <li><strong>Do not factory-reset every device after a shared outage.</strong> Preserve setup codes and check the controller's IPv6 route first.</li>
+            <li><strong>Do not create a second Thread network to fix an IPv6 route.</strong> Separate meshes add credentials and coverage confusion.</li>
+            <li><strong>Do not force a static IPv6 address because “static sounds stable.”</strong> A correct automatic route is better than a static address on the wrong prefix.</li>
+            <li><strong>Do not assume an IPv4 ping proves Matter networking is healthy.</strong> Matter's device traffic still needs the local IPv6 and discovery path.</li>
+            <li><strong>Do not turn an ordinary home into an enterprise network during first setup.</strong> Prove the flat-LAN path, then segment with a written plan.</li>
+          </ul>
+
+          <h2 id="tara-take">Tara's Take</h2>
+          <p>The right default is boring: Home Assistant OS, current Matter Server, IPv6 set to Automatic, one intentional Thread network, and the controller and border router on the same dependable LAN. That gives Matter the local IPv6 path it expects without making the smart home publicly reachable.</p>
+          <p>If a household needs VLANs, multiple network interfaces, or containerized services, treat IPv6 routes and mDNS as part of the installation—not as hidden router trivia. Tara's local-first approach documents who owns the Matter fabric, which border router carries Thread, where automations live, and what still works when the internet is down.</p>
+
+          <h2 id="faq">FAQ</h2>
+
+          <h3 id="faq-internet">Does Matter need IPv6 internet service?</h3>
+          <p>No. Home Assistant needs IPv6 working on the local home network, but Matter does not require IPv6 service from your ISP, a DHCPv6 server, an open inbound port, or port forwarding.</p>
+
+          <h3 id="faq-ipv4">Can Matter use IPv4 instead of IPv6?</h3>
+          <p>Matter's operational device traffic uses IPv6. Your phone, Home Assistant web page, and other services may still use IPv4, but an IPv4 address does not replace the local IPv6 path Matter needs.</p>
+
+          <h3 id="faq-automatic">Should I set Home Assistant IPv6 to Automatic?</h3>
+          <p>Yes for most normal home networks. In <strong>Settings &gt; System &gt; Network</strong>, open the active adapter and set IPv6 to <strong>Automatic</strong>. Use a static IPv6 setup only when you already manage the network's IPv6 routes intentionally.</p>
+
+          <h3 id="faq-apple">Why do Matter devices work in Apple Home but not Home Assistant?</h3>
+          <p>The device and Thread mesh may be healthy while Home Assistant has lost or cannot receive the local IPv6 route advertised by the Thread border router. Check Home Assistant's local IPv6 setting, network placement, border-router reachability, and Matter Server logs before resetting devices.</p>
+
+          <h3 id="faq-disable">Can I disable IPv6 after a Matter device is paired?</h3>
+          <p>No. Bluetooth helps with nearby setup, but normal Matter control continues over local IPv6 on Wi-Fi, Ethernet, or Thread. Disabling IPv6 can make devices unavailable after a restart or route refresh.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Fix Matter pairing stuck on “Checking network connectivity”</a></li>
+            <li><a href="/blog/matter-thread-iot-vlan-home-assistant/">Run Matter and Thread across an IoT VLAN</a></li>
+            <li><a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Matter-over-Thread devices offline in Home Assistant</a></li>
+            <li><a href="/blog/home-assistant-matter-wifi-devices-offline/">Fix Matter-over-Wi-Fi devices offline in Home Assistant</a></li>
+            <li><a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread border router for Home Assistant</a></li>
+            <li><a href="/blog/will-home-assistant-matter-work-without-internet/">See what Matter does without internet</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official Home Assistant documentation and release notes</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration: IPv6, mDNS, setup, diagnostics, and supported installation path</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9 and the June 23, 2026 Matter upgrade</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/03/10/matter-certification/" target="_blank" rel="noopener noreferrer">Home Assistant Matter certification and the IPv6 networking challenge</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Standards and platform documentation</h3>
+              <ul>
+                <li><a href="https://csa-iot.org/all-solutions/matter/matter-faq/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance Matter FAQ</a></li>
+                <li><a href="https://csa-iot.org/developer-resource/specifications-download-request/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: current Matter 1.6 specification download</a></li>
+                <li><a href="https://csa-iot.org/wp-content/uploads/2024/11/24-27349-006_Matter-1.4-Core-Specification.pdf" target="_blank" rel="noopener noreferrer">Matter 1.4 core specification: IPv6 reachability</a></li>
+                <li><a href="https://developers.home.google.com/matter/primer/thread-and-ipv6" target="_blank" rel="noopener noreferrer">Google Home Developers: Thread and IPv6</a></li>
+                <li><a href="https://www.threadgroup.org/Portals/0/documents/support/ThreadBorderRouterWhitePaper_07192022_4001_1.pdf" target="_blank" rel="noopener noreferrer">Thread Group: border-router IPv6 and service-discovery white paper</a></li>
+                <li><a href="https://openthread.io/guides/border-router" target="_blank" rel="noopener noreferrer">OpenThread border-router documentation</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1r3konn/why_internet_access_for_ipv6/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: local IPv6 versus internet IPv6</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1tr8c6q/help_matter_thread_ipv6/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: Matter, Thread, and an ISP without IPv6</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qxs9ej/as_a_matter_of_fact_i_am_an_idiot/" target="_blank" rel="noopener noreferrer">Reddit r/homeassistant: devices failing after IPv6 was disabled</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-over-thread-cannot-commission-ikea-device-ipv6-routing-issue/1011544" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter-over-Thread commissioning and IPv6 routing</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-over-thread-devices-periodically-go-unavailable-host-has-no-ipv6-route-to-thread-subnet-homepod-mini-tbr-apple-home-unaffected/1011614" target="_blank" rel="noopener noreferrer">Home Assistant Community: Apple Home works while Home Assistant loses the Thread route</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>GitHub issue reference</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/145819" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: Matter “Network is unreachable” log example</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want the local network path decided before devices are installed?</h2>
+          <p>Tara plans the Home Assistant host, Matter controller, Thread border router, local network placement, outage behavior, and household handoff as one working system.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep Matter local and understandable</h2>
+          <div class="links">
+            <a href="/blog/home-assistant-matter-checking-network-connectivity/">Fix pairing connectivity</a>
+            <a href="/blog/matter-thread-iot-vlan-home-assistant/">Matter on an IoT VLAN</a>
+            <a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Thread devices offline</a>
+            <a href="/blog/home-assistant-matter-wifi-devices-offline/">Fix Wi-Fi Matter offline</a>
+            <a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread router</a>
+            <a href="/blog/will-home-assistant-matter-work-without-internet/">Matter without internet</a>
+            <a href="/local-smart-home-hub/">Local smart-home hub</a>
+            <a href="/configurator/">Plan a local Tara system</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
