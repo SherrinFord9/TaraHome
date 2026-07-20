@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKEA MYGGBETT Not Updating in Home Assistant: What to Check</title>
+    <meta name="description" content="Fix an IKEA MYGGBETT that stops updating in Home Assistant. Check stale state, battery, Thread coverage, device software, and the safe reset order." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/ikea-myggbett-home-assistant-not-updating/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/ikea-myggbett-home-assistant-not-updating/" />
+    <meta property="og:title" content="IKEA MYGGBETT Not Updating in Home Assistant: What to Check" />
+    <meta property="og:description" content="A safe test order when IKEA or Apple shows live door changes but Home Assistant stays stuck open or closed." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/ikea-myggbett-home-assistant-not-updating/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IKEA MYGGBETT Not Updating in Home Assistant: What to Check" />
+    <meta name="twitter:description" content="Separate a stale Home Assistant state from a battery, magnet, Thread, device-software, or hardware fault before resetting anything." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/ikea-myggbett-home-assistant-not-updating/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 1120px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.38; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { max-width: 100%; padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/ikea-myggbett-home-assistant-not-updating/#blogposting",
+          "headline": "IKEA MYGGBETT Not Updating in Home Assistant: What to Check",
+          "description": "Fix an IKEA MYGGBETT that stops updating in Home Assistant. Check stale state, battery, Thread coverage, device software, and the safe reset order.",
+          "image": "https://tarahome.ai/assets/generated/blog/ikea-myggbett-home-assistant-not-updating/cover.png",
+          "datePublished": "2026-07-20",
+          "dateModified": "2026-07-20",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/ikea-myggbett-home-assistant-not-updating/" },
+          "citation": [
+            "https://www.ikea.com/us/en/p/myggbett-door-window-sensor-smart-60617641/",
+            "https://www.ikea.com/us/en/manuals/myggbett-door-window-sensor-smart__AA-2664591-1-100.pdf",
+            "https://csa-iot.org/csa_product/myggbett-door-window-sensor/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/thread/",
+            "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+            "https://community.home-assistant.io/t/myggbett-door-window-sensor-or-contact-sensor-from-ikea/985234",
+            "https://community.home-assistant.io/t/myggbett-door-window-sensor/988122",
+            "https://community.home-assistant.io/t/ikea-myggbett-matter-device-loses-connection/996839",
+            "https://community.home-assistant.io/t/ikea-timmerflotte-and-myggbett-going-offline/1002139",
+            "https://www.reddit.com/r/homeassistant/comments/1r5syl7/anyone_used_the_ikea_myggbett_with_ha/",
+            "https://www.reddit.com/r/homeassistant/comments/1pl6jtq/ikea_myggbett_contact_sensor/",
+            "https://www.reddit.com/r/homeassistant/comments/1rqd166/myggbett_too_much_latency/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/ikea-myggbett-home-assistant-not-updating/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "IKEA MYGGBETT not updating in Home Assistant", "item": "https://tarahome.ai/blog/ikea-myggbett-home-assistant-not-updating/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/ikea-myggbett-home-assistant-not-updating/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why does MYGGBETT update in IKEA or Apple but not Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "That usually means the sensor, battery, magnet, and at least one Thread and Matter path are working. Update and restart Home Assistant's Matter path. If it remains stale, document the old entity names and automations, remove only the stale Home Assistant device relationship while preserving the working IKEA or Apple controller, then add it back with a fresh temporary sharing code." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does IKEA MYGGBETT need DIRIGERA?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. MYGGBETT can join Home Assistant's official Matter integration directly, but it still needs a compatible Thread border router. DIRIGERA is optional when you want the IKEA Home smart app, IKEA's update and support path, or an IKEA-managed Thread network." }
+            },
+            {
+              "@type": "Question",
+              "name": "What MYGGBETT firmware is current?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The latest public Connectivity Standards Alliance certification record checked July 20, 2026 names firmware 1.1.4. That record does not promise that every retail unit has received it or that it fixes every stale-state report." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I factory-reset a MYGGBETT that is stuck open or closed?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only after checking the magnet, battery, current Home Assistant and Matter Server software, another controller, Thread coverage, and the device's update path. IKEA's official reset is holding the system button for 10 seconds until the red LED stops blinking." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does MYGGBETT extend Thread range?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant identifies this kind of battery contact sensor as a sleepy end device, which does not route traffic for other devices. Coverage must come from compatible border routers or powered Thread routers on the same mesh." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I rely on MYGGBETT as a security sensor?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use it for awareness and ordinary automations, but do not make one wireless consumer sensor the only burglar-alarm, child-safety, freezer, or other safety boundary. Test every event, alert on stale or unavailable state, and keep a physical or professionally monitored safeguard where consequences are serious." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>IKEA MYGGBETT &amp; Matter</span><span>July 20, 2026</span><span>12 min read</span></p>
+            <h1>IKEA MYGGBETT Not Updating in Home Assistant: What to Check</h1>
+            <p class="lede">If IKEA Home smart or Apple Home sees every door movement but Home Assistant stays open or closed, do not rebuild the sensor's low-power Thread wireless network first. Prove which app connection is stale, update it, then reset only the part that actually failed.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/ikea-myggbett-home-assistant-not-updating/cover.png" alt="IKEA MYGGBETT door and window sensor mounted on a warm oak door in a calm home" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Do this first:</strong> bring the two sensor pieces together and apart while watching IKEA or Apple and Home Assistant. If only Home Assistant is stale, the magnet and wireless connection are probably not the first problem.</li>
+              <li><strong>Update before resetting:</strong> install current Home Assistant, its Matter device-management app, border-router software, and any MYGGBETT device update offered by the app that owns it; restart Matter Server once and retest.</li>
+              <li><strong>If another app still works:</strong> record the old Home Assistant sensor names and automations, remove only its stale Home Assistant connection, then create a new temporary sharing code in the working app and add the device back.</li>
+              <li><strong>Avoid this:</strong> do not erase every app connection, change Thread radio channels, create a second wireless mesh, or copy random router settings because one contact sensor is stale.</li>
+              <li><strong>Main caveat:</strong> reports are mixed even on current software. Do not use one MYGGBETT as the only security or safety boundary until it records every test event reliably.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer</h2>
+          <p>When MYGGBETT changes immediately in IKEA Home smart or Apple Home but Home Assistant remains stuck, the disagreement is the clue. The sensor is awake, the magnet works, and the device can still send an event through at least one app. Home Assistant's own secure Matter connection may simply have stopped receiving changes. Even a successful ping only proves that Home Assistant reached the sensor once; it does not prove that every open-and-close event is arriving.</p>
+          <p>Start by updating Home Assistant and its official Matter Server app&mdash;the part that manages Matter devices&mdash;then restart that app once. Test MYGGBETT beside a known-good Thread border router, the hub that connects its low-power wireless network to the home network, and compare the last-change time in every app. If only Home Assistant remains stale, first record its sensor names and automations, then remove only the stale Home Assistant device relationship while preserving the working IKEA or Apple controller. Ask that working app for a new temporary sharing code and add the sensor back as <strong>already in use</strong>. Factory-reset only if the old relationship cannot be removed or the safer checks fail.</p>
+
+          <div class="callout">
+            <p><strong>There is no universal one-click fix.</strong> Some owners report stable direct Home Assistant use, while others report missed events after minutes or hours even though IKEA or Apple stays current. The steps below show how to decide whether to keep, re-share, reset, or return the sensor.</p>
+          </div>
+
+          <h2 id="what-it-is">What MYGGBETT Officially Is</h2>
+          <p>IKEA's current US MYGGBETT, article <strong>606.176.41</strong>, is a $9.99 two-piece door and window sensor checked on July 20, 2026. It uses <strong>Matter over Thread</strong>: Matter is the common smart-home language, while Thread is the low-power wireless mesh carrying the messages. It needs one AAA HR03 battery and a Thread border router for app control. IKEA names Amazon, Apple, Google, Homey, and Samsung as compatible smart-system examples. Home Assistant is not named on IKEA's page, but Home Assistant provides an official certified Matter controller and receives supported contact changes over the home network without sending each event through a cloud service.</p>
+          <p>The controller is the app or hub that owns the device and runs automations&mdash;household rules such as turning on a light when a door opens. The border router only connects Thread to the normal home network; one product can do both jobs. DIRIGERA is one possible path, not a required translator. Home Assistant Yellow, Connect ZBT-1, or Connect ZBT-2 can provide a Home Assistant-managed Thread radio after the documented setup; they run Zigbee, a separate smart-home radio system, out of the box and are not automatically ready for both jobs. Current third-party border-router examples known to Home Assistant include Apple HomePod mini and selected Apple TV 4K models, plus Google Nest Hub (2nd gen), Nest Hub Max, Nest Wifi Pro, and Google TV Streamer (4K). Matter's multi-admin feature lets one device be shared securely with more than one controller.</p>
+
+          <h2 id="paths">Choose the Path You Actually Use</h2>
+          <p>In the table, <strong>local control</strong> means the open-or-closed event can travel inside the home and keep reaching the local controller during an ordinary internet outage. Accounts, remote access, voice services, and device updates can still add separate cloud requirements.</p>
+          <div class="comparison-table" role="region" aria-label="MYGGBETT controller and support paths" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Setup path</th>
+                  <th>Official support</th>
+                  <th>Local control</th>
+                  <th>Cloud dependency</th>
+                  <th>Matter or HomeKit path</th>
+                  <th>Community caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home Assistant first</strong><br />Home Assistant OS with Matter Server; Yellow, Connect ZBT-1, or Connect ZBT-2 with the OpenThread Border Router app when used for Thread</td>
+                  <td>Home Assistant officially supports its Matter integration on Home Assistant OS. IKEA documents MYGGBETT as Matter-certified but does not publish a model-specific Works with Home Assistant listing.</td>
+                  <td>Normal contact events use encrypted Matter traffic over the home's local IPv6 network&mdash;the in-home addressing system Matter needs. Changes arrive automatically rather than waiting for a cloud check.</td>
+                  <td>No cloud is required for normal in-home state and automations. Home Assistant Cloud is optional; sensor-update availability is a separate vendor and controller question.</td>
+                  <td>Add directly with the Home Assistant Companion app. This is Matter, not Home Assistant's HomeKit Device path for native HomeKit accessories. Share outward later with a new multi-admin code if another platform is needed.</td>
+                  <td>Direct setups range from rock solid to missed events. A self-managed Matter Server container is outside Home Assistant's supported installation path and adds network variables.</td>
+                </tr>
+                <tr>
+                  <td><strong>IKEA DIRIGERA first</strong><br />MYGGBETT in IKEA Home smart, then shared to Home Assistant</td>
+                  <td>IKEA's own documented path uses DIRIGERA and the IKEA Home smart app. Home Assistant officially supports adding an already-used Matter device, but IKEA controls which sharing and update options its app exposes.</td>
+                  <td>Normal in-home device traffic is hub-based and the shared Matter relationship to Home Assistant is local.</td>
+                  <td>The IKEA app, account, remote access, support, and update experience may use internet services. Home Assistant's normal shared Matter state does not require Home Assistant Cloud.</td>
+                  <td>Use a fresh Matter sharing code from the working controller. Adding DIRIGERA as a bridge does not guarantee that this individually commissioned Thread child appears the same way.</td>
+                  <td>Several reports describe IKEA staying current while the Home Assistant copy freezes. That points to Home Assistant's separate secure device connection before it points to the magnet.</td>
+                </tr>
+                <tr>
+                  <td><strong>Apple or Google first</strong><br />HomePod mini, compatible Apple TV 4K, Nest Hub (2nd gen), or Nest Wifi Pro, then share</td>
+                  <td>IKEA names Apple and Google compatibility. Home Assistant documents both controller-sharing and these border-router examples.</td>
+                  <td>Matter device traffic is local. The border router forwards encrypted packets and does not become the Home Assistant controller.</td>
+                  <td>Platform accounts, remote access, voice services, and some updates may use cloud services; the contact event itself can remain local.</td>
+                  <td>MYGGBETT follows Matter multi-admin. It is not a native HomeKit-over-Thread accessory, so do not add it through HomeKit Device or expose it back to Apple with HomeKit Bridge to fix Home Assistant's stale on-screen sensor entry.</td>
+                  <td>A live Apple or Google state is excellent diagnostic evidence, but it does not prove Home Assistant's separate secure connection or in-home network path is healthy.</td>
+                </tr>
+                <tr>
+                  <td><strong>Amazon, SmartThings, or Homey first</strong></td>
+                  <td>IKEA lists Amazon, Samsung, and Homey as compatible system examples. Confirm that the exact hub model supplies Thread, not merely Matter over Wi-Fi.</td>
+                  <td>Normal Matter control can be local, but automation execution and remote behavior vary by platform and hub.</td>
+                  <td>Accounts, remote control, voice processing, and automation services can add cloud dependence. Check the chosen platform's current product documentation.</td>
+                  <td>Share the already-commissioned Matter device to Home Assistant with a fresh code. Avoid building duplicate open-door automations in two apps.</td>
+                  <td>“Matter controller” and “Thread border router” are separate jobs. A hub can advertise one without providing the other for this battery Thread sensor.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="diagnose">First, Identify Which Failure You Have</h2>
+          <p>Put the larger sensor body and the narrow magnet beside each other, then separate them five times. Wait two or three seconds between movements. Watch the open/closed state and last-changed time in Home Assistant and every other controller that already owns the device. This one test prevents a great deal of unnecessary network work.</p>
+          <ul>
+            <li><strong>IKEA or Apple changes every time, but Home Assistant does not:</strong> focus on Home Assistant's Matter Server, its secure device connection, and event delivery. Magnet alignment, battery, and the basic Thread radio path have just passed a useful test.</li>
+            <li><strong>No app changes:</strong> bring the two pieces closer, try a known-good battery, and inspect the Thread path. The sensor or magnet may be the problem.</li>
+            <li><strong>Home Assistant shows unavailable and every Thread device is affected:</strong> troubleshoot Matter Server, the border router, local IPv6, and the local discovery messages called multicast. Do not reset one MYGGBETT.</li>
+            <li><strong>Only one location fails:</strong> move that sensor beside a known-good border router for a day. If the failure stays with the location, improve same-mesh Thread coverage. If it follows the unit, suspect the battery, firmware, or hardware.</li>
+            <li><strong>Ping succeeds but the state stays old:</strong> a response proves some communication, not that the contact-event subscription is healthy. Continue with the controller steps below.</li>
+          </ul>
+
+          <h2 id="fix-order">Use This Safe Fix Order</h2>
+
+          <h3 id="physical-test">1. Prove the Magnet and Battery Before Touching the Network</h3>
+          <p>Take the sensor off the door temporarily if needed and bring its two pieces together by hand. IKEA says they can be mounted opposite, side by side, or perpendicular, so a thick trim profile is not automatically wrong. A hand test removes door movement and adhesive placement from the diagnosis. If another app sees every hand test but Home Assistant does not, remounting will not repair Home Assistant's on-screen sensor entry, called an entity.</p>
+          <p>Fit one fresh AAA HR03 cell with the correct polarity. IKEA recommends its 1.2-volt LADDA rechargeable battery and estimates about 15 months from a new cell, but radio conditions and reporting change real life. The red LED indicates low battery. Do not keep pulling the battery as the everyday remedy; a sensor that needs repeated power cycles is not reliable enough for an important automation.</p>
+
+          <h3 id="update-stack">2. Update the Supported Software Stack</h3>
+          <p>Install the current stable Home Assistant release, the official Matter Server app, the Home Assistant Companion app, and current OpenThread Border Router software where Home Assistant owns Thread. Home Assistant's June 2026 Matter Server 9 upgrade moved the controller to matter.js and added faster recovery plus a Thread and Wi-Fi network view. Let the migration finish before judging the sensor.</p>
+          <p>On Home Assistant OS, open <strong>Settings &gt; Apps &gt; Matter Server</strong>, restart that app once, and retest. If a restart restores MYGGBETT for only a short time, you have learned something useful: the Home Assistant controller path is involved. It still does not prove whether the final cause is Matter Server, the secure device connection, or a route that later disappears.</p>
+
+          <h3 id="firmware">3. Check MYGGBETT Device Software (Firmware)</h3>
+          <p>Firmware is the software stored inside the sensor. The latest public Connectivity Standards Alliance certification record checked on July 20, 2026 lists <strong>firmware 1.1.4</strong>, hardware P2.0, and Matter 1.4 for MYGGBETT. That is a certification record, not a live retail update feed. It does not prove your unit has 1.1.4, that every controller can deliver it, or that 1.1.4 fixes every missed-event report.</p>
+          <p>Check the device page in the controller that owns the sensor. Home Assistant creates an update entity only when the Matter device and update provider expose the optional update path. If DIRIGERA owns the product and offers an IKEA firmware update, use that supported path and retest before re-sharing. Do not erase a working IKEA or Apple relationship merely to chase a version number.</p>
+
+          <h3 id="network-map">4. Read the Current Matter Network View</h3>
+          <p>Open the Matter Server web interface and compare MYGGBETT with a working sensor. MYGGBETT is a battery-powered <strong>sleepy end device</strong>: it turns its radio off between check-ins and does not route traffic for other devices. The map therefore will not look like a constantly powered plug, and a moment without a fresh link is not automatically a fault.</p>
+          <p>Look for the network name, device type, recent reachability, and whether failures cluster by room or by border router. A HomePod mini, Nest Hub (2nd gen), Connect ZBT-2 with the OpenThread Border Router app, or powered Thread router helps only when it belongs to the same Thread network. A second, separate Thread mesh nearby is not a range extender for the first.</p>
+
+          <h3 id="location-test">5. Run a One-Day Location Test</h3>
+          <p>Place MYGGBETT near a known-good border router or powered Thread router on the same mesh. Perform 20 deliberate open-and-close cycles, leaving a couple of seconds between each, and compare Home Assistant's Logbook with what physically happened. Then leave the sensor there for a full day and repeat the test.</p>
+          <p>If it is dependable there but fails after returning to the door, improve the mesh near the final location. Building material, metal frames, mirrors, appliances, and the exact orientation can change 2.4 GHz performance. If a different MYGGBETT also fails in that location, that strengthens the placement diagnosis. If the same unit fails beside the router while its peers work, exchange or warranty service becomes more reasonable.</p>
+
+          <h3 id="shared-device">6. Remove the Stale Home Assistant Copy, Then Re-share</h3>
+          <p>If IKEA Home smart, Apple Home, Google Home, SmartThings, or another controller still shows current events, preserve that working relationship. Before removing anything, record the old Home Assistant entity names, take screenshots of the device page, and list every automation that uses the sensor. A new entity may not keep the old name.</p>
+          <p>In Home Assistant, go to <strong>Settings &gt; Matter &gt; Devices</strong>, open MYGGBETT, and delete only the stale Home Assistant device. Do not remove it from the working IKEA, Apple, Google, or other controller. Matter generally will not add the same secure controller relationship, called a fabric, twice, so trying a fresh sharing code while the old Home Assistant relationship remains can be rejected.</p>
+          <p>Next, use the working controller's option to connect or share the Matter device with another service. This opens a temporary multi-admin window and produces a new code. In the Home Assistant Companion app, go to <strong>Settings &gt; Matter &gt; Add device</strong>, choose <strong>Yes, it's already in use</strong>, select the existing controller, and follow the prompts. Do not scan the original sticker code as though the device were factory-new.</p>
+          <p>If the old Home Assistant relationship could not be removed because the sensor was unreachable and the new addition is rejected as already commissioned, stop retrying. Use a clearly labeled fabric-management option only when you can identify and remove the stale Home Assistant fabric without touching the working controller. Otherwise continue to the documented reset step after preserving the QR code and automation details. Once the new Home Assistant entity records every test event, repair its entity name and automations.</p>
+
+          <h3 id="shared-outage">7. Treat a Shared Outage as Infrastructure</h3>
+          <p>If several Thread devices stop updating together, inspect the common path: Matter Server, the Thread border router, and local IPv6 between Home Assistant and that border router. Internet IPv6 is not required, but Matter does require working IPv6 inside the home. Guest Wi-Fi, a separate smart-device network called a VLAN, blocked local discovery messages, a virtual machine's private network, or a self-managed Matter Server container can let ordinary web access work while Matter events fail.</p>
+          <p>Home Assistant OS with the official Matter Server app is the only supported Matter installation type. Custom containers are possible but run without that support boundary and require correct host networking. Do not paste a forum user's router advertisement, firewall, or DHCP setting into a different network. First prove the sensor on the documented, flat local path or get help from someone who can restore every change.</p>
+
+          <h3 id="factory-reset">8. Factory-Reset Only at the End</h3>
+          <p>Before a reset, save the Matter QR code from the sensor or its instructions, record the current entity names, and list every automation that uses them. IKEA's official reset is to hold the system button for <strong>10 seconds, or until the red LED stops blinking</strong>. The sensor restarts and becomes available for pairing for 15 minutes.</p>
+          <p>Use that reset when no controller has a healthy relationship, the old owner is gone, or a carefully documented re-share cannot repair Home Assistant. A reset does not strengthen Thread coverage, fix the Home Assistant host's IPv6 route, or make an unsupported container supported. Pair to one intended controller first, verify 20 events and a full day of stability, then add a second controller only if the household actually needs it.</p>
+
+          <h2 id="stale-vs-offline">Stale State Is Not the Same as Offline</h2>
+          <p>A genuinely offline sensor cannot deliver current events to any controller. A stale Home Assistant entity can coexist with a perfectly current IKEA or Apple view because Matter lets one device hold separate encrypted controller relationships, called fabrics. Each controller maintains its own subscription to changes. One can be healthy while another has stopped receiving reports.</p>
+          <p>This is why a successful ping is not a complete test. It may show that Home Assistant can reach the node at that moment, while the open-and-close event subscription remains stale. It is also why deleting DIRIGERA or rebuilding Thread first is too destructive: preserve the working controller, remove only Home Assistant's stale relationship, and use that working controller to create the fresh sharing code.</p>
+
+          <h2 id="automations">Protect Automations From a Stuck Contact</h2>
+          <p>A door sensor can turn on a closet light, pause heating when a window opens, or notify someone that a side door was left open. It should not silently run an automation forever on yesterday's state. Add a stale or unavailable guard and make the failure visible.</p>
+          <ul>
+            <li>Require the contact state to be recent before shutting off heating, cooling, or ventilation.</li>
+            <li>Send an alert when the entity becomes unavailable or has not changed during a scheduled physical test.</li>
+            <li>Keep manual light switches, equipment safeties, door locks, and ordinary household procedures usable when Home Assistant is down.</li>
+            <li>Do not use one consumer wireless contact sensor as the only burglar-alarm, child-safety, freezer, medicine-storage, or other serious safety boundary.</li>
+            <li>After re-pairing, confirm every automation points to the new entity and test both the open and closed branches.</li>
+          </ul>
+
+          <h2 id="recommendation">The Practical Recommendation</h2>
+          <p>MYGGBETT is compelling at $9.99, uses one replaceable AAA battery, and can be a clean local Matter contact sensor. Buy or install one first, update it, and prove a full day of event delivery in the exact room before buying a houseful. Direct Home Assistant pairing is the simplest local-first path when Home Assistant will own the automations. DIRIGERA-first can make sense when the household wants the IKEA app and vendor update route.</p>
+          <p>Keep the unit if it records every test after current software, correct placement, and a clean controller relationship. Improve the same Thread mesh if failure follows the room. Return or exchange the unit if failure follows that hardware beside a known-good border router while peers remain stable. If IKEA or Apple always stays current and only Home Assistant freezes, preserve the working platform, remove only Home Assistant's stale relationship, and re-share it rather than blaming the door sensor blindly.</p>
+
+          <h2 id="faq">FAQ</h2>
+
+          <h3 id="faq-other-app">Why does MYGGBETT update in IKEA or Apple but not Home Assistant?</h3>
+          <p>That usually means the sensor, battery, magnet, and at least one Thread and Matter path are working. Update and restart Home Assistant's Matter path. If it remains stale, document the old entity names and automations, remove only the stale Home Assistant device relationship while preserving the working IKEA or Apple controller, then add it back with a fresh temporary sharing code.</p>
+
+          <h3 id="faq-dirigera">Does IKEA MYGGBETT need DIRIGERA?</h3>
+          <p>No. MYGGBETT can join Home Assistant's official Matter integration directly, but it still needs a compatible Thread border router. DIRIGERA is optional when you want the IKEA Home smart app, IKEA's update and support path, or an IKEA-managed Thread network.</p>
+
+          <h3 id="faq-firmware">What MYGGBETT firmware is current?</h3>
+          <p>The latest public Connectivity Standards Alliance certification record checked July 20, 2026 names firmware 1.1.4. That record does not promise that every retail unit has received it or that it fixes every stale-state report. Check the version and update option shown by the controller that owns your sensor.</p>
+
+          <h3 id="faq-reset">Should I factory-reset a MYGGBETT that is stuck open or closed?</h3>
+          <p>Only after checking the magnet, battery, current Home Assistant and Matter Server software, another controller, Thread coverage, and the device's update path. IKEA's official reset is holding the system button for 10 seconds until the red LED stops blinking.</p>
+
+          <h3 id="faq-router">Does MYGGBETT extend Thread range?</h3>
+          <p>No. Home Assistant identifies this kind of battery contact sensor as a sleepy end device, which does not route traffic for other devices. Coverage must come from compatible border routers or powered Thread routers on the same mesh.</p>
+
+          <h3 id="faq-security">Can I rely on MYGGBETT as a security sensor?</h3>
+          <p>Use it for awareness and ordinary automations, but do not make one wireless consumer sensor the only burglar-alarm, child-safety, freezer, or other safety boundary. Test every event, alert on stale or unavailable state, and keep a physical or professionally monitored safeguard where consequences are serious.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://www.ikea.com/us/en/p/myggbett-door-window-sensor-smart-60617641/" target="_blank" rel="noopener noreferrer">IKEA: current MYGGBETT product page, article 606.176.41</a></li>
+              <li><a href="https://www.ikea.com/us/en/manuals/myggbett-door-window-sensor-smart__AA-2664591-1-100.pdf" target="_blank" rel="noopener noreferrer">IKEA: MYGGBETT advice, pairing, battery, and reset instructions</a></li>
+              <li><a href="https://csa-iot.org/csa_product/myggbett-door-window-sensor/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: MYGGBETT firmware 1.1.4 certification record</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Official documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter integration: supported installation, multi-admin, diagnostics, and updates</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread networks, border-router models, credentials, and device roles</a></li>
+              <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter Server 9 and the Thread network view</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://community.home-assistant.io/t/myggbett-door-window-sensor-or-contact-sensor-from-ikea/985234" target="_blank" rel="noopener noreferrer">Home Assistant Community: MYGGBETT works elsewhere while Home Assistant updates briefly</a></li>
+              <li><a href="https://community.home-assistant.io/t/myggbett-door-window-sensor/988122" target="_blank" rel="noopener noreferrer">Home Assistant Community: stale open and closed state after 20 to 30 minutes</a></li>
+              <li><a href="https://community.home-assistant.io/t/ikea-myggbett-matter-device-loses-connection/996839" target="_blank" rel="noopener noreferrer">Home Assistant Community: location, mesh, and mixed reliability reports</a></li>
+              <li><a href="https://community.home-assistant.io/t/ikea-timmerflotte-and-myggbett-going-offline/1002139" target="_blank" rel="noopener noreferrer">Home Assistant Community: MYGGBETT and TIMMERFLOTTE going offline</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Reddit r/homeassistant discussions</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1r5syl7/anyone_used_the_ikea_myggbett_with_ha/" target="_blank" rel="noopener noreferrer">MYGGBETT owner experiences, including stable units and missed Home Assistant events</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1pl6jtq/ikea_myggbett_contact_sensor/" target="_blank" rel="noopener noreferrer">MYGGBETT contact state current in IKEA but stale in Home Assistant</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1rqd166/myggbett_too_much_latency/" target="_blank" rel="noopener noreferrer">MYGGBETT reporting latency and comparison with other platforms</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Tara setup</p>
+        <h2>Want the controller and Thread path decided before the sensors go up?</h2>
+        <p>Tara plans the Matter owner, same-mesh Thread coverage, local automations, update route, stale-state alerts, and household handoff as one understandable system.</p>
+        <a class="cta" href="/configurator/">Plan your home</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Continue with the part of the path that failed</h2>
+        <div class="links">
+          <a href="/blog/home-assistant-matter-network-map-offline-devices/">Read the Matter network map</a>
+          <a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Thread devices offline</a>
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share a Matter device</a>
+          <a href="/blog/update-matter-device-firmware-home-assistant/">Update Matter firmware</a>
+          <a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Do you need DIRIGERA?</a>
+          <a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread border router</a>
+          <a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">IKEA Matter without DIRIGERA</a>
+          <a href="/configurator/">Configurator</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
