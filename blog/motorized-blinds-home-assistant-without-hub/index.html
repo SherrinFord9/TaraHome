@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motorized Blinds for Home Assistant Without a Brand Hub</title>
+    <meta name="description" content="Compare SmartWings, Motionblinds, SwitchBot, Aqara, and Lutron for local Home Assistant control, hub needs, Matter, HomeKit, and cloud caveats." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/motorized-blinds-home-assistant-without-hub/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/motorized-blinds-home-assistant-without-hub/" />
+    <meta property="og:title" content="Motorized Blinds for Home Assistant Without a Brand Hub" />
+    <meta property="og:description" content="Which motorized blinds work locally, which controller they need, and which paths still depend on a brand hub or cloud." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/motorized-blinds-home-assistant-without-hub/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Motorized Blinds for Home Assistant Without a Brand Hub" />
+    <meta name="twitter:description" content="Compare direct Matter, Z-Wave, Zigbee, Bluetooth, and required-hub paths before ordering custom shades." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/motorized-blinds-home-assistant-without-hub/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1160px; }
+      .hero { align-items: end; display: grid; gap: clamp(28px, 4vw, 56px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; min-width: 0; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); line-height: 1.45; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 1360px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.94rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: 1fr; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body .tldr { max-width: 100%; padding: 18px 16px 16px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/motorized-blinds-home-assistant-without-hub/#blogposting",
+          "headline": "Motorized Blinds for Home Assistant Without a Brand Hub",
+          "description": "Compare SmartWings, Motionblinds, SwitchBot, Aqara, and Lutron for local Home Assistant control, hub needs, Matter, HomeKit, and cloud caveats.",
+          "image": "https://tarahome.ai/assets/generated/blog/motorized-blinds-home-assistant-without-hub/cover.png",
+          "datePublished": "2026-07-20",
+          "dateModified": "2026-07-20",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/motorized-blinds-home-assistant-without-hub/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/motionblinds_matter/",
+            "https://www.home-assistant.io/integrations/switchbot/",
+            "https://www.home-assistant.io/integrations/zha/",
+            "https://www.home-assistant.io/integrations/zwave_js/",
+            "https://www.home-assistant.io/integrations/lutron_caseta/",
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://www.smartwingshome.com/pages/work-with-matter-over-thread",
+            "https://www.smartwingshome.com/pages/z-wave-800-lr-is-here",
+            "https://www.smartwingshome.com/products/smartwings-motorized-roller-shades-100-blackout-linen",
+            "https://motionblinds.com/eve/matter",
+            "https://www.switch-bot.com/pages/matter",
+            "https://us.switch-bot.com/products/switchbot-blind-tilt",
+            "https://www.aqara.com/en/product/roller-shade-driver-e1",
+            "https://www.aqara.com/wp-content/uploads/2023/05/1438429301544333314.pdf",
+            "https://support.lutron.com/us/en/product/casetawireless/article/product-selection/the-caseta-smart-bridge",
+            "https://support.apple.com/en-us/102135",
+            "https://support.google.com/googlehome/answer/13127223?hl=en-GB",
+            "https://community.home-assistant.io/t/smart-blind-suggestion/984736",
+            "https://community.home-assistant.io/t/planning-for-hardwired-blinds-in-reno-considerations/1004934",
+            "https://community.home-assistant.io/t/matter-over-thread-window-covers-randomly-unavailable/979907",
+            "https://community.home-assistant.io/t/lost-ha-control-of-smartwings-shade-after-long-network-outage/985502",
+            "https://www.reddit.com/r/homeassistant/comments/1qx4k43/best_options_for_motorized_blinds/",
+            "https://www.reddit.com/r/homeassistant/comments/1rondwf/new_to_ha_looking_for_smart_blinds_that_do_not/",
+            "https://www.reddit.com/r/homeassistant/comments/1uon17x/what_motorized_blinders_are_people_using/",
+            "https://www.reddit.com/r/homeassistant/comments/1t55j6b/do_you_need_a_switchbot_hub_to_make_their_shades/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/motorized-blinds-home-assistant-without-hub/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Motorized blinds for Home Assistant without a brand hub", "item": "https://tarahome.ai/blog/motorized-blinds-home-assistant-without-hub/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/motorized-blinds-home-assistant-without-hub/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do motorized blinds need a hub for Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "They do not always need the manufacturer's hub, but every wireless path needs suitable controller hardware. Matter-over-Thread blinds need Home Assistant's Matter controller and a Thread border router; Z-Wave needs a regional Z-Wave adapter; Zigbee needs a coordinator; and Bluetooth needs an adapter or proxy." }
+            },
+            {
+              "@type": "Question",
+              "name": "Which motorized blinds have the strongest official Home Assistant support?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Eve Motionblinds Matter-over-Thread motors have the clearest official path. Motionblinds is a Works with Home Assistant partner for its Matter products, and Home Assistant lists exact supported motors such as CM-03-E for roller shades and CM-08-E for honeycomb shades." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I choose SmartWings Matter or Z-Wave shades?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Choose Matter-over-Thread when cross-platform sharing with Apple Home, Google Home, Alexa, or SmartThings matters and you already have healthy Thread coverage. Choose the regional Z-Wave 800 motor when Home Assistant is the main controller and your Z-Wave mesh is already dependable." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does SwitchBot Blind Tilt need a SwitchBot Hub?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No for direct local Home Assistant control. Home Assistant's built-in SwitchBot Bluetooth integration supports Blind Tilt, Curtain 3, and Roller Shade without a SwitchBot Hub. A compatible SwitchBot hub is needed when you want SwitchBot's Matter bridge path to Apple Home or another platform." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Aqara Roller Shade Driver E1 pair directly with Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Community integrations can pair the RSD-M01 directly to ZHA or Zigbee2MQTT for local control, but Aqara's official path uses an Aqara Zigbee 3.0 hub. Direct pairing is therefore a community-supported option that should be tested with one unit before a larger purchase." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Lutron Serena shades work with Home Assistant without a Lutron hub?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant's official Lutron Caseta integration talks to a supported Lutron hub or processor. The integration is local push, but the brand hub remains part of the system." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Motorized blinds &amp; local control</span><span>July 20, 2026</span><span>14 min read</span></p>
+            <h1>Motorized Blinds for Home Assistant Without a Brand Hub</h1>
+            <p class="lede">Yes, several current blinds and retrofit motors can run locally in Home Assistant without the manufacturer's hub. The safest choices are an exact Matter-over-Thread or Z-Wave motor for new custom shades, or direct Bluetooth for a retrofit&mdash;but “no brand hub” still requires the right Home Assistant radio or a Thread gateway, called a border router.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/motorized-blinds-home-assistant-without-hub/cover.png" alt="Warm room with a linen motorized roller shade and a SwitchBot Blind Tilt kit arranged on an oak console" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Best officially supported custom-shade path:</strong> choose an Eve Motionblinds Matter-over-Thread motor such as CM-03-E for a roller shade or CM-08-E for a honeycomb shade. It uses the cross-brand Matter standard on a low-power Thread network and does not need the Motionblinds CM-55 product gateway.</li>
+              <li><strong>Best choice when you already have a solid radio network:</strong> order SmartWings with its exact Matter Motor for cross-platform sharing or its regional Z-Wave 800 motor for a Home Assistant-first home. Neither path needs a SmartWings hub.</li>
+              <li><strong>Best retrofit:</strong> use SwitchBot Blind Tilt for wand-controlled slats or Curtain 3 for curtains through Home Assistant's local Bluetooth connection. A SwitchBot hub is optional unless you want it to translate those Bluetooth devices into Matter or provide vendor remote access.</li>
+              <li><strong>What to avoid:</strong> do not order a standard RF, Wi-Fi, older HomeKit, Zigbee, Z-Wave, or Matter motor by name alone and assume it can be changed later. Put the exact protocol and motor model on the quote, then test one window before a house-wide order.</li>
+              <li><strong>Main caveat:</strong> no manufacturer hub does not mean no controller. Matter over Thread needs a gateway between Thread and the home network, Z-Wave needs a region-matched radio, Zigbee needs a radio that creates its local device network, and Bluetooth needs an adapter or nearby relay.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Yes, but the Motor Choice Is the Purchase</h2>
+          <p>The cleanest brand-hub-free choice for a new custom shade is an <strong>Eve Motionblinds Matter-over-Thread motor</strong>. Motionblinds is a Works with Home Assistant partner for its Matter products, Home Assistant lists the supported motor models, and the control path is local. Buy the Matter version with a Matter logo and QR code, not a visually identical Bluetooth, 433 MHz, or older HomeKit version.</p>
+          <p><strong>Local control</strong> means Home Assistant sends ordinary open, close, and position commands inside the house instead of asking the shade maker's cloud, so those controls can keep working during an internet outage. Matter is the cross-brand device language; Thread is the low-power wireless network used by these motors. Matter can also share one shade with more than one platform, a feature called multi-admin.</p>
+          <p>If Home Assistant already has a reliable Z-Wave device network, a <strong>SmartWings shade ordered with the regional Z-Wave 800 motor</strong> is a sensible direct local alternative. If the household also wants the same shade in Apple Home, Google Home, Alexa, or SmartThings, SmartWings' <strong>Matter-over-Thread motor</strong> is the easier sharing path. SmartWings documents both Home Assistant paths, but unlike Motionblinds Matter, it is not presented as a Works with Home Assistant certified product.</p>
+          <p>For blinds that are already installed, <strong>SwitchBot Blind Tilt</strong> can turn the wand on ordinary horizontal blinds, while <strong>SwitchBot Curtain 3</strong> moves existing curtains. Home Assistant's built-in SwitchBot Bluetooth connection controls both locally without a SwitchBot hub. The SwitchBot app is still useful for calibration, and Bluetooth coverage must reach the window.</p>
+
+          <div class="callout">
+            <p><strong>If you want one practical answer:</strong> for new custom shades, start with one Eve Motionblinds Matter motor and prove it in the hardest room. For existing blinds, start with one SwitchBot retrofit and a nearby Home Assistant Bluetooth proxy. If you already trust your Z-Wave mesh, order one SmartWings Z-Wave shade before considering Matter over Thread.</p>
+          </div>
+
+          <h2 id="comparison">Current Models and Their Real Control Paths</h2>
+          <p>The product names and support paths below were checked against current documentation on July 20, 2026. Availability still varies by country, dealer, fabric, window size, and power choice.</p>
+          <p>In Home Assistant, an <strong>integration</strong> is the software connection that turns a product into usable controls and status. <strong>Local push</strong> means the product reports changes straight to Home Assistant inside the home instead of waiting for a cloud service or periodic check.</p>
+          <div class="comparison-table" role="region" aria-label="Motorized blind control paths" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Exact product or motor</th>
+                  <th>Official support boundary</th>
+                  <th>Home Assistant path</th>
+                  <th>Local control and cloud</th>
+                  <th>Required hub or controller</th>
+                  <th>Matter and Apple Home path</th>
+                  <th>Main caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Eve Motionblinds CM-03-E</strong> roller motor or <strong>CM-08-E</strong> honeycomb motor</td>
+                  <td>Motionblinds Matter is a Works with Home Assistant partner; exact motor models are listed by Home Assistant.</td>
+                  <td>Native Matter over Thread</td>
+                  <td>Local push; no cloud required for Home Assistant control</td>
+                  <td>Home Assistant Matter plus a Thread border router; no CM-55 bridge for the -E motors</td>
+                  <td>Native Matter; share to Apple Home, Google Home, Alexa, or SmartThings with Matter multi-admin</td>
+                  <td>Similar-looking non-Eve motors may be Bluetooth or 433 MHz and need a CM-55 bridge for Matter.</td>
+                </tr>
+                <tr>
+                  <td><strong>SmartWings Motorized Roller Shades</strong> with <strong>Matter Motor</strong></td>
+                  <td>SmartWings documents Home Assistant support; not shown as Works with Home Assistant certified.</td>
+                  <td>Native Matter over Thread</td>
+                  <td>Vendor documents local, cloud-free operation</td>
+                  <td>Home Assistant Matter plus a Thread border router; no SmartWings hub</td>
+                  <td>Native Matter and multi-admin sharing, including Apple Home</td>
+                  <td>Community reports include some multi-shade availability and outage-recovery trouble. Pilot one and test a router outage.</td>
+                </tr>
+                <tr>
+                  <td><strong>SmartWings shade</strong> with regional <strong>Z-Wave 800 motor</strong></td>
+                  <td>Vendor-documented Home Assistant compatibility through the standard Z-Wave path; not Works with Home Assistant certified.</td>
+                  <td>Z-Wave JS</td>
+                  <td>Direct local control; no SmartWings cloud</td>
+                  <td>Home Assistant Z-Wave adapter in the correct radio region; no SmartWings hub</td>
+                  <td>No native Matter. Apple Home can receive the Home Assistant cover through HomeKit Bridge.</td>
+                  <td>Z-Wave radio frequencies are regional. Put the exact region and motor choice on the order.</td>
+                </tr>
+                <tr>
+                  <td><strong>SwitchBot Blind Tilt</strong>, <strong>Curtain 3</strong>, or <strong>Roller Shade</strong></td>
+                  <td>All three use Home Assistant's built-in Bluetooth integration. Curtain 3 and Roller Shade are Works with Home Assistant certified; Blind Tilt is integration-supported but not listed as certified.</td>
+                  <td>Direct SwitchBot Bluetooth</td>
+                  <td>Local push without SwitchBot Cloud</td>
+                  <td>Home Assistant Bluetooth adapter or proxy; no SwitchBot hub for this path</td>
+                  <td>A compatible SwitchBot hub can bridge them to Matter; Home Assistant HomeKit Bridge is a separate Apple-only route.</td>
+                  <td>Use the app for calibration. Blind Tilt changes slat angle only; it does not raise the whole blind.</td>
+                </tr>
+                <tr>
+                  <td><strong>Aqara Roller Shade Driver E1</strong>, model <strong>RSD-M01</strong></td>
+                  <td>Aqara's official path uses an Aqara Zigbee 3.0 hub. Direct ZHA or Zigbee2MQTT pairing is community-supported.</td>
+                  <td>Direct Zigbee through ZHA or Zigbee2MQTT, with device-specific community support</td>
+                  <td>Direct pairing can be local and cloud-free</td>
+                  <td>Home Assistant Zigbee coordinator (the network radio) for the community path; Aqara hub for the official path</td>
+                  <td>No native Matter. Use an Aqara hub for its official Apple Home path, or Home Assistant HomeKit Bridge after direct pairing.</td>
+                  <td>It fits only compatible beaded-chain roller blinds. Regional availability and direct-integration behavior vary.</td>
+                </tr>
+                <tr>
+                  <td><strong>Lutron Serena</strong> or <strong>Triathlon Select</strong> shades</td>
+                  <td>Home Assistant's official Lutron Caseta integration supports Lutron shades and is local push.</td>
+                  <td>Lutron Caseta integration</td>
+                  <td>Home Assistant talks locally to the Lutron hub; vendor remote access uses internet services.</td>
+                  <td>Lutron Caseta Smart Hub L-BDG2-WH, PRO bridge, or the appropriate higher-tier processor</td>
+                  <td>No Matter path. Apple Home support comes through the Lutron system.</td>
+                  <td>The brand hub is mandatory for Home Assistant, but it is also the system's stable local radio coordinator.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Support labels matter.</strong> “Works with Home Assistant” means a vendor has joined Home Assistant's formal partner program for that product family. A built-in integration is also official Home Assistant software, but a specific device may still rely on standard-protocol or community compatibility. A vendor saying “works with Home Assistant” is useful, but it is not the same certification.</p>
+
+          <h2 id="controller-not-brand-hub">What “No Brand Hub” Really Means</h2>
+          <p>A wireless motor never talks to Home Assistant by magic. The useful goal is to avoid an unnecessary manufacturer gateway and cloud account, while keeping the radio controller that the protocol actually needs.</p>
+          <ul>
+            <li><strong>Matter over Thread:</strong> Home Assistant is the Matter controller, but the shade also needs a Thread border router on the intended Thread network. A HomePod mini can provide Thread transport, as can supported Home Assistant hardware. It is infrastructure, not a Motionblinds or SmartWings cloud hub.</li>
+            <li><strong>Z-Wave:</strong> Home Assistant needs a Z-Wave adapter and Z-Wave JS. The motor joins that local mesh directly. Buy the frequency intended for the country where it will be installed.</li>
+            <li><strong>Zigbee:</strong> Home Assistant needs one Zigbee coordinator running ZHA or Zigbee2MQTT. A device can join only one Zigbee network at a time, so direct pairing replaces its relationship with the vendor hub.</li>
+            <li><strong>Bluetooth:</strong> Home Assistant needs an active Bluetooth adapter or an ESPHome Bluetooth proxy close enough to the window. A proxy is often cleaner than a long USB extension across the house.</li>
+          </ul>
+          <p>That distinction explains why “Matter means no hub” is misleading. Matter removes the proprietary product bridge for native devices, but Matter-over-Thread still needs a Matter controller and a way for Thread radio traffic to reach the home network.</p>
+
+          <h2 id="motionblinds">Best Official Direct Path: Eve Motionblinds Matter</h2>
+          <p>Motionblinds has the strongest formal Home Assistant story in this comparison. Its Matter products are in the Works with Home Assistant program, run locally, and appear as cover devices through Home Assistant's official Matter integration. Current listed examples include <strong>CM-03-E</strong> and <strong>CM-05-E</strong> tubular battery motors, <strong>CM-08-E</strong> for honeycomb shades, <strong>CM-36-E</strong> for curtains, and wired <strong>CM-50-E-R</strong> and <strong>CM-50-E-V</strong> motors.</p>
+          <p>The suffix and setup label are crucial. Eve Motionblinds with Matter and Thread do not need the Motionblinds CM-55 bridge. Motionblinds motors that use Bluetooth and 433 MHz can reach Matter through the CM-55, but that is a bridge-based system and a different purchase. Older Eve Motionblinds may also carry HomeKit firmware&mdash;software stored in the motor&mdash;rather than Matter firmware. Ask the dealer to put the exact motor model and <strong>Matter-over-Thread</strong> wording on the written quote.</p>
+          <p>For a Home Assistant-first home, pair the new motor to Home Assistant, confirm open, close, stop, and percentage control, then share it to Apple Home or another Matter platform if the household needs that app. Keep the printed Matter code and a physical remote. Matter multi-admin adds another controller; it does not make either controller the other's backup automation engine.</p>
+
+          <h2 id="smartwings">SmartWings: Choose Matter or Z-Wave Before Checkout</h2>
+          <p>SmartWings sells the same finished shade styles with different motor options. That flexibility is valuable and dangerous: the fabric name does not tell you how the motor will connect. The current roller-shade pages offer choices including Matter over Thread, Z-Wave, Zigbee, and HomeKit over Thread. Those are separate radios, not app settings you can switch after installation.</p>
+          <h3 id="smartwings-matter">Choose SmartWings Matter when several ecosystems need the shade</h3>
+          <p>SmartWings documents direct Home Assistant control for its Matter-over-Thread shades, local operation without the cloud, and sharing across Matter platforms. Home Assistant still needs its Matter integration and a Thread border router. If Apple Home, Google Home, Alexa, or SmartThings also needs direct control, Matter multi-admin is the clean advantage.</p>
+          <p>The community caveat is scale and recovery, not basic compatibility. Owners have reported both good results and groups of shades becoming unavailable or needing attention after a long network outage. Those reports do not prove every installation will fail. They do justify buying one shade first, testing the exact window for a week, rebooting the router and border router deliberately, and confirming the motor comes back without a factory reset.</p>
+          <h3 id="smartwings-zwave">Choose SmartWings Z-Wave when Home Assistant is the center</h3>
+          <p>If a dependable Z-Wave mesh already reaches the windows, the regional SmartWings Z-Wave 800 motor avoids Thread credentials and Matter multi-controller complexity. It joins Home Assistant through Z-Wave JS and stays local. This path has no native Matter sharing. Apple Home can still see the shade through Home Assistant's HomeKit Bridge, but Home Assistant does not turn it into a Matter device for every other platform.</p>
+          <p>SmartWings also offers Zigbee motors. Choose that version only after confirming the exact current motor and features with the integration you will use. Home Assistant's ZHA documentation intentionally has no universal device-specific compatibility list, and manufacturer-specific behavior may need community handlers. Zigbee can be excellent locally; the risk is assuming every motor exposes the same position, battery, calibration, and update features.</p>
+
+          <h2 id="switchbot">Best Retrofit: SwitchBot over Direct Bluetooth</h2>
+          <p><strong>SwitchBot Blind Tilt</strong> attaches to the tilt wand of ordinary horizontal blinds. It changes the slat angle but does not lift the blind. <strong>SwitchBot Curtain 3</strong> moves an existing curtain along a compatible rail, and SwitchBot's current Roller Shade is a complete shade product. Home Assistant's built-in SwitchBot Bluetooth integration supports all three as covers.</p>
+          <p>A SwitchBot hub is not required for that local Home Assistant path. The integration talks directly over Bluetooth, does not route control through SwitchBot Cloud, and reports position, battery, and calibration information according to the model. Use the SwitchBot app for initial calibration and any device-specific setup Home Assistant tells you to complete there.</p>
+          <p>Bluetooth range is the tradeoff. If the device is slow or disappears, place a small Home Assistant-compatible relay called an <strong>ESPHome Bluetooth proxy</strong> in the same room rather than buying a SwitchBot hub by reflex. Buy Hub 2, Hub 3, or a Matter-enabled Hub Mini only if you specifically want SwitchBot's Matter bridge, its cloud remote features, or its native links to another platform. Tara's <a href="/blog/do-you-need-switchbot-hub-home-assistant/">SwitchBot hub guide</a> covers that decision in detail.</p>
+
+          <h2 id="aqara">Aqara Roller Shade Driver E1: Local, but Community-Supported Directly</h2>
+          <p>The <strong>Aqara Roller Shade Driver E1, model RSD-M01</strong>, is a useful retrofit for compatible roller blinds with a plastic or metal beaded chain. Aqara's product documentation describes Zigbee 3.0 and its official ecosystem path through an Aqara hub. That hub provides Aqara Home and the official Apple Home, Alexa, and Google integrations.</p>
+          <p>Home Assistant users can instead pair the E1 to a Home Assistant Zigbee coordinator through ZHA or Zigbee2MQTT. That can keep daily control local and remove the Aqara hub, but it is not Aqara's officially supported Home Assistant route. ZHA itself warns that it has no product-by-product guarantee and that some devices need community-specific handlers.</p>
+          <p>Choose the E1 only if its beaded-chain mechanics fit, its regional availability is clear, and you accept a community support boundary. Test position, stop, battery, calibration, manual movement, and recovery after restarting the Zigbee coordinator before buying several. If vendor support and Apple Home onboarding matter more than removing one hub, use the Aqara hub path instead.</p>
+
+          <h2 id="lutron">When the Required Brand Hub Is the Better Choice</h2>
+          <p><strong>Lutron Serena</strong> and <strong>Triathlon Select</strong> are the counterexample to a no-hub rule. Home Assistant has an official Lutron Caseta integration, exposes Lutron shades as covers, and labels the integration local push. Home Assistant communicates with the Lutron hub on the local network, so normal Home Assistant shade control does not need a round trip through the vendor cloud.</p>
+          <p>The Lutron controller is still required. Supported examples include Caseta Smart Hub <strong>L-BDG2-WH</strong> and Smart Bridge PRO <strong>L-BDGPRO2-WH</strong>, with other processors for higher-tier systems. Lutron's app and remote-from-away features use internet services, while the in-home Clear Connect radio path and physical Pico controls continue to have local value.</p>
+          <p>If the project is a renovation with many hardwired windows, large custom openings, dealer installation, and a household that values predictable physical remotes, accepting one dedicated hub may be the calmer engineering choice. If eliminating every brand processor is the primary goal, skip Lutron rather than pretending its official Home Assistant path is hub-free.</p>
+
+          <h2 id="pairing-order">Which App Should Pair the Shade First?</h2>
+          <p>For a native Matter shade, pair it first to the platform that should own the main automations&mdash;routines that run on their own. If Home Assistant will run sunrise, temperature, privacy, and occupancy routines, commission the shade in Home Assistant and verify it locally. Then use <strong>Settings &gt; Matter &gt; Devices &gt; Share device</strong> to create a fresh code for Apple Home, Google Home, Alexa, or SmartThings.</p>
+          <p>If Apple Home is already the household's main interface, pairing there first is also valid. Generate a new sharing code from the existing controller and add the already-paired accessory to Home Assistant. Do not factory-reset it and scan the original box code again. Tara's <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Matter pairing-order guide</a> and <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">multi-admin guide</a> cover the full procedure.</p>
+          <p>Z-Wave, Zigbee, and Bluetooth devices are different. They join Home Assistant through their own radio, not through Matter. Home Assistant can expose a local cover to Apple Home with <strong>HomeKit Bridge</strong>, but Home Assistant is not a Matter bridge and cannot turn that cover into a Matter accessory for every ecosystem. For Google or Alexa voice control, use the Home Assistant integration path you have deliberately chosen, or a supported vendor bridge, instead of pairing the same Zigbee motor to two coordinators.</p>
+
+          <h2 id="cloud-boundaries">What Can Still Need an App or Cloud?</h2>
+          <p>Local daily control does not promise that every setup and maintenance task is local. Check these boundaries before buying:</p>
+          <ul>
+            <li><strong>Calibration:</strong> SwitchBot and some other motors use the maker's app to learn open and closed limits, even when Home Assistant performs daily control locally.</li>
+            <li><strong>Firmware updates:</strong> Matter can provide local update delivery when the vendor publishes through a compatible path, but availability varies. Zigbee firmware is especially vendor-specific.</li>
+            <li><strong>Remote access:</strong> Home Assistant can provide its own remote-access path. A vendor app usually uses that vendor's cloud when controlling the shade away from home.</li>
+            <li><strong>Extra features:</strong> Quiet mode, speed, favorite positions, grouped calibration, solar data, or advanced tilt may not cross a generic Matter bridge.</li>
+            <li><strong>Voice assistants:</strong> Matter handles local device control inside a supported ecosystem, but away-from-home voice and account services can still use that platform's cloud.</li>
+          </ul>
+          <p>The safe buying question is not “Does this product mention local?” Ask instead: <strong>Will open, close, stop, position, and state updates continue in Home Assistant when the internet is unplugged?</strong> Then ask which app is still required for calibration and updates.</p>
+
+          <h2 id="buying-checklist">A Safer Order Checklist</h2>
+          <ol>
+            <li><strong>Choose the physical treatment first.</strong> Roller shade, cellular shade, Venetian tilt, curtain, and top-down/bottom-up designs expose different controls. A perfect radio cannot add a movement the hardware does not support.</li>
+            <li><strong>Write the exact motor on the quote.</strong> Include the model, protocol, radio region, battery or wired power, and whether a remote is included. “Smart motor” is not specific enough.</li>
+            <li><strong>Confirm the controller you already own.</strong> Check for a real Thread border router, a Home Assistant Z-Wave adapter, a Zigbee coordinator, or Bluetooth coverage before the installer arrives.</li>
+            <li><strong>Keep a physical fallback.</strong> Order a compatible remote or wall control and confirm whether manual movement is allowed without losing calibration.</li>
+            <li><strong>Pilot the hardest window.</strong> Buy one unit for the farthest room, run it for at least a week, and test an internet outage plus a router, Home Assistant, and radio-controller restart.</li>
+            <li><strong>Verify every expected control and status.</strong> Open, close, stop, percentage position, tilt, battery, and current state are not identical across protocols or bridges.</li>
+            <li><strong>Plan power before drywall closes.</strong> Use a qualified installer or electrician for mains and low-voltage work. For battery shades, make charging reachable without removing furniture or using a tall ladder every few months.</li>
+            <li><strong>Preserve the labels.</strong> Photograph the Matter QR code, motor label, order sheet, and reset instructions before the headrail hides them.</li>
+          </ol>
+          <p>Do not automate a shade as the only fire, egress, overheating, or child-safety control. Keep cords and bead chains compliant with local safety requirements, keep manual escape paths clear, and make sure every household member can open the window treatment when Home Assistant is unavailable.</p>
+
+          <h2 id="what-to-avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not buy by brand alone.</strong> SmartWings and Motionblinds each sell motors with materially different connection paths.</li>
+            <li><strong>Do not treat older HomeKit over Thread as Matter.</strong> Both use Thread, but their controller and sharing behavior differ. Verify the logo and firmware path.</li>
+            <li><strong>Do not assume a Matter bridge exposes every feature.</strong> Position may cross while calibration, speed, favorites, or diagnostics stay in the vendor app.</li>
+            <li><strong>Do not create a new Thread network just for one window without checking the existing one.</strong> A second mesh beside the first is not extra range for the first.</li>
+            <li><strong>Do not order every window before an outage test.</strong> Custom shades are expensive to replace when the wrong motor protocol is buried inside them.</li>
+          </ul>
+
+          <h2 id="recommendation">Tara's Recommendation</h2>
+          <p>For a new cross-platform installation, start with an Eve Motionblinds Matter-over-Thread motor from the exact supported list. It has the clearest official Home Assistant support and no Motionblinds bridge requirement. Use SmartWings Matter when its shade selection suits the room and multi-admin matters, but pilot one. If Home Assistant already has dependable Z-Wave coverage, SmartWings Z-Wave is the simpler local-first choice.</p>
+          <p>For an existing window treatment, use SwitchBot Blind Tilt or Curtain 3 over direct Bluetooth and place a proxy nearby. Choose Aqara E1 direct to Zigbee only when you are comfortable with community device support. Choose Lutron Serena or Triathlon when installer support, physical controls, and whole-home predictability matter more than avoiding a dedicated hub.</p>
+          <p>Whichever path wins, make the order sheet name the radio, keep a manual control, and prove one shade through a real outage before multiplying it. That one-window test is much cheaper than discovering that twelve custom motors speak the wrong language.</p>
+
+          <h2 id="faq">Frequently Asked Questions</h2>
+          <h3 id="faq-hub">Do motorized blinds need a hub for Home Assistant?</h3>
+          <p>They do not always need the manufacturer's hub, but every wireless path needs suitable controller hardware. Matter-over-Thread blinds need Home Assistant's Matter controller and a Thread border router; Z-Wave needs a regional Z-Wave adapter; Zigbee needs a coordinator; and Bluetooth needs an adapter or proxy.</p>
+
+          <h3 id="faq-official">Which motorized blinds have the strongest official Home Assistant support?</h3>
+          <p>Eve Motionblinds Matter-over-Thread motors have the clearest official path. Motionblinds is a Works with Home Assistant partner for its Matter products, and Home Assistant lists exact supported motors such as CM-03-E for roller shades and CM-08-E for honeycomb shades.</p>
+
+          <h3 id="faq-smartwings">Should I choose SmartWings Matter or Z-Wave shades?</h3>
+          <p>Choose Matter-over-Thread when cross-platform sharing with Apple Home, Google Home, Alexa, or SmartThings matters and you already have healthy Thread coverage. Choose the regional Z-Wave 800 motor when Home Assistant is the main controller and your Z-Wave mesh is already dependable.</p>
+
+          <h3 id="faq-switchbot">Does SwitchBot Blind Tilt need a SwitchBot Hub?</h3>
+          <p>No for direct local Home Assistant control. Home Assistant's built-in SwitchBot Bluetooth integration supports Blind Tilt, Curtain 3, and Roller Shade without a SwitchBot Hub. A compatible SwitchBot hub is needed when you want SwitchBot's Matter bridge path to Apple Home or another platform.</p>
+
+          <h3 id="faq-aqara">Can Aqara Roller Shade Driver E1 pair directly with Home Assistant?</h3>
+          <p>Community integrations can pair the RSD-M01 directly to ZHA or Zigbee2MQTT for local control, but Aqara's official path uses an Aqara Zigbee 3.0 hub. Direct pairing is therefore a community-supported option that should be tested with one unit before a larger purchase.</p>
+
+          <h3 id="faq-lutron">Can Lutron Serena shades work with Home Assistant without a Lutron hub?</h3>
+          <p>No. Home Assistant's official Lutron Caseta integration talks to a supported Lutron hub or processor. The integration is local push, but the brand hub remains part of the system.</p>
+        </div>
+      </article>
+
+      <section class="block source-list">
+        <p class="kicker">Sources</p>
+        <h2>Documentation and further reading</h2>
+        <div class="source-grid">
+          <div>
+            <h3>Official Home Assistant documentation</h3>
+            <ul>
+              <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Matter: local control, bridges, sharing, and Thread requirements</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/motionblinds_matter/" target="_blank" rel="noopener noreferrer">Motionblinds Matter: partner status and exact supported motors</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/switchbot/" target="_blank" rel="noopener noreferrer">SwitchBot Bluetooth: no-hub setup and supported covers</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/zha/" target="_blank" rel="noopener noreferrer">ZHA: direct Zigbee, hardware, and device-support limits</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/zwave_js/" target="_blank" rel="noopener noreferrer">Z-Wave: local adapter and Z-Wave JS requirements</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/lutron_caseta/" target="_blank" rel="noopener noreferrer">Lutron Caseta: supported hubs, shades, and local-push integration</a></li>
+              <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">HomeKit Bridge: exposing Home Assistant covers to Apple Home</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Product documentation</h3>
+            <ul>
+              <li><a href="https://motionblinds.com/eve/matter" target="_blank" rel="noopener noreferrer">Motionblinds: Eve motors, Matter over Thread, and platform support</a></li>
+              <li><a href="https://www.smartwingshome.com/pages/work-with-matter-over-thread" target="_blank" rel="noopener noreferrer">SmartWings: Matter-over-Thread requirements and local operation</a></li>
+              <li><a href="https://www.smartwingshome.com/pages/z-wave-800-lr-is-here" target="_blank" rel="noopener noreferrer">SmartWings: current Z-Wave 800 motor path</a></li>
+              <li><a href="https://www.smartwingshome.com/products/smartwings-motorized-roller-shades-100-blackout-linen" target="_blank" rel="noopener noreferrer">SmartWings: current motorized roller-shade motor choices</a></li>
+              <li><a href="https://us.switch-bot.com/products/switchbot-blind-tilt" target="_blank" rel="noopener noreferrer">SwitchBot Blind Tilt: mechanics and product requirements</a></li>
+              <li><a href="https://www.switch-bot.com/pages/matter" target="_blank" rel="noopener noreferrer">SwitchBot: current Matter bridge device matrix</a></li>
+              <li><a href="https://www.aqara.com/en/product/roller-shade-driver-e1" target="_blank" rel="noopener noreferrer">Aqara Roller Shade Driver E1: Zigbee, chain fit, power, and ecosystems</a></li>
+              <li><a href="https://support.lutron.com/us/en/product/casetawireless/article/product-selection/the-caseta-smart-bridge" target="_blank" rel="noopener noreferrer">Lutron: when the Caseta Smart Hub is required and what remains local</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Platform documentation</h3>
+            <ul>
+              <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple: Matter blinds and shades, Thread hardware, and previously paired accessories</a></li>
+              <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en-GB" target="_blank" rel="noopener noreferrer">Google Home: Matter requirements, local in-home control, and multi-admin</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Community discussions and caveats</h3>
+            <ul>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1qx4k43/best_options_for_motorized_blinds/" target="_blank" rel="noopener noreferrer">r/homeassistant: current local-first motorized-blind options</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1rondwf/new_to_ha_looking_for_smart_blinds_that_do_not/" target="_blank" rel="noopener noreferrer">r/homeassistant: avoiding a proprietary blind hub</a></li>
+              <li><a href="https://www.reddit.com/r/homeassistant/comments/1uon17x/what_motorized_blinders_are_people_using/" target="_blank" rel="noopener noreferrer">r/homeassistant: July 2026 owner choices and tradeoffs</a></li>
+              <li><a href="https://community.home-assistant.io/t/smart-blind-suggestion/984736" target="_blank" rel="noopener noreferrer">Home Assistant Community: custom-shade and Motionblinds suggestions</a></li>
+              <li><a href="https://community.home-assistant.io/t/planning-for-hardwired-blinds-in-reno-considerations/1004934" target="_blank" rel="noopener noreferrer">Home Assistant Community: planning hardwired shades during renovation</a></li>
+              <li><a href="https://community.home-assistant.io/t/matter-over-thread-window-covers-randomly-unavailable/979907" target="_blank" rel="noopener noreferrer">Home Assistant Community: multi-shade Matter-over-Thread availability caveat</a></li>
+              <li><a href="https://community.home-assistant.io/t/lost-ha-control-of-smartwings-shade-after-long-network-outage/985502" target="_blank" rel="noopener noreferrer">Home Assistant Community: SmartWings recovery after a long outage</a></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="block article-cta">
+        <p class="kicker">Tara setup</p>
+        <h2>Want the motor, radio, and fallback decided before the order?</h2>
+        <p>Tara plans shade protocols, local controllers, Thread, Zigbee, Z-Wave and Bluetooth coverage, cross-platform sharing, physical controls, and outage tests as one understandable home system.</p>
+        <a class="cta" href="/configurator/">Plan your home</a>
+      </section>
+
+      <section class="block related">
+        <p class="kicker">Related reading</p>
+        <h2>Choose the controller path before the fabric arrives</h2>
+        <div class="links">
+          <a href="/blog/do-you-need-switchbot-hub-home-assistant/">Do you need a SwitchBot hub?</a>
+          <a href="/blog/eve-matter-thread-home-assistant-without-apple-home/">Use Eve Thread outside Apple</a>
+          <a href="/blog/which-thread-border-router-home-assistant-2026/">Choose a Thread border router</a>
+          <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share one Matter device</a>
+          <a href="/blog/pair-matter-devices-home-assistant-or-apple-google-first/">Choose which app pairs first</a>
+          <a href="/blog/zha-vs-zigbee2mqtt-home-assistant/">Choose ZHA or Zigbee2MQTT</a>
+          <a href="/blog/zwave-js-vs-zwave-js-ui-home-assistant/">Choose a Z-Wave path</a>
+          <a href="/configurator/">Configurator</a>
+        </div>
+      </section>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
