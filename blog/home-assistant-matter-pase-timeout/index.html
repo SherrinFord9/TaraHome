@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Matter PASE Timeout: Why Apple Home Works</title>
+    <meta name="description" content="Apple Home pairs, but Home Assistant logs a Matter PASE timeout? Use a fresh sharing code, then check IPv6, Thread, and VLANs before resetting." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-matter-pase-timeout/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-matter-pase-timeout/" />
+    <meta property="og:title" content="Home Assistant Matter PASE Timeout: Why Apple Home Works" />
+    <meta property="og:description" content="Use a fresh Apple Home sharing window, then trace Matter Server and local IPv6 reachability before you reset the accessory." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-pase-timeout/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Matter PASE Timeout: Why Apple Home Works" />
+    <meta name="twitter:description" content="Apple Home working does not prove Home Assistant can reach the accessory. Check the fresh sharing window, Matter Server, and local IPv6." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-matter-pase-timeout/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1180px; }
+      .hero { align-items: end; display: grid; gap: clamp(36px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); margin-left: auto; margin-right: auto; max-width: 1120px; padding-bottom: clamp(22px, 3vw, 34px); width: 100%; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); margin-left: auto; margin-right: auto; max-width: 780px; min-width: 0; padding-top: clamp(34px, 4vw, 50px); width: 100%; }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.14; margin: clamp(48px, 5vw, 62px) 0 18px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.2; margin: 38px 0 14px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1.06rem, 1.12vw, 1.16rem); line-height: 1.75; }
+      .article-body p { margin: 0 0 24px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 28px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 12px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 44px; max-width: 820px; overflow-wrap: break-word; padding: 24px 26px 22px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: 1.04rem; line-height: 1.58; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 32px 0; max-width: 780px; padding: 22px 24px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 32px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list, .article-cta, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: clamp(22px, 3vw, 36px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (min-width: 900px) { .article-body .comparison-table { margin-left: 50%; max-width: none; transform: translateX(-50%); width: min(920px, calc(100vw - 64px)); } }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero > div, .article-cover { max-width: 100%; min-width: 0; } .hero { gap: 28px; max-width: 46rem; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } .source-list, .article-cta, .related { max-width: 46rem; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body { max-width: calc(100vw - 44px); padding-top: 30px; } .article-body .tldr { margin-bottom: 36px; max-width: 100%; padding: 20px 18px 18px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-matter-pase-timeout/#blogposting",
+      "headline": "Home Assistant Matter PASE Timeout: Why Apple Home Works",
+      "description": "Apple Home pairs, but Home Assistant logs a Matter PASE timeout? Use a fresh sharing code, then check IPv6, Thread, and VLANs before resetting.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-matter-pase-timeout/cover.png",
+      "datePublished": "2026-07-20",
+      "dateModified": "2026-07-20",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-matter-pase-timeout/" },
+      "citation": [
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://support.apple.com/en-us/102135",
+        "https://developers.home.google.com/matter/primer/commissioning",
+        "https://github.com/home-assistant/core/issues/135938",
+        "https://community.home-assistant.io/t/ikea-matter-plug-pairs-in-apple-home-but-fails-in-home-assistant-with-pase-timeout/1004907",
+        "https://www.reddit.com/r/homeassistant/comments/1qtu8xg/can_home_assistant_use_apple_homes_thread_network/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-matter-pase-timeout/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Home Assistant Matter PASE Timeout", "item": "https://tarahome.ai/blog/home-assistant-matter-pase-timeout/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-matter-pase-timeout/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does a Matter PASE timeout mean in Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant's Matter Server began the passcode-authenticated setup conversation but did not complete it. The cause can be an expired or wrong commissioning window, local IPv6 reachability, network filtering, or a device or controller bug. The message names the failed stage, not one guaranteed root cause." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why can Apple Home pair a Matter device when Home Assistant cannot?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Apple Home and Home Assistant are separate Matter controllers with separate network paths. Apple succeeding proves that its controller can reach and commission the accessory. It does not prove Home Assistant's Matter Server can reach the same accessory over local IPv6 or that a new sharing window is still open." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I scan the printed Matter QR code again after adding the device to Apple Home?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Usually not. For a device already commissioned to Apple Home, open a fresh sharing or pairing window and use the new code in Home Assistant's 'Yes, it's already in use' flow. The printed factory code is for the original commissioning state." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a PASE timeout mean I need another Thread border router?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. A PASE timeout can occur with Matter over Wi-Fi or Thread. If the device works in Apple Home, keep the working Apple border router online and first check the sharing window and Home Assistant's local IPv6 path. Home Assistant does not need its own Thread radio just to control an already connected device." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Matter need IPv6 internet service?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Matter needs working IPv6 communication inside the home. Your internet provider does not need to supply public IPv6, but Home Assistant, the local network, and a Thread border router when used must pass the required local IPv6 traffic." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I factory-reset the Matter device after a PASE timeout?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Treat a factory reset as the last step. First update Home Assistant and Matter Server, open a fresh sharing window, inspect the commissioning log, test a simple local network path, and remove only a stale Home Assistant service if one exists. Resetting early can erase a working Apple Home setup without fixing the network problem." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Matter troubleshooting</span><span>July 20, 2026</span><span>12 min read</span></p>
+            <h1>Home Assistant Matter PASE Timeout: Why Apple Home Works</h1>
+            <p class="lede">Apple Home pairing successfully does not prove Home Assistant's path is clear. A PASE timeout means Home Assistant reached an early secure setup stage but never finished that conversation. Start with a fresh sharing window, then trace local IPv6 before resetting anything.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-matter-pase-timeout/cover.png" alt="Homeowner retrying Matter setup near a smart plug, local home server, and separate smart-home hub" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Share it correctly:</strong> if the accessory already works in Apple Home, open a fresh Apple sharing window and choose <strong>Yes, it's already in use</strong> in the Home Assistant phone app. Do not start by rescanning the printed factory code.</li>
+              <li><strong>Update first:</strong> install current Home Assistant, Companion app, and official Matter Server updates before changing the network. Matter Server 9 replaced the older server in June 2026.</li>
+              <li><strong>Read the timeout accurately:</strong> PASE names the early secure, code-based setup stage that failed. It does not prove that Thread, IPv6, the code, or the device is the one cause.</li>
+              <li><strong>Test the local path:</strong> keep the phone, Home Assistant host, and Thread border router on one simple, unfiltered home network for a controlled retry. Matter needs local IPv6, not IPv6 from your internet provider.</li>
+              <li><strong>Avoid the big reset:</strong> do not buy another Thread radio, rebuild every guest or separate IoT network, or remove the accessory from all Apple services until the log and a simple home-network test justify it.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Apple and Home Assistant Use Different Paths</h2>
+          <p><strong>If Apple Home can pair the accessory but Home Assistant reports a PASE timeout, first generate a new sharing code from the working Apple Home setup and add it through Home Assistant's “already in use” flow.</strong> If that fresh attempt reaches the same timeout, read the Matter Server log and then check local IPv6—the inside-the-house network addressing Matter uses. Matter is the cross-brand smart-home standard behind this pairing process.</p>
+          <p>Apple Home succeeding is useful evidence. It shows the accessory can enter commissioning mode and complete setup with Apple's controller. It does <strong>not</strong> show that Home Assistant's separate controller has the same network reachability, receives the same local discovery traffic, or is using an open multi-admin window.</p>
+          <p>This matters most with a HomePod mini or Apple TV acting as the border router for Thread—the low-power mesh network used by many battery devices—or with Home Assistant running in a virtual machine or container. Separating the phone, server, and border router across main, guest, and IoT networks can also block the path. The same error can happen with Matter-over-Wi-Fi, so do not blame Thread just because the log says PASE.</p>
+
+          <h2 id="what-pase-means">What a PASE Timeout Actually Means</h2>
+          <p><strong>PASE</strong> stands for Passcode Authenticated Session Establishment. In plain English, the new controller and accessory use the setup code to begin a protected conversation. That happens after the controller discovers a commissionable accessory and before it can finish adding its own Matter credentials.</p>
+          <p>On the retired Python-based server, a log such as <code>PASESession timed out while waiting for a response from the peer</code> meant that protected conversation did not complete. The current matter.js server may instead show a <code>SC/PbkdfParamRequest</code> followed by retries. Some older logs say they expected message type 33. That number identifies the first secure-channel response; it is not an error code tied to a particular plug, lock, or sensor.</p>
+          <div class="callout">
+            <p><strong>PASE is a location in the commissioning sequence, not a diagnosis.</strong> A closed sharing window, stale code, unreachable IPv6 address, blocked packets, sleepy or buggy accessory, or controller regression can all end at the same stage.</p>
+          </div>
+
+          <h2 id="stages">Use the Last Log Message to Choose the Right Fix</h2>
+          <p>Several Matter failures look identical in the phone app. The last meaningful server message tells you where to spend your time.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>What you see</th><th>What completed</th><th>Check next</th><th>Do not assume</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>No new Matter Server commissioning entry</td><td>The handoff may not have reached the server</td><td>Companion app update and permissions, Matter integration, correct “already in use” flow</td><td>That IPv6 or Thread already failed</td></tr>
+                <tr><td><code>PASESession timed out</code> or repeated secure-channel request</td><td>Discovery began and a secure setup exchange was attempted</td><td>Fresh sharing window and code, then Home Assistant-to-accessory local IPv6 reachability</td><td>One universal network fix</td></tr>
+                <tr><td>“Checking network connectivity”</td><td>The phone has progressed into the later network handoff</td><td>Wi-Fi credentials, Thread dataset, preferred network, and local handoff path</td><td>That this is the same PASE-stage failure</td></tr>
+                <tr><td>“Fabric already exists”</td><td>The device remembers an earlier saved relationship with that controller</td><td>Remove only the stale Home Assistant service, then reopen sharing</td><td>That all Apple Home data must be erased</td></tr>
+                <tr><td>Device adds, then becomes unavailable</td><td>Commissioning completed</td><td>Operational IPv6, Thread routing, multicast discovery, and controller recovery</td><td>That the pairing code is still the issue</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="fix-order">Fix a Home Assistant Matter PASE Timeout in This Order</h2>
+
+          <h3 id="update">1. Update the Supported Matter Path</h3>
+          <p>Update Home Assistant Core, the Home Assistant Companion app on the phone, and the official Matter Server app. Home Assistant released Matter Server 9.0 in June 2026 as a drop-in migration from the older Python server to matter.js, with commissioning and recovery changes. Use the current stable release; a timeout alone is not a reason to join a beta.</p>
+          <p>Home Assistant OS with the official Matter Server app is the supported installation. A self-managed Matter Server container can work locally, but Home Assistant documents it as an advanced, unsupported path. If you use it, its host networking and IPv6 are part of the system you must troubleshoot.</p>
+
+          <h3 id="fresh-window">2. Open a Fresh Apple Home Sharing Window</h3>
+          <p>If the device already works in Apple Home, leave it there. Start Home Assistant's existing-device flow and follow the Apple handoff. If Apple Home shows <strong>Turn On Pairing Mode</strong> or a connect-another-service option for the accessory, use it and copy the newly generated Matter code. Use that code promptly while the temporary window is open.</p>
+          <p>In the Home Assistant Companion app, go to <strong>Settings → Matter → Add device</strong>. Select <strong>Yes, it's already in use</strong>, choose Apple Home, and follow the prompts. Do not treat the printed QR code as the sharing code after the device has already joined Apple Home. The new window is what authorizes another controller.</p>
+          <p>If the device exposes sharing through its manufacturer's app instead of Apple Home, use that documented control. The principle is the same: request a new commissioning window from the controller that already owns the device.</p>
+
+          <h3 id="read-log">3. Watch One Commissioning Attempt in the Matter Server Log</h3>
+          <p>Open the Matter Server app log, start one fresh sharing attempt, and note the last repeated line. Do this before restarting or resetting anything; otherwise the most useful evidence disappears into a pile of unrelated recovery messages.</p>
+          <ul>
+            <li><strong>No commissioning start:</strong> stay with the phone-to-Home Assistant handoff. Confirm the current Companion app, Matter integration, phone permissions, and correct Home Assistant server connection.</li>
+            <li><strong>Discovery plus PASE retries:</strong> the request reached Matter Server. Recheck the fresh code and window, then follow the IPv6 path from that server to the address shown in the log.</li>
+            <li><strong>Commissioning moves beyond PASE:</strong> stop applying PASE fixes. Use the later message to follow network handoff, certificate, fabric, or operational-connectivity troubleshooting.</li>
+          </ul>
+
+          <h3 id="simple-lan">4. Run a Controlled Simple-LAN Test</h3>
+          <p>For one retry, put the phone and Home Assistant on the normal home network and keep the active Wi-Fi access point and Thread border router on an unfiltered path to it. Temporarily bypass a guest Wi-Fi network, device isolation, multicast filtering, and rules between VLANs—separate network segments often used for IoT devices. This is a diagnostic test, not advice to abandon segmentation permanently.</p>
+          <p>If that works, restore separation one boundary at a time. Matter uses local IPv6 and local device-discovery announcements. A router feature that forwards only some of those announcements between separate networks may not be enough. Check IPv6 routing, local device discovery, wireless client isolation, and any router feature that filters traffic between Wi-Fi and Ethernet.</p>
+          <p>Do not leave the whole firewall disabled. Record which network boundary made the retry fail, restore the firewall, and use your router's documentation or qualified support to allow only the needed communication inside the home.</p>
+
+          <h3 id="haos-ipv6">5. Check Home Assistant's Local IPv6</h3>
+          <p>You do not need public IPv6 from your internet provider. You do need working IPv6 inside the house. On Home Assistant OS, the current official Thread troubleshooting procedure starts by running <code>ha docker info</code>. If <code>enable_ipv6</code> is already <code>true</code>, leave it alone and keep tracing the network.</p>
+          <p>Only if it shows <code>null</code> or <code>false</code>, follow the documented Home Assistant OS step: run <code>ha docker options --enable-ipv6=true</code>, then <code>ha host reboot</code>. If Home Assistant OS runs as a virtual machine, also confirm that the virtual machine's network adapter connects directly to a home network with IPv6. Use the instructions for your virtual-machine software if you are unsure.</p>
+          <p>For Home Assistant Container, Docker, the host operating system, the virtual network, and the router may each need correct IPv6 handling. There is no safe universal Compose file or <code>sysctl</code> line for every host. Use Home Assistant's requirements plus the documentation or qualified support for your Docker host, virtual-machine software, and router.</p>
+
+          <h3 id="thread">6. If It Is Thread, Keep the Working Apple Border Router</h3>
+          <p>A HomePod mini, HomePod (2nd generation), Apple TV 4K (2nd generation), or Apple TV 4K (3rd generation Wi-Fi + Ethernet) can provide the Thread border-router path. Home Assistant can communicate through a third-party border router; the border router routes encrypted IPv6 packets and is not the Matter controller itself.</p>
+          <p>If Apple Home already controls the Thread accessory, keep that Apple border router powered and on the same reachable local network during the test. Home Assistant does not need a Connect ZBT-1, Connect ZBT-2, Yellow radio, or a second Thread mesh merely to control an accessory already reachable through Apple's border router.</p>
+          <p>Home Assistant's Thread integration and imported Thread credentials matter when Home Assistant is helping place a new accessory onto a Thread network or managing its own OpenThread border router. They do not repair a blocked IPv6 route by themselves. Avoid creating another preferred Thread network in the middle of this PASE investigation.</p>
+
+          <h3 id="stale-service">7. Remove Only a Stale Home Assistant Service</h3>
+          <p>If a previous attempt partly succeeded, the device may already list Home Assistant as a connected service even though no usable device remains in Home Assistant. Remove that one stale Home Assistant connection from the controller or accessory interface that exposes it, then open a fresh sharing window.</p>
+          <p>Apple distinguishes removing an accessory from one connected service from removing it from all services. Choose the narrow action. <strong>Remove From All Services</strong> can erase working control across Apple Home and every other connected platform.</p>
+
+          <h3 id="reset-last">8. Factory-Reset One Accessory Last</h3>
+          <p>Reset only after the current software, fresh sharing window, commissioning log, simple-LAN test, local IPv6, and stale-service check have failed. Start with one low-risk accessory such as a plug or lamp, not every lock, thermostat, blind, and sensor in the house.</p>
+          <p>A reset may clear stuck setup data inside one device. It cannot fix a Home Assistant host that cannot reach the device's IPv6 address. If Apple Home paired the accessory before and the same Home Assistant path fails after a clean reset, return to the controller and network path.</p>
+
+          <h2 id="wifi-vs-thread">PASE Can Fail on Matter over Wi-Fi or Thread</h2>
+          <p>PASE belongs to Matter commissioning, not to Thread alone. A Wi-Fi plug and a Thread sensor can both reach this error. The difference is the route after discovery:</p>
+          <ul>
+            <li><strong>Matter over Wi-Fi:</strong> Home Assistant's Matter Server reaches the accessory through the ordinary Wi-Fi and Ethernet LAN.</li>
+            <li><strong>Matter over Thread:</strong> the server reaches the accessory over local IPv6 through a Thread border router such as an Apple HomePod mini or Apple TV 4K.</li>
+          </ul>
+          <p>If both Wi-Fi and Thread Matter devices fail from the same Home Assistant server, inspect the common controller, host, and LAN path before changing Thread radios. If only one Thread device fails while other Thread devices pair normally, its commissioning window, firmware, power, range, or saved controller state becomes more likely.</p>
+
+          <h2 id="paths">Which Home Assistant and Apple Paths Are Involved?</h2>
+          <p>These are controller and transport choices, not product rankings. Keep the roles separate while troubleshooting.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Path or device</th><th>Official support</th><th>Local control</th><th>Cloud or account dependency</th><th>Matter and HomeKit role</th><th>Main caveat</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Home Assistant OS + official Matter Server app</td><td>Home Assistant's supported Matter path</td><td>Normal commands stay inside the home and can keep working during an internet outage</td><td>No vendor cloud required for normal commands</td><td>Native Matter controller; Apple Home can be a second controller through device sharing</td><td>The host and home network still need local IPv6</td></tr>
+                <tr><td>Home Assistant Container + self-managed Matter Server</td><td>Documented as advanced and unsupported</td><td>Can remain local</td><td>No required cloud, but the operator owns the host</td><td>Native Matter controller when correctly networked</td><td>Docker, host, VM, and router IPv6 can each break reachability</td></tr>
+                <tr><td>HomePod mini, HomePod (2nd generation), Apple TV 4K (2nd generation), Apple TV 4K (3rd generation Wi-Fi + Ethernet)</td><td>Apple-supported Thread home hubs; listed by Home Assistant as known border routers</td><td>Thread routing and in-home control are local</td><td>Apple Home setup and synchronized Matter credentials use an Apple Account and iCloud Keychain</td><td>Apple Home controller plus Thread border router on these models</td><td>Apple working does not guarantee Home Assistant's separate IPv6 path</td></tr>
+                <tr><td>Home Assistant Yellow, Connect ZBT-1, or Connect ZBT-2 running OpenThread</td><td>Official Home Assistant hardware path; Thread enablement requires documented setup</td><td>Local Thread border routing</td><td>No required cloud for local routing</td><td>Can make Home Assistant an OpenThread border router</td><td>Do not add one solely because a shared Apple device reports PASE timeout</td></tr>
+                <tr><td>HomeKit Bridge integration</td><td>Official Home Assistant integration</td><td>Local bridge from Home Assistant to Apple Home</td><td>Apple Home account/hub rules apply to the Apple side</td><td>Exposes Home Assistant entities to Apple Home; it is not the same as adding a Matter device to Home Assistant</td><td>It does not fix Matter Server commissioning or PASE</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not keep reusing the printed QR code</strong> after the accessory is already commissioned to Apple Home. Request a fresh multi-admin window.</li>
+            <li><strong>Do not assume Apple success clears the LAN.</strong> Each Matter controller must have its own reachable path.</li>
+            <li><strong>Do not add another Thread network as a reflex.</strong> More credentials and preferred networks can make the test harder to interpret.</li>
+            <li><strong>Do not paste a random Docker IPv6 recipe.</strong> The correct change depends on the host and network mode.</li>
+            <li><strong>Do not remove all connected services</strong> when only a stale Home Assistant service needs removal.</li>
+            <li><strong>Do not start with a lock or HVAC controller.</strong> Prove the path with a low-risk accessory before disrupting access or comfort.</li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p>Treat this as a three-part handoff: the existing controller opens a fresh window, Home Assistant's Matter Server receives the request, and that server reaches the accessory over local IPv6. Test those parts in that order.</p>
+          <p>For a homeowner setup, Tara favors Home Assistant OS with the official Matter Server, one intentional Thread network, and a documented border-router owner. Apple Home can remain a second controller. Keep essential automations in one chosen platform so a pairing repair does not create duplicate schedules or two systems fighting over the same lock, light, or thermostat.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-meaning">What does a Matter PASE timeout mean in Home Assistant?</h3>
+          <p>Home Assistant's Matter Server started the passcode-authenticated secure setup conversation but did not complete it. The message identifies the failed stage. It does not by itself identify whether the cause was the commissioning window, passcode, local IPv6 path, filtering, accessory, or controller.</p>
+
+          <h3 id="faq-apple">Why can Apple Home pair when Home Assistant cannot?</h3>
+          <p>They are separate Matter controllers. Apple Home can have a working route through its own home hub or Thread border router while Home Assistant's Matter Server has a blocked or incomplete route. Apple also needs to open a new sharing window before Home Assistant can join as another controller.</p>
+
+          <h3 id="faq-code">Should I scan the printed Matter QR code again?</h3>
+          <p>Not when the accessory is already in Apple Home. Open pairing mode or connect-another-service from the current controller and use its new code in Home Assistant's <strong>Yes, it's already in use</strong> flow.</p>
+
+          <h3 id="faq-router">Do I need another Thread border router?</h3>
+          <p>Usually no. If Apple Home already controls the Thread device, keep its working HomePod or Apple TV border router online. First fix the fresh sharing window and Home Assistant's local IPv6 reachability. A new radio is not a general PASE fix.</p>
+
+          <h3 id="faq-internet-ipv6">Does Matter require IPv6 from my internet provider?</h3>
+          <p>No. Matter needs IPv6 inside the home. Public internet IPv6 is not required, but the Home Assistant host, local network, and Thread border router when present must carry the necessary local IPv6 packets.</p>
+
+          <h3 id="faq-reset">Should I factory-reset after a PASE timeout?</h3>
+          <p>Reset last. Update, open a fresh window, read one commissioning log, test a simple LAN, verify local IPv6, and remove only a stale Home Assistant service first. A premature reset can erase a working Apple setup while leaving the actual network fault untouched.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/does-home-assistant-matter-need-ipv6/">See why Matter needs local IPv6, not IPv6 from your ISP</a></li>
+            <li><a href="/blog/home-assistant-matter-checking-network-connectivity/">Fix the later “Checking network connectivity” stage</a></li>
+            <li><a href="/blog/home-assistant-matter-device-wont-readd-fabric-exists/">Clear a stale fabric without guessing</a></li>
+            <li><a href="/blog/home-assistant-matter-thread-devices-offline/">Fix Thread Matter devices that go offline after pairing</a></li>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share one Matter device across several platforms</a></li>
+            <li><a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Choose the main LAN or an IoT VLAN for Home Assistant</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter setup, sharing, supported installation, and local control</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread border routers, credentials, local IPv6, and pairing troubleshooting</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant's Matter Server 9 and matter.js announcement</a></li>
+                <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple Support: pair, view, share, and remove Matter accessories</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Protocol documentation</h3>
+              <ul>
+                <li><a href="https://developers.home.google.com/matter/primer/commissioning" target="_blank" rel="noopener noreferrer">Google Home Developers: Matter commissioning stages and PASE</a></li>
+                <li><a href="https://support.apple.com/guide/security/communication-security-sec3a881ccb1/web" target="_blank" rel="noopener noreferrer">Apple Platform Security: Matter accessory pairing and protected key exchange</a></li>
+                <li><a href="https://github.com/project-chip/connectedhomeip/issues/27190" target="_blank" rel="noopener noreferrer">Project CHIP issue showing secure-channel message 33 in a PASE timeout trace</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server" target="_blank" rel="noopener noreferrer">Open Home Foundation matter.js Matter Server source</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/ikea-matter-plug-pairs-in-apple-home-but-fails-in-home-assistant-with-pase-timeout/1004907" target="_blank" rel="noopener noreferrer">Home Assistant Community: Apple Home succeeds while Home Assistant reaches a PASE timeout</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-device-pairable-to-apple-home-and-tado-but-not-to-home-assistant/942841" target="_blank" rel="noopener noreferrer">Home Assistant Community: controller-specific reachability despite another platform working</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qtu8xg/can_home_assistant_use_apple_homes_thread_network/" target="_blank" rel="noopener noreferrer">r/homeassistant: using an Apple Thread network with Home Assistant</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/135938" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: recurring PASE timeout commissioning trace</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/147616" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: Companion commissioning fails while Apple Home works</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1uk0a8q/issue_pairing_matter_hvac_to_home_assistant/" target="_blank" rel="noopener noreferrer">r/homeassistant: matter.js PASE log, Apple Home workaround, and controller reachability questions</a></li>
+                <li><a href="https://community.home-assistant.io/t/matter-over-thread-with-apple-tv-tbr-on-synology-nas-kernel-4-4-fix-for-missing-accept-ra-rt-info-max-plen/1011565" target="_blank" rel="noopener noreferrer">Home Assistant Community: Apple TV border router and an advanced host-IPv6 caveat</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want one documented Matter and Thread path?</h2>
+          <p>Tara plans the Home Assistant host, Matter controller, Thread border router, local network placement, cloud limits, and homeowner handoff as one supportable system.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the commissioning path understandable</h2>
+          <div class="links">
+            <a href="/blog/does-home-assistant-matter-need-ipv6/">Matter and local IPv6</a>
+            <a href="/blog/home-assistant-matter-checking-network-connectivity/">Checking network connectivity</a>
+            <a href="/blog/home-assistant-matter-device-wont-readd-fabric-exists/">Clear a stale fabric</a>
+            <a href="/blog/home-assistant-matter-thread-devices-offline/">Thread devices offline</a>
+            <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a>
+            <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Main LAN or IoT VLAN</a>
+            <a href="/local-smart-home-hub/">Local smart-home hub</a>
+            <a href="/configurator/">Plan a local Tara system</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
