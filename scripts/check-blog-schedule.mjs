@@ -64,8 +64,14 @@ const laneRules = {
       'tapo', 'kasa', 'reolink', 'unifi',
     ],
   },
-  'weekly-trend-saturday': {label: 'Saturday weekly trend', terms: []},
-  'weekly-trend-sunday': {label: 'Sunday weekly trend', terms: []},
+  'new-home-buyer-saturday': {
+    label: 'Saturday new-home buyer planning',
+    terms: ['new home', 'new house', 'new homeowner', 'home buyer', 'homebuyer', 'first home', 'move in', 'moving into', 'buying a home', 'building a home', 'building a smart home', 'just bought a home', 'just bought a house', 'before closing'],
+  },
+  'new-home-buyer-sunday': {
+    label: 'Sunday new-home buyer decisions',
+    terms: ['new home', 'new house', 'new homeowner', 'home buyer', 'homebuyer', 'first home', 'move in', 'moving into', 'buying a home', 'building a home', 'building a smart home', 'just bought a home', 'just bought a house', 'before closing'],
+  },
 };
 
 const articleArg = valueAfter('--article');
@@ -104,9 +110,9 @@ if (html && laneRules[lane]) {
     }
   }
 
-  if (['apple-home', 'google-home', 'alexa-amazon', 'smartthings-samsung'].includes(lane)) {
+  if (['apple-home', 'google-home', 'alexa-amazon', 'smartthings-samsung', 'new-home-buyer-saturday', 'new-home-buyer-sunday'].includes(lane)) {
     if (/^home assistant\b/i.test(title) || /^home assistant\b/i.test(h1)) {
-      errors.push(`${rule.label} lane mismatch: the title and H1 must lead with that ecosystem, not Home Assistant.`);
+      errors.push(`${rule.label} lane mismatch: the title and H1 must lead with the required lane, not Home Assistant.`);
     }
   }
 
