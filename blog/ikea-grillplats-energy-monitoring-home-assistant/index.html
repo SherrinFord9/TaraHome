@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKEA GRILLPLATS Energy Monitoring in Home Assistant</title>
+    <meta name="description" content="See GRILLPLATS power and energy data in Home Assistant. Use Matter over Thread, skip the Zigbee workaround, and learn when DIRIGERA is optional." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/ikea-grillplats-energy-monitoring-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/ikea-grillplats-energy-monitoring-home-assistant/" />
+    <meta property="og:title" content="IKEA GRILLPLATS Energy Monitoring in Home Assistant" />
+    <meta property="og:description" content="Pair GRILLPLATS through Matter over Thread to expose power and energy data in Home Assistant. DIRIGERA is optional; a Thread border router is not." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/ikea-grillplats-energy-monitoring-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IKEA GRILLPLATS Energy Monitoring in Home Assistant" />
+    <meta name="twitter:description" content="Use the documented Matter path for GRILLPLATS energy data, understand the DIRIGERA option, and avoid the incomplete Zigbee route." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/ikea-grillplats-energy-monitoring-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1180px; }
+      .hero { align-items: end; display: grid; gap: clamp(36px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); margin-left: auto; margin-right: auto; max-width: 1120px; padding-bottom: clamp(22px, 3vw, 34px); width: 100%; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); margin-left: auto; margin-right: auto; max-width: 780px; min-width: 0; padding-top: clamp(34px, 4vw, 50px); width: 100%; }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.14; margin: clamp(48px, 5vw, 62px) 0 18px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.2; margin: 38px 0 14px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1.06rem, 1.12vw, 1.16rem); line-height: 1.75; }
+      .article-body p { margin: 0 0 24px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 28px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 12px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 44px; max-width: 820px; overflow-wrap: break-word; padding: 24px 26px 22px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: 1.04rem; line-height: 1.58; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 32px 0; max-width: 780px; padding: 22px 24px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 32px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list, .article-cta, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: clamp(22px, 3vw, 36px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (min-width: 900px) { .article-body .comparison-table { margin-left: 50%; max-width: none; transform: translateX(-50%); width: min(920px, calc(100vw - 64px)); } }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero > div, .article-cover { max-width: 100%; min-width: 0; } .hero { gap: 28px; max-width: 46rem; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } .source-list, .article-cta, .related { max-width: 46rem; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body { max-width: calc(100vw - 44px); padding-top: 30px; } .article-body .tldr { margin-bottom: 36px; max-width: 100%; padding: 20px 18px 18px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/ikea-grillplats-energy-monitoring-home-assistant/#blogposting",
+      "headline": "IKEA GRILLPLATS Energy Monitoring in Home Assistant",
+      "description": "See GRILLPLATS power and energy data in Home Assistant. Use Matter over Thread, skip the Zigbee workaround, and learn when DIRIGERA is optional.",
+      "image": "https://tarahome.ai/assets/generated/blog/ikea-grillplats-energy-monitoring-home-assistant/cover.png",
+      "datePublished": "2026-07-20",
+      "dateModified": "2026-07-20",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/ikea-grillplats-energy-monitoring-home-assistant/" },
+      "citation": [
+        "https://www.ikea.com/us/en/p/grillplats-plug-smart-70624740/",
+        "https://www.ikea.com/us/en/manuals/grillplats-plug-smart__AA-2694229-1-100.pdf",
+        "https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/docs/energy/individual-devices/",
+        "https://www.home-assistant.io/integrations/tradfri/",
+        "https://csa-iot.org/newsroom/matter-1-3-specification-released/",
+        "https://csa-iot.org/csa_product/grillplats-plug-11/",
+        "https://csa-iot.org/csa_product/grillplats-plug-2/",
+        "https://support.apple.com/en-us/102135",
+        "https://support.google.com/googlehome/answer/13127223?hl=en",
+        "https://support.google.com/googlehome/answer/12391458",
+        "https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html",
+        "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+        "https://www.reddit.com/r/homeassistant/comments/1sp6f40/no_energy_tracking_entities_with_grillplats_smart/",
+        "https://github.com/Koenkk/zigbee2mqtt/discussions/31464",
+        "https://community.home-assistant.io/t/grillplats-plug-via-zha-possible-to-get-all-the-features/1013026"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/ikea-grillplats-energy-monitoring-home-assistant/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "IKEA GRILLPLATS Energy Monitoring", "item": "https://tarahome.ai/blog/ikea-grillplats-energy-monitoring-home-assistant/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/ikea-grillplats-energy-monitoring-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does IKEA GRILLPLATS show energy use in Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. GRILLPLATS supports Matter energy reporting, and Home Assistant can expose live power and accumulated energy when the plug is commissioned or shared through the official Matter integration. Exact entity names and update timing can vary with software and firmware." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does GRILLPLATS need IKEA DIRIGERA for Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. DIRIGERA is one compatible Thread border router and IKEA hub, but it is optional for direct Home Assistant Matter setup. GRILLPLATS does require a working Thread border router, such as a correctly configured Home Assistant OpenThread border router, HomePod mini, or Nest Hub (2nd gen)." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can GRILLPLATS be added to Apple Home and Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Add it to either Matter controller first, then use Matter multi-admin sharing to add the other. GRILLPLATS uses Matter in Apple Home rather than the older HomeKit accessory protocol, and each platform may present a different subset of its energy data." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does GRILLPLATS need the cloud for Home Assistant control?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No vendor cloud is required for normal Matter control and energy reporting inside Home Assistant. An IKEA, Apple, Google, Amazon, or Samsung account may still be used for that platform's app, remote access, voice features, setup, or firmware path." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I pair GRILLPLATS to Home Assistant with Zigbee?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Not if energy monitoring is the goal. The CSA lists GRILLPLATS variants as Zigbee 3.0 certified, but IKEA's consumer page and manual document Matter-over-Thread setup, and current ZHA and Zigbee2MQTT reports show basic on/off control with missing power measurements. Matter remains the safer recommendation for energy data." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>IKEA Matter &amp; energy</span><span>July 20, 2026</span><span>11 min read</span></p>
+            <h1>IKEA GRILLPLATS Energy Monitoring in Home Assistant</h1>
+            <p class="lede">GRILLPLATS can report live power and accumulated energy to Home Assistant. Add or share the plug from Home Assistant's Matter screen; if you only see an on/off switch, the connection path is the first thing to fix.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/ikea-grillplats-energy-monitoring-home-assistant/cover.png" alt="IKEA GRILLPLATS smart plug powering a lamp in a warm reading nook while a homeowner checks energy use" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Use Home Assistant's Matter screen:</strong> add GRILLPLATS there, or share it from the smart-home platform that already owns it, for the best chance of exposing power and energy data.</li>
+              <li><strong>DIRIGERA is optional for Home Assistant:</strong> you still need a Thread border router—a compatible hub that connects the plug's wireless network to your home network. DIRIGERA, Home Assistant Thread hardware, a HomePod mini, or a Nest Hub (2nd gen) can fill that role.</li>
+              <li><strong>Avoid the current Zigbee route for metering:</strong> Zigbee is a separate low-power device network, and current Home Assistant testing shows basic switching but missing energy measurements.</li>
+              <li><strong>Main caveat:</strong> sensor names, update timing, and platform displays can vary. Check the exact regional load rating before connecting an appliance; the US model has a separate 300 W motor limit.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Add the Plug Through Home Assistant Matter</h2>
+          <p><strong>Yes, IKEA GRILLPLATS can show both power and energy in Home Assistant.</strong> Pair it directly with the Home Assistant phone app, or share the already-paired plug into Home Assistant as a Matter device. This uses the official Matter integration—the built-in Home Assistant connection for Matter products. On the device page, look for live power in watts (W) and accumulated energy in kilowatt-hours (kWh). Power is what the appliance is drawing now; energy is the total used over time.</p>
+          <p>If Home Assistant shows only an on/off switch, first check how the plug arrived there. A current r/homeassistant report found the energy sensors—called entities in Home Assistant—missing through a community DIRIGERA integration; the same plug exposed its monitoring after it was added through the Home Assistant Companion app. That report is not a guarantee for every firmware version, meaning every version of the plug's built-in software. It does match the official paths: IKEA advertises power tracking, Matter 1.3 defines energy reporting, and Home Assistant officially supports Matter devices.</p>
+          <p>IKEA's documented consumer setup for GRILLPLATS uses <strong>Matter over Thread</strong>. Matter is the common control language. Thread is the low-power wireless mesh carrying those commands. A <strong>Thread border router</strong> connects that mesh to the rest of your home network; it passes traffic but does not have to control the plug. You need that border router, but you do not specifically need IKEA's DIRIGERA hub.</p>
+
+          <h2 id="paths">Choose the Connection Path That Preserves Energy Data</h2>
+          <p>The same plug can reach Home Assistant through several routes, but “the switch works” does not mean every route exposes the metering clusters—the standardized groups of device features. A <strong>controller</strong> is the smart-home platform that owns and operates the plug. A <strong>bridge</strong> is a hub that republishes devices behind it. <strong>Multi-admin</strong> is Matter's way to share one device with more than one controller. “Local” means normal commands stay inside the home instead of making a round trip through a vendor's cloud.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Connection path</th><th>Support status</th><th>Energy data in Home Assistant</th><th>Local or cloud</th><th>Hub, Matter, and HomeKit role</th><th>Main caveat</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>GRILLPLATS directly to Home Assistant Matter</td><td>CSA Matter-certified product; Home Assistant officially supports the Matter standard, but GRILLPLATS is not individually Works with Home Assistant certified</td><td><strong>Recommended path.</strong> Expected when the current plug software exposes its certified Matter energy features</td><td>Normal control and reporting stay local; no IKEA cloud required</td><td>Needs a Thread border router. DIRIGERA is optional. Home Assistant OS with the official Matter Server app is the supported controller setup</td><td>Home Assistant, Matter Server, Companion app, local IPv6—the inside-the-house addressing Matter uses—and Thread must all be working</td></tr>
+                <tr><td>Apple Home first, then shared to Home Assistant</td><td>Official Matter multi-admin path supported by Home Assistant</td><td>Home Assistant can read the Matter features the plug exposes after sharing</td><td>Matter control is local; Apple account and home-hub services support Apple's remote and household features</td><td>This is Matter in Apple Home, not the older HomeKit accessory protocol. A HomePod mini is one concrete Thread border-router option</td><td>Apple Home and Home Assistant may display different energy fields</td></tr>
+                <tr><td>DIRIGERA route, if its Matter sharing or bridge flow exposes GRILLPLATS</td><td>GRILLPLATS officially supports DIRIGERA; Home Assistant officially supports Matter bridges</td><td>Possible, but a bridge can expose a smaller feature set. Verify watts and kWh before building automatic routines</td><td>The Matter side can be local; IKEA app, account, remote access, and firmware behavior are separate</td><td>DIRIGERA supplies the IKEA hub and Thread border-router roles. The available Home Assistant path depends on IKEA's current app and hub software</td><td>Adding DIRIGERA does not guarantee that every GRILLPLATS energy sensor appears</td></tr>
+                <tr><td>Google Home, Alexa, or SmartThings first, then Matter sharing</td><td>IKEA lists Amazon, Google, and Samsung compatibility; Matter supports multiple controllers</td><td>Can work after sharing, but each platform chooses which energy fields its app displays</td><td>In-home Matter control is local; voice, remote access, histories, and app services may use platform accounts and cloud services</td><td>Examples include Nest Hub (2nd gen), Nest WiFi Pro, SmartThings 2018 Hub, Aeotec Smart Home Hub, and compatible Amazon Echo models</td><td>Check the exact hub model for Thread and Matter-controller roles before buying it</td></tr>
+                <tr><td>IKEA app plus an unofficial DIRIGERA community integration</td><td>Not a Home Assistant core integration</td><td>Community reports show that metering can be absent even when switching works</td><td>Depends on the community integration and IKEA setup</td><td>Not the same as adding or sharing the plug through Home Assistant Matter</td><td>Support and exposed entities can change outside Home Assistant's official release process</td></tr>
+                <tr><td>Undocumented Zigbee setup through ZHA or Zigbee2MQTT, Home Assistant's two common Zigbee systems</td><td>CSA lists regional GRILLPLATS variants as Zigbee 3.0 certified, but IKEA's consumer setup docs do not publish this route; current Home Assistant support is partial</td><td><strong>Not recommended for energy:</strong> current reports show on/off but missing power measurements</td><td>Local through a Zigbee coordinator—the USB radio or hub running that device network</td><td>Uses Zigbee instead of the product's documented Matter-over-Thread setup</td><td>Certification does not guarantee a complete ZHA or Zigbee2MQTT device definition</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="direct-setup">Best Setup: Add GRILLPLATS Directly to Home Assistant</h2>
+
+          <h3 id="prepare">1. Prepare the Supported Matter Path</h3>
+          <p>Use current Home Assistant OS, the official Matter Server app, and the latest Home Assistant Companion app on your iPhone or Android phone. Home Assistant documents the Matter Server app on Home Assistant OS as its supported installation. A self-managed Matter Server container is an advanced, unsupported path, so reproduce a problem on the supported route before blaming the plug.</p>
+          <p>Confirm that a Thread border router is already working on the same reachable home network. Concrete choices include a Home Assistant Yellow or Connect ZBT-2 configured to provide Thread, IKEA DIRIGERA, Apple HomePod mini, Google Nest Hub (2nd gen), or Nest WiFi Pro. Owning one of these products is not enough by itself; its Thread role must be enabled and its local IPv6 path to Home Assistant must work.</p>
+
+          <h3 id="pair">2. Open Pairing and Scan the Unique Matter Code</h3>
+          <p>When first powered, GRILLPLATS opens a 15-minute pairing window. The IKEA manual says the plug's on/off button can reopen pairing; use the documented factory reset only if a normal pairing window is not enough. Keep the included manual or a private backup photo because its Matter setup code is unique to that plug.</p>
+          <p>With the phone close to the plug, open the Home Assistant app and go to <strong>Settings → Matter → Add device</strong>. Choose <strong>No, it's new</strong>, scan the QR code, and follow the prompts. Bluetooth is used for this nearby setup handoff; normal operation then moves to Thread.</p>
+
+          <h3 id="entities">3. Confirm the Energy Sensors Before Building Automatic Routines</h3>
+          <p>Open <strong>Settings → Devices &amp; services → Matter</strong>, select GRILLPLATS, and inspect its entities—the controls and sensors Home Assistant creates for a device. Exact labels can change, but the useful groups are:</p>
+          <ul>
+            <li><strong>Power in W:</strong> the appliance's draw at this moment.</li>
+            <li><strong>Energy in kWh:</strong> consumption accumulated over time.</li>
+            <li><strong>Voltage and current:</strong> useful diagnostics, not a substitute for a certified electrical test instrument.</li>
+            <li><strong>Switch:</strong> the relay that physically turns the outlet on or off.</li>
+          </ul>
+          <p>Test with a modest, known load such as a lamp. A switched-off lamp or a low-power charger may correctly report zero or too little to make the cumulative kWh value move quickly. Give the total-energy entity time to change before deciding it is broken.</p>
+
+          <h3 id="energy-dashboard">4. Add the Total to Home Assistant's Energy Dashboard</h3>
+          <p>If the accumulated-energy entity is available as an individual-device source, add it under <strong>Settings → Dashboards → Energy → Individual devices</strong>. Use the kWh total, not the live watt reading, for long-term consumption. Home Assistant records the history and can show the plug beside other appliance totals.</p>
+          <div class="callout">
+            <p><strong>Use GRILLPLATS to find patterns, not to settle a utility bill.</strong> IKEA promotes power tracking, but the product page does not make it a revenue-grade meter. Treat the data as household guidance unless the documentation for your exact regional model states a certified accuracy class.</p>
+          </div>
+
+          <h2 id="already-paired">If GRILLPLATS Is Already in IKEA, Apple, or Google Home</h2>
+          <p>Do not factory-reset first. Matter can put one device on several controller fabrics—the separate secure networks owned by Home Assistant, Apple Home, Google Home, and other platforms.</p>
+          <ol>
+            <li>Update the Home Assistant Companion app and make sure the Matter integration is installed.</li>
+            <li>In the controller that already owns GRILLPLATS, open its Matter sharing or “connect another service” flow.</li>
+            <li>In Home Assistant, open <strong>Settings → Matter → Add device</strong> and choose <strong>Yes, it's already in use</strong>.</li>
+            <li>Follow the handoff, then inspect the new Home Assistant Matter device for W and kWh entities.</li>
+          </ol>
+          <p>If the existing IKEA or bridge route offers no sharing option and still exposes only switching, decide whether losing and rebuilding that setup is acceptable before resetting. Direct Home Assistant Matter pairing is the clearest route when Home Assistant energy monitoring is the priority.</p>
+
+          <h2 id="only-switch">What to Check When You Still See Only an On/Off Switch</h2>
+          <ol>
+            <li><strong>Check the integration name.</strong> The device should appear under Home Assistant's <strong>Matter</strong> integration, not only under a custom DIRIGERA or partially supported Zigbee path.</li>
+            <li><strong>Update the full path.</strong> Install stable updates for Home Assistant, Matter Server, the Companion app, and the plug when a trustworthy controller offers its firmware.</li>
+            <li><strong>Look at all entities.</strong> On the device page, open the entity list and check for disabled or unavailable diagnostic sensors before re-pairing.</li>
+            <li><strong>Use a real test load.</strong> A lamp gives an immediate watt reading; cumulative energy needs time.</li>
+            <li><strong>Confirm Thread and local IPv6.</strong> If the plug is unavailable rather than merely missing sensors, solve the border-router and home-network path first.</li>
+            <li><strong>Download Matter diagnostics.</strong> Save this support report of the plug's exposed features and software versions before any reset.</li>
+          </ol>
+          <p>If direct Matter pairing itself fails, move the phone and plug near the active border router, keep Bluetooth on, and retry on a simple home network without guest-Wi-Fi isolation. As a last step, unplug the connected load and follow IKEA's documented reset: hold the on/off button for about 10 seconds until the red light stops blinking. The reset clears saved connections and data, so keep the QR code ready.</p>
+
+          <h2 id="dirigera">Do You Need DIRIGERA?</h2>
+          <p><strong>No—DIRIGERA is optional for direct Home Assistant control, but a Thread border router is required.</strong> DIRIGERA is required if you want to manage GRILLPLATS in the IKEA Home smart app. It can also bridge compatible IKEA devices to Home Assistant through Matter, although the features exposed by a bridge can be narrower.</p>
+          <p>Skip DIRIGERA when Home Assistant is already your main controller and you already have a reliable Thread border router. Home Assistant can commission GRILLPLATS directly, keep normal commands local, and share the plug onward to Apple Home or Google Home. Buying DIRIGERA does not automatically fix a weak Thread mesh or a blocked local IPv6 network.</p>
+
+          <h2 id="apple-google-alexa">Apple Home, Google Home, Alexa, and SmartThings</h2>
+          <p>IKEA lists GRILLPLATS as compatible with Amazon, Apple, Google, Homey, and Samsung systems. That statement covers ecosystem compatibility, not identical app screens. One platform may show a switch while another also presents watts, current, voltage, or accumulated energy.</p>
+          <p>For Apple users, this is a Matter accessory in Apple Home, not a classic HomeKit accessory. Home Assistant's HomeKit Device integration is therefore not the normal way to add it. Pair to Apple Home and share it to Home Assistant, or pair to Home Assistant first and use <strong>Share device</strong> to add Apple Home. The same multi-admin idea applies to other compatible Matter controllers, though account, voice, remote-access, and history features can still depend on each platform's cloud.</p>
+
+          <h2 id="local-cloud">What Works Locally, and What May Still Use the Cloud?</h2>
+          <p>Home Assistant's official Matter integration sends normal control and energy-reporting traffic inside the home. GRILLPLATS does not need IKEA cloud for Home Assistant to turn it on, read its Matter data, or run a local automation—an automatic routine. If the internet connection fails, those normal commands can keep working as long as the home network, Home Assistant, border router, and plug still have power.</p>
+          <p>Cloud services can still appear around that local core. The IKEA Home smart app is part of the DIRIGERA path. Apple, Google, Amazon, Samsung, or Homey accounts may provide remote access, household sharing, voice assistants, history, or firmware delivery. An internet outage can remove those extras even while local Home Assistant control continues.</p>
+
+          <h2 id="community-caveats">Community Caveats Worth Knowing</h2>
+          <ul>
+            <li><strong>Zigbee certification does not mean complete Home Assistant support:</strong> the CSA lists GRILLPLATS variants as Zigbee 3.0 certified, but IKEA's consumer page and manual document Matter-over-Thread setup. Current Zigbee2MQTT and ZHA discussions describe basic switching while metering is missing or unsupported.</li>
+            <li><strong>Update timing varies:</strong> some owners report frequent readings; others report updates mainly around switching or odd zero-load voltage and frequency values. Treat these as firmware and controller observations, not guaranteed specifications.</li>
+            <li><strong>Bridges can trim features:</strong> Home Assistant warns that a Matter bridge may not expose every capability of the device behind it. Confirm the entities you need before moving automations.</li>
+            <li><strong>Custom Matter servers add variables:</strong> Home Assistant supports the official Matter Server app on Home Assistant OS. Containers and unusual Bluetooth or IPv6 stacks require operator troubleshooting.</li>
+          </ul>
+
+          <h2 id="electrical-safety">Check the Regional Rating Before You Plug In an Appliance</h2>
+          <p>Do not copy a rating from another country's GRILLPLATS. The US article 706.247.40 manual lists 120 V, 15 A and 1800 W for what it calls a resistive load—a category that does not cover motors—but a much lower <strong>300 W maximum motor load</strong>. A refrigerator, pump, fan, or other motor is not covered by the 1800 W number. Check the label and manual supplied with your exact plug and the appliance's startup requirements.</p>
+          <ul>
+            <li>Use the plug indoors and dry; do not use a damaged unit.</li>
+            <li>Do not cover it, daisy-chain it with another smart plug or power strip, or exceed the printed load rating.</li>
+            <li>Do not use a smart relay as the only disconnect for medical, life-safety, heating, refrigeration, server, pump, or other critical equipment.</li>
+            <li>Disabling the switch entity in Home Assistant reduces accidental dashboard taps; it is not a hardware interlock and does not remove the physical button or relay.</li>
+          </ul>
+
+          <h2 id="avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not choose the current Zigbee route</strong> when power and energy reporting are the goal.</li>
+            <li><strong>Do not assume DIRIGERA is mandatory</strong> when a working compatible Thread border router already exists.</li>
+            <li><strong>Do not assume every platform exposes the same data</strong> just because the Matter logo is present.</li>
+            <li><strong>Do not factory-reset before checking the connection path</strong> and trying Matter multi-admin sharing.</li>
+            <li><strong>Do not treat a Home Assistant software switch as an electrical safety control.</strong></li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p>If Home Assistant is where you want energy history and automations, make its official Matter integration a direct controller for GRILLPLATS. Use one intentional Thread network, keep a powered border router near enough for a stable mesh, and confirm watts and kWh before creating appliance alerts.</p>
+          <p>Keep DIRIGERA only when its IKEA app, device-management, or remote-control role is useful to your household. Apple Home, Google Home, Alexa, or SmartThings can remain additional controllers through Matter sharing. Put each automation in one chosen platform so the same plug is not being switched by duplicate schedules.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-energy">Does IKEA GRILLPLATS show energy use in Home Assistant?</h3>
+          <p>Yes. GRILLPLATS supports Matter energy reporting, and Home Assistant can expose live power and accumulated energy when the plug is commissioned or shared through the official Matter integration. Exact entity names and update timing can vary with software and firmware.</p>
+
+          <h3 id="faq-dirigera">Does GRILLPLATS need IKEA DIRIGERA for Home Assistant?</h3>
+          <p>No. DIRIGERA is one compatible Thread border router and IKEA hub, but it is optional for direct Home Assistant Matter setup. GRILLPLATS does require a working Thread border router, such as a correctly configured Home Assistant OpenThread border router, HomePod mini, or Nest Hub (2nd gen).</p>
+
+          <h3 id="faq-apple">Can GRILLPLATS be added to Apple Home and Home Assistant?</h3>
+          <p>Yes. Add it to either Matter controller first, then use Matter multi-admin sharing to add the other. GRILLPLATS uses Matter in Apple Home rather than the older HomeKit accessory protocol, and each platform may present a different subset of its energy data.</p>
+
+          <h3 id="faq-cloud">Does GRILLPLATS need the cloud for Home Assistant control?</h3>
+          <p>No vendor cloud is required for normal Matter control and energy reporting inside Home Assistant. An IKEA, Apple, Google, Amazon, or Samsung account may still be used for that platform's app, remote access, voice features, setup, or firmware path.</p>
+
+          <h3 id="faq-zigbee">Should I pair GRILLPLATS to Home Assistant with Zigbee?</h3>
+          <p>Not if energy monitoring is the goal. The CSA lists GRILLPLATS variants as Zigbee 3.0 certified, but IKEA's consumer page and manual document Matter-over-Thread setup, and current ZHA and Zigbee2MQTT reports show basic on/off control with missing power measurements. Matter remains the safer recommendation for energy data.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/which-hub-ikea-matter-thread-2026/">Choose a hub for IKEA Matter-over-Thread devices</a></li>
+            <li><a href="/blog/home-assistant-thread-border-router-required/">Fix Home Assistant's Thread border-router-required error</a></li>
+            <li><a href="/blog/pair-matter-devices-without-vendor-app/">Pair a Matter device without its vendor app</a></li>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share one Matter device across several platforms</a></li>
+            <li><a href="/blog/best-smart-plugs-home-assistant-2026/">Compare current energy-monitoring smart plugs</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter setup, local control, supported installation, sharing, and bridge limits</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread networks, border routers, and local IPv6 troubleshooting</a></li>
+                <li><a href="https://www.home-assistant.io/docs/energy/individual-devices/" target="_blank" rel="noopener noreferrer">Home Assistant individual-device energy monitoring</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/tradfri/" target="_blank" rel="noopener noreferrer">Home Assistant IKEA gateway, DIRIGERA, and Matter guidance</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product documentation</h3>
+              <ul>
+                <li><a href="https://www.ikea.com/us/en/p/grillplats-plug-smart-70624740/" target="_blank" rel="noopener noreferrer">IKEA US GRILLPLATS article 706.247.40 product details, power tracking, Matter over Thread, and ecosystem compatibility</a></li>
+                <li><a href="https://www.ikea.com/us/en/manuals/grillplats-plug-smart__AA-2694229-1-100.pdf" target="_blank" rel="noopener noreferrer">IKEA US GRILLPLATS setup, reset, load limits, and safety manual</a></li>
+                <li><a href="https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/" target="_blank" rel="noopener noreferrer">IKEA Matter setup, DIRIGERA roles, and supported ecosystem guidance</a></li>
+                <li><a href="https://csa-iot.org/newsroom/matter-1-3-specification-released/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: Matter 1.3 energy reporting</a></li>
+                <li><a href="https://csa-iot.org/csa_product/grillplats-plug-11/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: GRILLPLATS Matter certification and energy-monitoring capability</a></li>
+                <li><a href="https://csa-iot.org/csa_product/grillplats-plug-2/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: GRILLPLATS E2491-NA and E2491-EU Zigbee 3.0 certification</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Platform documentation</h3>
+              <ul>
+                <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple Support: pair, share, and manage Matter accessories</a></li>
+                <li><a href="https://support.google.com/googlehome/answer/13127223?hl=en" target="_blank" rel="noopener noreferrer">Google Home: Matter setup, local control, Thread requirements, and multi-admin</a></li>
+                <li><a href="https://support.google.com/googlehome/answer/12391458" target="_blank" rel="noopener noreferrer">Google Home: current Matter and Thread hub models</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/matter-support.html" target="_blank" rel="noopener noreferrer">Amazon Alexa: local Matter control and compatible Echo roles</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings: Matter controllers, Thread, and multi-admin support</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1sp6f40/no_energy_tracking_entities_with_grillplats_smart/" target="_blank" rel="noopener noreferrer">r/homeassistant: missing GRILLPLATS energy entities and the Matter-path fix</a></li>
+                <li><a href="https://community.home-assistant.io/t/grillplats-plug-via-zha-possible-to-get-all-the-features/1013026" target="_blank" rel="noopener noreferrer">Home Assistant Community: GRILLPLATS feature questions through ZHA</a></li>
+                <li><a href="https://community.home-assistant.io/t/ikea-and-home-assistant-grillplats/1013787" target="_blank" rel="noopener noreferrer">Home Assistant Community: GRILLPLATS, DIRIGERA, and direct Matter choices</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://github.com/Koenkk/zigbee2mqtt/discussions/31464" target="_blank" rel="noopener noreferrer">Zigbee2MQTT discussion: partial GRILLPLATS Zigbee support and missing metering</a></li>
+                <li><a href="https://community.home-assistant.io/t/pairing-ikea-grillplats-plug-issues-ipv6/1003546" target="_blank" rel="noopener noreferrer">Home Assistant Community: GRILLPLATS Matter pairing and local IPv6 reports</a></li>
+                <li><a href="https://github.com/matter-js/matterjs-server/issues/827" target="_blank" rel="noopener noreferrer">matter.js-server issue: older Bluetooth-stack commissioning caveat for current IKEA Matter devices</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want one documented Matter and energy path?</h2>
+          <p>Tara plans the Home Assistant host, Thread border router, local network, device limits, energy entities, and homeowner handoff as one supportable system.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the plug, Thread mesh, and automations understandable</h2>
+          <div class="links">
+            <a href="/blog/which-hub-ikea-matter-thread-2026/">IKEA Matter hub choices</a>
+            <a href="/blog/home-assistant-thread-border-router-required/">Thread border router required</a>
+            <a href="/blog/pair-matter-devices-without-vendor-app/">Pair without a vendor app</a>
+            <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a>
+            <a href="/blog/best-smart-plugs-home-assistant-2026/">Energy-monitoring smart plugs</a>
+            <a href="/blog/does-home-assistant-matter-need-ipv6/">Matter and local IPv6</a>
+            <a href="/local-smart-home-hub/">Local smart-home hub</a>
+            <a href="/configurator/">Plan a local Tara system</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
