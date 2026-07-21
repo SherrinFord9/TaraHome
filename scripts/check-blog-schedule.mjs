@@ -35,6 +35,10 @@ function normalize(value) {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
+function containsTerm(value, term) {
+  return ` ${normalize(value)} `.includes(` ${normalize(term)} `);
+}
+
 const laneRules = {
   'apple-home': {
     label: 'Apple Home',
@@ -89,12 +93,21 @@ if (articleArg) {
 if (html && laneRules[lane]) {
   const title = extract(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
   const h1 = extract(html, /<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  const headline = normalize(`${title} ${h1}`);
   const rule = laneRules[lane];
 
   if (!title || !h1) errors.push('The article must have both a title and one visible H1.');
-  if (rule.terms.length && !rule.terms.some((term) => headline.includes(normalize(term)))) {
-    errors.push(`${rule.label} lane mismatch: the title/H1 must center on one of: ${rule.terms.join(', ')}.`);
+  if (rule.terms.length) {
+    const titleMatches = rule.terms.some((term) => containsTerm(title, term));
+    const h1Matches = rule.terms.some((term) => containsTerm(h1, term));
+    if (!titleMatches || !h1Matches) {
+      errors.push(`${rule.label} lane mismatch: both the title and H1 must center on one of: ${rule.terms.join(', ')}.`);
+    }
+  }
+
+  if (['apple-home', 'google-home', 'alexa-amazon', 'smartthings-samsung'].includes(lane)) {
+    if (/^home assistant\b/i.test(title) || /^home assistant\b/i.test(h1)) {
+      errors.push(`${rule.label} lane mismatch: the title and H1 must lead with that ecosystem, not Home Assistant.`);
+    }
   }
 
   const ikeaSpecific = /\b(ikea|dirigera|klippbok|myggbett|myggspray|timmerflotte|grillplats|alpstuga|kajplats|bilresa)\b/i.test(`${relativeArticle} ${title} ${h1}`);
