@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IKEA KLIPPBOK in Home Assistant: What Works and What Doesn’t</title>
+    <meta name="description" content="Use IKEA KLIPPBOK locally with Home Assistant: what hub you need, how to pair it, what works, and why to test one before buying more." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/ikea-klippbok-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/ikea-klippbok-home-assistant/" />
+    <meta property="og:title" content="IKEA KLIPPBOK in Home Assistant: What Works and What Doesn’t" />
+    <meta property="og:description" content="Pair KLIPPBOK locally through Matter over Thread, test its alarm, and add a separate warning when the sensor goes offline." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/ikea-klippbok-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IKEA KLIPPBOK in Home Assistant: What Works and What Doesn’t" />
+    <meta name="twitter:description" content="The practical KLIPPBOK setup: required Thread hardware, direct pairing, safe testing, firmware, and offline alerts." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/ikea-klippbok-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.5); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      h1, h2, h3, p { margin: 0; }
+      .article { max-width: 1180px; }
+      .hero { align-items: end; display: grid; gap: clamp(36px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); margin-left: auto; margin-right: auto; max-width: 1120px; padding-bottom: clamp(22px, 3vw, 34px); width: 100%; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); letter-spacing: 0; line-height: 1.04; max-width: 1100px; text-wrap: balance; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); margin-left: auto; margin-right: auto; max-width: 780px; min-width: 0; padding-top: clamp(34px, 4vw, 50px); width: 100%; }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.14; margin: clamp(48px, 5vw, 62px) 0 18px; max-width: 760px; text-wrap: balance; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.2; margin: 38px 0 14px; max-width: 760px; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1.06rem, 1.12vw, 1.16rem); line-height: 1.75; }
+      .article-body p { margin: 0 0 24px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 28px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 12px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 44px; max-width: 820px; overflow-wrap: break-word; padding: 24px 26px 22px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: 1.04rem; line-height: 1.58; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 32px 0; max-width: 780px; padding: 22px 24px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 32px; max-width: 920px; overflow-x: auto; }
+      table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      th, td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.96rem; line-height: 1.4; padding: 14px 16px; text-align: left; vertical-align: top; }
+      th { background: rgba(65, 168, 103, 0.1); }
+      tr:last-child td { border-bottom: 0; }
+      .block { border-top: 1px solid var(--line); padding: clamp(34px, 5vw, 64px) 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      .source-list, .article-cta, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: clamp(22px, 3vw, 36px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; max-width: 920px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.25; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; font-size: 1rem; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      @media (min-width: 900px) { .article-body .comparison-table { margin-left: 50%; max-width: none; transform: translateX(-50%); width: min(920px, calc(100vw - 64px)); } }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero > div, .article-cover { max-width: 100%; min-width: 0; } .hero { gap: 28px; max-width: 46rem; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } .source-list, .article-cta, .related { max-width: 46rem; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body { max-width: calc(100vw - 44px); padding-top: 30px; } .article-body .tldr { margin-bottom: 36px; max-width: 100%; padding: 20px 18px 18px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/ikea-klippbok-home-assistant/#blogposting",
+      "headline": "IKEA KLIPPBOK in Home Assistant: What Works and What Doesn’t",
+      "description": "Use IKEA KLIPPBOK locally with Home Assistant: what hub you need, how to pair it, what works, and why to test one before buying more.",
+      "image": "https://tarahome.ai/assets/generated/blog/ikea-klippbok-home-assistant/cover.png",
+      "datePublished": "2026-07-20",
+      "dateModified": "2026-07-20",
+      "author": { "@id": "https://tarahome.ai/#organization" },
+      "publisher": { "@id": "https://tarahome.ai/#organization" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/ikea-klippbok-home-assistant/" },
+      "citation": [
+        "https://www.ikea.com/us/en/p/klippbok-water-leak-sensor-smart-50617769/",
+        "https://www.ikea.com/us/en/manuals/klippbok-water-leak-sensor-smart__AA-2664572-1-100.pdf",
+        "https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/",
+        "https://www.ikea.com/us/en/customer-service/privacy-security/home-smart-policy/",
+        "https://csa-iot.org/csa_product/klippbok-water-leak-sensor-3/",
+        "https://on.dcl.csa-iot.org/dcl/model/versions/4476/32774/16777229",
+        "https://www.home-assistant.io/integrations/matter/",
+        "https://www.home-assistant.io/integrations/thread/",
+        "https://www.home-assistant.io/connect/zbt-2/",
+        "https://support.nabucasa.com/hc/en-us/articles/25742476767517-Switching-from-Zigbee-to-Thread-support",
+        "https://www.home-assistant.io/triggers/moisture.detected/",
+        "https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/",
+        "https://www.home-assistant.io/integrations/homekit/",
+        "https://works-with.home-assistant.io/certified-products/",
+        "https://support.apple.com/en-us/102135",
+        "https://developers.home.google.com/matter/supported-devices",
+        "https://developer.amazon.com/en-US/docs/alexa/smarthome/supported-matter-device-categories.html",
+        "https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration",
+        "https://developer.smartthings.com/docs/devices/capabilities/capabilities-reference",
+        "https://www.reddit.com/r/homeassistant/comments/1qyjuuk/ikea_klippbok_water_leak_sensor_matter_home/",
+        "https://www.reddit.com/r/homeassistant/comments/1r44wva/klippbok_leak_sensors/",
+        "https://www.reddit.com/r/homeassistant/comments/1tz87h8/what_are_your_experiance_with_the_newer_ikea/",
+        "https://community.home-assistant.io/t/cant-add-ikea-klippbok-to-homeassistant/977888",
+        "https://community.home-assistant.io/t/ikea-water-leak-sensor-firmware-update-unavailable/973285",
+        "https://github.com/home-assistant/core/issues/160196"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/ikea-klippbok-home-assistant/#breadcrumb",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+        { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "IKEA KLIPPBOK in Home Assistant", "item": "https://tarahome.ai/blog/ikea-klippbok-home-assistant/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/ikea-klippbok-home-assistant/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does IKEA KLIPPBOK work with Home Assistant?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. KLIPPBOK can pair directly with Home Assistant's official Matter integration and report wet or dry state locally. It needs a working Thread border router, and it is standard-based and community-tested rather than individually Works with Home Assistant certified." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does KLIPPBOK need IKEA DIRIGERA?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. DIRIGERA is optional for direct Home Assistant Matter setup. KLIPPBOK does need a Thread border router; DIRIGERA can provide that role, as can a dedicated Home Assistant Thread radio or a compatible border router from another ecosystem." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is KLIPPBOK Zigbee or Matter over Thread?",
+          "acceptedAnswer": { "@type": "Answer", "text": "KLIPPBOK is a Matter-over-Thread sensor, not a Zigbee sensor. A Home Assistant Connect ZBT-2 configured for Zigbee cannot also run Thread at the same time; use another radio or compatible border router for Thread." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does KLIPPBOK need the cloud for leak alerts?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No vendor cloud is required for ordinary wet and dry reporting or local Home Assistant automations. Internet access may still be needed to discover and download firmware, and Home Assistant remote notifications need whatever remote-access path the household uses." }
+        },
+        {
+          "@type": "Question",
+          "name": "How should I test KLIPPBOK after pairing?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Place it flat so both metal probes touch 1 to 2 millimeters of clean water. Confirm the built-in siren sounds, Home Assistant changes to wet, the leak alert arrives, and a separate offline alert works. Dry it fully after the test." }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>IKEA Matter &amp; leak safety</span><span>July 20, 2026</span><span>12 min read</span></p>
+            <h1>IKEA KLIPPBOK in Home Assistant: What Works and What Doesn’t</h1>
+            <p class="lede">KLIPPBOK can report a leak directly inside your home to Home Assistant without DIRIGERA. The important parts are using Thread rather than Zigbee, testing the real siren and wet sensor, and warning on an offline device separately.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/ikea-klippbok-home-assistant/cover.png" alt="IKEA KLIPPBOK water leak sensor on a warm laundry-room floor beside a washing machine" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Pair it through Home Assistant Matter:</strong> KLIPPBOK can report wet or dry inside your home without an IKEA cloud round trip, and DIRIGERA is optional.</li>
+              <li><strong>You still need a Thread border router:</strong> KLIPPBOK is Matter over Thread, not Zigbee. A Connect ZBT-2 already running Zigbee cannot also run Thread.</li>
+              <li><strong>Avoid buying several before a full test:</strong> owner reports on pairing and long-term availability are mixed, so start with one in the actual room.</li>
+              <li><strong>Main caveat:</strong> an offline sensor does not count as “wet.” Keep the audible alarm, add separate unavailable and low-battery warnings, and test both probes with water.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The Short Answer: Yes, With a Working Thread Network</h2>
+          <p><strong>IKEA KLIPPBOK works directly with Home Assistant through its official Matter integration—the built-in connection for Matter devices.</strong> Normal wet and dry reports can stay local, meaning they travel inside the home without an IKEA cloud round trip. Owners also report a battery reading. You do not need IKEA DIRIGERA or an IKEA account for ordinary Home Assistant leak reporting. You do need the Matter Server software—the supported Home Assistant OS app that manages Matter devices—and a <strong>Thread border router</strong>, the hub or radio that connects KLIPPBOK's low-power network to the rest of the home network.</p>
+          <p>A common setup mistake is treating KLIPPBOK as a Zigbee sensor. It is <strong>Matter over Thread</strong>. Matter is the shared smart-home language; Thread is the wireless network carrying it. If your Home Assistant Connect ZBT-2 is already dedicated to Zigbee, Home Assistant says that same adapter cannot run Thread at the same time. Keep it on Zigbee and add a second Thread radio or use another compatible Thread border router.</p>
+          <p>At the US price of $9.99 on July 20, 2026, KLIPPBOK is inexpensive enough to be tempting in bulk. Resist that first order. Home Assistant pairing works for many owners, but current community reports range from stable service to repeated unavailable states. Set up one, update it, place it where it will live, and test it for at least several days before buying more.</p>
+
+          <h2 id="what-works">What Home Assistant Can—and Cannot—Do</h2>
+          <ul>
+            <li><strong>Wet and dry state:</strong> Home Assistant can use KLIPPBOK's moisture entity—the reading on its device page that shows wet or dry—in alerts and automatic routines.</li>
+            <li><strong>Local operation:</strong> normal Matter reports stay inside the home; they do not need an IKEA cloud round trip.</li>
+            <li><strong>Built-in alarm:</strong> the sensor still sounds by itself when both bottom probes touch water, even without a smart-home system.</li>
+            <li><strong>Battery and software details:</strong> owners report a battery entity, and Home Assistant may show the sensor's built-in software, called firmware, plus an update entity when that path is available. An entity is simply a Home Assistant reading or control.</li>
+            <li><strong>No automatic shutoff:</strong> KLIPPBOK detects water. It does not close the main water supply unless you separately install and automate a compatible valve.</li>
+            <li><strong>No safe “offline means leak” shortcut:</strong> Home Assistant's official moisture trigger treats unknown or unavailable as neither wet nor dry. Offline monitoring needs its own alert.</li>
+          </ul>
+          <div class="callout">
+            <p><strong>KLIPPBOK is Matter-compatible, not individually Works with Home Assistant certified.</strong> Home Assistant officially supports the Matter standard, and KLIPPBOK is CSA Matter-certified and community-tested. It is not currently listed in the Works with Home Assistant product directory, so model-specific behavior can still change with firmware and controller releases.</p>
+          </div>
+
+          <h2 id="ecosystems">Official Support, Local Control, and Ecosystem Paths</h2>
+          <p>IKEA names Amazon, Apple, Google, Homey, and Samsung as compatible systems. That does not mean every app exposes a water-leak trigger in the same way. The table separates the published support from the practical Home Assistant path.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>First controller</th><th>Official support</th><th>Local or cloud</th><th>Matter or HomeKit path</th><th>Community and platform caveat</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Home Assistant OS with Matter Server; Home Assistant Yellow or Connect ZBT-2 dedicated to Thread</td><td>Home Assistant's Matter integration is official; KLIPPBOK has generic Matter support but no individual Works with Home Assistant badge</td><td>Wet and dry reports and local routines stay local. Internet can still be used for firmware downloads and remote notifications</td><td>Add KLIPPBOK directly in the Home Assistant Companion app. If Apple Home also needs the state, Home Assistant's HomeKit Bridge supports moisture sensors</td><td>Use the supported Matter Server app on Home Assistant OS. Mixed owner reports make a one-device trial sensible</td></tr>
+                <tr><td>IKEA DIRIGERA</td><td>IKEA's documented hub, app, Thread border router, and update path</td><td>IKEA says basic smart functions are designed to work without internet; hub and product updates use internet access</td><td>DIRIGERA is optional for direct Home Assistant setup. If it owns KLIPPBOK first, use a current Matter sharing path where offered</td><td>Do not assume adding the DIRIGERA bridge automatically exposes every native Matter child to Home Assistant; share KLIPPBOK separately if needed</td></tr>
+                <tr><td>Apple Home with HomePod mini, HomePod (2nd generation), or a compatible Apple TV</td><td>IKEA names Apple compatibility</td><td>Matter traffic is local; Apple account, remote access, and notifications are separate services</td><td>KLIPPBOK uses Matter over Thread, not the older HomeKit accessory protocol. Home Assistant-first plus HomeKit Bridge is the clearest route when Home Assistant runs the leak logic</td><td>Apple's published Matter device list does not explicitly include water-leak sensors. Test direct Apple presentation before depending on it</td></tr>
+                <tr><td>Google Home with Nest Hub (2nd gen) or Nest WiFi Pro</td><td>IKEA names Google compatibility</td><td>Matter transport can stay local; app, history, remote, and notification features may use a Google account and cloud services</td><td>Pair or share through Matter; there is no legacy HomeKit path</td><td>Google's official supported-device list does not include water-leak detectors. Do not assume a Google Home automation trigger will appear</td></tr>
+                <tr><td>Amazon Alexa with a compatible Thread-enabled Echo</td><td>Amazon's current Matter table lists water-leak detectors</td><td>Matter commands are local where supported; Alexa app, voice, and remote services use an Amazon account</td><td>Pair or share through Matter</td><td>Amazon's table does not map that device type to an Alexa capability interface, so test the exact routine and notification surface</td></tr>
+                <tr><td>SmartThings with a 2018 SmartThings Hub, Aeotec Smart Home Hub, or another compatible controller</td><td>SmartThings officially supports Matter, Thread, multi-admin, and a water-sensor capability</td><td>Setup uses the SmartThings app and account. Device-to-hub Matter traffic is local; remote access and app services may use the SmartThings cloud</td><td>Pair or share through Matter</td><td>Published platform capability does not guarantee the exact KLIPPBOK card or routine options; verify before making it the only alert path</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="prepare">Before Pairing: Check the Radio You Already Own</h2>
+          <p>Home Assistant needs one reachable Thread border router. A Home Assistant Yellow or a Connect ZBT-2 configured for Thread can provide one. So can DIRIGERA and compatible Apple, Google, Amazon, and SmartThings hubs. The border router does not have to be the first smart-home controller that owns KLIPPBOK.</p>
+          <p><strong>One radio cannot run the Zigbee and Thread networks at the same time.</strong> This applies to a Connect ZBT-2 and to Yellow's built-in radio. If either already runs your Zigbee lights and sensors, do not switch it casually. Use a second adapter dedicated to Thread, reuse another compatible border router, or plan a complete Zigbee migration first. Switching the existing radio can strand the Zigbee devices that depend on it.</p>
+          <p>Matter also needs working local IPv6 and mDNS—the addressing and discovery traffic inside your home. This does not mean your internet provider must offer IPv6. Guest-network isolation, aggressive multicast filtering, or a VLAN—a deliberately separated part of the home network—that blocks local discovery can break pairing even while normal Wi-Fi looks healthy.</p>
+
+          <h2 id="setup">How to Pair KLIPPBOK Directly With Home Assistant</h2>
+          <ol>
+            <li><strong>Update the supported path first.</strong> Install stable Home Assistant OS, Matter Server, and Companion app updates. Home Assistant's June 2026 Matter Server upgrade specifically improved reconnection and update behavior.</li>
+            <li><strong>Confirm Thread is ready.</strong> In Home Assistant, check the Thread integration and preferred network. Keep the phone, KLIPPBOK, and border router near one another for pairing.</li>
+            <li><strong>Install two new AAA batteries.</strong> They are sold separately. Save the Matter QR code and numeric setup code somewhere private before placing the sensor under an appliance.</li>
+            <li><strong>Open the pairing window.</strong> New KLIPPBOK units remain open for pairing for 15 minutes. Press the system button to reopen the window if needed.</li>
+            <li><strong>Add it from the phone app.</strong> In Home Assistant, go to <strong>Settings → Matter → Add device</strong>, choose a new device, and scan the QR code. Bluetooth helps the phone pass the Thread credentials during setup.</li>
+            <li><strong>Name it by location.</strong> “Laundry KLIPPBOK” is more useful in an urgent alert than “Water sensor.” Check that the moisture entity shows dry and note the battery and software information that Home Assistant exposes.</li>
+            <li><strong>Wet-test it before walking away.</strong> Confirm the physical siren, Home Assistant state change, notification, and offline warning. The next section gives the safe test.</li>
+          </ol>
+          <p>If the sensor already belongs to Apple Home, Google Home, Alexa, SmartThings, or DIRIGERA, do not reset it first. Open that controller's Matter sharing flow, then choose <strong>Yes, it's already in use</strong> when Home Assistant asks. Matter multi-admin lets more than one controller operate the same accessory without moving ordinary traffic through one platform's cloud.</p>
+
+          <h2 id="wet-test">Run a Real Wet Test, Not Just a Dashboard Check</h2>
+          <p>IKEA's manual says water must touch <strong>both metal probes on the bottom</strong>. Place KLIPPBOK flat on a smooth indoor surface and use a shallow tray with roughly 1–2 millimeters of clean water. Lower both probes into the water; do not submerge the casing, because the sensor itself is not waterproof.</p>
+          <ol>
+            <li>Confirm the built-in siren starts.</li>
+            <li>Confirm Home Assistant changes from dry to wet.</li>
+            <li>Confirm the intended phones receive a clear location-based warning.</li>
+            <li>Lift the sensor, dry both probes, and confirm Home Assistant returns to dry.</li>
+            <li>In a planned test, remove one battery and note how long Home Assistant takes to mark the sensor unavailable. Confirm the separate warning, restore the battery, and choose a delay that matches the observed behavior. The unavailable timeout varies by system.</li>
+          </ol>
+          <p>The alarm sounds continuously for five minutes, then at intervals until the probes are dry or the batteries are exhausted. The system button only mutes it for about one minute. Leave that local alarm enabled: it is the warning that can still work when Home Assistant, Wi-Fi, remote access, or a phone notification is unavailable.</p>
+
+          <h2 id="alerts">Create Two Alerts, Not One</h2>
+          <p>The first alert is the obvious one: when the moisture entity changes to wet, notify the household immediately and identify the exact room. If a compatible automatic shutoff valve is installed, treat closure as a separate tested action with a manual override. A leak sensor beside a washer cannot detect water somewhere else in the house.</p>
+          <p>The second alert watches health rather than water. Notify someone when KLIPPBOK remains unavailable for a sensible period, such as 15 to 30 minutes, and when its battery becomes low. A short delay avoids noise during restarts. Do not combine unavailable with wet: Home Assistant explicitly says an unknown or unavailable moisture sensor does not count as detecting moisture.</p>
+          <div class="callout">
+            <p><strong>A green “dry” card is not enough.</strong> Review when the sensor last reported, test it monthly, replace weak batteries promptly, and repeat the wet test after a firmware, Thread, or network change.</p>
+          </div>
+
+          <h2 id="firmware">Firmware 1.0.13 and the Apple Border-Router Caveat</h2>
+          <p>The Connectivity Standards Alliance's production ledger listed KLIPPBOK software 1.0.13 when this guide was checked on July 20, 2026. Its record does not include release notes, so it is fair to identify the version but not to promise that it fixes a particular problem. Community members have linked newer firmware with better results, while others still report dropouts. Treat those as owner observations.</p>
+          <p>Home Assistant can find Matter firmware through the Alliance's distributed compliance ledger and may present an update entity. The Home Assistant Matter documentation has one important limit: it cannot currently deliver a Thread-device update through Apple border routers. Update through Apple when offered. For a Home Assistant update on a mixed network, first add a supported non-Apple/Home Assistant border router to the same Thread network, then power down the Apple border routers, wait at least 30 minutes, and retry. Turn them back on afterward. Do not erase a working Thread network merely because an update is not visible.</p>
+          <p>DIRIGERA remains the most clearly documented IKEA firmware and support route. IKEA's written smart-product support promise is tied to devices connected to DIRIGERA or the older TRÅDFRI gateway. That is a real reason to choose DIRIGERA, but it is separate from whether direct local wet/dry reporting works in Home Assistant.</p>
+
+          <h2 id="unavailable">If KLIPPBOK Pairs but Later Goes Unavailable</h2>
+          <p>Start with the least disruptive checks. A factory reset destroys the current Matter relationship and should be near the end, not the beginning.</p>
+          <ol>
+            <li><strong>Check the physical alarm and batteries.</strong> If the local wet test fails, solve the sensor or battery problem before the network.</li>
+            <li><strong>Update Home Assistant, Matter Server, and the phone app.</strong> Record KLIPPBOK's reported software version before changing anything.</li>
+            <li><strong>Confirm the correct protocol.</strong> KLIPPBOK should be under Matter, not searched for in ZHA or Zigbee2MQTT.</li>
+            <li><strong>Inspect the Thread network.</strong> Make sure the intended network is preferred and the border router is powered, reachable, and close enough. Home Assistant's Matter network map can help reveal a weak route.</li>
+            <li><strong>Check local IPv6 and mDNS.</strong> Look for guest isolation, VLAN rules, multicast filtering, or a router feature that blocks traffic between Home Assistant and the border router.</li>
+            <li><strong>Power-cycle only the sensor.</strong> Remove both batteries briefly, reinstall them, and give the battery-powered sensor a few minutes to reconnect.</li>
+            <li><strong>Reset last.</strong> IKEA documents a factory reset by holding the system button for 10 seconds. Keep the QR code ready and rebuild the alerts after pairing.</li>
+          </ol>
+          <p>Current reports are mixed rather than proof of one universal KLIPPBOK defect. Some owners describe repeated offline states after a day or two. Others run several reliably, but saw multiple units drop when a Thread router was unplugged. That pattern is why testing in the final location matters more than a successful five-minute bench pairing.</p>
+
+          <h2 id="dirigera-sharing">If You Pair to DIRIGERA First</h2>
+          <p>DIRIGERA combines the IKEA app, an IKEA-supported update route, a Thread border router, and support for older IKEA devices. It is reasonable when those jobs matter. It is not required simply to get KLIPPBOK's leak state into Home Assistant.</p>
+          <p>A Home Assistant Core issue documents a current source of confusion: adding DIRIGERA as a Matter bridge does not necessarily bring along IKEA devices that are themselves native Matter accessories. Treat the bridge and KLIPPBOK as separate pairing questions. If the sensor is missing, use DIRIGERA's current Matter sharing option for KLIPPBOK itself when available, or pair KLIPPBOK directly to Home Assistant and keep DIRIGERA for its other roles.</p>
+
+          <h2 id="avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not search for KLIPPBOK as Zigbee.</strong> Use Home Assistant's Matter flow and a working Thread border router.</li>
+            <li><strong>Do not convert a working Zigbee ZBT-2 casually.</strong> One adapter is dedicated to one protocol; add another Thread path instead.</li>
+            <li><strong>Do not disable the audible alarm with unsupported cluster commands.</strong> A community workaround has also been reported to interfere with state reporting, and battery changes can undo it.</li>
+            <li><strong>Do not treat a phone alert as the only protection.</strong> Keep the siren, health alert, and regular physical test.</li>
+            <li><strong>Do not put the casing in standing water.</strong> Only the two probes need to touch the shallow test water.</li>
+            <li><strong>Do not reset the whole Thread network as a first fix.</strong> That can disrupt every device on it while leaving the real IPv6, mesh, or firmware problem untouched.</li>
+          </ul>
+
+          <h2 id="alternatives">When Another Sensor Is the Safer Choice</h2>
+          <p>Choose a model with individual Works with Home Assistant certification when formal testing matters more than KLIPPBOK's low price. The current certified list includes <strong>Heiman L1-M</strong> for Matter over Thread in Europe, <strong>ThirdReality 3RWS18BZ</strong> for Zigbee worldwide, and <strong>frient FLSZB-110</strong> for Zigbee in Europe and the US. The Zigbee models are especially sensible when the home already has a dependable Zigbee mesh and no Thread border router.</p>
+          <p>Availability and regional models change. Confirm the exact product number, radio, audible alarm, battery reporting, and certification for the market where it will be installed. A different brand does not remove the need for wet testing and unavailable alerts.</p>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p>KLIPPBOK is a reasonable low-cost trial for a home that already has a healthy Thread network. Pair one directly to Home Assistant Matter, leave the physical alarm enabled, confirm software and battery reporting, and run the real 1–2 millimeter wet test in the final room. Add an unavailable warning before calling the setup finished.</p>
+          <p>Use Home Assistant as the main leak-automation owner when that is where household alerts and any shutoff logic live. Share the resulting moisture entity to Apple Home with HomeKit Bridge if needed, or use Matter multi-admin only after confirming the second platform actually exposes the sensor. Put each action in one chosen platform to avoid duplicate notifications or conflicting routines.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-works">Does IKEA KLIPPBOK work with Home Assistant?</h3>
+          <p>Yes. KLIPPBOK can pair directly with Home Assistant's official Matter integration and report wet or dry state locally. It needs a working Thread border router, and it is standard-based and community-tested rather than individually Works with Home Assistant certified.</p>
+
+          <h3 id="faq-dirigera">Does KLIPPBOK need IKEA DIRIGERA?</h3>
+          <p>No. DIRIGERA is optional for direct Home Assistant Matter setup. KLIPPBOK does need a Thread border router; DIRIGERA can provide that role, as can a dedicated Home Assistant Thread radio or a compatible border router from another ecosystem.</p>
+
+          <h3 id="faq-thread">Is KLIPPBOK Zigbee or Matter over Thread?</h3>
+          <p>KLIPPBOK is a Matter-over-Thread sensor, not a Zigbee sensor. A Home Assistant Connect ZBT-2 configured for Zigbee cannot also run Thread at the same time; use another radio or compatible border router for Thread.</p>
+
+          <h3 id="faq-cloud">Does KLIPPBOK need the cloud for leak alerts?</h3>
+          <p>No vendor cloud is required for ordinary wet and dry reporting or local Home Assistant automations. Internet access may still be needed to discover and download firmware, and Home Assistant remote notifications need whatever remote-access path the household uses.</p>
+
+          <h3 id="faq-test">How should I test KLIPPBOK after pairing?</h3>
+          <p>Place it flat so both metal probes touch 1–2 millimeters of clean water. Confirm the built-in siren sounds, Home Assistant changes to wet, the leak alert arrives, and a separate offline alert works. Dry it fully after the test.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">Use IKEA Matter-over-Thread devices without DIRIGERA</a></li>
+            <li><a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Decide whether IKEA DIRIGERA earns a place in the system</a></li>
+            <li><a href="/blog/update-matter-device-firmware-home-assistant/">Update Matter device firmware safely</a></li>
+            <li><a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share one Matter device across smart-home platforms</a></li>
+            <li><a href="/blog/best-water-leak-sensors-home-assistant-2026/">Compare current Home Assistant water-leak sensors</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant Matter setup, local control, Thread requirements, sharing, and firmware limits</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/thread/" target="_blank" rel="noopener noreferrer">Home Assistant Thread networks and border routers</a></li>
+                <li><a href="https://www.home-assistant.io/connect/zbt-2/" target="_blank" rel="noopener noreferrer">Home Assistant Connect ZBT-2 protocol and dedicated-radio guidance</a></li>
+                <li><a href="https://support.nabucasa.com/hc/en-us/articles/25742476767517-Switching-from-Zigbee-to-Thread-support" target="_blank" rel="noopener noreferrer">Nabu Casa: switching Home Assistant Yellow's built-in radio between Zigbee and Thread</a></li>
+                <li><a href="https://www.home-assistant.io/triggers/moisture.detected/" target="_blank" rel="noopener noreferrer">Home Assistant moisture trigger behavior for wet, unknown, and unavailable states</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/23/the-matter-upgrade-youve-been-waiting-for/" target="_blank" rel="noopener noreferrer">Home Assistant Matter Server 9.0 reliability, reconnection, map, and update improvements</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant HomeKit Bridge support for moisture sensors</a></li>
+                <li><a href="https://works-with.home-assistant.io/certified-products/" target="_blank" rel="noopener noreferrer">Works with Home Assistant certified product directory</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product documentation</h3>
+              <ul>
+                <li><a href="https://www.ikea.com/us/en/p/klippbok-water-leak-sensor-smart-50617769/" target="_blank" rel="noopener noreferrer">IKEA US KLIPPBOK article 506.177.69 price, batteries, Matter-over-Thread requirements, and compatible platforms</a></li>
+                <li><a href="https://www.ikea.com/us/en/manuals/klippbok-water-leak-sensor-smart__AA-2664572-1-100.pdf" target="_blank" rel="noopener noreferrer">IKEA KLIPPBOK pairing, reset, alarm, placement, and wet-test manual</a></li>
+                <li><a href="https://www.ikea.com/us/en/product-guides/ikea-home-smart-system/ikea-matter-compatible-system-pub7ab815e0/" target="_blank" rel="noopener noreferrer">IKEA Matter setup and DIRIGERA guidance</a></li>
+                <li><a href="https://www.ikea.com/us/en/customer-service/privacy-security/home-smart-policy/" target="_blank" rel="noopener noreferrer">IKEA smart-home local-operation and support policy</a></li>
+                <li><a href="https://csa-iot.org/csa_product/klippbok-water-leak-sensor-3/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance KLIPPBOK Matter 1.3 certification</a></li>
+                <li><a href="https://on.dcl.csa-iot.org/dcl/model/versions/4476/32774/16777229" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance production firmware record for KLIPPBOK 1.0.13</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Platform documentation</h3>
+              <ul>
+                <li><a href="https://support.apple.com/en-us/102135" target="_blank" rel="noopener noreferrer">Apple Support: Matter accessories, sharing, border routers, and published device types</a></li>
+                <li><a href="https://developers.home.google.com/matter/supported-devices" target="_blank" rel="noopener noreferrer">Google Home published Matter device support</a></li>
+                <li><a href="https://developer.amazon.com/en-US/docs/alexa/smarthome/supported-matter-device-categories.html" target="_blank" rel="noopener noreferrer">Amazon Alexa supported Matter categories and water-leak detector clusters</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/11219700390804-SmartThings-x-Matter-Integration" target="_blank" rel="noopener noreferrer">SmartThings Matter, Thread, controller, and multi-admin guidance</a></li>
+                <li><a href="https://developer.smartthings.com/docs/devices/capabilities/capabilities-reference" target="_blank" rel="noopener noreferrer">SmartThings official water-sensor capability reference</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1usin4y/cant_connect_to_ikea_klippbok_water_sensor/" target="_blank" rel="noopener noreferrer">r/homeassistant: KLIPPBOK, Zigbee confusion, and one-radio-per-protocol guidance</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1qyjuuk/ikea_klippbok_water_leak_sensor_matter_home/" target="_blank" rel="noopener noreferrer">r/homeassistant: direct KLIPPBOK pairing, moisture, battery, and alarm observations</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1r44wva/klippbok_leak_sensors/" target="_blank" rel="noopener noreferrer">r/homeassistant: mixed KLIPPBOK availability and share-first reports</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1tz87h8/what_are_your_experiance_with_the_newer_ikea/" target="_blank" rel="noopener noreferrer">r/homeassistant: current IKEA Matter mesh and KLIPPBOK owner experiences</a></li>
+                <li><a href="https://community.home-assistant.io/t/cant-add-ikea-klippbok-to-homeassistant/977888" target="_blank" rel="noopener noreferrer">Home Assistant Community: KLIPPBOK pairing, local IPv6, mDNS, and Thread checks</a></li>
+                <li><a href="https://community.home-assistant.io/t/ikea-water-leak-sensor-firmware-update-unavailable/973285" target="_blank" rel="noopener noreferrer">Home Assistant Community: KLIPPBOK firmware visibility and update observations</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/160196" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: DIRIGERA bridging and native Matter-child expectations</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want leak alerts that also report when the sensor disappears?</h2>
+          <p>Tara plans the Home Assistant host, Thread coverage, sensor placement, local alerts, device-health warnings, and homeowner testing as one understandable system.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the leak sensor, Thread mesh, and alerts dependable</h2>
+          <div class="links">
+            <a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">IKEA Matter without DIRIGERA</a>
+            <a href="/blog/do-you-need-ikea-dirigera-home-assistant/">Do you need DIRIGERA?</a>
+            <a href="/blog/update-matter-device-firmware-home-assistant/">Update Matter firmware</a>
+            <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin</a>
+            <a href="/blog/best-water-leak-sensors-home-assistant-2026/">Leak-sensor comparison</a>
+            <a href="/blog/does-home-assistant-matter-need-ipv6/">Matter and local IPv6</a>
+            <a href="/local-smart-home-hub/">Local smart-home hub</a>
+            <a href="/configurator/">Plan a local Tara system</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
