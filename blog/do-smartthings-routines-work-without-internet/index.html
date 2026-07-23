@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Do SmartThings Routines Work Without Internet? | Tara</title>
+    <meta name="description" content="Some SmartThings routines work without internet, but only when a hub runs every device and action locally. See what fails and how to test safely." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/do-smartthings-routines-work-without-internet/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/do-smartthings-routines-work-without-internet/" />
+    <meta property="og:title" content="Do SmartThings Routines Work Without Internet?" />
+    <meta property="og:description" content="Some SmartThings routines work without internet, but only when a hub runs every device and action locally. See what fails and how to test safely." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/do-smartthings-routines-work-without-internet/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Do SmartThings Routines Work Without Internet?" />
+    <meta name="twitter:description" content="Some SmartThings routines work without internet, but only when a hub runs every device and action locally. See what fails and how to test safely." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/do-smartthings-routines-work-without-internet/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; overflow-x: hidden; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(36px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); margin-left: auto; margin-right: auto; max-width: 1120px; padding-bottom: clamp(22px, 3vw, 34px); width: 100%; }
+      .hero > div, .article-cover { min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.14; margin: clamp(48px, 5vw, 62px) 0 18px; max-width: 760px; text-wrap: balance; }
+      h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.2; margin: 38px 0 14px; max-width: 760px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article { max-width: 1180px; }
+      .article > article, .article-body { min-width: 0; }
+      .article-body { border-top: 1px solid var(--line); margin-left: auto; margin-right: auto; max-width: 780px; padding-top: clamp(34px, 4vw, 50px); width: 100%; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1.06rem, 1.12vw, 1.16rem); line-height: 1.75; }
+      .article-body p { margin: 0 0 24px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 28px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 12px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 44px; max-width: 820px; overflow-wrap: break-word; padding: 24px 26px 22px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: 1.04rem; line-height: 1.58; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 32px 0; max-width: 780px; padding: 22px 24px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 28px 0 32px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 900px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.45; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(34px, 4.5vw, 56px) 0; }
+      .source-list, .article-cta, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: clamp(22px, 3vw, 36px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid h3 { margin-top: 0; }
+      .source-grid ul { display: grid; gap: 12px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.45; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article-cta .cta { margin-top: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 24px; }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (min-width: 900px) { .article-body .comparison-table { margin-left: 50%; max-width: none; transform: translateX(-50%); width: min(1040px, calc(100vw - 64px)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero { gap: 28px; max-width: 46rem; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } .source-list, .article-cta, .related { max-width: 46rem; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body { max-width: calc(100vw - 44px); padding-top: 30px; } .article-body .tldr { margin-bottom: 36px; max-width: 100%; padding: 20px 18px 18px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/do-smartthings-routines-work-without-internet/#blogposting",
+          "headline": "Do SmartThings Routines Work Without Internet?",
+          "description": "Some SmartThings routines work without internet, but only when a hub runs every device and action locally. See what fails and how to test safely.",
+          "image": "https://tarahome.ai/assets/generated/blog/do-smartthings-routines-work-without-internet/cover.png",
+          "datePublished": "2026-07-23",
+          "dateModified": "2026-07-23",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/do-smartthings-routines-work-without-internet/" },
+          "citation": [
+            "https://developer.smartthings.com/docs/automations/rules",
+            "https://developer.smartthings.com/docs/getting-started/architecture-of-smartthings",
+            "https://developer.smartthings.com/docs/devices/hub-connected/get-started/",
+            "https://support.smartthings.com/hc/en-us/articles/360051931952-Routines-in-SmartThings",
+            "https://support.smartthings.com/hc/en-us/articles/360052390151-SmartThings-Enabled-Hubs",
+            "https://news.samsung.com/us/samsung-smartthings-hubs-now-work-together-team/",
+            "https://community.smartthings.com/t/looking-to-improve-local-execution-for-routines-using-wifi-devices/296474",
+            "https://community.smartthings.com/t/local-vs-cloud-execution/277959",
+            "https://www.reddit.com/r/SmartThings/comments/1p1f61s/matter_devices_dont_work_during_internet_failure/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "SmartThings routines without internet", "item": "https://tarahome.ai/blog/do-smartthings-routines-work-without-internet/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do SmartThings routines work without internet?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Some automatic SmartThings routines keep working when the internet is down. A compatible SmartThings hub must run the routine locally, and every device feature, condition, and action in that routine must support local execution." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I need a SmartThings hub for routines to work offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. SmartThings local execution happens on a compatible hub. That may be a standalone SmartThings-compatible hub or an enabled hub built into an eligible Samsung product." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I control SmartThings from the app without internet?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Do not count on SmartThings app control during an internet or SmartThings cloud outage. Samsung's architecture routes SmartThings client access through its cloud even when a hub-local routine can continue on its own." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will Samsung appliances work in an offline SmartThings routine?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually not. SmartThings documents Samsung appliances as direct-connected Wi-Fi devices that connect to the SmartThings Cloud. Treat an appliance action as online unless the exact product and routine are explicitly shown as local." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Matter guarantee a SmartThings routine works offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. A supported Matter device can use a local hub connection, but the whole routine runs locally only when every device feature and service in it also supports local execution." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav aria-label="Primary">
+      <a href="/" style="text-decoration:none"><strong>Tara</strong></a>
+      <div>
+        <a href="/smart-home-kit/">Kit</a>
+        <a href="/configurator/">Configurator</a>
+        <a href="/blog/">Guides</a>
+        <a href="/tara-assistant/">Tara Assistant</a>
+      </div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>SmartThings &amp; Local Routines</span><span>July 23, 2026</span><span>10 min read</span></p>
+            <h1>Do SmartThings Routines Work Without Internet?</h1>
+            <p class="lede">Some do. A routine keeps running only when a compatible SmartThings hub can execute every trigger and action locally. The app, cloud-linked devices, and Samsung appliance controls can still stop during an outage.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/do-smartthings-routines-work-without-internet/cover.png" alt="Homeowner entering a warmly lit home while a local SmartThings routine continues during an internet outage" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Yes, some automatic routines work without internet</strong>&mdash;but only when a compatible SmartThings hub runs the routine and every device feature, condition, and action supports local execution.</li>
+              <li><strong>Use devices paired directly to the hub for the best chance of staying local.</strong> The product appearing in the SmartThings app does not, by itself, mean the hub controls it inside the home.</li>
+              <li><strong>Avoid mixing the must-work action with cloud extras.</strong> Put a local light action in one routine and its online notification in another so the extra does not pull the core routine into the cloud.</li>
+              <li><strong>Do not expect the app or Samsung Wi-Fi appliances to work offline.</strong> SmartThings app access and direct-connected Samsung appliances use Samsung's cloud path.</li>
+              <li><strong>Main caveat:</strong> test a low-risk routine by disconnecting the internet while leaving the router and hub powered. Never make a lock, alarm, garage door, HVAC system, or safety device your first test.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Which SmartThings Routines Keep Working?</h2>
+          <p><strong>A SmartThings routine can work without internet when it is an automatic routine running locally on a compatible hub and every part of it is local-capable.</strong> SmartThings calls the automation behind an automatic app routine a Rule. Its developer documentation says a Rule runs on the hub only when all device features and services in that Rule support local execution. One cloud-only condition or action moves the whole Rule to the SmartThings Cloud.</p>
+          <p>In the house, the best candidate is simple: a button, contact sensor, or motion sensor connected to the same SmartThings hub turns on a hub-connected light. Matter is a cross-brand smart-home standard; Thread is a low-power network often used by Matter; Zigbee and Z-Wave are low-power hub radios; and LAN means the device communicates on the home's local network. Supported devices on those paths can use SmartThings Edge&mdash;software on the hub that translates device messages without sending each command to the internet. A compatible hub may be a standalone model or an enabled hub built into an eligible Samsung TV, monitor, refrigerator, or soundbar.</p>
+          <p>The limit is just as important. The SmartThings app, remote access, cloud-connected partner devices, and many Samsung Wi-Fi appliance actions still use online services. A <a href="/home-automation-kit/">well-planned local routine setup</a> separates the action the room needs from the online convenience added around it.</p>
+
+          <h2 id="local-rule">The Rule SmartThings Uses for Local Execution</h2>
+          <p>SmartThings' official rule is all-or-nothing at the routine level: <strong>every device feature and service involved must support local execution.</strong> “Local” means the hub makes the decision and sends the command inside the home. “Cloud” means the decision or command passes through an internet service.</p>
+          <p>This is why adding one harmless-looking extra can change outage behavior. A hub-connected door sensor and light may be local, while a partner account, a phone-location condition, or an online notification uses a cloud service. Put those jobs into two routines that listen to the same sensor: one for the must-work local action and one for the online message.</p>
+          <div class="callout">
+            <p><strong>A hub does not make every Wi-Fi device local.</strong> SmartThings distinguishes hub-connected devices from direct- and cloud-connected devices. A product can appear in the same app and still send its commands through Samsung's or another manufacturer's servers.</p>
+          </div>
+
+          <h2 id="paths">SmartThings Paths: What Works During an Outage?</h2>
+          <div class="comparison-table" role="region" aria-label="SmartThings local and cloud routine paths" tabindex="0">
+            <table>
+              <thead>
+                <tr><th>Path in the home</th><th>Official support</th><th>Local control</th><th>Cloud dependency</th><th>Matter path</th><th>Main caveat</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Hub-connected devices in one automatic routine</strong></td><td>SmartThings documents Matter, Zigbee, Z-Wave, and LAN devices using Edge on a compatible hub</td><td>Yes, when every feature, condition, and action is local-capable</td><td>Setup, app access, remote control, updates, and any online service still need the cloud</td><td>Supported Matter-over-Wi-Fi and Matter-over-Thread devices connect through a SmartThings hub</td><td>Matter support alone does not make the entire routine local</td></tr>
+                <tr><td><strong>Samsung Wi-Fi appliance or other direct-connected device</strong></td><td>SmartThings documents Samsung appliances as connecting directly to its cloud over Wi-Fi</td><td>Do not assume it</td><td>The appliance, internet connection, Samsung account, and SmartThings service are part of the path</td><td>A separate Matter path exists only when the exact product documents one</td><td>Adding the appliance action can make the whole routine cloud-run</td></tr>
+                <tr><td><strong>Partner cloud-connected device</strong></td><td>SmartThings supports linked services that connect its cloud to the manufacturer's cloud</td><td>No for the cloud-to-cloud route</td><td>Both online services and the home internet connection must be available</td><td>Matter is a different connection; do not assume the linked-service tile is Matter</td><td>Two tiles for one product can represent two very different control paths</td></tr>
+                <tr><td><strong>SmartThings app or remote command</strong></td><td>Samsung's architecture describes SmartThings clients reaching devices and automations through the SmartThings Cloud</td><td>Not a reliable offline control panel</td><td>Requires the app, account, SmartThings service, and internet path</td><td>The device may still have local Matter control from a hub even while the app is unavailable</td><td>A local routine can continue while the app shows the hub or devices as offline</td></tr>
+                <tr><td><strong>Eligible SmartThings Hub Group</strong><br />Several compatible hubs managed together</td><td>Samsung supports groups that extend Zigbee and Thread across eligible hubs and transfer devices and routines during hub failover</td><td>Samsung says routines can work faster without internet when devices are on the same Hub Group</td><td>Hub management, notifications, cloud backup, and app access remain online services</td><td>Hub Groups can extend the SmartThings Thread path across eligible hubs</td><td>Eligibility varies, and Z-Wave needs a Z-Wave-capable primary hub</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="test">How to Test a SmartThings Routine Safely</h2>
+          <ol>
+            <li><strong>Choose a low-risk routine.</strong> Start with a motion sensor turning on one lamp. Do not begin with a lock, alarm, garage door, thermostat, medical device, major appliance, or anything that protects people or property.</li>
+            <li><strong>Confirm the hub path.</strong> Check that the trigger and controlled device are connected through the same compatible SmartThings hub or an eligible Hub Group. A device merely visible in the app may still be cloud-connected.</li>
+            <li><strong>Remove online extras from the test.</strong> Copy the routine if needed. Keep only the local sensor condition and local device action. Put notifications, phone location, partner services, and appliance actions in a separate routine.</li>
+            <li><strong>Disconnect only the internet.</strong> Leave the Wi-Fi router, Ethernet switch, SmartThings hub, sensors, and controlled device powered. Disconnect the router's internet cable&mdash;usually labeled WAN&mdash;or power down the modem; do not turn off the local network.</li>
+            <li><strong>Trigger the routine physically.</strong> Press the button, open the sensor, or walk past the motion sensor. Test more than once, restore internet, and write down what worked. The app may be unavailable during the test even when the local routine succeeds.</li>
+          </ol>
+          <p>If the routine fails, restore internet before editing. Confirm that both devices still work normally, then remove one condition or action at a time. Do not factory-reset working devices just because the app looks offline during an outage.</p>
+
+          <h2 id="cloud-causes">What Commonly Pulls a Routine Into the Cloud?</h2>
+          <ul>
+            <li><strong>A Samsung appliance action.</strong> SmartThings lists Samsung appliances among direct-connected devices that reach its cloud over Wi-Fi.</li>
+            <li><strong>A linked manufacturer account.</strong> A cloud-connected device talks from the SmartThings service to another company's service.</li>
+            <li><strong>A phone or online service condition.</strong> Location, weather, voice, messages, and similar services need information outside the hub. Treat them as online unless SmartThings explicitly identifies the exact routine as local.</li>
+            <li><strong>Devices spread across unsupported hub paths.</strong> Eligible Hub Groups can keep supported Zigbee and Thread devices together, but unrelated hubs do not automatically become one local automation engine.</li>
+            <li><strong>No compatible hub.</strong> The SmartThings Cloud can run routines for app-only and cloud-connected homes, but there is no local hub to take over when the internet disappears.</li>
+          </ul>
+
+          <h2 id="matter">Does Matter Make a SmartThings Routine Offline?</h2>
+          <p><strong>Matter helps, but it is not a guarantee.</strong> Matter is a cross-brand smart-home standard. SmartThings treats supported Matter-over-Wi-Fi and Matter-over-Thread devices as hub-connected devices, so their supported controls can use Edge on the hub. Matter over Thread also needs a Thread border router to carry traffic between the low-power Thread network and the home's regular network; an eligible SmartThings hub can provide that role.</p>
+          <p>The routine still follows the same all-local rule. A Matter light triggered by a local Zigbee sensor may continue during an outage. Add a cloud-connected appliance, online notification, or unsupported feature to that same routine and SmartThings can run the Rule in the cloud instead. Test the completed routine, not the Matter badge on the box.</p>
+
+          <h2 id="samsung-appliances">What About Samsung Appliances and TVs?</h2>
+          <p>Do not confuse a Samsung product that <em>contains</em> a SmartThings hub with a Samsung product <em>controlled through</em> SmartThings. Eligible TVs, monitors, Family Hub refrigerators, and soundbars can include a hub for nearby Matter, Zigbee, or Thread devices, depending on the exact model and any required dongle. Their own streaming, appliance, account, and remote-control features can still use Samsung's cloud.</p>
+          <p>For a washer, dryer, oven, refrigerator, or TV routine, assume internet is required until the exact model documentation and an outage test prove otherwise. Never use an automation to bypass a manufacturer's safety interlock, and never make remote appliance control the only way a household can stop or operate equipment.</p>
+
+          <h2 id="recommendation">Tara's Practical Recommendation</h2>
+          <p>Build a small local core first: physical sensor or button, compatible SmartThings hub, and hub-connected light. Keep remote app control, notifications, energy reports, voice services, and appliance actions as conveniences around that core. When the local action matters, give it its own routine.</p>
+          <p>Then perform a planned internet-outage test while everyone is home and manual controls are available. Label the routines that passed, retest after replacing a hub or changing a device connection, and keep ordinary wall switches, locks, appliance controls, and safety systems usable without an app.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-routines">Do SmartThings routines work without internet?</h3>
+          <p>Some automatic SmartThings routines do. A compatible SmartThings hub must run the routine locally, and every device feature, condition, and action in it must support local execution.</p>
+
+          <h3 id="faq-hub">Do I need a SmartThings hub for routines to work offline?</h3>
+          <p>Yes. SmartThings local execution happens on a compatible hub. That may be a standalone SmartThings-compatible hub or an enabled hub built into an eligible Samsung product.</p>
+
+          <h3 id="faq-app">Can I control SmartThings from the app without internet?</h3>
+          <p>Do not count on it. Samsung's architecture routes SmartThings client access through its cloud. A local routine can continue on the hub while app control and remote status are unavailable.</p>
+
+          <h3 id="faq-appliance">Will Samsung appliances work in an offline SmartThings routine?</h3>
+          <p>Usually not. SmartThings documents Samsung appliances as direct-connected Wi-Fi devices that connect to the SmartThings Cloud. Treat an appliance action as online unless the exact product and completed routine are explicitly shown as local.</p>
+
+          <h3 id="faq-matter">Does Matter guarantee a SmartThings routine works offline?</h3>
+          <p>No. A supported Matter device can use a local hub connection, but the whole routine runs locally only when every device feature and service in it also supports local execution.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/guides/what-local-smart-home-hub-does/">See what a local smart-home hub does during an outage</a></li>
+            <li><a href="/blog/home-automation-without-cloud/">Plan a smart home that does not depend on cloud control</a></li>
+            <li><a href="/blog/where-should-smart-home-automations-live/">Decide where each smart-home automation should live</a></li>
+            <li><a href="/guides/matter-thread-zigbee-zwave-homeowner-guide/">Understand Matter, Thread, Zigbee, and Z-Wave in plain English</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://developer.smartthings.com/docs/automations/rules" target="_blank" rel="noopener noreferrer">SmartThings: when automatic Routines run as local Rules or in the cloud</a></li>
+                <li><a href="https://developer.smartthings.com/docs/getting-started/architecture-of-smartthings" target="_blank" rel="noopener noreferrer">SmartThings: cloud, hub, device connection, account, and app architecture</a></li>
+                <li><a href="https://developer.smartthings.com/docs/devices/hub-connected/get-started/" target="_blank" rel="noopener noreferrer">SmartThings: hub-connected Matter, Zigbee, Z-Wave, LAN, and Edge paths</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/360051931952-Routines-in-SmartThings" target="_blank" rel="noopener noreferrer">SmartThings Support: automatic and manually run Routines in the app</a></li>
+                <li><a href="https://support.smartthings.com/hc/en-us/articles/360052390151-SmartThings-Enabled-Hubs" target="_blank" rel="noopener noreferrer">SmartThings Support: enabled hubs and local Routine transfer</a></li>
+                <li><a href="https://news.samsung.com/us/samsung-smartthings-hubs-now-work-together-team/" target="_blank" rel="noopener noreferrer">Samsung: Hub Groups, offline routines, backup, and Z-Wave primary-hub caveat</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://community.smartthings.com/t/looking-to-improve-local-execution-for-routines-using-wifi-devices/296474" target="_blank" rel="noopener noreferrer">SmartThings Community: why adding a hub does not make cloud-connected Wi-Fi devices local</a></li>
+                <li><a href="https://community.smartthings.com/t/local-vs-cloud-execution/277959" target="_blank" rel="noopener noreferrer">SmartThings Community: homeowner examples of one online action changing routine execution</a></li>
+                <li><a href="https://www.reddit.com/r/SmartThings/comments/1p1f61s/matter_devices_dont_work_during_internet_failure/" target="_blank" rel="noopener noreferrer">r/SmartThings: a 2025 outage report showing why the finished routine still needs a real test</a></li>
+                <li><a href="https://www.reddit.com/r/SmartThings/comments/1ivbp3t/why_no_local_app_access/" target="_blank" rel="noopener noreferrer">r/SmartThings: the practical difference between local hub routines and app access</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want the local and cloud paths labeled before installation?</h2>
+          <p>Use Tara's configurator to map each room, routine, hub, manual fallback, and internet-dependent feature before choosing hardware.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the routines your household relies on understandable</h2>
+          <div class="links">
+            <a href="/home-automation-kit/">Local routine planning</a>
+            <a href="/guides/what-local-smart-home-hub-does/">What a local hub does</a>
+            <a href="/blog/home-automation-without-cloud/">Home automation without cloud</a>
+            <a href="/blog/where-should-smart-home-automations-live/">Where automations should live</a>
+            <a href="/local-smart-home-hub/">Local hub overview</a>
+            <a href="/no-subscription-smart-home/">No-subscription basics</a>
+            <a href="/smart-home-kit/">Whole-home kit</a>
+            <a href="/configurator/">Plan a Tara system</a>
+          </div>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
