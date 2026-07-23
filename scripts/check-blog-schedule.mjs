@@ -40,37 +40,9 @@ function containsTerm(value, term) {
 }
 
 const laneRules = {
-  'apple-home': {
-    label: 'Apple Home',
-    terms: ['apple home', 'homekit', 'siri', 'homepod', 'apple tv', 'eve', 'nanoleaf'],
-  },
-  'google-home': {
-    label: 'Google Home',
-    terms: ['google home', 'google nest', 'nest hub', 'nest wifi', 'google tv', 'gemini', 'android'],
-  },
-  'alexa-amazon': {
-    label: 'Alexa and Amazon smart home',
-    terms: ['alexa', 'amazon echo', 'echo hub', 'echo show', 'echo dot', 'eero', 'ring'],
-  },
-  'smartthings-samsung': {
-    label: 'SmartThings and Samsung',
-    terms: ['smartthings', 'samsung', 'aeotec'],
-  },
-  'matter-local-devices': {
-    label: 'local smart-home standards and devices',
-    terms: [
-      'matter', 'thread', 'zigbee', 'z wave', 'no cloud', 'local smart home', 'ikea',
-      'dirigera', 'aqara', 'eve', 'nanoleaf', 'philips hue', 'shelly', 'switchbot',
-      'tapo', 'kasa', 'reolink', 'unifi',
-    ],
-  },
-  'new-home-buyer-saturday': {
-    label: 'Saturday new-home buyer planning',
-    terms: ['new home', 'new house', 'new homeowner', 'home buyer', 'homebuyer', 'first home', 'move in', 'moving into', 'buying a home', 'building a home', 'building a smart home', 'just bought a home', 'just bought a house', 'before closing'],
-  },
-  'new-home-buyer-sunday': {
-    label: 'Sunday new-home buyer decisions',
-    terms: ['new home', 'new house', 'new homeowner', 'home buyer', 'homebuyer', 'first home', 'move in', 'moving into', 'buying a home', 'building a home', 'building a smart home', 'just bought a home', 'just bought a house', 'before closing'],
+  'home-assistant-demand': {
+    label: 'Home Assistant demand-led',
+    terms: ['home assistant', 'homeassistant'],
   },
 };
 
@@ -107,12 +79,6 @@ if (html && laneRules[lane]) {
     const h1Matches = rule.terms.some((term) => containsTerm(h1, term));
     if (!titleMatches || !h1Matches) {
       errors.push(`${rule.label} lane mismatch: both the title and H1 must center on one of: ${rule.terms.join(', ')}.`);
-    }
-  }
-
-  if (['apple-home', 'google-home', 'alexa-amazon', 'smartthings-samsung', 'new-home-buyer-saturday', 'new-home-buyer-sunday'].includes(lane)) {
-    if (/^home assistant\b/i.test(title) || /^home assistant\b/i.test(h1)) {
-      errors.push(`${rule.label} lane mismatch: the title and H1 must lead with the required lane, not Home Assistant.`);
     }
   }
 

@@ -1,54 +1,63 @@
 {
-  "version": 1,
+  "version": 2,
   "timezone": "America/Los_Angeles",
   "publishing": {
     "newArticlesPerDay": 1,
     "primaryRun": "06:00",
     "retryRun": "18:00",
-    "retryOnlyWhenDailyArticleIsMissing": true
+    "retryOnlyWhenDailyArticleIsMissing": true,
+    "skipWhenNoStrongDistinctTopicExists": true
   },
-  "weeklyRotation": {
-    "monday": {
-      "lane": "apple-home",
-      "focus": "Apple Home, HomeKit, Siri, HomePod, Apple TV, and Apple-home accessory decisions"
-    },
-    "tuesday": {
-      "lane": "google-home",
-      "focus": "Google Home, Nest, Gemini for Home, Google TV, Android commissioning, and Google-home accessory decisions"
-    },
-    "wednesday": {
-      "lane": "alexa-amazon",
-      "focus": "Alexa, Echo, eero, Ring, Amazon smart-home routines, and Works with Alexa device decisions"
-    },
-    "thursday": {
-      "lane": "smartthings-samsung",
-      "focus": "SmartThings, Samsung appliances and TVs, Aeotec hubs, and SmartThings routine decisions"
-    },
-    "friday": {
-      "lane": "matter-local-devices",
-      "focus": "Matter, Thread, Zigbee, Z-Wave, no-cloud operation, and cross-ecosystem device decisions"
-    },
-    "saturday": {
-      "lane": "new-home-buyer-saturday",
-      "focus": "How a homebuyer should start planning a smart home before closing, during move-in, or while building"
-    },
-    "sunday": {
-      "lane": "new-home-buyer-sunday",
-      "focus": "A materially different practical buying, budgeting, wiring, room-planning, handoff, or first-30-days smart-home decision for a new homeowner"
-    }
+  "dailyStrategy": {
+    "lane": "home-assistant-demand",
+    "appliesEveryDay": true,
+    "focus": "A specific Home Assistant setup, troubleshooting, compatibility, migration, automation, or buying question supported by current search and community demand",
+    "researchWindowDays": 45,
+    "minimumIndependentCommunitySignals": 2,
+    "requireGoogleResultsReview": true,
+    "requireCurrentOfficialSources": true,
+    "requireTopicBrief": true,
+    "minimumSelectionScore": 8
+  },
+  "keywordPlacement": {
+    "requiredPhrase": "Home Assistant",
+    "requiredIn": [
+      "primary query",
+      "HTML title",
+      "H1",
+      "opening answer",
+      "meta description"
+    ],
+    "naturalLanguageOnly": true,
+    "metaKeywordsTag": false
+  },
+  "intentPriorities": [
+    "exact troubleshooting symptom or error",
+    "setup or migration task",
+    "device compatibility or local-control decision",
+    "current product comparison or buying decision",
+    "automation, dashboard, presence, camera, energy, or voice problem"
+  ],
+  "selectionScoring": {
+    "communityDemand": "0-3",
+    "queryClarity": "0-2",
+    "answerability": "0-2",
+    "siteFit": "0-2",
+    "freshness": "0-2",
+    "resultGap": "0-2",
+    "cannibalizationRisk": "subtract 0-3",
+    "minimumTotal": 8
   },
   "guardrails": {
     "newPageRequired": true,
     "distinctPrimaryQueryRequired": true,
-    "ecosystemFirstTitleRequiredOnWeekdays": true,
-    "newHomeJourneyTitleRequiredOnWeekends": true,
+    "homeAssistantFirstTopicRequired": true,
+    "twoIndependentCommunitySignalsRequired": true,
+    "singleViralThreadIsInsufficient": true,
+    "searchResultGapMustBeExplained": true,
     "ikeaSpecificMaximumInRollingSevenDays": 1,
-    "homeAssistantIsNotTheDefaultTopic": true,
+    "avoidNearDuplicateMatterAndThreadPermutations": true,
     "homepageAndProtectedCommercialMetadataMustNotChange": true
   },
-  "editorialTargets": {
-    "buyerSetupCompatibilityComparisonOrDecisionArticlesPerWeekMinimum": 3,
-    "technicalTroubleshootingArticlesPerWeekMaximum": 4,
-    "commercialPath": "Link naturally to the most relevant Tara kit page and include one restrained configurator CTA."
-  }
+  "commercialPath": "Link naturally to the most relevant Tara kit page and include one restrained configurator CTA."
 }
