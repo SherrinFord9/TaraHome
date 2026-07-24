@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Z-Wave JS Server Version Incompatible: Fix</title>
+    <meta name="description" content="Fix the Home Assistant Z-Wave JS Server version incompatible error after 2026.7 by updating the right server without resetting or re-pairing devices." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-z-wave-js-server-version-incompatible/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-z-wave-js-server-version-incompatible/" />
+    <meta property="og:title" content="Home Assistant Z-Wave JS Server Version Incompatible: Fix" />
+    <meta property="og:description" content="Fix the Home Assistant Z-Wave JS Server version incompatible error after 2026.7 by updating the right server without resetting or re-pairing devices." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-z-wave-js-server-version-incompatible/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Z-Wave JS Server Version Incompatible: Fix" />
+    <meta name="twitter:description" content="Fix the Home Assistant Z-Wave JS Server version incompatible error after 2026.7 by updating the right server without resetting or re-pairing devices." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-z-wave-js-server-version-incompatible/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(36px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); margin-left: auto; margin-right: auto; max-width: 1120px; padding-bottom: clamp(22px, 3vw, 34px); width: 100%; }
+      .hero > div, .article-cover { min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.14; margin: clamp(48px, 5vw, 62px) 0 18px; max-width: 760px; text-wrap: balance; }
+      h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.2; margin: 38px 0 14px; max-width: 760px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article { max-width: 1180px; }
+      .article > article, .article-body { min-width: 0; }
+      .article-body { border-top: 1px solid var(--line); margin-left: auto; margin-right: auto; max-width: 780px; padding-top: clamp(34px, 4vw, 50px); width: 100%; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1.06rem, 1.12vw, 1.16rem); line-height: 1.75; }
+      .article-body p { margin: 0 0 24px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 28px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 12px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 44px; max-width: 820px; overflow-wrap: break-word; padding: 24px 26px 22px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: 1.04rem; line-height: 1.58; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 32px 0; max-width: 780px; padding: 22px 24px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 28px 0 32px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.45; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(34px, 4.5vw, 56px) 0; }
+      .source-list, .article-cta, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: clamp(22px, 3vw, 36px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid h3 { margin-top: 0; }
+      .source-grid ul { display: grid; gap: 12px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.45; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article-cta .cta { margin-top: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 24px; }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (min-width: 900px) { .article-body .comparison-table { margin-left: 50%; max-width: none; transform: translateX(-50%); width: min(920px, calc(100vw - 64px)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero { gap: 28px; max-width: 46rem; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } .source-list, .article-cta, .related { max-width: 46rem; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body { max-width: calc(100vw - 44px); padding-top: 30px; } .article-body .tldr { margin-bottom: 36px; max-width: 100%; padding: 20px 18px 18px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-z-wave-js-server-version-incompatible/#blogposting",
+          "headline": "Home Assistant Z-Wave JS Server Version Incompatible: Fix",
+          "description": "Fix the Home Assistant Z-Wave JS Server version incompatible error after 2026.7 by updating the right server without resetting or re-pairing devices.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-z-wave-js-server-version-incompatible/cover.png",
+          "datePublished": "2026-07-24",
+          "dateModified": "2026-07-24",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-z-wave-js-server-version-incompatible/" },
+          "citation": [
+            "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+            "https://www.home-assistant.io/integrations/zwave_js/",
+            "https://www.home-assistant.io/apps/",
+            "https://github.com/home-assistant/core/pull/173309",
+            "https://github.com/home-assistant/addons/blob/master/zwave_js/CHANGELOG.md",
+            "https://github.com/zwave-js/zwave-js-ui/releases/tag/v11.19.1",
+            "https://github.com/zwave-js/zwave-js-ui/releases/tag/v11.22.0",
+            "https://github.com/zwave-js/zwave-js-server/releases/tag/3.9.0",
+            "https://github.com/zwave-js/zwave-js-server/releases/tag/3.10.0",
+            "https://zwave-js.github.io/zwave-js-ui/#/getting-started/docker",
+            "https://community.home-assistant.io/t/z-wave-broken-after-update-to-ha-2026-6-0/1012844/19",
+            "https://community.home-assistant.io/t/2026-7-automations-that-speak-your-language/1015764/53",
+            "https://github.com/home-assistant/core/issues/121365"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Home Assistant Z-Wave JS Server Version Incompatible", "item": "https://tarahome.ai/blog/home-assistant-z-wave-js-server-version-incompatible/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Which Z-Wave JS version does Home Assistant 2026.7 require?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant 2026.7 requires the official Z-Wave JS app 1.4.0 or newer, Z-Wave JS UI Docker 11.19.1 or newer, or a self-run zwave-js-server 3.9.0 or newer using schema 49. Install the latest stable version offered by the existing installation." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is there no Z-Wave JS update button in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant can update its managed Z-Wave JS app, but it cannot update a Z-Wave JS UI container or self-run server on another computer. Update an external server with the Docker, package, or service manager that originally installed it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Did the incompatible-server error erase my Z-Wave network?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The message describes a software protocol mismatch between Home Assistant and the Z-Wave JS server. It does not mean devices were unpaired. Do not exclude devices, reset the adapter, change security keys, or rebuild the mesh." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why did restarting Z-Wave JS not fix the version error?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A restart launches the same installed version. Docker users need to pull and redeploy a compatible image; self-run users need to update the actual package or service, then restart it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Home Assistant need MQTT or a cloud service for Z-Wave JS?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant connects to the Z-Wave JS server over a local WebSocket, and normal Z-Wave control is local. Internet access may be needed to download an update. MQTT in Z-Wave JS UI is optional and separate from Home Assistant's WebSocket connection." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav aria-label="Primary">
+      <a href="/" style="text-decoration:none"><strong>Tara</strong></a>
+      <div>
+        <a href="/smart-home-kit/">Kit</a>
+        <a href="/configurator/">Configurator</a>
+        <a href="/blog/">Guides</a>
+        <a href="/tara-assistant/">Tara Assistant</a>
+      </div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Z-Wave troubleshooting</span><span>July 24, 2026</span><span>10 min read</span></p>
+            <h1>Home Assistant Z-Wave JS Server Version Incompatible: Fix</h1>
+            <p class="lede">If Home Assistant reports “Z-Wave JS Server version incompatible” after the 2026.7 update, update the server Home Assistant actually connects to—not your Z-Wave devices. Restart that server and let the integration reconnect. Do not reset the adapter, delete the integration, or re-pair devices.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-z-wave-js-server-version-incompatible/cover.png" alt="Homeowner updating a local mini PC beside a cabled USB smart-home radio" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Update the server Home Assistant uses:</strong> install the latest stable release offered by your existing setup. For Home Assistant 2026.7, the minimum is Z-Wave JS app 1.4.0, Z-Wave JS UI Docker 11.19.1, or <code>zwave-js-server</code> 3.9.0.</li>
+              <li><strong>Look in the right place:</strong> Home Assistant can update its own app, but an external container or server must be updated on the computer where it runs.</li>
+              <li><strong>Avoid a much bigger repair:</strong> do not exclude devices, factory-reset the adapter, delete the integration, replace security keys, or rebuild the Z-Wave network for this error.</li>
+              <li><strong>Main caveat:</strong> when updating Docker or a self-run server, keep the same data folder, USB-radio connection, server address, and saved security keys. Later Home Assistant releases may require newer versions than those listed here.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Fix the Home Assistant Z-Wave JS Version Mismatch in Three Steps</h2>
+          <p><strong>This error is a software mismatch, not a failed Z-Wave radio or an erased network.</strong> Z-Wave is the local wireless network used by many switches, sensors, and locks. Home Assistant connects to a small server program that sits between Home Assistant and the Z-Wave adapter—the USB stick or network radio that talks to those devices. Home Assistant 2026.7 expects that server to speak API schema 49. An older server can still know every paired device and still be rejected because the two programs no longer speak the same version of the connection language.</p>
+          <ol>
+            <li><strong>Identify the server Home Assistant is using.</strong> Open <strong>Settings → Z-Wave → Network information</strong> and note the Server URL. If that screen cannot load, use the version in the error and check whether Z-Wave JS appears under <strong>Settings → Apps</strong> or runs on another computer.</li>
+            <li><strong>Update that server in place.</strong> Install the latest stable version from its existing update channel. It must be at least Z-Wave JS app 1.4.0, Z-Wave JS UI Docker 11.19.1, or <code>zwave-js-server</code> 3.9.0 for Home Assistant 2026.7.</li>
+            <li><strong>Restart the updated server, then reconnect Home Assistant.</strong> Wait for the server to finish starting. If the integration does not reconnect on its own, reload it once and confirm it still points to the same intended server address.</li>
+          </ol>
+          <div class="callout">
+            <p><strong>Do not remove the integration to make the warning disappear.</strong> Deleting the integration, excluding devices, or resetting the adapter does not install a newer server. It only adds recovery work to a version problem.</p>
+          </div>
+
+          <h2 id="what-error-means">What “Server Version Incompatible” Actually Means</h2>
+          <p>A Home Assistant Z-Wave setup has several layers. The <strong>Z-Wave integration</strong> creates devices and entities in Home Assistant. A separate <strong>Z-Wave JS server</strong> bridges that integration to the <strong>driver</strong>, which controls the adapter and talks to the devices. Home Assistant reaches the server through a local <strong>WebSocket address</strong>, usually on port 3000.</p>
+          <p>The version numbers shown in Z-Wave JS UI can therefore look unrelated. Its UI version, driver version, and server version are different pieces. Updating only Home Assistant Core or seeing a recent driver number does not prove the server layer is recent enough.</p>
+          <p>For the July 2026 release, Home Assistant's official release notes set these minimums:</p>
+          <div class="comparison-table" role="region" aria-label="Z-Wave JS minimum versions for Home Assistant 2026.7" tabindex="0">
+            <table>
+              <thead>
+                <tr><th>Your installation</th><th>What to update</th><th>Minimum for Home Assistant 2026.7</th><th>Where the update happens</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Home Assistant OS with the official Z-Wave JS app</td><td>Z-Wave JS app</td><td>1.4.0</td><td>Home Assistant's Apps area</td></tr>
+                <tr><td>Z-Wave JS UI running in Docker</td><td>Z-Wave JS UI container image</td><td>11.19.1</td><td>The Docker host, Compose stack, or container manager</td></tr>
+                <tr><td>Manually installed or custom server</td><td><code>zwave-js-server</code></td><td>3.9.0, schema 49</td><td>The external host's package or service manager</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>As of July 24, 2026, newer stable releases are available: <a href="https://github.com/home-assistant/addons/blob/master/zwave_js/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Z-Wave JS app 1.5.0</a>, <a href="https://github.com/zwave-js/zwave-js-ui/releases/tag/v11.22.0" target="_blank" rel="noopener noreferrer">Z-Wave JS UI 11.22.0</a>, and <a href="https://github.com/zwave-js/zwave-js-server/releases/tag/3.10.0" target="_blank" rel="noopener noreferrer">server 3.10.0</a>. Install the latest stable version offered by the update path you already use. The table gives the compatibility floor that clears Home Assistant 2026.7's schema check; it is not a request to install three different programs.</p>
+
+          <h2 id="find-server">First Find Which Z-Wave Server Home Assistant Uses</h2>
+          <p>Open <strong>Settings → Z-Wave → Network information</strong> and record the <strong>Server version</strong> and <strong>Server URL</strong>. If the network information cannot load while the handshake is failing, use the version in the error message and inspect the app or external host you originally configured. The URL is the best clue:</p>
+          <ul>
+            <li><code>ws://core-zwave-js:3000</code> points to the official Home Assistant Z-Wave JS app.</li>
+            <li>An IP address, another hostname, or a separate machine on port 3000 usually points to Z-Wave JS UI or a self-run server.</li>
+            <li>If the Z-Wave JS UI dashboard still controls devices while Home Assistant shows the version error, the radio network is alive; Home Assistant is rejecting the older server interface.</li>
+          </ul>
+          <p>Also check <strong>Settings → Apps</strong>. If the official Z-Wave JS app is installed and your integration is configured to use it, that is the component to update. If your adapter is attached to a Raspberry Pi, NAS, or Docker host somewhere else, update the server there. Do not install a second server just because the first one has no Home Assistant update button.</p>
+
+          <h2 id="official-app">Path 1: Update the Official Home Assistant Z-Wave JS App</h2>
+          <p>Open <strong>Settings → Apps → Z-Wave JS</strong> and install the offered stable update. Confirm the displayed app version is at least 1.4.0; Home Assistant's current stable channel may offer a newer version. Once the update finishes, let the app start and wait for its log to show that the driver is ready.</p>
+          <p>Return to <strong>Settings → Z-Wave → Network information</strong>. The integration should reconnect by itself. If it remains in retry mode after the app is ready, reload the integration once. Confirm the running server is at least 3.9.0 and still uses the expected URL.</p>
+          <p>If the managed app page offers no update, check <strong>Settings → System → Updates</strong> and <strong>Settings → System → Repairs</strong>. Record the Home Assistant, operating system, and Z-Wave JS app versions before asking for help. Installing Z-Wave JS UI alongside the official app can create two services competing for one adapter. Do not uninstall the official app or choose an option that deletes its data merely to perform an update.</p>
+
+          <h2 id="docker">Path 2: Update a Z-Wave JS UI Docker Container</h2>
+          <p>A Docker-based Z-Wave JS UI server is not updated by Home Assistant. Use the same Docker Compose file, stack, Portainer project, or container manager that created it. Update the image to the latest stable Z-Wave JS UI release—at least 11.19.1 for Home Assistant 2026.7—then pull and redeploy the container. Merely downloading a new image or restarting the old container leaves the old software running.</p>
+          <p>Before redeploying, record the existing settings that make this server yours:</p>
+          <ul>
+            <li>the persistent <strong>store/data volume</strong>—the folder that keeps the server's settings—normally mounted at <code>/usr/src/app/store</code> inside the container;</li>
+            <li>the adapter mapping, preferably its stable <code>/dev/serial/by-id/…</code> path;</li>
+            <li>the network security keys, serial settings, and region;</li>
+            <li>the WebSocket port, hostname, and network address Home Assistant already uses.</li>
+          </ul>
+          <div class="callout">
+            <p><strong>Keep the volume.</strong> Do not use <code>docker compose down -v</code>, and do not replace the existing store mount with a new empty volume. The <code>-v</code> option removes named volumes and can discard the settings and metadata you are trying to preserve.</p>
+          </div>
+          <p>Redeploy with the same mappings, wait for Z-Wave JS UI to show the network, and confirm <strong>WS Server</strong>—the switch that lets Home Assistant connect—remains enabled under its Home Assistant settings. Then let Home Assistant reconnect. If Z-Wave JS UI has your devices but Home Assistant still reports the old server version, Home Assistant may still be pointed at an older container or another host.</p>
+
+          <h2 id="self-run">Path 3: Update a Self-Run Z-Wave JS Server</h2>
+          <p>If the server was installed with NPM, systemd, a custom container, or another package manager, Home Assistant cannot update it. Update the same installation that supplies <code>zwave-js-server</code> to the latest stable release—at least version 3.9.0 for Home Assistant 2026.7—keep the same adapter path, storage, keys, and service account, then restart that service.</p>
+          <p>There is no single safe command for every self-managed installation. A global NPM install, a local project, a Snap package, and a service launched from a fixed directory can each update differently. Confirm the package source can provide a compatible release and that the running service uses the package you changed. If the package channel is stuck on an old version, do not repeatedly reinstall over the working data. Plan a documented migration to the official app or Docker. Restore a known-good Home Assistant backup only as a last resort, after checking its date and accepting that later configuration changes may be lost.</p>
+          <p>The official Home Assistant documentation treats this as an advanced path. If remote radio placement is why you chose it, keep that architecture—but document the host, update method, data path, and owner. Tara's <a href="/blog/zwave-js-vs-zwave-js-ui-home-assistant/">Z-Wave JS versus Z-Wave JS UI guide</a> explains when that separation is worth the extra maintenance.</p>
+
+          <h2 id="no-update-button">Why Home Assistant Shows No Update Button</h2>
+          <p>The update control belongs to the system that manages the server. Home Assistant can offer updates for its official app. It cannot reach into a remote Raspberry Pi, NAS, Docker host, NPM installation, or third-party package repository and replace that software.</p>
+          <p>If Z-Wave JS UI appears as a community app inside Home Assistant, update it from that app's repository page. Its package version may not match the upstream Z-Wave JS UI number shown in the 2026.7 notes, so verify the <strong>running server version</strong> after the update. The current official Z-Wave documentation says the older Z-Wave JS UI app path is being phased out in favor of the official Z-Wave JS app. Treat migration as a planned backup-and-restore task, not an emergency click while the network is down.</p>
+          <p>If no compatible update exists for your package source, the safe choices are to remain temporarily on the last Home Assistant version that worked or migrate the server deliberately. Do not solve a missing package by deleting devices or changing Z-Wave security keys.</p>
+
+          <h2 id="verify">How to Confirm the Repair Worked</h2>
+          <ol>
+            <li>Open the server's log or dashboard and confirm it finished starting without an adapter-lock or storage error.</li>
+            <li>Give the Home Assistant integration a moment to reconnect. Reload it once only if it stays in retry mode after the server is ready.</li>
+            <li>Open <strong>Settings → Z-Wave → Network information</strong> and confirm the running server meets the required version and the URL is the intended host.</li>
+            <li>Wait for mains-powered devices to return, then wake one battery device only if its fresh readings are needed immediately.</li>
+            <li>Test one light, switch, lock, or sensor before declaring the whole network recovered.</li>
+          </ol>
+          <p>If the message changes from <strong>“server version incompatible”</strong> to <strong>“cannot connect”</strong>, the version gate may be fixed but Home Assistant cannot reach the server. Check that the server is running, the WebSocket service is enabled, the saved host and port are correct, and no firewall change blocks the local connection. Tara's guide to <a href="/blog/home-assistant-devices-unavailable-after-restart/">devices unavailable after a Home Assistant restart</a> covers that separate connection problem.</p>
+
+          <h2 id="still-failing">If Home Assistant Still Reports the Old Version</h2>
+          <ul>
+            <li><strong>Confirm the running version, not the downloaded version.</strong> Docker hosts can keep an old container running after a new image is pulled.</li>
+            <li><strong>Compare the server URL.</strong> Home Assistant may still point to an old IP address, old hostname, or second server on port 3000.</li>
+            <li><strong>Look for duplicate services.</strong> The official app, a community app, and a remote container should not compete for the same adapter.</li>
+            <li><strong>Check the app or service log.</strong> An adapter permission, USB mapping, or data-volume error can prevent the new server from starting even though the update installed.</li>
+            <li><strong>Reload once after the server is ready.</strong> Repeated Home Assistant restarts do not upgrade an external server.</li>
+          </ul>
+          <p>Only if the saved Server URL is genuinely wrong, use the Z-Wave integration's <strong>Reconfigure</strong> flow. For an external server, clear the checkbox labeled <strong>Use the Z-Wave Supervisor app</strong>, then enter the existing external WebSocket address. Do not blindly change a working address during a version error.</p>
+          <p>Before a wider recovery, create a current <a href="/blog/how-to-back-up-home-assistant/">Home Assistant backup</a> and download a Z-Wave network backup from the Z-Wave panel when available. Keep the security keys with the system record. Those precautions protect a future adapter migration; they are not a reason to reset a healthy adapter now.</p>
+
+          <h2 id="do-not-reset">What Not to Reset or Re-Pair</h2>
+          <p>Do not use exclusion, inclusion, factory reset, integration deletion, route rebuilding, or security-key replacement as a response to this message. None of those actions installs the newer server API. Paired device information remains on the Z-Wave adapter, while server settings and device metadata live in the app or server data store.</p>
+          <p>Resetting the adapter can erase the network. Changing keys can stop secure devices from working. Deleting the integration can remove Home Assistant's device and entity records. A clean in-place server update avoids all three risks.</p>
+
+          <h2 id="local-control">Does the Fix Make Z-Wave Cloud-Dependent?</h2>
+          <p>No. Home Assistant classifies the Z-Wave integration as <strong>Local Push</strong>, and the integration talks to the Z-Wave JS server over your local network. You may need internet access to download the app, package, or container image, but everyday Z-Wave control does not require a Z-Wave vendor cloud.</p>
+          <p>Z-Wave JS UI also offers MQTT features, but Home Assistant's Z-Wave integration does not need MQTT for this connection. Its normal path is the local WebSocket server. If the internet goes down after the update is installed, local automations and controls should continue as long as Home Assistant, the server, the adapter, and your home network remain powered.</p>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p>For a new Home Assistant OS installation, use the official Z-Wave JS app unless remote adapter placement or reboot isolation creates a real reason to separate it. For an existing remote Z-Wave JS UI setup, update it in place and document the server host, container or package source, persistent data path, adapter mapping, security-key location, and WebSocket URL.</p>
+          <p>If you want that ownership and recovery path designed into a supported system, Tara's <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> keeps the local server, radios, update responsibilities, and household handoff in one plan.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-version">Which Z-Wave JS version does Home Assistant 2026.7 require?</h3>
+          <p>Use the official Z-Wave JS app 1.4.0 or newer, Z-Wave JS UI Docker 11.19.1 or newer, or a self-run <code>zwave-js-server</code> 3.9.0 or newer using schema 49. Install the latest stable version offered by the existing setup; later Home Assistant releases may raise these minimums.</p>
+
+          <h3 id="faq-no-update">Why is there no Z-Wave JS update button in Home Assistant?</h3>
+          <p>The server is probably external. Home Assistant can update its managed app, but a Docker container, remote Raspberry Pi, NAS service, or self-run package must be updated where it was installed.</p>
+
+          <h3 id="faq-network-erased">Did the incompatible-server error erase my Z-Wave network?</h3>
+          <p>No. It describes a software protocol mismatch. Do not exclude devices, reset the adapter, delete the integration, change keys, or re-pair the mesh. Update the server first.</p>
+
+          <h3 id="faq-restart">Why did restarting Z-Wave JS not fix the error?</h3>
+          <p>A restart launches the same installed version. Docker users need to pull and redeploy a compatible image. Self-run users need to update the package or service that is actually running, then restart it.</p>
+
+          <h3 id="faq-server-url">How do I know which Z-Wave server Home Assistant is using?</h3>
+          <p>Open <strong>Settings → Z-Wave → Network information</strong> and record the Server URL and Server version. A remote IP address or hostname usually identifies an external server. Confirm that address matches the host you updated.</p>
+
+          <h3 id="faq-mqtt">Does Z-Wave JS UI need MQTT for Home Assistant?</h3>
+          <p>No. Home Assistant connects to the Z-Wave JS server over a local WebSocket. MQTT is an optional Z-Wave JS UI feature and is separate from the integration connection.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/zwave-js-vs-zwave-js-ui-home-assistant/">Choose Z-Wave JS or Z-Wave JS UI for Home Assistant</a></li>
+            <li><a href="/blog/how-to-update-home-assistant-safely/">Update Home Assistant safely before the next release</a></li>
+            <li><a href="/blog/home-assistant-devices-unavailable-after-restart/">Reconnect devices that stay unavailable after a restart</a></li>
+            <li><a href="/blog/how-to-back-up-home-assistant/">Back up Home Assistant and keep the recovery kit</a></li>
+            <li><a href="/local-smart-home-hub/">See how a local smart-home hub behaves during an outage</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.7 release notes: required Z-Wave JS app, UI container, server, and schema versions</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zwave_js/" target="_blank" rel="noopener noreferrer">Home Assistant Z-Wave documentation: network information, installation paths, backups, and local control</a></li>
+                <li><a href="https://www.home-assistant.io/apps/" target="_blank" rel="noopener noreferrer">Home Assistant Apps: installing, updating, starting, and stopping managed apps</a></li>
+                <li><a href="https://github.com/home-assistant/addons/blob/master/zwave_js/CHANGELOG.md" target="_blank" rel="noopener noreferrer">Official Z-Wave JS app changelog, including the current 1.5.0 release</a></li>
+                <li><a href="https://github.com/home-assistant/core/pull/173309" target="_blank" rel="noopener noreferrer">Home Assistant Core implementation change for Z-Wave JS server schema 49</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Project documentation</h3>
+              <ul>
+                <li><a href="https://github.com/zwave-js/zwave-js-ui/releases/tag/v11.19.1" target="_blank" rel="noopener noreferrer">Z-Wave JS UI 11.19.1 release containing server 3.9.0</a></li>
+                <li><a href="https://github.com/zwave-js/zwave-js-ui/releases/tag/v11.22.0" target="_blank" rel="noopener noreferrer">Z-Wave JS UI 11.22.0 current stable release on July 24, 2026</a></li>
+                <li><a href="https://github.com/zwave-js/zwave-js-server/releases/tag/3.9.0" target="_blank" rel="noopener noreferrer">Z-Wave JS Server 3.9.0 release for schema 49</a></li>
+                <li><a href="https://github.com/zwave-js/zwave-js-server/releases/tag/3.10.0" target="_blank" rel="noopener noreferrer">Z-Wave JS Server 3.10.0 current stable release on July 24, 2026</a></li>
+                <li><a href="https://zwave-js.github.io/zwave-js-ui/#/getting-started/docker" target="_blank" rel="noopener noreferrer">Z-Wave JS UI Docker guide: persistent store and container configuration</a></li>
+                <li><a href="https://docs.docker.com/reference/cli/docker/compose/down/" target="_blank" rel="noopener noreferrer">Docker Compose documentation: why the <code>-v</code> option removes named volumes</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/z-wave-broken-after-update-to-ha-2026-6-0/1012844/19" target="_blank" rel="noopener noreferrer">Home Assistant Community: schema 49 incompatibility on a separately managed Z-Wave server after Home Assistant 2026.7</a></li>
+                <li><a href="https://community.home-assistant.io/t/2026-7-automations-that-speak-your-language/1015764/53" target="_blank" rel="noopener noreferrer">Home Assistant Community: Z-Wave JS UI asking for an update when no Home Assistant update button is available</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/121365" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: an externally packaged Z-Wave JS UI channel lagging a required server version</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ubci6u/zwave_js_failed_setup/" target="_blank" rel="noopener noreferrer">r/homeassistant: a recent failed setup traced to Home Assistant using the wrong WebSocket server address</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the local Z-Wave path understandable</h2>
+          <div class="links">
+            <a href="/blog/zwave-js-vs-zwave-js-ui-home-assistant/">Choose the server path</a>
+            <a href="/blog/how-to-update-home-assistant-safely/">Update Home Assistant safely</a>
+            <a href="/blog/home-assistant-devices-unavailable-after-restart/">Fix unavailable devices</a>
+            <a href="/blog/how-to-back-up-home-assistant/">Back up Home Assistant</a>
+            <a href="/local-smart-home-hub/">Local hub behavior</a>
+            <a href="/home-assistant-smart-home-kit/">Configured Home Assistant</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want the update path documented before the next outage?</h2>
+          <p>Tara plans the Home Assistant host, Z-Wave server, radio placement, backups, local-control boundary, and household handoff as one supportable system.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>

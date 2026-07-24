@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "slug": "home-assistant-z-wave-js-server-version-incompatible",
+  "researchedAt": "2026-07-24",
+  "primaryQuery": "Home Assistant Z-Wave JS Server version incompatible",
+  "readerQuestion": "How do I safely fix the Home Assistant Z-Wave JS Server version incompatible error after an update without resetting or re-pairing my Z-Wave devices?",
+  "selectedBecause": "Home Assistant 2026.7 raised the required Z-Wave JS server schema, and two separate July community discussions show homeowners reaching the same blocked state through different installation paths. The exact search results expose version requirements and scattered forum fixes, but do not give a current plain-English decision tree for the official app, Z-Wave JS UI, and self-managed server paths. Tara's existing Z-Wave comparison explains which deployment to choose; it does not answer this exact error or the safe recovery order.",
+  "demandSignals": [
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/z-wave-broken-after-update-to-ha-2026-6-0/1012844/19",
+      "observedAt": "2026-07-01",
+      "evidence": "A user upgrading to Home Assistant 2026.7 reported that a remote Z-Wave JS server at version 3.8.0 failed setup because schema 49 was required, and asked how to update a separately installed NPM-based server without losing the working network."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/2026-7-automations-that-speak-your-language/1015764/53",
+      "observedAt": "2026-07-02",
+      "evidence": "In a separate release discussion, a homeowner said the Home Assistant 2026.7 update left Z-Wave JS UI requiring an update while no update control was visible, prompting a backup restore rather than a clear supported fix."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant Z-Wave JS Server version incompatible",
+    "reviewedAt": "2026-07-24",
+    "intent": "The searcher has a failed Z-Wave integration after updating Home Assistant and wants to identify and update the correct Z-Wave JS server component without rebuilding the mesh.",
+    "resultGap": "The exact results include current minimum versions in release notes, a broad integration reference, an older GitHub issue, and long community threads. They do not combine the three supported server paths into a homeowner-friendly diagnosis, explain why updating the driver or Home Assistant alone does not clear the error, or put the no-reset and no-re-pair guardrails before the repair steps.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+      "https://www.home-assistant.io/integrations/zwave_js/",
+      "https://github.com/home-assistant/core/issues/121365",
+      "https://community.home-assistant.io/t/z-wave-broken-after-update-to-ha-2026-6-0/1012844"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant 2026.7 release notes",
+      "url": "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+      "supports": "Home Assistant 2026.7 requires zwave-js-server 3.9.0 or newer using schema 49, the official Z-Wave JS app 1.4.0 or newer, or the Z-Wave JS UI Docker container 11.19.1 or newer."
+    },
+    {
+      "name": "Home Assistant Z-Wave integration documentation",
+      "url": "https://www.home-assistant.io/integrations/zwave_js/",
+      "supports": "The Z-Wave integration connects by WebSocket to a separate server layer; the documentation distinguishes the server, driver, and server URL and documents the official app, Z-Wave JS UI Docker, and self-managed server paths."
+    },
+    {
+      "name": "Z-Wave JS UI project documentation",
+      "url": "https://github.com/zwave-js/zwave-js-ui",
+      "supports": "Z-Wave JS UI stores persistent files in its store directory and provides the separate server and control-panel path used by container and advanced installations."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/zwave-js-vs-zwave-js-ui-home-assistant/",
+      "/blog/how-to-update-home-assistant-safely/",
+      "/blog/home-assistant-devices-unavailable-after-restart/"
+    ],
+    "decision": "The closest Z-Wave guide owns the deployment-choice query and mentions version matching as a tradeoff; the update guide owns general update preparation; the unavailable-device guide owns broad restart recovery. This article owns the literal server-version/schema error and a version-specific repair decision tree, so it is not a rewritten comparison or general update guide."
+  },
+  "selectionScore": {
+    "communityDemand": 3,
+    "queryClarity": 2,
+    "answerability": 2,
+    "siteFit": 2,
+    "freshness": 2,
+    "resultGap": 2,
+    "cannibalizationRisk": 1,
+    "total": 12
+  }
+}
