@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "slug": "home-assistant-device-triggers-missing",
+  "researchedAt": "2026-07-25",
+  "primaryQuery": "Home Assistant device triggers missing",
+  "readerQuestion": "Where did Home Assistant device triggers move in the 2026.7 automation editor, and how do I restore missing button-press choices without re-pairing the device?",
+  "selectedBecause": "Two independent July 2026 discussions show both experienced and newer Home Assistant users unable to find single-, double-, and long-press device triggers after the 2026.7 automation-editor redesign. The exact search results explain the redesign or define device triggers, but they do not join the new navigation path with the separate integration-discovery fix needed when a button or remote still exposes only battery or update entities. Tara has general automation troubleshooting and Zigbee-stack coverage, but no page owns this current editor symptom and safe recovery order.",
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1uryj04/i_tried_for_10_minutes_to_create_an_automation/",
+      "observedAt": "2026-07-09",
+      "evidence": "A homeowner could not create a button-press automation in the redesigned editor because the Zigbee2MQTT and MQTT entity paths showed only update or battery choices. The independent discussion repeatedly separated the generic Device trigger path from the entity picker and identified trigger discovery as the next check when press choices remain absent."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1v0z1o5/change_in_add_automation_process_help/",
+      "observedAt": "2026-07-19",
+      "evidence": "A separate Home Assistant 2026.7.2 user with roughly 110 existing automations could no longer find familiar single- and double-click choices. They resolved the setup by choosing Add trigger, By type, Generic, Device, then selecting the device and its exposed trigger."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/ha-2026-7-zigbee-changes-cant-use-button-to-trigger-automation-anymore/1017899",
+      "observedAt": "2026-07-18",
+      "evidence": "An independent Home Assistant Community topic reported the same post-2026.7 symptom: a Zigbee button offered only its battery level while creating an automation. Replies confirmed that device triggers and the newer event-received route still existed, separating editor navigation from integration support."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant device triggers missing",
+    "reviewedAt": "2026-07-25",
+    "intent": "The searcher can see a physical button, remote, or switch in Home Assistant but cannot find its press actions while creating an automation after the 2026.7 editor change, and wants the current path and the next safe fix.",
+    "resultGap": "The exact results include the Home Assistant 2026.7 redesign announcement, general trigger documentation, current Reddit troubleshooting, and older forum threads about integrations that expose no triggers. They do not provide one current homeowner-friendly decision tree that starts with the new By type path, explains why an Entity search may show only battery or update data, then separates an editor-navigation problem from an integration-discovery problem. Zigbee2MQTT's one-event discovery requirement and experimental event-entity caveat are also buried in separate project documentation.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+      "https://www.home-assistant.io/docs/automation/trigger/",
+      "https://www.reddit.com/r/homeassistant/comments/1uryj04/i_tried_for_10_minutes_to_create_an_automation/",
+      "https://community.home-assistant.io/t/ha-2026-7-zigbee-changes-cant-use-button-to-trigger-automation-anymore/1017899"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant 2026.7 release notes",
+      "url": "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+      "supports": "Purpose-specific triggers became the default automation-editor starting point in Home Assistant 2026.7, while generic triggers and existing automations remain supported."
+    },
+    {
+      "name": "Home Assistant automation trigger documentation",
+      "url": "https://www.home-assistant.io/docs/automation/trigger/",
+      "supports": "Device triggers are events defined by an integration, can include remote-button events, are tied to a device rather than necessarily to an entity, and are configured through the browser editor."
+    },
+    {
+      "name": "Home Assistant MQTT device trigger documentation",
+      "url": "https://www.home-assistant.io/integrations/device_trigger.mqtt/",
+      "supports": "MQTT device triggers are intended for buttons and remotes and must be supplied through MQTT discovery rather than manually configured as device triggers in configuration.yaml."
+    },
+    {
+      "name": "Zigbee2MQTT Home Assistant integration documentation",
+      "url": "https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html",
+      "supports": "Zigbee2MQTT discovers Home Assistant MQTT device triggers after each event is produced at least once; its event-entity method is experimental, while the legacy action-sensor method is deprecated."
+    },
+    {
+      "name": "Home Assistant Zigbee Home Automation documentation",
+      "url": "https://www.home-assistant.io/integrations/zha/",
+      "supports": "ZHA uses device-specific handlers called quirks when a Zigbee manufacturer deviates from the standard or exposes manufacturer-specific features, and the documentation provides a device-support request path."
+    },
+    {
+      "name": "Home Assistant developer documentation for device triggers",
+      "url": "https://developers.home-assistant.io/docs/device_automation_trigger/",
+      "supports": "Existing device automations remain supported even though Home Assistant no longer accepts new integration implementations of the older device-automation architecture."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-automation-not-firing/",
+      "/blog/home-assistant-automation-runs-twice/",
+      "/blog/zha-vs-zigbee2mqtt-home-assistant/"
+    ],
+    "decision": "The existing automation-not-firing page assumes a saved automation already exists and diagnoses runtime traces, conditions, and modes. The runs-twice article owns duplicate execution, while the ZHA-versus-Zigbee2MQTT article owns coordinator-stack choice. This new page owns a specific 2026.7 creation-time symptom: device press choices are absent from the redesigned picker or have not yet been exposed by the integration."
+  },
+  "selectionScore": {
+    "communityDemand": 3,
+    "queryClarity": 2,
+    "answerability": 2,
+    "siteFit": 2,
+    "freshness": 2,
+    "resultGap": 2,
+    "cannibalizationRisk": 1,
+    "total": 12
+  }
+}
