@@ -1,0 +1,105 @@
+{
+  "version": 1,
+  "slug": "home-assistant-high-cpu-after-update",
+  "researchedAt": "2026-07-26",
+  "primaryQuery": "Home Assistant high CPU after update",
+  "readerQuestion": "Why did Home Assistant CPU usage jump after an update, and what should I check before restarting, downgrading, or replacing hardware?",
+  "selectedBecause": "Two independent recent Home Assistant discussions show homeowners facing sustained CPU increases and extra heat after updates, with different causes across an installed app and a specific integration. Exact search results remain fragmented across old version-specific issues and do not provide a current homeowner-first method for separating Home Assistant Core, apps, integrations, and the host. Tara has update, database, and restart guides, but no page owns this performance symptom or its safe diagnostic order.",
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1uwgzi0/cpu_jump_since_upgrade_to_202672/",
+      "observedAt": "2026-07-14",
+      "evidence": "A Home Assistant OS user reported a sharp CPU increase and roughly 15°C higher processor temperature after updating to 2026.7.2. The large discussion repeatedly asked how to tell a Core problem from an app or host problem; the original poster eventually found one installed app reporting the load rather than evidence of a universal Core defect."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1ui6jag/dsmr_integration_causes_high_cpu_since_20266x/",
+      "observedAt": "2026-06-28",
+      "evidence": "An independent user traced a four- to five-fold CPU increase after Home Assistant 2026.6 to the DSMR Smart Meter integration. Safe mode and disabling that integration changed the result, illustrating the need to isolate an integration before blaming the update or replacing hardware."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant high CPU after update",
+    "reviewedAt": "2026-07-26",
+    "intent": "The searcher saw Home Assistant CPU usage, temperature, or responsiveness worsen after an update and wants a safe order for finding the cause and returning the system to its previous baseline.",
+    "resultGap": "The exact results are led by version-specific GitHub issues and long community threads from different Home Assistant releases. They describe isolated causes such as an operating-system regression, a Core integration, database work, DNS, or an app, but do not give one current plain-English decision tree for checking the Home Assistant OS app list, Core statistics and logs, Safe mode, the host, and backup-backed rollback in that order. They also tend to blur Restart Home Assistant with rebooting the whole host.",
+    "resultsReviewed": [
+      "https://github.com/home-assistant/operating-system/issues/3941",
+      "https://github.com/home-assistant/core/issues/152212",
+      "https://community.home-assistant.io/t/cpu-usage-keeps-increasing-after-recent-2025-12-updates/968723",
+      "https://www.home-assistant.io/integrations/systemmonitor/"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant System Monitor documentation",
+      "url": "https://www.home-assistant.io/integrations/systemmonitor/",
+      "supports": "The official integration can expose processor use, processor temperature, memory, load, disk, and pressure sensors; its diagnostic entities are disabled by default until the user enables the ones they need."
+    },
+    {
+      "name": "Home Assistant Operating System common tasks",
+      "url": "https://www.home-assistant.io/common-tasks/os/",
+      "supports": "Home Assistant OS separates Core, Supervisor, the operating system, and installed apps; the documented CLI includes Core statistics and logs, host reboot commands, backups, and backup-based downgrade guidance."
+    },
+    {
+      "name": "Home Assistant Supervisor integration documentation",
+      "url": "https://www.home-assistant.io/integrations/hassio/",
+      "supports": "On Home Assistant Operating System, the Supervisor integration exposes CPU Percent sensors for Home Assistant Core, Supervisor, and installed apps, and provides distinct app restart and host reboot actions."
+    },
+    {
+      "name": "Home Assistant System Log documentation",
+      "url": "https://www.home-assistant.io/integrations/system_log/",
+      "supports": "The System Log integration exposes logged errors and warnings for inspection, but a quiet log alone does not prove that every component is healthy."
+    },
+    {
+      "name": "Home Assistant general troubleshooting",
+      "url": "https://www.home-assistant.io/docs/troubleshooting_general/",
+      "supports": "Safe mode starts Home Assistant Core without custom integrations, custom dashboard cards, or custom themes, making it a supported test for separating custom code from Core behavior."
+    },
+    {
+      "name": "Home Assistant Profiler documentation",
+      "url": "https://www.home-assistant.io/integrations/profiler/",
+      "supports": "The official Profiler integration can collect timing statistics to identify which part of Home Assistant is consuming time when simpler checks do not isolate a Core-side performance problem."
+    },
+    {
+      "name": "Home Assistant Core 2026.7 changelog",
+      "url": "https://www.home-assistant.io/changelogs/core-2026.7",
+      "supports": "The current release history through Home Assistant 2026.7.4 provides dated point-release changes that readers should check before assuming a reported post-update problem still applies."
+    },
+    {
+      "name": "Home Assistant Core DSMR high-CPU issue",
+      "url": "https://github.com/home-assistant/core/issues/173474",
+      "supports": "A current official issue demonstrates a reproducible integration-specific CPU increase that disappeared in Safe mode and when the affected integration was disabled, rather than a universal Core or hardware failure."
+    },
+    {
+      "name": "Home Assistant Core DSMR parser fix",
+      "url": "https://github.com/home-assistant/core/pull/176192",
+      "supports": "The DSMR parser correction was merged and included in the Home Assistant 2026.7.2 point release, illustrating why readers should match symptoms and versions before downgrading."
+    },
+    {
+      "name": "Home Assistant integration diagnostics guidance",
+      "url": "https://developers.home-assistant.io/docs/core/integration/diagnostics/",
+      "supports": "Integration diagnostics are intended to help troubleshooting and must protect passwords, tokens, location data, and other personal information, supporting a caution to review files before sharing them."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/how-to-update-home-assistant-safely/",
+      "/blog/home-assistant-database-too-large-recorder-purge/",
+      "/blog/home-assistant-devices-unavailable-after-restart/"
+    ],
+    "decision": "The update guide owns preparation and rollback planning, the database guide owns storage growth and recorder cleanup, and the unavailable-device guide owns reconnection after restart. This new article owns a different exact symptom: sustained CPU load or heat after an update, with a layer-by-layer diagnosis that distinguishes Core, apps, integrations, and the host before any rollback."
+  },
+  "selectionScore": {
+    "communityDemand": 3,
+    "queryClarity": 2,
+    "answerability": 2,
+    "siteFit": 2,
+    "freshness": 2,
+    "resultGap": 2,
+    "cannibalizationRisk": 1,
+    "total": 12
+  }
+}

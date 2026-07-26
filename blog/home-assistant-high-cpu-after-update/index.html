@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant High CPU After an Update? What to Check</title>
+    <meta name="description" content="Home Assistant high CPU after an update? Check Core, apps, integrations, logs, and the computer in order before you downgrade or replace hardware." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-high-cpu-after-update/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-high-cpu-after-update/" />
+    <meta property="og:title" content="Home Assistant High CPU After an Update? What to Check" />
+    <meta property="og:description" content="Find whether Home Assistant Core, an installed app, an integration, or the computer is busy before restarting or rolling back." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-high-cpu-after-update/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant High CPU After an Update? What to Check" />
+    <meta name="twitter:description" content="Find whether Home Assistant Core, an installed app, an integration, or the computer is busy before restarting or rolling back." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-high-cpu-after-update/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(36px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); margin-left: auto; margin-right: auto; max-width: 1120px; padding-bottom: clamp(22px, 3vw, 34px); width: 100%; }
+      .hero > div, .article-cover { min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.14; margin: clamp(48px, 5vw, 62px) 0 18px; max-width: 760px; text-wrap: balance; }
+      h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.2; margin: 38px 0 14px; max-width: 760px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article { max-width: 1180px; }
+      .article > article, .article-body { min-width: 0; }
+      .article-body { border-top: 1px solid var(--line); margin-left: auto; margin-right: auto; max-width: 780px; padding-top: clamp(34px, 4vw, 50px); width: 100%; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1.06rem, 1.12vw, 1.16rem); line-height: 1.75; }
+      .article-body p { margin: 0 0 24px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 28px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 12px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 44px; max-width: 820px; overflow-wrap: break-word; padding: 24px 26px 22px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: 1.04rem; line-height: 1.58; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 32px 0; max-width: 780px; padding: 22px 24px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 28px 0 32px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.45; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(34px, 4.5vw, 56px) 0; }
+      .source-list, .article-cta, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: clamp(22px, 3vw, 36px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid h3 { margin-top: 0; }
+      .source-grid ul { display: grid; gap: 12px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.45; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article-cta .cta { margin-top: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 24px; }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (min-width: 900px) { .article-body .comparison-table { margin-left: 50%; max-width: none; transform: translateX(-50%); width: min(920px, calc(100vw - 64px)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero { gap: 28px; max-width: 46rem; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } .source-list, .article-cta, .related { max-width: 46rem; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body { max-width: calc(100vw - 44px); padding-top: 30px; } .article-body .tldr { margin-bottom: 36px; max-width: 100%; padding: 20px 18px 18px; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-high-cpu-after-update/#blogposting",
+          "headline": "Home Assistant High CPU After an Update? What to Check",
+          "description": "Home Assistant high CPU after an update? Check Core, apps, integrations, logs, and the computer in order before you downgrade or replace hardware.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-high-cpu-after-update/cover.png",
+          "datePublished": "2026-07-26",
+          "dateModified": "2026-07-26",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-high-cpu-after-update/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/hassio/",
+            "https://www.home-assistant.io/integrations/systemmonitor/",
+            "https://www.home-assistant.io/integrations/system_log/",
+            "https://www.home-assistant.io/integrations/system_health/",
+            "https://www.home-assistant.io/docs/troubleshooting_general/",
+            "https://www.home-assistant.io/common-tasks/os/",
+            "https://www.home-assistant.io/integrations/profiler/",
+            "https://www.home-assistant.io/changelogs/core-2026.7",
+            "https://github.com/home-assistant/core/issues/173474",
+            "https://github.com/home-assistant/core/pull/176192",
+            "https://developers.home-assistant.io/docs/core/integration/diagnostics/",
+            "https://www.reddit.com/r/homeassistant/comments/1uwgzi0/cpu_jump_since_upgrade_to_202672/",
+            "https://www.reddit.com/r/homeassistant/comments/1ui6jag/dsmr_integration_causes_high_cpu_since_20266x/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Home Assistant High CPU After an Update", "item": "https://tarahome.ai/blog/home-assistant-high-cpu-after-update/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Why is Home Assistant CPU high after an update?",
+              "acceptedAnswer": { "@type": "Answer", "text": "An update can coincide with load in Home Assistant Core, one installed app, a specific integration, Supervisor, or the computer running them. Compare those CPU readings before changing anything; the timing alone does not prove a universal update defect." }
+            },
+            {
+              "@type": "Question",
+              "name": "Where can I see Home Assistant CPU usage?",
+              "acceptedAnswer": { "@type": "Answer", "text": "On Home Assistant OS, enable the disabled-by-default CPU Percent readings supplied by the Home Assistant Supervisor integration for Core, Supervisor, and installed apps. System Monitor can add processor-use and temperature readings, while ha core stats shows Core statistics from the command line." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is restarting Home Assistant the same as rebooting its computer?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Restart Home Assistant restarts Core. Restarting an app affects only that app, while Reboot system or the ha host reboot command restarts the whole Home Assistant OS computer." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will Home Assistant Safe mode find every high-CPU cause?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Safe mode loads Home Assistant Core without custom integrations, custom cards, or custom themes. It is useful when Core is busy, but installed apps and other work on the computer are outside that test." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I downgrade Home Assistant when CPU rises after an update?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only after you have identified a matching version-specific issue and made a backup. Check the current point release first because the problem may already be fixed; Home Assistant OS documentation recommends a partial backup restore for a downgrade." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav aria-label="Primary">
+      <a href="/" style="text-decoration:none"><strong>Tara</strong></a>
+      <div>
+        <a href="/smart-home-kit/">Kit</a>
+        <a href="/configurator/">Configurator</a>
+        <a href="/blog/">Guides</a>
+        <a href="/tara-assistant/">Tara Assistant</a>
+      </div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Performance troubleshooting</span><span>July 26, 2026</span><span>10 min read</span></p>
+            <h1>Home Assistant High CPU After an Update? What to Check</h1>
+            <p class="lede">If Home Assistant CPU stays high after an update, do not downgrade immediately. First find whether the load comes from the main Home Assistant program (Core), a separate Home Assistant OS app, a device or service connection (integration), or the computer running them. On Home Assistant OS, compare CPU readings for Core, Supervisor—the part that manages Core and its apps—and each installed app. Read the busy part's log and restart only that part. Safe mode tests only Core without custom integrations, cards, or themes; make a backup before any rollback.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-high-cpu-after-update/cover.png" alt="Homeowner checking the temperature of a vented local smart-home computer after a Home Assistant update" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Confirm the change:</strong> compare several readings with your own normal baseline, record the exact versions, and note real symptoms such as extra heat or a slow dashboard. There is no single safe CPU number for every computer.</li>
+              <li><strong>Find the busy layer:</strong> on Home Assistant OS, enable CPU readings for Core (the main program), Supervisor (the manager), and installed apps. Compare them with the whole computer's processor use before you blame the update.</li>
+              <li><strong>Restart the smallest part:</strong> restart one busy app or Home Assistant Core first. <strong>Restart Home Assistant</strong> does not reboot the whole computer; <strong>Reboot system</strong> does.</li>
+              <li><strong>Avoid a blind rollback:</strong> Safe mode tests Core without custom integrations, cards, or themes, but it does not stop installed apps. Check the current point release and make a backup before downgrading.</li>
+            </ul>
+          </aside>
+
+          <h2 id="four-layers">Home Assistant High CPU After an Update: Check Four Layers</h2>
+          <p>A Home Assistant update tells you <em>when</em> the extra processor load appeared, not <em>which part</em> caused it. Treat the system as four layers: the physical or virtual computer, also called the host; Home Assistant Core, the main program; Supervisor, which manages Home Assistant OS and its apps; and the installed apps themselves. An integration—the software connection between Home Assistant and a device or service—runs inside Core, so an integration problem normally appears as high Core use rather than as its own separate CPU reading.</p>
+          <p>Start by comparing the layers. If one app is busy while Core is calm, restarting Core will not fix that app. If Core is busy but the load disappears in Safe mode, custom code is a stronger suspect. If all Home Assistant components look calm while the overall computer is busy, check work outside Core instead of deleting automations or buying faster hardware.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>What is high?</th><th>Likely layer</th><th>Best next check</th><th>Do not start with</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>One installed app</td><td>That app, such as a radio service, database, or other Home Assistant OS app</td><td>Open the app's log, then restart only that app if it is safe to interrupt</td><td>Restarting Core or restoring an older Core backup</td></tr>
+                <tr><td>Home Assistant Core</td><td>A built-in or custom integration, automation activity, database work, or another Core task</td><td>Read Core logs; use Safe mode for custom-code isolation</td><td>Rebooting the computer repeatedly</td></tr>
+                <tr><td>Supervisor</td><td>The service managing Home Assistant OS and its apps</td><td>Check Supervisor logs, updates, and Repairs</td><td>Disabling unrelated integrations</td></tr>
+                <tr><td>Overall computer, but listed components are low</td><td>The operating system, another container or virtual-machine workload, storage, or computer-level work</td><td>Use the computer or virtual-machine dashboard; check temperature and whether work is waiting on processor, memory, or storage</td><td>Replacing the Home Assistant database</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout">
+            <p><strong>Temperature is evidence, not a diagnosis.</strong> A hotter case or faster fan supports the observation that the computer is working harder, but the acceptable temperature depends on the hardware, enclosure, airflow, and room. Keep vents clear and compare with the same machine's normal behavior.</p>
+          </div>
+
+          <h2 id="record-baseline">1. Record the Versions and the Real Symptom</h2>
+          <p>Write down the exact Home Assistant Core, Supervisor, operating-system, and app versions before another update changes the picture. In Home Assistant, open <strong>Settings → System → Repairs</strong>, use the three-dot menu, and select <strong>System information</strong>. Record whether the dashboard is actually slow, automations are delayed, the fan is louder, or the case is warmer.</p>
+          <p>Compare several readings during the same kind of household activity. A lone CPU snapshot is not a baseline, and a percentage from somebody else's Raspberry Pi, mini PC, virtual machine, or server is not a universal limit. What matters is a sustained change on your own computer together with a symptom or a clearly busy component.</p>
+          <p>If storage has filled up or recorder work is the obvious clue, use Tara's separate <a href="/blog/home-assistant-database-too-large-recorder-purge/">Home Assistant database and Recorder cleanup guide</a>. Do not purge the database merely because CPU is high.</p>
+
+          <h2 id="find-component">2. Find Which Home Assistant Component Is Busy</h2>
+          <p>On Home Assistant OS, the built-in <strong>Home Assistant Supervisor</strong> integration provides CPU Percent entities for Home Assistant Core, Supervisor, and every installed app. An <em>entity</em> is simply a reading that Home Assistant can display and graph. These CPU entities are disabled by default. Open <strong>Settings → Devices &amp; services</strong>, select the Home Assistant Supervisor integration, open its entities, and enable only the CPU readings you need for this comparison.</p>
+          <p>The official <strong>System Monitor</strong> integration can add processor use, processor temperature, memory, load, disk, and pressure readings that show whether work is waiting on the processor, memory, or storage. Its entities are also disabled by default. Add the integration from <strong>Settings → Devices &amp; services</strong>, then enable the few diagnostic readings that answer this question. A temperature reading may not exist on a virtual machine or when the computer does not expose a compatible sensor.</p>
+          <p>For an optional command-line check on Home Assistant OS, <code>ha core stats</code> reports Core statistics. <code>ha core logs</code> shows Core logs; <code>ha supervisor logs</code> shows Supervisor logs. If you use Home Assistant Container—a self-managed installation that runs Core inside a software container—there is no Supervisor integration. Compare that container with the computer using the monitoring tools you already use to administer it.</p>
+
+          <h2 id="read-logs">3. Read the Log for the Busy Layer</h2>
+          <p>For Core, open <strong>Settings → System → Logs</strong>. Look for the same integration name or error repeating near the times when CPU rises. The condensed System Log keeps recent errors and warnings, while the raw log contains the fuller record. A repeated message is a lead to verify, not permission to delete the named integration's data.</p>
+          <p>If an installed app has the high reading, open <strong>Settings → Apps</strong>, choose that app, and read its log. An app can consume processor time even when the main Home Assistant log looks quiet. Conversely, a quiet log does not prove a component is healthy; some expensive work completes without producing an error.</p>
+          <p>Before sharing a log or downloaded diagnostic file, read it. Home Assistant's diagnostics guidance requires integrations to remove sensitive fields, but location data, device names, addresses, account details, or other household information can still matter to you. Share only what the maintainer requests.</p>
+
+          <h2 id="restart-smallest-layer">4. Restart Only the Smallest Busy Layer</h2>
+          <p>If one Home Assistant OS app is clearly busy, restart that app from its page after checking that a short interruption is safe. If Core alone is busy, use <strong>Restart Home Assistant</strong>. That restarts Core; it does not restart Supervisor, installed apps, or the operating system.</p>
+          <p>Use <strong>Reboot system</strong>—or <code>ha host reboot</code> from the Home Assistant OS command line—only when the evidence points to the whole computer, several layers need a clean restart, or the smaller restart did not address a computer-level problem. Avoid pulling the power while the system is running because an abrupt loss can interrupt writes to storage.</p>
+          <p>After the chosen restart, repeat the same per-component comparison. If the load returns in the same component, you have a reproducible clue. If devices become unavailable after an otherwise normal restart, follow Tara's <a href="/blog/home-assistant-devices-unavailable-after-restart/">Home Assistant post-restart device checks</a> instead of treating every unavailable device as a CPU problem.</p>
+
+          <h2 id="safe-mode">5. Use Safe Mode Only When Core Is High</h2>
+          <p>Home Assistant Safe mode loads Core without custom integrations, custom dashboard cards, or custom themes. From the UI, go to <strong>Settings → System → Restart Home Assistant</strong> and choose <strong>Restart Home Assistant in safe mode</strong>. The Home Assistant OS command-line equivalent is <code>ha core restart --safe-mode</code>.</p>
+          <p>If Core settles down in Safe mode, a custom integration or other excluded custom code becomes the first place to investigate. Re-enable normal mode, then test the strongest candidate based on recent updates and repeated log messages. Change one thing at a time so the result remains useful.</p>
+          <p>Safe mode is not a whole-system test. It does not stop installed Home Assistant OS apps, and it does not tell you which process on the computer is busy. If an app's own CPU sensor was high before Safe mode, diagnose that app directly.</p>
+
+          <h2 id="release-specific">6. Match the Exact Version Before You Roll Back</h2>
+          <p>Check the full changelog for your release and every newer point release. As of July 26, 2026, the current Home Assistant Core 2026.7 point release is <strong>2026.7.4</strong>. A narrowly matched issue may already have a fix, while a forum post about another version, installation type, or integration may lead you in the wrong direction.</p>
+          <p>A current case involving DSMR, an integration that reads compatible smart meters, shows why the details matter. The reported Core CPU increase began with Home Assistant 2026.6 and changed when the affected integration was disabled or Core ran in Safe mode. The DSMR parser correction appears in the 2026.7.2 changelog. That is evidence for checking the integration and exact versions—not evidence that every 2026.7 installation has a CPU defect.</p>
+          <p>Another recent homeowner found an installed OpenThread Border Router app carrying the load after a 2026.7.2 update, then saw normal behavior after restarting that app. That single household result is useful as an example of layer isolation, not proof of a universal OpenThread Border Router bug.</p>
+          <div class="callout">
+            <p><strong>Back up before any rollback.</strong> Home Assistant OS documentation recommends restoring a partial backup to downgrade. Preserve the known-good backup until the system has run normally and your devices, automations, and history have been checked. Tara's <a href="/blog/how-to-update-home-assistant-safely/">safe Home Assistant update guide</a> covers the backup and recovery plan.</p>
+          </div>
+
+          <h2 id="profiler">When to Use the Home Assistant Profiler</h2>
+          <p>Use the official Profiler integration only after the simple checks show that Core—not an app or the computer—is consuming the time and logs do not identify the work. Profiler can collect statistics showing how much time parts of Home Assistant take and can record current tasks, scheduled background work, running threads, and memory activity.</p>
+          <p>This is an advanced Core-side tool. It does not profile an installed app or an unrelated process on the computer. Capture the smallest useful profile and attach it only when an integration maintainer or issue template asks for one; profiling everything indefinitely creates noise rather than a clearer answer.</p>
+
+          <h2 id="avoid">What to Avoid While Troubleshooting</h2>
+          <ul>
+            <li><strong>Do not downgrade from timing alone.</strong> Match the component, symptom, installation type, and version first.</li>
+            <li><strong>Do not disable integrations at random.</strong> Start with the component named by CPU readings, logs, Safe mode, or a matching issue.</li>
+            <li><strong>Do not delete the database.</strong> High processor use has several causes; confirm a Recorder or storage problem separately.</li>
+            <li><strong>Do not change DNS, networking, or radio settings because one discussion did.</strong> Those changes can create a second fault while leaving the first one unexplained.</li>
+            <li><strong>Do not replace the computer first.</strong> Faster hardware can hide an app or integration problem without fixing it.</li>
+            <li><strong>Do not post raw diagnostics blindly.</strong> Review household and account information before sharing.</li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p>Keep three lightweight health readings available: overall processor use, Core CPU, and CPU for the few installed apps that matter most. Add processor temperature only when your hardware exposes it. A small history of your own normal system makes the next post-update change much easier to judge.</p>
+          <p>Label backups with the version and make the restart boundary explicit in the household instructions: app, Home Assistant Core, or whole computer. For a supported setup, Tara's <a href="/home-assistant-smart-home-kit/">configured Home Assistant system</a> pairs the local computer with a documented update, monitoring, and recovery path.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-why">Why is Home Assistant CPU high after an update?</h3>
+          <p>The load may be in Home Assistant Core, one installed app, a particular integration, Supervisor, or the computer running them. Compare those layers first. The fact that the change followed an update does not by itself prove a universal update bug.</p>
+
+          <h3 id="faq-where">Where can I see Home Assistant CPU usage?</h3>
+          <p>On Home Assistant OS, enable the disabled-by-default CPU Percent readings supplied by the Home Assistant Supervisor integration for Core, Supervisor, and installed apps. System Monitor can provide processor-use and temperature readings, and <code>ha core stats</code> provides a Core command-line view.</p>
+
+          <h3 id="faq-restart">Is Restart Home Assistant the same as rebooting its computer?</h3>
+          <p>No. <strong>Restart Home Assistant</strong> restarts Core. Restarting an app affects that app, while <strong>Reboot system</strong> or <code>ha host reboot</code> restarts the entire Home Assistant OS computer.</p>
+
+          <h3 id="faq-safe-mode">Will Safe mode find every high-CPU cause?</h3>
+          <p>No. Safe mode loads Core without custom integrations, custom cards, or custom themes. It is useful when Core is the busy layer, but installed apps and other work on the computer remain outside that test.</p>
+
+          <h3 id="faq-downgrade">Should I downgrade Home Assistant when CPU rises after an update?</h3>
+          <p>Only after you identify a matching version-specific issue and have a backup. Check the current point release first because the problem may already be fixed. On Home Assistant OS, the official downgrade path is a partial backup restore.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/how-to-update-home-assistant-safely/">Prepare and recover from a Home Assistant update safely</a></li>
+            <li><a href="/blog/home-assistant-database-too-large-recorder-purge/">Fix a genuinely oversized Home Assistant database</a></li>
+            <li><a href="/blog/home-assistant-devices-unavailable-after-restart/">Recover devices that are unavailable after a Home Assistant restart</a></li>
+            <li><a href="/home-assistant-smart-home-kit/">See Tara's configured Home Assistant system</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/hassio/" target="_blank" rel="noopener noreferrer">Home Assistant Supervisor: per-app, Core, and Supervisor CPU sensors and restart actions</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/systemmonitor/" target="_blank" rel="noopener noreferrer">Home Assistant System Monitor: processor, temperature, memory, disk, load, and resource-pressure sensors</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/system_log/" target="_blank" rel="noopener noreferrer">Home Assistant System Log: condensed and full raw errors and warnings</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/system_health/" target="_blank" rel="noopener noreferrer">Home Assistant System Health: installation and version information</a></li>
+                <li><a href="https://www.home-assistant.io/docs/troubleshooting_general/" target="_blank" rel="noopener noreferrer">Home Assistant general troubleshooting: Safe mode behavior and startup paths</a></li>
+                <li><a href="https://www.home-assistant.io/common-tasks/os/" target="_blank" rel="noopener noreferrer">Home Assistant OS common tasks: backups, Core statistics, logs, restarts, host reboot, and downgrade guidance</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/profiler/" target="_blank" rel="noopener noreferrer">Home Assistant Profiler: advanced Core performance statistics</a></li>
+                <li><a href="https://www.home-assistant.io/changelogs/core-2026.7" target="_blank" rel="noopener noreferrer">Home Assistant Core 2026.7 full changelog through the current point release</a></li>
+                <li><a href="https://developers.home-assistant.io/docs/core/integration/diagnostics/" target="_blank" rel="noopener noreferrer">Home Assistant integration diagnostics: protecting sensitive information</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Issue tracking</h3>
+              <ul>
+                <li><a href="https://github.com/home-assistant/core/issues/173474" target="_blank" rel="noopener noreferrer">Home Assistant Core issue: integration-specific DSMR CPU increase beginning in 2026.6</a></li>
+                <li><a href="https://github.com/home-assistant/core/pull/176192" target="_blank" rel="noopener noreferrer">Home Assistant Core pull request: DSMR parser correction included in 2026.7.2</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1uwgzi0/cpu_jump_since_upgrade_to_202672/" target="_blank" rel="noopener noreferrer">r/homeassistant: a post-update CPU and temperature increase isolated to one installed app in one household</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ui6jag/dsmr_integration_causes_high_cpu_since_20266x/" target="_blank" rel="noopener noreferrer">r/homeassistant: a separate Core CPU increase isolated to the DSMR integration</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep updates and recovery predictable</h2>
+          <div class="links">
+            <a href="/blog/how-to-update-home-assistant-safely/">Update Home Assistant safely</a>
+            <a href="/blog/home-assistant-database-too-large-recorder-purge/">Check Recorder and storage</a>
+            <a href="/blog/home-assistant-devices-unavailable-after-restart/">Recover unavailable devices</a>
+            <a href="/home-assistant-smart-home-kit/">Configured Home Assistant</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want a system with a written recovery path?</h2>
+          <p>Tara plans the Home Assistant computer, health checks, backups, update boundaries, and household handoff as one supportable local system.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
