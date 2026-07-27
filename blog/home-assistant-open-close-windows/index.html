@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant: When to Open or Close Windows</title>
+    <meta name="description" content="Use Home Assistant to compare temperatures, send open-or-close window reminders, and avoid humidity, smoke, rain, and active heating or air-conditioning." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-open-close-windows/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-open-close-windows/" />
+    <meta property="og:title" content="Home Assistant: When to Open or Close Windows" />
+    <meta property="og:description" content="Compare indoor and outdoor conditions, send calm window reminders, and know when weather, air quality, heating, or safety should override them." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-open-close-windows/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant: When to Open or Close Windows" />
+    <meta name="twitter:description" content="Compare indoor and outdoor conditions, send calm window reminders, and know when weather, air quality, heating, or safety should override them." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-open-close-windows/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(28px, 3vw, 42px); }
+      .hero { align-items: end; display: grid; gap: clamp(36px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); margin-left: auto; margin-right: auto; max-width: 1120px; padding-bottom: clamp(22px, 3vw, 34px); width: 100%; }
+      .hero > div, .article-cover { min-width: 0; }
+      .kicker { color: var(--accent); font-size: 0.88rem; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; margin: 0; max-width: 1100px; text-wrap: balance; }
+      h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.14; margin: clamp(48px, 5vw, 62px) 0 18px; max-width: 760px; text-wrap: balance; }
+      h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.2; margin: 38px 0 14px; max-width: 760px; }
+      p { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); line-height: 1.38; margin-top: 18px; max-width: 760px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article { max-width: 1180px; }
+      .article > article, .article-body { min-width: 0; }
+      .article-body { border-top: 1px solid var(--line); margin-left: auto; margin-right: auto; max-width: 780px; padding-top: clamp(34px, 4vw, 50px); width: 100%; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1.06rem, 1.12vw, 1.16rem); line-height: 1.75; }
+      .article-body p { margin: 0 0 24px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 28px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 12px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; overflow-wrap: anywhere; padding: 1px 5px; }
+      .article-body pre { background: #092d24; border: 1px solid rgba(65, 168, 103, 0.28); border-radius: 16px; color: #f8f0de; margin: 22px 0 30px; max-width: 100%; overflow-x: auto; padding: 20px; }
+      .article-body pre code { background: transparent; border: 0; color: inherit; display: block; font-size: 0.92rem; line-height: 1.6; overflow-wrap: normal; padding: 0; white-space: pre; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 44px; max-width: 820px; overflow-wrap: break-word; padding: 24px 26px 22px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: 1.04rem; line-height: 1.58; margin: 0; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 32px 0; max-width: 780px; padding: 22px 24px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 28px 0 32px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 720px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.45; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); }
+      .article-body tr:last-child td { border-bottom: 0; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(34px, 4.5vw, 56px) 0; }
+      .source-list, .article-cta, .related { margin-left: auto; margin-right: auto; max-width: 960px; width: 100%; }
+      .source-list h2, .article-cta h2, .related h2 { font-size: clamp(1.7rem, 2.4vw, 2.6rem); line-height: 1.05; margin: 0 0 16px; max-width: 760px; text-wrap: balance; }
+      .source-grid { display: grid; gap: clamp(22px, 3vw, 36px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 28px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid h3 { margin-top: 0; }
+      .source-grid ul { display: grid; gap: 12px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; line-height: 1.45; }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article-cta .cta { margin-top: 24px; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 24px; }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; display: inline-flex; justify-content: center; line-height: 1.2; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (min-width: 900px) { .article-body .comparison-table { margin-left: 50%; max-width: none; transform: translateX(-50%); width: min(920px, calc(100vw - 64px)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } .hero, .source-grid { grid-template-columns: minmax(0, 1fr); } .hero { gap: 28px; max-width: 46rem; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } .lede { max-width: 100%; } .source-list, .article-cta, .related { max-width: 46rem; } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .links { grid-template-columns: 1fr; } .article-body { max-width: calc(100vw - 44px); padding-top: 30px; } .article-body .tldr { margin-bottom: 36px; max-width: 100%; padding: 20px 18px 18px; } }
+      @media (max-width: 520px) {
+        .article-body .comparison-table { overflow: visible; }
+        .article-body table, .article-body tbody, .article-body tr, .article-body td { display: block; min-width: 0; width: 100%; }
+        .article-body thead { clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px; }
+        .article-body tr { border-bottom: 1px solid var(--line); padding: 10px 0; }
+        .article-body tr:last-child { border-bottom: 0; }
+        .article-body td { border-bottom: 0; padding: 8px 14px; }
+        .article-body td::before { color: var(--accent); content: attr(data-label); display: block; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 4px; text-transform: uppercase; }
+      }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-open-close-windows/#blogposting",
+          "headline": "Home Assistant: When to Open or Close Windows",
+          "description": "Use Home Assistant to compare temperatures, send open-or-close window reminders, and avoid humidity, smoke, rain, and active heating or air-conditioning.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-open-close-windows/cover.png",
+          "datePublished": "2026-07-27",
+          "dateModified": "2026-07-27",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://tarahome.ai/blog/home-assistant-open-close-windows/" },
+          "citation": [
+            "https://www.home-assistant.io/integrations/template/",
+            "https://www.home-assistant.io/docs/automation/trigger/",
+            "https://www.home-assistant.io/docs/automation/condition/",
+            "https://www.home-assistant.io/integrations/weather/",
+            "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+            "https://www.home-assistant.io/integrations/airnow/",
+            "https://www.weather.gov/arx/why_dewpoint_vs_humidity?force_isolation=true",
+            "https://www.epa.gov/air-quality/wildland-fires-and-smoke",
+            "https://www.reddit.com/r/homeassistant/comments/1uf98rw/whats_the_easiest_way_to_do_this_kind_of/",
+            "https://www.reddit.com/r/homeassistant/comments/1ur3y4o/how_to_use_indooroutdoor_temperature_differences/",
+            "https://community.home-assistant.io/t/heatwave-windows-fenetres-canicule-open-or-close-windows-based-on-multi-sensor-temperature-comparison/1015002"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Home Assistant: When to Open or Close Windows", "item": "https://tarahome.ai/blog/home-assistant-open-close-windows/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What temperature difference should Home Assistant use for an open-window reminder?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A useful summer starting point is to open when outside has stayed at least 2 degrees Celsius, or about 4 degrees Fahrenheit, cooler for 10 minutes and the room is at least 1 degree Celsius, or about 2 degrees Fahrenheit, above your comfort target. Close at the comfort target or when the cooling advantage narrows to 1 degree Celsius, or about 2 degrees Fahrenheit. Tune those settings for your home." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Home Assistant need a physical outdoor temperature sensor?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. A nearby weather entity can prove the idea, but a shaded and ventilated outdoor sensor near the home usually represents the air entering the window more closely. Keep it out of direct sun and away from hot walls, dryer vents, and air-conditioning exhaust." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should Home Assistant compare humidity before recommending an open window?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use dew point rather than comparing indoor and outdoor relative-humidity percentages. Relative humidity changes with temperature, while dew point is a more useful measure of how much moisture is in the air. Treat the limit as a household comfort setting, not a universal safety number." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why did the Home Assistant window reminder not fire after a restart?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant documents that a trigger's for timer does not survive a restart or automation reload. The open or close condition must remain true for the full hold time again after the restart." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should Home Assistant open motorized windows automatically?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Start with notifications. Automatic window movement needs reliable rain, smoke, obstruction, security, child and pet, heating or air-conditioning, and hardware safety controls. Do not automate an egress window or rely on this comfort rule as emergency ventilation." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav aria-label="Primary">
+      <a href="/" style="text-decoration:none"><strong>Tara</strong></a>
+      <div>
+        <a href="/smart-home-kit/">Kit</a>
+        <a href="/configurator/">Configurator</a>
+        <a href="/blog/">Guides</a>
+        <a href="/tara-assistant/">Tara Assistant</a>
+      </div>
+    </nav>
+
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Comfort automation</span><span>July 27, 2026</span><span>9 min read</span></p>
+            <h1>Home Assistant: When to Open or Close Windows</h1>
+            <p class="lede">Home Assistant can tell you when to open or close windows by comparing indoor and outdoor temperature. For summer cooling, start with an open reminder only when outside has stayed at least 2°C (about 4°F) cooler for 10 minutes and the room is at least 1°C (about 2°F) above your comfort target. Send a close reminder when the room reaches that target or the cooling advantage falls to 1°C (about 2°F) or less. The separate open and close settings stop alerts bouncing on and off. Keep it notification-only at first. Before acting, check for smoke, rain, unsafe conditions, or active heating or air-conditioning; use dew point, which better reflects how much moisture is in the air, rather than raw relative humidity.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-open-close-windows/cover.png" alt="Homeowner opening a living-room window as cooler evening air reaches the warm room" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Start with two temperatures:</strong> notify when outside stays at least 2°C (about 4°F) cooler for 10 minutes and the room is at least 1°C (about 2°F) above your comfort target.</li>
+              <li><strong>Use a separate close point:</strong> remind the household to close windows when the room reaches its comfort target or the cooling advantage falls to 1°C (about 2°F) or less.</li>
+              <li><strong>Avoid temperature-only advice:</strong> do not act during smoke or unhealthy air, rain, active heating or air-conditioning, or unsafe and unattended conditions. Add a measured veto to the rule if you want Home Assistant to check it automatically.</li>
+              <li><strong>Keep the main caveat in mind:</strong> the 10-minute wait starts over after Home Assistant restarts or the rule reloads, and a nearby shaded outdoor sensor is more representative than a distant weather station.</li>
+            </ul>
+          </aside>
+
+          <h2 id="simple-rule">A Simple Home Assistant Open-or-Close Window Rule</h2>
+          <p>For summer cooling, subtract outdoor temperature from indoor temperature. The result is the <strong>cooling advantage</strong>; a positive number means outside is cooler. Open only when the difference is useful and has lasted long enough to ignore a brief wobble.</p>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr><th>Decision</th><th>Starter rule</th><th>Why it helps</th><th>Important override</th></tr>
+              </thead>
+              <tbody>
+                <tr><td data-label="Decision">Open for cooling</td><td data-label="Starter rule">Inside is at least 1°C / 2°F above your comfort target, and outside stays at least 2°C / 4°F cooler for 10 minutes</td><td data-label="Why it helps">Both differences are useful enough to justify opening rather than reacting to a tiny change</td><td data-label="Important override">Do not open for smoke, poor outdoor air, rain, unsafe conditions, or active heating or air-conditioning</td></tr>
+                <tr><td data-label="Decision">Close again</td><td data-label="Starter rule">The room reaches your comfort target or the cooling advantage falls to 1°C / 2°F or less for 10 minutes, and a window contact says a window is open</td><td data-label="Why it helps">You stop cooling at the temperature you wanted, or keep the cooler indoor air before outdoors catches up</td><td data-label="Important override">A contact sensor prevents a pointless close alert when every window is already shut</td></tr>
+                <tr><td data-label="Decision">Do nothing</td><td data-label="Starter rule">The readings are unavailable, the gap sits between the two limits, or an override is active</td><td data-label="Why it helps">The quiet middle band prevents notification chatter</td><td data-label="Important override">Comfort automation must not replace smoke, carbon-monoxide, or emergency-ventilation guidance</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>These gaps are called <em>hysteresis</em>: conditions must change meaningfully before Home Assistant changes its advice. The numbers are starting points; a shaded apartment and a sun-baked upstairs room may need different limits.</p>
+
+          <h2 id="what-you-need">What You Need Before Building the Reminder</h2>
+          <ul>
+            <li><strong>One indoor temperature sensor</strong> in the room you want to cool, away from sun, cooking heat, vents, and electronics.</li>
+            <li><strong>One outdoor temperature reading.</strong> A nearby weather service shown in Home Assistant—called a weather entity—is enough to test the idea. A shaded, ventilated physical sensor near the home is usually better for deciding what air will enter the window.</li>
+            <li><strong>The Home Assistant Companion app</strong> on the phone that should receive the reminder.</li>
+            <li><strong>A window contact sensor for the close reminder.</strong> It is optional for the open reminder, but it stops Home Assistant asking you to close windows that are already shut.</li>
+            <li><strong>Optional override readings</strong> for outdoor dew point, air quality, rain, heating or air-conditioning activity, and whether somebody is home.</li>
+          </ul>
+          <p>Home Assistant weather entities can expose temperature, humidity, dew point, wind, and other readings, but the available fields depend on the weather provider. Some providers are cloud-polled, meaning Home Assistant needs the internet to fetch their updates, and a regional station may not match a sunny wall or sheltered yard. If the reminder is consistently early or late, improve the outdoor measurement before adding more automation logic.</p>
+          <div class="callout">
+            <p><strong>Outdoor sensor placement matters.</strong> Put a physical sensor in shade with airflow around it. Direct sun, warm masonry, a dryer vent, or an air-conditioner outlet can make the reading unsuitable even when the sensor itself is accurate.</p>
+          </div>
+
+          <h2 id="difference-helper">1. Create the Cooling-Advantage Helper</h2>
+          <p>In Home Assistant, go to <strong>Settings → Devices &amp; services → Helpers</strong>, choose <strong>Create helper</strong>, then select <strong>Template</strong> and <strong>Template a sensor</strong>. Name it <strong>Window cooling advantage</strong>. Replace the example entity IDs—the technical names such as <code>sensor.living_room_temperature</code>—with your own readings.</p>
+          <p>If both temperatures are numeric sensor entities, use this as the state template:</p>
+          <pre><code>{{ (states('sensor.indoor_temperature') | float
+   - states('sensor.outdoor_temperature') | float) | round(1) }}</code></pre>
+          <p>Expand <strong>Advanced options</strong> and paste this into the <strong>Availability template</strong> field so an offline sensor does not turn into a believable but wrong number:</p>
+          <pre><code>{{ is_number(states('sensor.indoor_temperature'))
+   and is_number(states('sensor.outdoor_temperature')) }}</code></pre>
+          <p>A <code>weather.*</code> entity is different: its main state is a word such as “sunny,” while current temperature is an attribute attached to it. If your outdoor source is <code>weather.home</code>, use this state template instead:</p>
+          <pre><code>{{ (states('sensor.indoor_temperature') | float
+   - state_attr('weather.home', 'temperature') | float) | round(1) }}</code></pre>
+          <p>Its matching availability template is:</p>
+          <pre><code>{{ is_number(states('sensor.indoor_temperature'))
+   and is_number(state_attr('weather.home', 'temperature')) }}</code></pre>
+          <p>Set the unit to match both source readings: <strong>°C</strong> or <strong>°F</strong>. Leave the device class empty because this helper represents a difference rather than an absolute room temperature. After saving, open the helper and copy its actual entity ID; Home Assistant may add a suffix when that name already exists. Replace every <code>sensor.window_cooling_advantage</code> example below if your ID differs. Check the helper on a dashboard or under <strong>Developer tools → States</strong>. If indoors is 27°C and outdoors is 23°C, the helper should read 4°C.</p>
+
+          <h2 id="open-reminder">2. Build the Open-Window Reminder</h2>
+          <p>Go to <strong>Settings → Automations &amp; scenes</strong> and create a new automation, which is Home Assistant's name for a saved rule that joins a trigger to an action. Add a <strong>Template</strong> trigger: a true-or-false check that Home Assistant re-evaluates when its referenced readings change. For Celsius, use the template below. Replace the indoor entity ID if yours is different.</p>
+          <pre><code>{{ is_number(states('sensor.window_cooling_advantage'))
+   and is_number(states('sensor.indoor_temperature'))
+   and states('sensor.window_cooling_advantage') | float &gt;= 2
+   and states('sensor.indoor_temperature') | float &gt;= 25 }}</code></pre>
+          <p>This Celsius example assumes a comfort target of 24°C and waits until the room reaches 25°C before opening. Set the trigger's hold time to <strong>10 minutes</strong>. For Fahrenheit, replace <code>2</code> with <code>4</code> and <code>25</code> with an open point about 2°F above your target, such as <code>77</code> for a 75°F target. Add the Companion app notification action for your phone with a message such as: “It has stayed cooler outside for 10 minutes. Open safe windows if the air is clear and the heating or air-conditioning is off.”</p>
+          <p>The template responds when either referenced sensor changes, so it does not miss the moment when the room becomes too warm while outdoors is already cool. Test the action from the automation editor before waiting for the weather to cooperate. If phone alerts arrive late or not at all, use Tara's <a href="/blog/home-assistant-notifications-delayed-not-arriving/">Home Assistant notification troubleshooting guide</a> before changing the temperature rule.</p>
+
+          <h2 id="close-reminder">3. Build the Close-Window Reminder</h2>
+          <p>The close reminder needs to know that at least one relevant window is open. Use one contact sensor while testing, or replace the example below with an existing binary-sensor group—a combined open-or-closed reading that turns on when any monitored window is open. The example closes at either the comfort target or the smaller cooling advantage.</p>
+          <pre><code>{{ is_number(states('sensor.window_cooling_advantage'))
+   and is_number(states('sensor.indoor_temperature'))
+   and is_state('binary_sensor.window_contact', 'on')
+   and (
+     states('sensor.window_cooling_advantage') | float &lt;= 1
+     or states('sensor.indoor_temperature') | float &lt;= 24
+   ) }}</code></pre>
+          <p>Again, use a 10-minute hold. In Fahrenheit, replace <code>1</code> with <code>2</code> and <code>24</code> with the same comfort target used in the open rule, such as <code>75</code>. Send a simple message: “The room has reached its target or the outdoor cooling advantage has almost gone. Close the open windows.” If you do not have a contact sensor, either omit its line and accept a general check-the-windows reminder, or skip this automation until you add one.</p>
+          <p>Home Assistant documents an important limit: a trigger's <strong>for</strong> timer does not survive a Home Assistant restart or an automation reload. After either event, the condition must remain true for a fresh 10 minutes. That delay is normally safer than firing immediately from an old assumption.</p>
+
+          <h2 id="overrides">4. Add Overrides One at a Time</h2>
+          <p>Get the two-temperature version working first. Then add only the vetoes your household can measure reliably. Put each measured veto inside the Template trigger, not only in the separate Conditions section. A Template trigger runs when its full check changes from false to true; keeping the veto in that check lets Home Assistant re-evaluate when rain stops or another block clears. Test each change from the automation editor and check the automation trace if a reminder does not run.</p>
+
+          <h3 id="worked-override">Worked example: add a rain veto</h3>
+          <p>If you have a reliable rain sensor that reports <code>on</code> when rain is detected, add its real entity ID to the open trigger itself. This complete Celsius example stays false while rain is detected, then starts the 10-minute wait only after the rain sensor returns to <code>off</code> and the temperature rule is still true:</p>
+          <pre><code>{{ is_number(states('sensor.window_cooling_advantage'))
+   and is_number(states('sensor.indoor_temperature'))
+   and states('sensor.window_cooling_advantage') | float &gt;= 2
+   and states('sensor.indoor_temperature') | float &gt;= 25
+   and is_state('binary_sensor.rain_detected', 'off') }}</code></pre>
+          <p>Do not copy that final line unless you have verified what your own rain sensor calls dry and wet. Apply the same pattern only to reliable readings. Smoke and official safety alerts should still be checked by a person unless you have a current, trusted source that the rule can read.</p>
+
+          <h3 id="dew-point">Use dew point for the moisture check</h3>
+          <p>Do not compare indoor and outdoor relative-humidity percentages directly. Relative humidity changes with temperature, so 70% outdoors in cool air does not mean the same moisture load as 70% indoors in warm air. The US National Weather Service recommends dew point as the better measure of how much moisture is actually present.</p>
+          <p>If muggy outdoor air is a problem, add a condition that the outdoor dew point is below a limit your household finds comfortable. Around 18°C / 65°F can be a conservative first comfort cutoff, but it is not a health or building-safety limit. In a humid climate, a dehumidifier, air-conditioner, or planned mechanical ventilation may be more appropriate than opening windows.</p>
+
+          <h3 id="air-quality">Let smoke and outdoor air quality veto the reminder</h3>
+          <p>Cooler does not mean healthier. During wildfire smoke or another official outdoor-air advisory, keep windows closed as directed by local authorities even if the temperature rule says open. In the United States, Home Assistant's AirNow integration—the software connection that brings AirNow readings into Home Assistant—can provide official observations, but it needs the internet and the source observations are generally hourly. Use it as an extra condition, not as a replacement for urgent local alerts. Elsewhere, use your regional official air-quality source.</p>
+
+          <h3 id="rain-hvac-security">Check rain, heating or air-conditioning, and household safety</h3>
+          <ul>
+            <li><strong>Rain and wind:</strong> block the open reminder when wind-driven rain can reach the window or when severe weather guidance says to keep it shut.</li>
+            <li><strong>Heating or air-conditioning:</strong> avoid conditioning the home while windows are open. A notification can ask the household to turn the system off first; do not force a thermostat state that could interfere with freeze, humidity, or equipment protection.</li>
+            <li><strong>Presence and security:</strong> send the reminder only when someone can act on it. Do not recommend leaving an accessible ground-floor window open in an empty home.</li>
+            <li><strong>Children, pets, and egress:</strong> exclude windows that are unsafe to operate or needed as an emergency exit. A comfort automation is not a safety control.</li>
+          </ul>
+          <p>If presence should be an automation condition, Tara's <a href="/blog/presence-detection-smart-home/">plain-English presence detection guide</a> explains the tradeoffs without turning one unreliable phone location into a security decision.</p>
+
+          <h2 id="tune">How to Tune the Reminder Without Making It Noisy</h2>
+          <ol>
+            <li><strong>Run notification-only for a week.</strong> Note whether each suggestion would have improved comfort before considering any extra action.</li>
+            <li><strong>Adjust one number at a time.</strong> Raise the open difference if the benefit feels too small; lengthen the hold if clouds or gusts create short swings.</li>
+            <li><strong>Keep two thresholds.</strong> Do not set open and close to the same value, or the advice can flip repeatedly near that line.</li>
+            <li><strong>Check traces before rewriting.</strong> The automation trace shows which trigger or condition stopped a run. Tara's <a href="/blog/home-assistant-automation-not-firing/">Home Assistant automation-not-firing checklist</a> explains the fastest order to check.</li>
+            <li><strong>Review each season.</strong> Summer cooling, winter sun, humidity, smoke, and daylight patterns change. Disable a rule that no longer matches the season.</li>
+          </ol>
+
+          <h2 id="avoid">What to Avoid</h2>
+          <ul>
+            <li><strong>Do not use a sun-heated outdoor sensor.</strong> It can report the wall or the sensor case rather than the air.</li>
+            <li><strong>Do not treat weather-provider data as room-level truth.</strong> It is a useful starter and fallback, not proof of the conditions at one window.</li>
+            <li><strong>Do not use raw relative humidity as the deciding comparison.</strong> Use dew point and a locally appropriate comfort limit.</li>
+            <li><strong>Do not let a temperature rule overrule smoke, severe weather, security, or emergency guidance.</strong></li>
+            <li><strong>Do not start by moving windows automatically.</strong> Notifications are reversible and let a person check the real conditions.</li>
+            <li><strong>Do not use this rule as required ventilation.</strong> Carbon monoxide, combustion safety, indoor air quality, and building-code ventilation need purpose-built sensors and professional guidance where appropriate.</li>
+          </ul>
+
+          <h2 id="tara-recommendation">Tara's Practical Recommendation</h2>
+          <p>Start with one room, one shaded outdoor reading, and two calm phone reminders. Keep the helper name and thresholds understandable enough that another person in the household can maintain them. Once the suggestions have proved useful, add a window contact and only the overrides you can trust.</p>
+          <p>A well-designed local system should keep the temperature comparison, contact sensors, and basic automation working inside the home during an internet outage, even if optional online weather or air-quality readings stop updating. Tara's <a href="/home-assistant-smart-home-kit/">configured Home Assistant system</a> documents which parts stay local and which optional data still needs the internet.</p>
+
+          <h2 id="faq">FAQ</h2>
+          <h3 id="faq-temperature">What temperature difference should Home Assistant use for an open-window reminder?</h3>
+          <p>Start when outside has stayed at least 2°C, or about 4°F, cooler for 10 minutes and the room is at least 1°C, or about 2°F, above your comfort target. Close at the target or when the advantage narrows to 1°C, or about 2°F. Tune those numbers for your building and climate.</p>
+
+          <h3 id="faq-outdoor-sensor">Does Home Assistant need a physical outdoor temperature sensor?</h3>
+          <p>No. A nearby weather entity can prove the idea. A shaded, ventilated outdoor sensor near the house is usually more representative of the air entering the window. Keep it away from direct sun, hot walls, dryer vents, and air-conditioner exhaust.</p>
+
+          <h3 id="faq-humidity">Should Home Assistant compare humidity before recommending an open window?</h3>
+          <p>Yes when moisture affects comfort, but compare dew point rather than the two relative-humidity percentages. Dew point is a better measure of the actual moisture in the air. Treat your chosen limit as a comfort setting, not a universal safety number.</p>
+
+          <h3 id="faq-restart">Why did the Home Assistant window reminder not fire after a restart?</h3>
+          <p>The 10-minute <strong>for</strong> timer starts over after a Home Assistant restart or automation reload. The condition must remain true for the full hold time again. Also check whether either source sensor was unavailable during that period.</p>
+
+          <h3 id="faq-motorized">Should Home Assistant open motorized windows automatically?</h3>
+          <p>Start with notifications. Automatic movement needs dependable rain, smoke, obstruction, security, child and pet, heating or air-conditioning, and hardware safety controls. Never automate an egress window or rely on this comfort rule as emergency ventilation.</p>
+
+          <h2 id="related-reading">Related Tara Reading</h2>
+          <ul>
+            <li><a href="/blog/home-assistant-automation-not-firing/">Find why a Home Assistant automation did not run</a></li>
+            <li><a href="/blog/home-assistant-notifications-delayed-not-arriving/">Fix delayed or missing Home Assistant phone notifications</a></li>
+            <li><a href="/blog/presence-detection-smart-home/">Choose a sensible presence condition for household automations</a></li>
+            <li><a href="/home-assistant-smart-home-kit/">See Tara's configured local Home Assistant system</a></li>
+          </ul>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/template/" target="_blank" rel="noopener noreferrer">Home Assistant Template integration: UI helpers, state templates, and availability templates</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/trigger/" target="_blank" rel="noopener noreferrer">Home Assistant automation triggers: template triggers, hold times, and restart behavior</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/condition/" target="_blank" rel="noopener noreferrer">Home Assistant automation conditions: numeric, state, and template checks</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/weather/" target="_blank" rel="noopener noreferrer">Home Assistant Weather integration: current temperature, humidity, dew point, and provider-dependent readings</a></li>
+                <li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/" target="_blank" rel="noopener noreferrer">Home Assistant Companion: basic phone notification actions</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/airnow/" target="_blank" rel="noopener noreferrer">Home Assistant AirNow integration: cloud-polled official US air-quality observations</a></li>
+                <li><a href="https://www.weather.gov/arx/why_dewpoint_vs_humidity?force_isolation=true" target="_blank" rel="noopener noreferrer">US National Weather Service: why dew point describes moisture better than relative humidity</a></li>
+                <li><a href="https://www.epa.gov/air-quality/wildland-fires-and-smoke" target="_blank" rel="noopener noreferrer">US Environmental Protection Agency: outdoor-air and wildfire-smoke guidance</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1uf98rw/whats_the_easiest_way_to_do_this_kind_of/" target="_blank" rel="noopener noreferrer">r/homeassistant: practical open-window prompts and the moisture, air-quality, rain, and alert-noise questions they raise</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ur3y4o/how_to_use_indooroutdoor_temperature_differences/" target="_blank" rel="noopener noreferrer">r/homeassistant: using indoor-outdoor temperature differences for passive cooling and warming</a></li>
+                <li><a href="https://community.home-assistant.io/t/heatwave-windows-fenetres-canicule-open-or-close-windows-based-on-multi-sensor-temperature-comparison/1015002" target="_blank" rel="noopener noreferrer">Home Assistant Community: multi-sensor open-or-close window guidance during hot weather</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Make the reminder reliable and easy to live with</h2>
+          <div class="links">
+            <a href="/blog/home-assistant-automation-not-firing/">Trace a missed automation</a>
+            <a href="/blog/home-assistant-notifications-delayed-not-arriving/">Fix phone notifications</a>
+            <a href="/blog/presence-detection-smart-home/">Add a presence condition</a>
+            <a href="/home-assistant-smart-home-kit/">Configured Home Assistant</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Tara setup</p>
+          <h2>Want comfort automations that fit the way your home behaves?</h2>
+          <p>Tara plans the sensors, local rules, safe exceptions, and household handoff together, so useful reminders stay understandable after installation day.</p>
+          <a class="cta" href="/configurator/">Plan your home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>

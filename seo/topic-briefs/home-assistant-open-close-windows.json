@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "slug": "home-assistant-open-close-windows",
+  "researchedAt": "2026-07-27",
+  "primaryQuery": "Home Assistant when to open or close windows",
+  "readerQuestion": "How can Home Assistant compare indoor and outdoor conditions and send a clear reminder when opening or closing the windows would actually make the home more comfortable?",
+  "selectedBecause": "Three independent recent community discussions show strong seasonal demand for a practical indoor-versus-outdoor comparison, while current search results are split between general heatwave advice and older code-first forum posts. The question has a safe notification-first answer, fits Tara's automation coverage, and does not duplicate an existing Tara article.",
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1uf98rw/whats_the_easiest_way_to_do_this_kind_of/",
+      "observedAt": "2026-07-27",
+      "evidence": "A June 25 Home Assistant discussion asked for an easy phone prompt when outdoor air becomes better than indoor air for cooling a home without air conditioning; the replies repeatedly raised humidity, air quality, rain, and alert-chatter concerns."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1ur3y4o/how_to_use_indooroutdoor_temperature_differences/",
+      "observedAt": "2026-07-27",
+      "evidence": "An independent July 8 discussion asked how to turn the indoor-outdoor temperature difference into useful Home Assistant actions for passive summer cooling and winter warming, showing the same practical decision need from a separate reader."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/heatwave-windows-fenetres-canicule-open-or-close-windows-based-on-multi-sensor-temperature-comparison/1015002",
+      "observedAt": "2026-07-27",
+      "evidence": "A June 24 Home Assistant Community topic, still active on July 27, focuses specifically on open-or-close window advice during a heatwave using multiple temperature sensors, confirming sustained demand beyond Reddit."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant when to open or close windows",
+    "reviewedAt": "2026-07-27",
+    "intent": "The searcher wants a reliable Home Assistant rule and setup steps that say when outside air will cool the home, when to close the windows again, and which weather or safety conditions should override the temperature comparison.",
+    "resultGap": "The exact results mix a general heatwave lifestyle article with older Home Assistant forum blueprints and isolated code examples. They do not give a current plain-English setup with separate open and close thresholds, a hold time to prevent repeated alerts, a notification-first safety approach, and clear dew-point, smoke, rain, HVAC, and security caveats in one guide.",
+    "resultsReviewed": [
+      "https://www.idealhome.co.uk/house-manual/energy-saving/why-i-leave-upstairs-windows-open-in-hot-weather",
+      "https://community.home-assistant.io/t/open-window-recommendation-absolute-humidity-based-blueprint/897695",
+      "https://community.home-assistant.io/t/energy-saving-its-fresh-outside-time-to-open-the-windows/589835",
+      "https://community.home-assistant.io/t/automation-condition-to-message-when-to-close-windows-when-one-is-open-and-its-warmer-outside-is-state-and-value-template-condition/230467"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant Template integration",
+      "url": "https://www.home-assistant.io/integrations/template/",
+      "supports": "Creating a template sensor in the Helpers interface, updating it from referenced entities, and adding an availability template so missing source values do not become misleading numbers."
+    },
+    {
+      "name": "Home Assistant automation triggers",
+      "url": "https://www.home-assistant.io/docs/automation/trigger/",
+      "supports": "Using numeric or template triggers with a hold time, including the documented limitation that a for period is reset by a Home Assistant restart or automation reload."
+    },
+    {
+      "name": "Home Assistant automation conditions",
+      "url": "https://www.home-assistant.io/docs/automation/condition/",
+      "supports": "Adding state, numeric, and template conditions so reminders only run when the home is warm enough and optional safety inputs allow ventilation."
+    },
+    {
+      "name": "Home Assistant Weather integration",
+      "url": "https://www.home-assistant.io/integrations/weather/",
+      "supports": "The current temperature, humidity, dew point, wind, and other attributes that a configured weather entity may expose, while noting that provider support varies."
+    },
+    {
+      "name": "Home Assistant Companion notification basics",
+      "url": "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+      "supports": "Sending a simple notification to a Home Assistant Companion app device from an automation action."
+    },
+    {
+      "name": "Home Assistant AirNow integration",
+      "url": "https://www.home-assistant.io/integrations/airnow/",
+      "supports": "Adding official US air-quality observations as an optional condition, with the documented cloud-polling and update-frequency caveats."
+    },
+    {
+      "name": "US National Weather Service dew-point guidance",
+      "url": "https://www.weather.gov/arx/why_dewpoint_vs_humidity?force_isolation=true",
+      "supports": "Explaining why dew point is a more useful measure of actual outdoor moisture than comparing relative-humidity percentages at different temperatures."
+    },
+    {
+      "name": "US Environmental Protection Agency wildfire smoke guidance",
+      "url": "https://www.epa.gov/air-quality/wildland-fires-and-smoke",
+      "supports": "The safety caveat that cooler outdoor air is not a reason to open windows when wildfire smoke or unhealthy outdoor air is present."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-automation-not-firing/",
+      "/blog/home-assistant-notifications-delayed-not-arriving/",
+      "/blog/presence-detection-smart-home/"
+    ],
+    "decision": "Existing Tara pages explain how to troubleshoot a failed automation, fix delayed phone notifications, or use presence as an automation condition. None answers the distinct comfort decision of when Home Assistant should recommend opening or closing windows based on indoor and outdoor conditions, so the proposed page adds a new intent instead of restating those guides."
+  },
+  "selectionScore": {
+    "communityDemand": 3,
+    "queryClarity": 2,
+    "answerability": 2,
+    "siteFit": 2,
+    "freshness": 2,
+    "resultGap": 2,
+    "cannibalizationRisk": 0,
+    "total": 13
+  }
+}
