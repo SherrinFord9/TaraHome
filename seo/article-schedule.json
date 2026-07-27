@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "timezone": "America/Los_Angeles",
   "publishing": {
     "newArticlesPerDay": 1,
@@ -9,50 +9,61 @@
     "skipWhenNoStrongDistinctTopicExists": true
   },
   "dailyStrategy": {
-    "lane": "home-assistant-demand",
+    "lane": "demand-led",
     "appliesEveryDay": true,
-    "focus": "A specific Home Assistant setup, troubleshooting, compatibility, migration, automation, or buying question supported by current search and community demand",
-    "researchWindowDays": 45,
-    "minimumIndependentCommunitySignals": 2,
+    "focus": "One concrete, recurring Home Assistant or home-automation question with clear search intent, useful Tara fit, and no existing TaraHome page that already answers it",
+    "researchReviewWindowDays": 14,
+    "minimumCandidatesCompared": 3,
+    "minimumIndependentDemandSignals": 2,
+    "minimumCommunitySignals": 1,
     "requireGoogleResultsReview": true,
     "requireCurrentOfficialSources": true,
-    "requireTopicBrief": true,
-    "minimumSelectionScore": 8
+    "requireTopicBrief": true
+  },
+  "demandSignalSources": [
+    "reddit",
+    "home-assistant-community",
+    "google-search",
+    "search-console",
+    "github",
+    "official-forum",
+    "vendor-community",
+    "other-community"
+  ],
+  "topicSelection": {
+    "compareBeforeChoosing": [
+      "recurrence across independent discussions or search surfaces",
+      "a clear question a homeowner would actually search",
+      "durable or growing usefulness rather than novelty alone",
+      "a weak, outdated, fragmented, or overly technical current result set",
+      "fit with Tara's local, private, reliable smart-home point of view",
+      "a natural path to a relevant Tara guide, kit page, or configurator"
+    ],
+    "preferWhenDemandIsComparable": [
+      "broad recurring setup, migration, or decision questions",
+      "current product selection, compatibility, and local-control questions",
+      "common troubleshooting problems shared by many installations",
+      "practical automations for comfort, safety, energy, presence, cameras, or voice"
+    ],
+    "avoid": [
+      "one-off niche errors supported only by small recent threads",
+      "thin release-note rewrites",
+      "keyword permutations of an existing article",
+      "near-duplicate Matter, Thread, or IKEA troubleshooting pages",
+      "generic smart-home benefits content without a concrete reader question"
+    ]
   },
   "keywordPlacement": {
-    "requiredPhrase": "Home Assistant",
-    "requiredIn": [
-      "primary query",
-      "HTML title",
-      "H1",
-      "opening answer",
-      "meta description"
-    ],
-    "naturalLanguageOnly": true,
+    "requiredPhrase": null,
+    "rule": "Use the reader's natural query in the title, H1, opening answer, and meta description without forcing Home Assistant when it is not part of that query.",
     "metaKeywordsTag": false
-  },
-  "intentPriorities": [
-    "exact troubleshooting symptom or error",
-    "setup or migration task",
-    "device compatibility or local-control decision",
-    "current product comparison or buying decision",
-    "automation, dashboard, presence, camera, energy, or voice problem"
-  ],
-  "selectionScoring": {
-    "communityDemand": "0-3",
-    "queryClarity": "0-2",
-    "answerability": "0-2",
-    "siteFit": "0-2",
-    "freshness": "0-2",
-    "resultGap": "0-2",
-    "cannibalizationRisk": "subtract 0-3",
-    "minimumTotal": 8
   },
   "guardrails": {
     "newPageRequired": true,
     "distinctPrimaryQueryRequired": true,
-    "homeAssistantFirstTopicRequired": true,
-    "twoIndependentCommunitySignalsRequired": true,
+    "homeAssistantOrHomeAutomationRelevanceRequired": true,
+    "independentDemandEvidenceRequired": true,
+    "atLeastOneCommunitySignalRequired": true,
     "singleViralThreadIsInsufficient": true,
     "searchResultGapMustBeExplained": true,
     "ikeaSpecificMaximumInRollingSevenDays": 1,

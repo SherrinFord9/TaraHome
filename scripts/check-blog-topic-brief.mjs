@@ -109,54 +109,108 @@ if (briefFile && fs.existsSync(briefFile)) {
   }
 }
 
-const researchWindowDays = Number(schedule.dailyStrategy?.researchWindowDays || 45);
-const minimumSignals = Number(schedule.dailyStrategy?.minimumIndependentCommunitySignals || 2);
-const minimumScore = Number(schedule.dailyStrategy?.minimumSelectionScore || 8);
+const researchReviewWindowDays = Number(schedule.dailyStrategy?.researchReviewWindowDays || 14);
+const minimumCandidates = Number(schedule.dailyStrategy?.minimumCandidatesCompared || 3);
+const minimumSignals = Number(schedule.dailyStrategy?.minimumIndependentDemandSignals || 2);
+const minimumCommunitySignals = Number(schedule.dailyStrategy?.minimumCommunitySignals || 1);
+const legacyMinimumScore = Number(schedule.dailyStrategy?.minimumSelectionScore || 0);
+const allowedSignalSources = new Set(schedule.demandSignalSources || [
+  'reddit',
+  'home-assistant-community',
+]);
+const communitySignalSources = new Set([
+  'reddit',
+  'home-assistant-community',
+  'github',
+  'official-forum',
+  'vendor-community',
+  'other-community',
+]);
 
 if (Object.keys(brief).length) {
-  if (brief.version !== 1) errors.push('Topic brief version must be 1.');
+  if (![1, 2].includes(brief.version)) errors.push('Topic brief version must be 1 or 2.');
   if (brief.slug !== slug) errors.push(`Topic brief slug must be "${slug}".`);
 
   const primaryQuery = nonEmptyString(brief.primaryQuery, 'primaryQuery', 12);
   nonEmptyString(brief.readerQuestion, 'readerQuestion', 30);
   nonEmptyString(brief.selectedBecause, 'selectedBecause', 60);
-  parseRecentDate(brief.researchedAt, 'researchedAt', researchWindowDays);
-  if (primaryQuery && !normalize(primaryQuery).includes('home assistant')) {
-    errors.push('primaryQuery must contain the phrase "Home Assistant".');
+  parseRecentDate(brief.researchedAt, 'researchedAt', researchReviewWindowDays);
+
+  if (brief.version === 2) {
+    const candidates = Array.isArray(brief.candidatesConsidered) ? brief.candidatesConsidered : [];
+    if (candidates.length < minimumCandidates) {
+      errors.push(`candidatesConsidered must compare at least ${minimumCandidates} viable queries before selection.`);
+    }
+
+    const selectedQueries = [];
+    const candidateQueries = new Set();
+    candidates.forEach((candidate, index) => {
+      const label = `candidatesConsidered[${index}]`;
+      const query = nonEmptyString(candidate?.query, `${label}.query`, 12);
+      nonEmptyString(candidate?.evidenceSummary, `${label}.evidenceSummary`, 40);
+      nonEmptyString(candidate?.reason, `${label}.reason`, 30);
+      if (!['selected', 'rejected'].includes(candidate?.decision)) {
+        errors.push(`${label}.decision must be "selected" or "rejected".`);
+      }
+      if (query) {
+        const normalizedQuery = normalize(query);
+        if (candidateQueries.has(normalizedQuery)) errors.push(`${label}.query repeats another candidate.`);
+        candidateQueries.add(normalizedQuery);
+        if (candidate.decision === 'selected') selectedQueries.push(normalizedQuery);
+      }
+    });
+
+    if (selectedQueries.length !== 1) {
+      errors.push('candidatesConsidered must contain exactly one selected query.');
+    } else if (primaryQuery && selectedQueries[0] !== normalize(primaryQuery)) {
+      errors.push('The selected candidate query must match primaryQuery exactly after normalization.');
+    }
   }
 
   const signals = Array.isArray(brief.demandSignals) ? brief.demandSignals : [];
   if (signals.length < minimumSignals) {
-    errors.push(`demandSignals must contain at least ${minimumSignals} independent recent Reddit or Home Assistant Community URLs.`);
+    errors.push(`demandSignals must contain at least ${minimumSignals} independent demand URLs.`);
   }
 
   const signalUrls = new Set();
+  const communitySignalUrls = new Set();
   signals.forEach((signal, index) => {
     const label = `demandSignals[${index}]`;
-    if (!['reddit', 'home-assistant-community'].includes(signal?.source)) {
-      errors.push(`${label}.source must be "reddit" or "home-assistant-community".`);
+    if (!allowedSignalSources.has(signal?.source)) {
+      errors.push(`${label}.source must be one of: ${[...allowedSignalSources].join(', ')}.`);
     }
     const url = validHttpUrl(signal?.url, `${label}.url`);
     if (url) {
-      signalUrls.add(url.href.replace(/\/$/, ''));
+      const normalizedUrl = url.href.replace(/\/$/, '');
+      signalUrls.add(normalizedUrl);
+      if (communitySignalSources.has(signal.source)) communitySignalUrls.add(normalizedUrl);
       if (signal.source === 'reddit' && !/(^|\.)reddit\.com$/i.test(url.hostname)) {
         errors.push(`${label}.url must point to Reddit when source is "reddit".`);
       }
       if (signal.source === 'home-assistant-community' && url.hostname !== 'community.home-assistant.io') {
         errors.push(`${label}.url must point to community.home-assistant.io.`);
       }
+      if (signal.source === 'google-search' && !/(^|\.)google\.[a-z.]+$/i.test(url.hostname)) {
+        errors.push(`${label}.url must point to Google when source is "google-search".`);
+      }
+      if (signal.source === 'github' && url.hostname !== 'github.com') {
+        errors.push(`${label}.url must point to github.com when source is "github".`);
+      }
     }
-    parseRecentDate(signal?.observedAt, `${label}.observedAt`, researchWindowDays);
+    parseRecentDate(signal?.observedAt, `${label}.observedAt`, researchReviewWindowDays);
     nonEmptyString(signal?.evidence, `${label}.evidence`, 40);
   });
   if (signalUrls.size < minimumSignals) errors.push('Demand signals must use independent URLs, not repeated links.');
+  if (communitySignalUrls.size < minimumCommunitySignals) {
+    errors.push(`Demand signals must include at least ${minimumCommunitySignals} independent community URL(s).`);
+  }
 
   const searchReview = brief.searchReview || {};
   const searchedQuery = nonEmptyString(searchReview.query, 'searchReview.query', 12);
   if (primaryQuery && searchedQuery && normalize(primaryQuery) !== normalize(searchedQuery)) {
     errors.push('searchReview.query must match primaryQuery exactly after normalization.');
   }
-  parseRecentDate(searchReview.reviewedAt, 'searchReview.reviewedAt', researchWindowDays);
+  parseRecentDate(searchReview.reviewedAt, 'searchReview.reviewedAt', researchReviewWindowDays);
   nonEmptyString(searchReview.intent, 'searchReview.intent', 12);
   nonEmptyString(searchReview.resultGap, 'searchReview.resultGap', 60);
   const reviewedResults = Array.isArray(searchReview.resultsReviewed) ? searchReview.resultsReviewed : [];
@@ -186,25 +240,29 @@ if (Object.keys(brief).length) {
     if (url && !url.startsWith('/')) errors.push(`existingCoverage.closestUrls[${index}] must be a site-relative path.`);
   });
 
-  const score = brief.selectionScore || {};
-  const positiveKeys = ['communityDemand', 'queryClarity', 'answerability', 'siteFit', 'freshness', 'resultGap'];
-  const ranges = {communityDemand: 3, queryClarity: 2, answerability: 2, siteFit: 2, freshness: 2, resultGap: 2};
-  let computedScore = 0;
-  positiveKeys.forEach((key) => {
-    const value = score[key];
-    if (!Number.isInteger(value) || value < 0 || value > ranges[key]) {
-      errors.push(`selectionScore.${key} must be an integer from 0 to ${ranges[key]}.`);
+  if (brief.version === 1) {
+    const score = brief.selectionScore || {};
+    const positiveKeys = ['communityDemand', 'queryClarity', 'answerability', 'siteFit', 'freshness', 'resultGap'];
+    const ranges = {communityDemand: 3, queryClarity: 2, answerability: 2, siteFit: 2, freshness: 2, resultGap: 2};
+    let computedScore = 0;
+    positiveKeys.forEach((key) => {
+      const value = score[key];
+      if (!Number.isInteger(value) || value < 0 || value > ranges[key]) {
+        errors.push(`selectionScore.${key} must be an integer from 0 to ${ranges[key]}.`);
+      } else {
+        computedScore += value;
+      }
+    });
+    if (!Number.isInteger(score.cannibalizationRisk) || score.cannibalizationRisk < 0 || score.cannibalizationRisk > 3) {
+      errors.push('selectionScore.cannibalizationRisk must be an integer from 0 to 3.');
     } else {
-      computedScore += value;
+      computedScore -= score.cannibalizationRisk;
     }
-  });
-  if (!Number.isInteger(score.cannibalizationRisk) || score.cannibalizationRisk < 0 || score.cannibalizationRisk > 3) {
-    errors.push('selectionScore.cannibalizationRisk must be an integer from 0 to 3.');
-  } else {
-    computedScore -= score.cannibalizationRisk;
+    if (score.total !== computedScore) errors.push(`selectionScore.total must equal the computed score ${computedScore}.`);
+    if (computedScore < legacyMinimumScore) {
+      errors.push(`Selection score ${computedScore} is below the required legacy minimum of ${legacyMinimumScore}.`);
+    }
   }
-  if (score.total !== computedScore) errors.push(`selectionScore.total must equal the computed score ${computedScore}.`);
-  if (computedScore < minimumScore) errors.push(`Selection score ${computedScore} is below the required minimum of ${minimumScore}.`);
 }
 
 if (articleFile && fs.existsSync(articleFile)) {
@@ -214,7 +272,7 @@ if (articleFile && fs.existsSync(articleFile)) {
   const descriptionTag = (html.match(/<meta\b[^>]*\bname=["']description["'][^>]*>/i) || [])[0] || '';
   const description = attribute(descriptionTag, 'content');
   for (const [label, value] of [['HTML title', title], ['H1', h1], ['meta description', description]]) {
-    if (!normalize(value).includes('home assistant')) errors.push(`${label} must contain the phrase "Home Assistant".`);
+    if (!normalize(value)) errors.push(`${label} must not be empty.`);
   }
 }
 
@@ -224,4 +282,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Blog topic brief check PASS: ${relativeBrief} documents current demand, search intent, official sources, and distinct coverage.`);
+const briefSummary = brief.version === 2
+  ? 'candidate comparison, demand, search intent, official sources, and distinct coverage'
+  : 'legacy demand, search intent, official sources, and distinct coverage';
+console.log(`Blog topic brief check PASS: ${relativeBrief} documents ${briefSummary}.`);

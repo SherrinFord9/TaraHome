@@ -40,8 +40,12 @@ function containsTerm(value, term) {
 }
 
 const laneRules = {
+  'demand-led': {
+    label: 'demand-led Home Assistant or home-automation',
+    terms: [],
+  },
   'home-assistant-demand': {
-    label: 'Home Assistant demand-led',
+    label: 'legacy Home Assistant demand-led',
     terms: ['home assistant', 'homeassistant'],
   },
 };
