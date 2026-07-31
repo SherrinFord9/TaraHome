@@ -1,0 +1,129 @@
+{
+  "version": 2,
+  "slug": "home-assistant-automation-manual-override",
+  "researchedAt": "2026-07-31",
+  "primaryQuery": "Home Assistant automation manual override",
+  "readerQuestion": "How can I pause a Home Assistant automation when somebody uses a wall control, app, voice command, or thermostat, then let the automation resume predictably?",
+  "selectedBecause": "Current Reddit and Home Assistant Community discussions repeatedly ask how household members can take control without an automation immediately undoing them. The exact Google results are dominated by situation-specific forum threads and one unusually long lounge-lighting recipe, leaving room for a short homeowner-first pattern that works across lights, climate, fans, and shades. Search Console does not establish volume for this exact query, but the adjacent automation-not-firing article has 442 impressions with 0.45% click-through rate, showing an existing Tara audience for practical automation control and diagnosis. No Tara article currently owns manual-override setup intent, and the answer is durable: use an explicit helper, a simple condition, a visible control, and a deliberate reset rule before considering fragile source-detection logic.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant automation manual override",
+      "evidenceSummary": "A May 2026 Reddit question asks how manual thermostat, light, and air-conditioning changes should suspend automations; separate Reddit and Home Assistant Community discussions repeat the same problem for wall switches and motion lighting. Google results offer scattered recipes but no concise cross-room decision path.",
+      "decision": "selected",
+      "reason": "It combines recurring cross-surface demand, clear setup intent, durable household usefulness, a weak concise-result set, strong Tara fit, and no existing Tara page that answers the question directly."
+    },
+    {
+      "query": "does Home Assistant need a static IP address",
+      "evidenceSummary": "Recent Reddit and Home Assistant Community discussions continue to ask whether Home Assistant OS should keep DHCP, use a reservation, or receive a manually configured address, while official networking documentation confirms that DHCP remains the default.",
+      "decision": "rejected",
+      "reason": "The question is useful and evergreen, but Tara's device-unavailable-after-restart and IoT-VLAN articles already cover much of the practical addressing and discovery problem, creating materially higher cannibalization risk."
+    },
+    {
+      "query": "smart lights turn on after power outage",
+      "evidenceSummary": "Reddit, Home Assistant Community, and vendor documentation show recurring frustration with bulbs returning on after a power cut, but the available recovery setting and behavior vary by exact brand, model, firmware, and whether a wall switch removed power.",
+      "decision": "rejected",
+      "reason": "It has broad demand, but a previous Tara research brief already deferred it because a safe answer is highly model-dependent and it sits close to existing lighting, Hue, restart, and UPS coverage."
+    },
+    {
+      "query": "motion sensor lights turn off while room occupied",
+      "evidenceSummary": "Home Assistant and Reddit discussions repeatedly describe motion lights timing out while somebody sits still, and official occupancy, motion-trigger, and blueprint documentation provides several implementation paths.",
+      "decision": "rejected",
+      "reason": "The exact search results already include direct fixes, while Tara's presence-detection and smart-lighting articles substantially cover motion-versus-occupancy sensing, timeouts, and room-still-occupied behavior."
+    },
+    {
+      "query": "where should water leak sensors be placed",
+      "evidenceSummary": "Homeowner and automation communities repeatedly ask how many leak sensors they need and whether to place them near a washer, water heater, dishwasher, sink, or shutoff valve, with several current search results offering useful room lists.",
+      "decision": "rejected",
+      "reason": "Tara's current water-leak-sensor guide already has a placement-first section and a how-many FAQ, and the pre-draft intent checker identified direct containment overlap with that established URL."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1t1gmw4/how_to_manage_manual_interventions_on_thermostats/",
+      "observedAt": "2026-07-31",
+      "evidence": "A May 2026 homeowner asks for one dependable way to let manual changes override automatic lights, thermostats, and air conditioning, and discusses helper, timer, and context-based approaches."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/how-do-i-accomplish-a-automation-override/427004",
+      "observedAt": "2026-07-31",
+      "evidence": "A Home Assistant Community discussion asks how to stop an automatic light action after manual intervention, illustrating the recurring need for a household-readable pause and resume rule."
+    },
+    {
+      "source": "google-search",
+      "url": "https://www.google.com/search?q=Home+Assistant+automation+manual+override",
+      "observedAt": "2026-07-31",
+      "evidence": "The exact search is led by narrow community recipes and a long lounge-specific implementation rather than a concise homeowner guide covering the helper, condition, control, reset, and testing decisions."
+    },
+    {
+      "source": "github",
+      "url": "https://github.com/home-assistant/architecture/discussions/978",
+      "observedAt": "2026-07-31",
+      "evidence": "The Home Assistant architecture discussion explains why context origin can be unclear enough to need additional device attribution, supporting caution around automatic manual-change detection."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant automation manual override",
+    "reviewedAt": "2026-07-31",
+    "intent": "The searcher wants a reliable way for a person to take temporary control of a device without Home Assistant immediately reversing the change, plus a clear rule for resuming automation.",
+    "resultGap": "Current results are mainly one-off forum configurations or a sprawling single-lounge implementation. They do not give a non-technical homeowner a short default pattern, compare safe reset choices, explain when context-based detection is unreliable, or cover several ordinary device types without burying the answer in YAML.",
+    "resultsReviewed": [
+      "https://kiwismarttech.co.nz/guides/home-assistant/manual-override-respect-humans-lounge/",
+      "https://community.home-assistant.io/t/how-do-i-accomplish-a-automation-override/427004",
+      "https://community.home-assistant.io/t/motion-sensor-lighting-with-manual-override/498275"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant Toggle helper documentation",
+      "url": "https://www.home-assistant.io/integrations/input_boolean/",
+      "supports": "A Toggle helper can be created in the interface, used in automation conditions, and changed by automations or household controls."
+    },
+    {
+      "name": "Home Assistant Timer documentation",
+      "url": "https://www.home-assistant.io/integrations/timer/",
+      "supports": "A Timer helper can provide a temporary override window and may restore active or paused state after restart when its restore option is enabled."
+    },
+    {
+      "name": "Home Assistant condition documentation",
+      "url": "https://www.home-assistant.io/docs/scripts/conditions/",
+      "supports": "Automation conditions are checked after a trigger and before actions, which is the documented place to prevent actions while an override helper is on."
+    },
+    {
+      "name": "Home Assistant automation troubleshooting documentation",
+      "url": "https://www.home-assistant.io/docs/automation/troubleshooting/",
+      "supports": "Automation traces show the trigger, conditions, and actions for a run and are the recommended evidence when testing whether a handoff behaved as intended."
+    },
+    {
+      "name": "Home Assistant automation templating documentation",
+      "url": "https://www.home-assistant.io/docs/automation/templating/",
+      "supports": "Automation templates can inspect trigger data and state changes, but their available variables depend on the trigger platform and the event that created the state change."
+    },
+    {
+      "name": "Home Assistant automation actions documentation",
+      "url": "https://www.home-assistant.io/docs/automation/services/",
+      "supports": "Home Assistant can turn an automation off and normally stop its active actions, which is broader than letting an enabled automation stop at a named helper condition."
+    },
+    {
+      "name": "Home Assistant architecture context discussion",
+      "url": "https://github.com/home-assistant/architecture/discussions/978",
+      "supports": "Home Assistant context includes identifiers for linking actions and users, while device origin may require separate attribution and is not a universal manual-change signal."
+    },
+    {
+      "name": "Home Assistant context data documentation",
+      "url": "https://data.home-assistant.io/docs/context/",
+      "supports": "Context carries an identifier plus optional parent and user identifiers, but those fields link events rather than universally classifying a change as manual or automatic."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-automation-not-firing/",
+      "/blog/home-assistant-automation-runs-twice/",
+      "/blog/where-should-smart-home-automations-live/",
+      "/blog/presence-detection-smart-home/"
+    ],
+    "decision": "The closest Tara articles diagnose an automation that fails or repeats, decide which controller should own an automation, or choose occupancy signals. None explains how a household member deliberately pauses an otherwise healthy automation, chooses a visible override control, decides when it resets, or tests automatic source detection. The new page therefore owns a separate human-handoff setup question rather than a rewritten troubleshooting or presence article."
+  }
+}

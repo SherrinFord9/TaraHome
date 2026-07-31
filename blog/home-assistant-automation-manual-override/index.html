@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How to Add a Manual Override to Home Assistant Automations</title>
+    <meta name="description" content="Add a reliable manual override to Home Assistant automations with a visible pause helper, predictable reset, and tested household handoff." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-automation-manual-override/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-automation-manual-override/" />
+    <meta property="og:title" content="How to Add a Manual Override to Home Assistant Automations" />
+    <meta property="og:description" content="Add a reliable manual override to Home Assistant automations with a visible pause helper, predictable reset, and tested household handoff." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-automation-manual-override/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="How to Add a Manual Override to Home Assistant Automations" />
+    <meta name="twitter:description" content="Add a reliable manual override to Home Assistant automations with a visible pause helper, predictable reset, and tested household handoff." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-automation-manual-override/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-automation-manual-override/#blogposting",
+          "headline": "How to Add a Manual Override to Home Assistant Automations",
+          "description": "Add a reliable manual override to Home Assistant automations with a visible pause helper, predictable reset, and tested household handoff.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-automation-manual-override/cover.png",
+          "datePublished": "2026-07-31",
+          "dateModified": "2026-07-31",
+          "author": {
+            "@id": "https://tarahome.ai/#organization"
+          },
+          "publisher": {
+            "@id": "https://tarahome.ai/#organization"
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/home-assistant-automation-manual-override/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/input_boolean/",
+            "https://www.home-assistant.io/integrations/timer/",
+            "https://www.home-assistant.io/docs/scripts/conditions/",
+            "https://www.home-assistant.io/docs/automation/troubleshooting/",
+            "https://www.home-assistant.io/docs/automation/templating/",
+            "https://www.home-assistant.io/docs/automation/modes/",
+            "https://www.home-assistant.io/docs/automation/services/",
+            "https://data.home-assistant.io/docs/context/",
+            "https://github.com/home-assistant/architecture/discussions/978",
+            "https://www.reddit.com/r/homeassistant/comments/1t1gmw4/how_to_manage_manual_interventions_on_thermostats/",
+            "https://www.reddit.com/r/homeassistant/comments/1kcjrmh/turn_onoff_lights_manually_bypassing_the_ha_automation/",
+            "https://community.home-assistant.io/t/how-do-i-accomplish-a-automation-override/427004",
+            "https://community.home-assistant.io/t/motion-sensor-lighting-with-manual-override/498275"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-automation-manual-override/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://tarahome.ai/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Library",
+              "item": "https://tarahome.ai/blog/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Automation manual overrides",
+              "item": "https://tarahome.ai/blog/home-assistant-automation-manual-override/"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-automation-manual-override/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How do I stop a Home Assistant automation from overriding a manual change?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Create a Toggle helper for that room or function, add a condition that lets the automation continue only while the helper is off, and give the household a clear way to turn the helper on and reset it."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant tell whether a person or an automation changed a device?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Sometimes, but not reliably for every device and control path. Home Assistant can identify some user accounts and related actions, while physical switches, voice assistants, saved scenes, device connections, and other automations may leave missing or ambiguous source details."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How long should a manual override last?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Choose the next event a household member can predict: manual resume, the room becoming empty, the device turning off, the next schedule boundary, or a visible timer. Avoid a hidden override with no obvious end."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I disable the automation itself for a manual override?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "You can, but a named helper is usually clearer. The automation stays enabled and traceable, several related automations can respect the same pause, and the dashboard can show why automatic actions are being skipped."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can a Home Assistant Timer helper survive a restart?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A Timer helper can restore an active or paused timer after restart when its restore option is enabled. If it expires while Home Assistant is down, the finished event does not run at startup, so a finished-event-only reset can leave the pause active. Keep a manual reset and test the restart path."
+              }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant automations</span><span>July 31, 2026</span><span>10 min read</span></p>
+            <h1>How to Add a Manual Override to Home Assistant Automations</h1>
+            <p class="lede">Use one visible pause control, make every related automation respect it, and choose an end rule the whole household can predict.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-automation-manual-override/cover.png" alt="A person pressing a wall light switch beside a warmly lit living room" width="1536" height="1024" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>What to do:</strong> Create a Toggle helper—a simple on/off pause switch—called something like “Pause living room automations,” then make every related automation check that it is off before running.</li>
+              <li><strong>Make it usable:</strong> Put the pause control on the room dashboard or a suitable physical button, and show clearly when it is active.</li>
+              <li><strong>Choose the reset:</strong> Resume manually, when the room is empty, at the next schedule change, or after a tested Timer helper—whichever people can predict.</li>
+              <li><strong>Avoid this trap:</strong> Do not assume Home Assistant can always tell who changed a device. If you try automatic detection, verify every wall-switch, app, voice, and automation path in its run history.</li>
+              <li><strong>Main caveat:</strong> An override must not remove freeze protection, access, alarms, or another essential safety limit.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The short answer: add a pause switch</h2>
+          <p>The most dependable way to add a manual override to a Home Assistant automation is a simple on/off helper. Name it for the room or job—such as <strong>Pause living room automations</strong>—and add a condition to every related automation: continue only when the helper is off. When someone wants the lamp, fan, shade, or thermostat left alone, they turn the helper on before making the change.</p>
+          <p>An <strong>automation</strong> is a rule that performs actions for you. A <strong>helper</strong> is a small saved control inside Home Assistant, and a <strong>condition</strong> is a check the rule must pass before it acts. This approach is intentionally plain: the automation stays enabled, its skipped run remains visible in <strong>Traces</strong>—Home Assistant's run-by-run record—and everyone can see why the automatic action did not happen.</p>
+          <p>In this dependable version, pausing the automation and changing the device are two deliberate steps. Automatic detection appears later because it is not reliable for every device or control path.</p>
+          <p>The final decision is when the pause ends. Use a reset people can predict, such as when the room is empty, when the device is turned off, at the next scheduled comfort period, or after a visible timer. A hidden override that lasts forever is almost as frustrating as an automation that fights the person.</p>
+
+          <h2 id="why-automations-fight">Why a good automation can still fight the household</h2>
+          <p>Home Assistant sees state changes and events, not a person's intention. A motion rule may see “no motion” and turn off a light while someone is reading. A thermostat schedule may reach its next time block just after someone made the room warmer. A shade rule may react to sunlight after a guest deliberately opened the shade.</p>
+          <p>The technical action can be correct while the household experience is wrong. A manual override creates a clear handoff: automation is the default, a person can take temporary control, and both sides know how automation resumes.</p>
+          <div class="callout">
+            <p><strong>Use the smallest useful override.</strong> Prefer one pause for a room or a function, such as living-room lighting or upstairs climate. A whole-home “stop every automation” switch is easy to forget and can silently disable unrelated protection.</p>
+          </div>
+
+          <h2 id="build-default">Build the reliable default in five steps</h2>
+          <ol>
+            <li><strong>Create the control.</strong> Open <strong>Settings &gt; Devices &amp; services &gt; Helpers</strong>, choose <strong>Create helper</strong>, then choose <strong>Toggle</strong>. Give it a plain name that describes what will pause.</li>
+            <li><strong>Add the condition.</strong> Open each automation that controls that room or function. Add a <strong>State</strong> condition, select the new Toggle helper, and require it to be <strong>Off</strong>.</li>
+            <li><strong>Give people a reachable control.</strong> Add the helper to the room dashboard. If a physical smart button or switch exposes a separate press, hold, or double-press event, that gesture can turn the helper on without cutting power to a smart bulb.</li>
+            <li><strong>Make the active state obvious.</strong> Show a clearly named tile or status on the household dashboard. If an override can last more than a short visit, consider a calm notification when it starts and when it ends.</li>
+            <li><strong>Add one reset rule.</strong> Choose it before testing. Do not combine several clever reset methods until the simplest one has proved reliable.</li>
+          </ol>
+          <p>Apply the condition to every automation that could undo the manual choice. If the light-on rule respects the pause but the light-off rule does not, the room will still seem broken. The same is true when one controller owns the schedule and another owns presence. Tara's guide to <a href="/blog/where-should-smart-home-automations-live/">choosing one automation brain</a> explains why duplicate ownership creates confusing handoffs.</p>
+          <div class="callout">
+            <p><strong>A condition is not an emergency stop.</strong> It blocks later actions when an automation reaches that check; it cannot take back a device command already sent. For a long sequence, check the helper again before a later stage that also needs to stop during a pause.</p>
+          </div>
+
+          <h2 id="choose-reset">Choose a reset the household can predict</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reset rule</th>
+                  <th>Good fit</th>
+                  <th>Why people understand it</th>
+                  <th>Main caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Manual resume</strong></td>
+                  <td>Workshops, guest rooms, unusual tasks, and testing</td>
+                  <td>The person who paused automation decides when it returns</td>
+                  <td>Easy to forget; keep the active state visible</td>
+                </tr>
+                <tr>
+                  <td><strong>Device turns off</strong></td>
+                  <td>Lights and fans where “off” clearly ends the special use</td>
+                  <td>Normal shutdown returns the room to its automatic baseline</td>
+                  <td>Not suitable if “off” is itself the manual state that must be protected</td>
+                </tr>
+                <tr>
+                  <td><strong>Room becomes empty</strong></td>
+                  <td>Lighting and comfort in rooms with dependable presence sensing</td>
+                  <td>Automation resumes after the special visit or activity is over</td>
+                  <td>A motion sensor may miss someone sitting still; use a proven occupancy signal</td>
+                </tr>
+                <tr>
+                  <td><strong>Next schedule boundary</strong></td>
+                  <td>Thermostats, shades, and daily routines</td>
+                  <td>“Hold until the next period” matches familiar thermostat behavior</td>
+                  <td>Make the exact boundary visible rather than saying “later”</td>
+                </tr>
+                <tr>
+                  <td><strong>Timer helper</strong></td>
+                  <td>Temporary light, fan, or comfort changes with a known duration</td>
+                  <td>A countdown gives the pause a visible end</td>
+                  <td>Restart behavior and the finished event need a real test</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A Timer helper's <strong>Restore</strong> option is off by default. With Restore enabled, an active or paused timer can survive a Home Assistant restart. There is still an important edge case: if the timer expires while Home Assistant is down, the <strong>timer.finished</strong> event is not emitted when Home Assistant starts. A simple “finished means clear the pause” rule can therefore leave the helper on.</p>
+          <p>Use manual reset as the dependable baseline. If restart recovery matters, store the intended end time separately, then add and test a startup rule that clears the pause when that time has already passed. Also decide what canceling the timer means: cancel does not emit <strong>timer.finished</strong>, so it must either clear the helper deliberately or turn the pause into a manual hold.</p>
+
+          <h2 id="control-path">Let the normal control request the override</h2>
+          <p>The best manual override does not make someone hunt through an administrator dashboard. Use a control that belongs in the room:</p>
+          <ul>
+            <li><strong>Dashboard:</strong> a clearly named pause tile beside the device control.</li>
+            <li><strong>Physical button:</strong> a separate hold or double press that Home Assistant reports reliably.</li>
+            <li><strong>Voice:</strong> a simple household phrase that turns on the helper, if voice control is already dependable.</li>
+            <li><strong>One saved action:</strong> a dashboard button that sets the desired light, fan, shade, or temperature and activates the pause at the same time.</li>
+          </ul>
+          <p>Do not solve this by wiring a normal wall switch to remove power from a smart bulb unless that is the intended electrical design. A powered-off bulb becomes unavailable to the network. For in-wall wiring or bypass work, use compatible hardware and a qualified electrician where required.</p>
+
+          <h2 id="context-detection">Automatic “who changed it?” detection is advanced</h2>
+          <p>Home Assistant attaches background source information, called <strong>context</strong>, to states and actions. Depending on the path, it may identify a user account or link the change to a previous action. It is tempting to treat “has a user” as manual and “has a parent” as automatic.</p>
+          <p>That shortcut is not universal. A dashboard tap, physical switch report, voice assistant, saved scene, device connection, direct action, and another automation can arrive with different or incomplete source details. Home Assistant's own architecture discussion about adding device attribution exists because the origin is not always clear enough from the older fields.</p>
+          <p>If you want automatic detection, open the automation's <strong>Traces</strong> and test every real path one by one: wall control, dashboard, phone app, voice, scene, scheduled automation, and restart. Build the rule only from behavior you can repeat on your exact devices. If one path is ambiguous, use the explicit Toggle helper instead of guessing.</p>
+
+          <h2 id="examples">Use the same pattern, with a different reset</h2>
+          <h3 id="lighting-example">Motion and presence lighting</h3>
+          <p>A living-room light normally follows presence and time of day. A long press on a compatible button runs a scene and turns on <strong>Pause living room automations</strong>. Both the turn-on and turn-off automations check that the helper is off. The pause clears when dependable room occupancy has been absent for the chosen period—or manually if the sensor cannot distinguish a quiet reader from an empty room. The <a href="/blog/presence-detection-smart-home/">presence-detection guide</a> helps separate motion from real occupancy.</p>
+
+          <h3 id="climate-example">Thermostat and comfort schedules</h3>
+          <p>A dashboard action called “Hold until evening” can set the preferred temperature and activate an override that clears at the next named schedule period. Keep equipment limits, freeze protection, and the thermostat's own safe fallback independent of that comfort pause. Do not infer a hold from every temperature change until the thermostat, app, voice, and automation paths have all been traced.</p>
+
+          <h3 id="fan-shade-example">Fans and shades</h3>
+          <p>A bathroom fan override might clear when the fan is turned off; a shade override might clear at the next scheduled move. Those rules are easier to explain than a fixed timeout hidden in configuration. For motorized shades, preserve the physical control and obstruction or safety behavior required by the manufacturer.</p>
+
+          <h2 id="test-handoff">Test the handoff, not just the action</h2>
+          <ol>
+            <li><strong>Prove the normal automation.</strong> With the pause off, trigger it and confirm the expected device action.</li>
+            <li><strong>Prove the block with the real trigger.</strong> Turn the pause on, use the actual sensor, schedule, button, or state change, and confirm the device does not move or change. Do not use <strong>Run actions</strong> for this check because it skips triggers and conditions.</li>
+            <li><strong>Read the Trace.</strong> The run should show that the helper condition stopped the actions. If no trace appears, the trigger may not have fired.</li>
+            <li><strong>Prove manual control.</strong> Make the intended manual change through every supported wall, app, dashboard, and voice path.</li>
+            <li><strong>Prove the reset.</strong> Cause the room-empty event, device-off event, schedule boundary, or timer that should end the pause.</li>
+            <li><strong>Test a restart.</strong> If the pause or timer may span maintenance, restart Home Assistant in a safe window and confirm the state and reset behavior.</li>
+            <li><strong>Explain it without Home Assistant terms.</strong> Another resident should be able to say what pauses the room and what brings automation back.</li>
+          </ol>
+          <p>If the trace is missing, a condition is unexpectedly false, or the device action never runs, use the <a href="/blog/home-assistant-automation-not-firing/">automation-not-firing checklist</a>. If an action happens twice, check the <a href="/blog/home-assistant-automation-runs-twice/">duplicate-trigger and duplicate-controller guide</a> before adding more override logic.</p>
+
+          <h2 id="common-mistakes">Avoid five common override mistakes</h2>
+          <ul>
+            <li><strong>Pausing only one side of the behavior.</strong> Every automation that can undo the person's choice must respect the same helper.</li>
+            <li><strong>Hiding an indefinite pause.</strong> Show it on the room dashboard and choose an understandable reset.</li>
+            <li><strong>Guessing from context.</strong> Missing or present context fields are evidence to inspect, not a universal manual-versus-automatic label.</li>
+            <li><strong>Letting several platforms fight.</strong> Home Assistant, a vendor app, Apple Home, Alexa, Google Home, or SmartThings may each have a routine for the same device.</li>
+            <li><strong>Overriding protection with comfort.</strong> A manual hold should not defeat equipment limits, alarms, access controls, or a safe physical fallback.</li>
+          </ul>
+
+          <h2 id="safety-boundary">Keep safety controls outside the convenience pause</h2>
+          <p>Start with a lamp, fan, or shade—not the only door lock, garage door, alarm, water shutoff, heater, or cooling system. For climate, keep minimum and maximum temperatures and manufacturer protections in place. For access and water controls, preserve a physical key, handle, switch, or documented recovery path.</p>
+          <p>Write down which automations respect the helper. A room-lighting pause should not silently stop smoke, carbon-monoxide, leak, freeze, or security alerts. If one helper affects equipment that can harm people or property, split the design into a comfort layer and a protected safety layer.</p>
+
+          <h2 id="tara-approach">Tara's practical approach</h2>
+          <p>Good automation should reduce household negotiation, not create more of it. Start with an explicit pause that a person can see, keep the reset simple, and use Traces before adding clever source detection. A <a href="/home-automation-kit/">configured local home-automation system</a> should include ordinary wall control, named handoff rules, and a short guide another resident can follow.</p>
+          <p>Build one room first. Once the pause, manual action, reset, restart behavior, and household explanation all work, reuse the pattern where it genuinely helps. Keep room names and reset rules specific rather than creating a mysterious global override.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+          <h3 id="faq-stop-override">How do I stop a Home Assistant automation from overriding a manual change?</h3>
+          <p>Create a Toggle helper for that room or function, add a condition that lets the automation continue only while the helper is off, and give the household a clear way to turn the helper on and reset it.</p>
+
+          <h3 id="faq-detect-person">Can Home Assistant tell whether a person or an automation changed a device?</h3>
+          <p>Sometimes, but not reliably for every device and control path. Home Assistant can identify some user accounts and related actions, while physical switches, voice assistants, saved scenes, device connections, and other automations may leave missing or ambiguous source details.</p>
+
+          <h3 id="faq-duration">How long should a manual override last?</h3>
+          <p>Choose the next event a household member can predict: manual resume, the room becoming empty, the device turning off, the next schedule boundary, or a visible timer. Avoid a hidden override with no obvious end.</p>
+
+          <h3 id="faq-disable-automation">Should I disable the automation itself for a manual override?</h3>
+          <p>You can, but a named helper is usually clearer. The automation stays enabled and traceable, several related automations can respect the same pause, and the dashboard can show why automatic actions are being skipped.</p>
+
+          <h3 id="faq-timer-restart">Can a Home Assistant Timer helper survive a restart?</h3>
+          <p>A Timer helper can restore an active or paused timer after restart when its restore option is enabled. If it expires while Home Assistant is down, the finished event does not run at startup, so a finished-event-only reset can leave the pause active. Keep a manual reset and test the restart path.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/input_boolean/" target="_blank" rel="noopener noreferrer">Home Assistant: creating and using a Toggle helper</a></li>
+                <li><a href="https://www.home-assistant.io/docs/scripts/conditions/" target="_blank" rel="noopener noreferrer">Home Assistant: conditions that control whether automation actions run</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/timer/" target="_blank" rel="noopener noreferrer">Home Assistant: Timer helpers, restore behavior, and restart caveats</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/" target="_blank" rel="noopener noreferrer">Home Assistant: automation testing and Traces</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/templating/" target="_blank" rel="noopener noreferrer">Home Assistant: trigger data and automation templates</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/modes/" target="_blank" rel="noopener noreferrer">Home Assistant: single, restart, queued, and parallel automation modes</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/services/" target="_blank" rel="noopener noreferrer">Home Assistant: turning automations on or off and stopping active actions</a></li>
+                <li><a href="https://data.home-assistant.io/docs/context/" target="_blank" rel="noopener noreferrer">Home Assistant technical documentation: how source information connects related actions</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1t1gmw4/how_to_manage_manual_interventions_on_thermostats/" target="_blank" rel="noopener noreferrer">r/homeassistant: manual changes across thermostats, lighting, and air conditioning</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1kcjrmh/turn_onoff_lights_manually_bypassing_the_ha_automation/" target="_blank" rel="noopener noreferrer">r/homeassistant: using wall control without an automation immediately reversing it</a></li>
+                <li><a href="https://community.home-assistant.io/t/how-do-i-accomplish-a-automation-override/427004" target="_blank" rel="noopener noreferrer">Home Assistant Community: a helper-based automation override</a></li>
+                <li><a href="https://community.home-assistant.io/t/motion-sensor-lighting-with-manual-override/498275" target="_blank" rel="noopener noreferrer">Home Assistant Community: motion lighting with manual control</a></li>
+                <li><a href="https://github.com/home-assistant/architecture/discussions/978" target="_blank" rel="noopener noreferrer">Home Assistant architecture: context and the limits of device-origin attribution</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Make the rest of the automation easier to trust</h2>
+          <div class="links">
+            <a href="/blog/where-should-smart-home-automations-live/">Choose one automation brain</a>
+            <a href="/blog/home-assistant-automation-not-firing/">Find a skipped automation</a>
+            <a href="/blog/home-assistant-automation-runs-twice/">Stop duplicate runs</a>
+            <a href="/blog/presence-detection-smart-home/">Improve room presence</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the handoff</p>
+          <h2>Want automations that know when to step back?</h2>
+          <p>Tara plans ordinary controls, clear pause rules, safe reset behavior, and homeowner documentation as one system.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
