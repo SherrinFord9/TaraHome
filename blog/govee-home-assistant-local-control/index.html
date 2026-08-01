@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Govee Home Assistant: Local Control and Compatibility</title>
+    <meta name="description" content="See which Govee devices work with Home Assistant, how LAN, Matter, Bluetooth, cloud, and govee2mqtt differ, and what features you may lose." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/govee-home-assistant-local-control/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/govee-home-assistant-local-control/" />
+    <meta property="og:title" content="Govee Home Assistant: Local Control and Compatibility" />
+    <meta property="og:description" content="See which Govee devices work with Home Assistant, how LAN, Matter, Bluetooth, cloud, and govee2mqtt differ, and what features you may lose." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/govee-home-assistant-local-control/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Govee Home Assistant: Local Control and Compatibility" />
+    <meta name="twitter:description" content="See which Govee devices work with Home Assistant, how LAN, Matter, Bluetooth, cloud, and govee2mqtt differ, and what features you may lose." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/govee-home-assistant-local-control/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .hero-visual { aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 28px; margin: 0 0 8px; overflow: hidden; }
+      .hero-visual img, .article-cover img, .blog-card-image img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 900; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 650; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 850; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 850; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 850; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 900; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 520; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 950; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 680; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 900; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-body strong { font-weight: 900; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 780; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/govee-home-assistant-local-control/#blogposting",
+          "headline": "Govee Home Assistant: Local Control and Compatibility",
+          "description": "See which Govee devices work with Home Assistant, how LAN, Matter, Bluetooth, cloud, and govee2mqtt differ, and what features you may lose.",
+          "image": "https://tarahome.ai/assets/generated/blog/govee-home-assistant-local-control/cover.png",
+          "datePublished": "2026-08-01",
+          "dateModified": "2026-08-01",
+          "author": {
+            "@id": "https://tarahome.ai/#organization"
+          },
+          "publisher": {
+            "@id": "https://tarahome.ai/#organization"
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/govee-home-assistant-local-control/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/govee_light_local/",
+            "https://www.home-assistant.io/integrations/govee_ble/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://www.home-assistant.io/integrations/homekit_controller/",
+            "https://us.govee.com/pages/matter-faq",
+            "https://us.govee.com/products/govee-floor-lamp-2",
+            "https://us.govee.com/products/govee-smart-a19-led-light-bulbs",
+            "https://us.govee.com/products/govee-wi-fi-bluetooth-led-bulbs-2-pack",
+            "https://us.govee.com/products/govee-bluetooth-hygrometer-thermometer-h5075",
+            "https://developer.govee.com/reference/control-you-devices",
+            "https://github.com/wez/govee2mqtt/blob/main/README.md",
+            "https://github.com/home-assistant/core/issues/153010",
+            "https://github.com/home-assistant/core/issues/162454",
+            "https://community.home-assistant.io/t/better-integration-for-govee-matter-lights-limited-functionality-in-home-assistant/950525",
+            "https://www.reddit.com/r/homeassistant/comments/1ugkhnv/how_futureproof_is_govee2mqtt_worried_about/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/govee-home-assistant-local-control/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://tarahome.ai/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Library",
+              "item": "https://tarahome.ai/blog/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Govee and Home Assistant",
+              "item": "https://tarahome.ai/blog/govee-home-assistant-local-control/"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/govee-home-assistant-local-control/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does Govee work with Home Assistant?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, but support is model-specific. Compatible lights can use Home Assistant's official Govee lights local integration or Matter. Listed Govee sensors can use the separate Bluetooth integration. Other devices may need a cloud or community path."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Govee work locally without the internet?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes for supported paths. The official LAN light integration, supported Bluetooth sensors, and normal Matter control are local. Govee's developer API is cloud-based, and some govee2mqtt features require an API key or account-backed cloud connection."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I use Govee LAN control or Matter?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Try the official LAN integration when the exact light is listed and the Govee app offers LAN Control. Use Matter only when that exact device has its own Matter QR or setup code; it is especially useful when that model's LAN route is unavailable or incomplete. Matter is local but may expose fewer Govee effects and segment controls."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Govee work with Apple Home or HomeKit?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A Matter-enabled Govee device can be added or shared to Apple Home through Matter. A Govee device already controlled by Home Assistant can also be exposed to Apple Home through Home Assistant's HomeKit Bridge, but that is not native Govee HomeKit support."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is my Govee model listed but not working locally?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The exact hardware version, region, device software, LAN setting, and network can still matter. Confirm the model and device software, enable LAN Control if available, keep the device and Home Assistant on a network that permits local discovery, and test Matter when the device supports it."
+              }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Govee compatibility</span><span>August 1, 2026</span><span>12 min read</span></p>
+            <h1>Govee Home Assistant: Local Control and Compatibility</h1>
+            <p class="lede">Govee can work locally with Home Assistant, but there is no single path for every product. Check the exact model, then choose the official LAN integration, Matter, Bluetooth, or a carefully understood community option.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/govee-home-assistant-local-control/cover.png" alt="Two Govee H6008 smart bulbs on a warm oak sideboard beside a dark-green vase" width="1672" height="941" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <div class="tldr" aria-label="TLDR">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Check the model number first:</strong> Govee support is device-by-device, not brand-wide. A name such as “smart bulb” is not specific enough.</li>
+              <li><strong>For supported lights, try LAN control over your home network:</strong> use it when the Govee app shows <strong>LAN Control</strong>. Use Matter&mdash;the cross-brand smart-home standard&mdash;only when that exact unit has a Matter setup code. Both can keep basic controls local, but Matter may omit Govee effects.</li>
+              <li><strong>Use the separate Bluetooth path for listed sensors:</strong> an H5075 temperature and humidity sensor can report locally; this integration is not a way to control Govee lights.</li>
+              <li><strong>Avoid calling every community setup local:</strong> govee2mqtt uses the home network where possible, but some extra features still need a Govee login or internet connection.</li>
+              <li><strong>Main caveat:</strong> a model on a support list can still vary by device software, region, or hardware version. Keep the receipt and test the exact functions you need.</li>
+            </ul>
+          </div>
+
+          <h2 id="short-answer">The short answer: Govee works, but not as one integration</h2>
+          <p><strong>Yes, many Govee lights and sensors work with Home Assistant, and several routes keep everyday control inside the home.</strong> The right route depends on the model and the features you care about. A compatible light may offer Govee's official local network (LAN) control, <strong>Matter</strong>&mdash;the cross-brand smart-home standard&mdash;over Wi-Fi, or both. A temperature sensor may use Bluetooth. Other products may offer only a cloud or community-supported route.</p>
+          <p>Start with the model code printed on the device, label, box, or Govee app: <strong>H607C</strong>, <strong>H6006</strong>, <strong>H6008</strong>, and <strong>H5075</strong> are examples. Do not buy from a listing that gives only a family name. Govee sometimes sells several generations under similar product wording, and one generation's instructions may not apply to another.</p>
+          <div class="callout">
+            <p><strong>Simple rule:</strong> choose one primary control route for each device. Keeping the Govee app for device updates and special effects is fine, but adding the same light through LAN, Matter, and a community bridge can create duplicate controls and confusing automations.</p>
+          </div>
+
+          <h2 id="paths">Five Govee paths, clearly separated</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Path</th>
+                  <th>Official support</th>
+                  <th>Local control</th>
+                  <th>Cloud dependency</th>
+                  <th>Main tradeoff</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Govee lights local</strong></td>
+                  <td>Built into Home Assistant for listed light models</td>
+                  <td>Yes, through Govee's local network interface (LAN API)</td>
+                  <td>Normal Home Assistant control is local; the Govee app may still be useful for setup, firmware, and effects</td>
+                  <td>Requires an eligible model, the LAN Control setting, and working local discovery; scene support varies</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter</strong></td>
+                  <td>Official standard supported by Home Assistant and Matter-labeled Govee models</td>
+                  <td>Yes, normal Matter commands stay on the home network</td>
+                  <td>Routine control is local; initial enablement, firmware, vendor extras, or remote app use may still need the internet</td>
+                  <td>Usually exposes basic light controls, not every Govee scene, segment, DreamView, or music effect</td>
+                </tr>
+                <tr>
+                  <td><strong>Govee Bluetooth</strong></td>
+                  <td>Built into Home Assistant for listed sensors, buttons, and presence devices</td>
+                  <td>Yes, Home Assistant receives nearby Bluetooth broadcasts</td>
+                  <td>No cloud is required for supported sensor readings</td>
+                  <td>This is a sensor path, not a general Bluetooth-light controller; range may require a Bluetooth proxy</td>
+                </tr>
+                <tr>
+                  <td><strong>Govee developer API</strong></td>
+                  <td>Official Govee web API, but not an official Home Assistant Core integration</td>
+                  <td>No</td>
+                  <td>Yes; commands go to Govee's hosted API with an API key</td>
+                  <td>Internet, account, rate limits, and service availability become part of the automation</td>
+                </tr>
+                <tr>
+                  <td><strong>govee2mqtt</strong></td>
+                  <td>Community project, not Home Assistant or Govee support</td>
+                  <td>Mixed: it uses LAN first where a device allows it</td>
+                  <td>Some scenes, segments, live state, and other functions can require an API key, Govee account, or cloud messaging</td>
+                  <td>Often broader and richer, but installation, updates, credentials, and failure modes belong to you</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="models">What current model examples actually show</h2>
+          <p>As of August 1, 2026, official Home Assistant and Govee pages show the following examples. They are not a promise that every product with a similar retail name behaves the same way.</p>
+
+          <h3 id="h607c">Govee Floor Lamp 2 H607C</h3>
+          <p>Home Assistant lists <strong>H607C</strong> for the official Govee lights local integration. Govee's current US Floor Lamp 2 page also describes H607C as Matter compatible. That gives this model two documented potential local routes: Matter, plus LAN when the Govee app exposes <strong>LAN Control</strong>.</p>
+          <p>For basic on/off, brightness, color temperature, and color, start with one route and compare the controls it exposes in Home Assistant. Keep the Govee app if you want device updates or brand-specific effects. Do not assume Home Assistant will reproduce every app animation, segmented color pattern, or music mode through either route.</p>
+
+          <h3 id="h6006-h6008">Govee A19 bulbs H6006 and H6008</h3>
+          <p>Home Assistant's current LAN support list includes <strong>H6006</strong> and <strong>H6008</strong>, and Govee's current US product pages describe these A19 lines as Matter compatible. Treat both as <strong>trial-only choices</strong>. An open H6008 report describes failed LAN support, while an H6006 report closed as not planned describes power-only control despite the list entry.</p>
+          <p>Those reports do not mean every H6006 or H6008 fails. They do mean a model code is the start of verification, not the finish. Buy one returnable bulb, confirm the device software, check whether the app shows <strong>LAN Control</strong>, and verify brightness, color, and state updates before expanding to a room. Use Matter only if the actual bulb supplies its own Matter setup code.</p>
+
+          <h3 id="h5075">Govee H5075 temperature and humidity sensor</h3>
+          <p>The <strong>H5075</strong> is listed under Home Assistant's official Govee Bluetooth integration. Home Assistant can receive its local temperature, humidity, and battery broadcasts when Bluetooth coverage is adequate. If the sensor is far from the Home Assistant computer, use a compatible nearby Bluetooth proxy rather than assuming you need Govee's cloud.</p>
+          <p>This distinction matters: seeing “Govee Bluetooth” in Home Assistant does not mean a Wi-Fi-and-Bluetooth Govee bulb can be controlled through that integration. The official Bluetooth page lists the device types it understands.</p>
+
+          <h2 id="choose-path">Choose the path in this order</h2>
+          <ol>
+            <li><strong>Write down the exact model and hardware generation.</strong> Use the label or Govee app, not the marketplace title.</li>
+            <li><strong>Check the two official Home Assistant lists.</strong> Look separately at Govee lights local and Govee Bluetooth. A device appearing on neither list is not automatically supported by those integrations.</li>
+            <li><strong>Look for a real Matter code.</strong> Matter branding on a newer listing does not upgrade an older unit already in the drawer. The actual device or its app must provide a pairing or sharing code.</li>
+            <li><strong>Pick the least dependent route that exposes the controls you need.</strong> For a listed light, try official LAN control. For a Matter model, Matter is a good local fallback or primary path. For a listed sensor, use Bluetooth.</li>
+            <li><strong>Use community software only for a feature worth maintaining.</strong> Read govee2mqtt's feature matrix before assuming a desired scene or segment stays local.</li>
+            <li><strong>Test with the internet disconnected.</strong> Keep Wi-Fi and Home Assistant running, block or unplug the internet briefly, and try on/off plus the automations that matter. Restore internet before firmware or app work.</li>
+          </ol>
+
+          <h2 id="setup-lan">Set up the official LAN integration</h2>
+          <ol>
+            <li>Update the light in the Govee app and confirm ordinary control works.</li>
+            <li>Open that device's settings in the Govee app and enable <strong>LAN Control</strong> if the option is present. If it is absent, do not assume another model's screenshot applies to yours.</li>
+            <li>Put Home Assistant and the light on a local network that allows device discovery and direct traffic between them.</li>
+            <li>In Home Assistant, go to <strong>Settings &gt; Devices &amp; services</strong>, choose <strong>Add Integration</strong>, and select <strong>Govee lights local</strong>.</li>
+            <li>Rename the device and test on/off, brightness, color temperature, color, scenes, and state updates individually.</li>
+          </ol>
+          <p>Home Assistant classifies this integration as <strong>Local Push</strong>: the light communicates changes on the local network rather than Home Assistant polling a remote service. Home Assistant also warns that not every listed device supports every scene. Basic control can be solid while a particular effect is absent.</p>
+          <p>If the device lives on a separate IoT network, local discovery packets may not cross the boundary. Keep the first test simple by placing Home Assistant and the light on the same normal LAN, then use Tara's guide to <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">choosing a main LAN or IoT VLAN</a> before adding firewall rules.</p>
+
+          <h2 id="setup-matter">Use Matter when the exact Govee device supports it</h2>
+          <p>A Matter-enabled Govee light can be added in the Home Assistant Companion app with its Matter code. If it is already paired to another Matter home app, use that app's sharing flow to create a new code for Home Assistant instead of factory-resetting it. Govee's Matter FAQ says the Govee app can coexist with Matter control.</p>
+          <div class="callout">
+            <p><strong>Pair with Matter before adding the device to the Govee app.</strong> Govee says to connect the device to Matter first, then leave its Wi-Fi network alone. Changing the device's network later through the Govee app disables Matter; restoring Matter requires a device reset and a fresh setup.</p>
+          </div>
+          <p>Current Govee examples such as H607C, H6006, and H6008 use Wi-Fi, so they do not need a Thread border router. Home Assistant still controls normal Matter functions locally. Tara's <a href="/blog/will-home-assistant-matter-work-without-internet/">Matter-without-internet guide</a> explains which setup and vendor tasks can remain online even when everyday control is local.</p>
+          <p>Matter is a common control language, not a promise of every vendor feature. A light may expose on/off, dimming, color temperature, or color while leaving Govee's named scenes, music response, DreamView, and per-segment effects in the Govee app. Home Assistant's own Matter documentation notes that a native integration can expose more than the matching Matter device type.</p>
+
+          <h2 id="apple-home">Matter and HomeKit are different Apple paths</h2>
+          <p>A Matter-enabled Govee device can be added to Apple Home or shared between Apple Home and Home Assistant with <strong>Matter multi-admin</strong>, the feature that lets one device belong to more than one home app. That is a Matter relationship; it is not the older HomeKit accessory protocol.</p>
+          <p>For a non-Matter Govee device already working in Home Assistant through LAN or another path, Home Assistant's <strong>HomeKit Bridge</strong> can present selected Home Assistant entities to Apple Home. Home Assistant must remain available because it is the bridge. Do not confuse that with <strong>HomeKit Device</strong>, the integration used when Home Assistant pairs directly to a native HomeKit accessory.</p>
+          <p>If Apple Home is part of the household, decide where automations live. Sharing a light for Siri and family controls is useful; creating one motion routine in Govee, another in Apple Home, and a third in Home Assistant is a reliable way to produce conflicting commands.</p>
+
+          <h2 id="govee2mqtt">Understand the govee2mqtt caveat before installing it</h2>
+          <p>govee2mqtt is a capable community bridge that sends Govee controls through MQTT, a message service often used with Home Assistant. Its own documentation is unusually clear about the boundary: it prefers the local network when the device supports it, but the feature table shows that some DIY scenes, music modes, segmented color controls, tap-to-run commands, and live updates require a Govee API key, account access, or undocumented cloud messaging.</p>
+          <p>Use it when the extra device coverage or effects justify the maintenance. Treat it like community software: read release notes, protect credentials, keep backups, and test updates. For a hallway light that only needs dependable on/off and dimming, an official LAN or Matter path is easier to hand to another homeowner.</p>
+
+          <h2 id="troubleshoot">If a listed Govee light does not appear</h2>
+          <ol>
+            <li><strong>Confirm the full model code.</strong> Similar retail names can hide different generations.</li>
+            <li><strong>Update firmware and power-cycle once.</strong> Then reopen the app and check whether LAN Control exists and remains enabled.</li>
+            <li><strong>Test on one normal home network.</strong> Guest Wi-Fi and router settings that stop devices from seeing one another can block discovery even while the app still works through the internet.</li>
+            <li><strong>Remove duplicate paths temporarily.</strong> Disable the extra Matter or community control so you know which integration is responding.</li>
+            <li><strong>Try a direct command and watch state.</strong> A command that works while state never updates is a different problem from a device that is never discovered.</li>
+            <li><strong>Check current issues for the exact model.</strong> Include model, firmware, Home Assistant version, network layout, and diagnostics when reporting a reproducible problem; remove private keys and addresses first.</li>
+          </ol>
+          <p>For Bluetooth sensors, first confirm Home Assistant's Bluetooth integration is working and that the device is close enough. The <a href="/blog/home-assistant-bluetooth-proxy-guide/">Bluetooth proxy guide</a> shows how to extend local reception without placing the main Home Assistant computer beside every sensor.</p>
+
+          <h2 id="buying">What to buy—and what to avoid</h2>
+          <ul>
+            <li><strong>For a current floor lamp:</strong> H607C is a useful example because current official pages document both a Home Assistant LAN path and Matter. Buy only after confirming the exact model on the listing and return policy.</li>
+            <li><strong>For ordinary A19 bulbs:</strong> treat H6006 and H6008 as trial-only. Current official pages list them, but an open H6008 report describes failed LAN support and an H6006 report closed as not planned describes power-only control. Test one returnable bulb before a larger purchase.</li>
+            <li><strong>For local temperature and humidity:</strong> H5075 is on the official Bluetooth list. Plan Bluetooth coverage, not a cloud subscription, around it.</li>
+            <li><strong>For advanced animated effects:</strong> expect to keep the Govee app or accept a community/cloud dependency. Do not buy on the assumption that Matter will reproduce the entire effects library.</li>
+            <li><strong>Avoid vague or old stock:</strong> a product title that omits the model, a seller mixing generations, or an unverified claim that “all Govee works locally” is not enough for a dependable system.</li>
+          </ul>
+          <p>Keep a simple manual fallback for important rooms, such as an ordinary wall switch that household members understand or a separate conventional lamp. Cutting power makes any smart bulb unreachable, so a wall switch feeding smart bulbs normally has to stay on for automations to work. Govee's current H6008 page specifically says not to use that bulb with a smart switch. Essential pathways should not depend on a community bridge or internet service.</p>
+
+          <h2 id="tara-approach">Tara's practical approach</h2>
+          <p>A reliable setup begins with the exact device and the smallest dependable path. Use official LAN or Matter for ordinary local light control, Bluetooth for listed sensors, and the Govee app only where device updates or special effects genuinely add value. Name or disable duplicate controls so every automation has one obvious target.</p>
+          <p>A <a href="/home-automation-kit/">configured local home-automation system</a> should document the model, integration, cloud boundary, physical fallback, and what happens during an internet outage. Test one Govee device before repeating it across a room, and save the working setup alongside the rest of the household handoff.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+          <h3 id="faq-work">Does Govee work with Home Assistant?</h3>
+          <p>Yes, but support is model-specific. Compatible lights can use Home Assistant's official Govee lights local integration or Matter. Listed Govee sensors can use the separate Bluetooth integration. Other devices may need a cloud or community path.</p>
+
+          <h3 id="faq-local">Can Govee work locally without the internet?</h3>
+          <p>Yes for supported paths. The official LAN light integration, supported Bluetooth sensors, and normal Matter control are local. Govee's developer API is cloud-based, and some govee2mqtt features require an API key or account-backed cloud connection.</p>
+
+          <h3 id="faq-lan-matter">Should I use Govee LAN control or Matter?</h3>
+          <p>Try the official LAN integration when the exact light is listed and the Govee app offers LAN Control. Use Matter only when that exact device has its own Matter QR or setup code; it is especially useful when that model's LAN route is unavailable or incomplete. Matter is local but may expose fewer Govee effects and segment controls.</p>
+
+          <h3 id="faq-homekit">Does Govee work with Apple Home or HomeKit?</h3>
+          <p>A Matter-enabled Govee device can be added or shared to Apple Home through Matter. A Govee device already controlled by Home Assistant can also be exposed to Apple Home through Home Assistant's HomeKit Bridge, but that is not native Govee HomeKit support.</p>
+
+          <h3 id="faq-listed">Why is my Govee model listed but not working locally?</h3>
+          <p>The exact hardware version, region, device software, LAN setting, and network can still matter. Confirm the model and device software, enable LAN Control if available, keep the device and Home Assistant on a network that permits local discovery, and test Matter when the device supports it.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/govee_light_local/" target="_blank" rel="noopener noreferrer">Home Assistant: Govee lights local support, setup, and model list</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/govee_ble/" target="_blank" rel="noopener noreferrer">Home Assistant: Govee Bluetooth supported devices and discovery</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant: local Matter control, setup, and feature caveats</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant: exposing selected entities through HomeKit Bridge</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant: pairing native HomeKit accessories through HomeKit Device</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product documentation</h3>
+              <ul>
+                <li><a href="https://us.govee.com/pages/matter-faq" target="_blank" rel="noopener noreferrer">Govee: Matter setup, local communication, and app coexistence</a></li>
+                <li><a href="https://us.govee.com/products/govee-floor-lamp-2" target="_blank" rel="noopener noreferrer">Govee: Floor Lamp 2 H607C specifications and Matter support</a></li>
+                <li><a href="https://us.govee.com/products/govee-smart-a19-led-light-bulbs" target="_blank" rel="noopener noreferrer">Govee: H6006 A19 bulb specifications</a></li>
+                <li><a href="https://us.govee.com/products/govee-wi-fi-bluetooth-led-bulbs-2-pack" target="_blank" rel="noopener noreferrer">Govee: H6008 A19 bulb specifications</a></li>
+                <li><a href="https://us.govee.com/products/govee-bluetooth-hygrometer-thermometer-h5075" target="_blank" rel="noopener noreferrer">Govee: H5075 Bluetooth temperature and humidity sensor</a></li>
+                <li><a href="https://developer.govee.com/reference/control-you-devices" target="_blank" rel="noopener noreferrer">Govee Developer API: authenticated cloud device control</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://github.com/wez/govee2mqtt/blob/main/README.md" target="_blank" rel="noopener noreferrer">govee2mqtt: LAN, API, account, and feature support matrix</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/153010" target="_blank" rel="noopener noreferrer">Home Assistant Core: H6008 local-integration report</a></li>
+                <li><a href="https://github.com/home-assistant/core/issues/162454" target="_blank" rel="noopener noreferrer">Home Assistant Core: H6006 partial-control report</a></li>
+                <li><a href="https://community.home-assistant.io/t/better-integration-for-govee-matter-lights-limited-functionality-in-home-assistant/950525" target="_blank" rel="noopener noreferrer">Home Assistant Community: Matter controls versus Govee segments and effects</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ugkhnv/how_futureproof_is_govee2mqtt_worried_about/" target="_blank" rel="noopener noreferrer">r/homeassistant: govee2mqtt locality and long-term dependency concerns</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Build the local path around the device</h2>
+          <div class="links">
+            <a href="/blog/will-home-assistant-matter-work-without-internet/">Understand Matter without internet</a>
+            <a href="/blog/home-assistant-bluetooth-proxy-guide/">Extend Bluetooth coverage</a>
+            <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Choose the right device network</a>
+            <a href="/blog/pair-matter-devices-without-vendor-app/">Know when a vendor app is optional</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the system</p>
+          <h2>Want lighting that stays useful when services change?</h2>
+          <p>Tara plans model-level compatibility, local control, physical fallbacks, and a clear household handoff before devices are repeated across the home.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
