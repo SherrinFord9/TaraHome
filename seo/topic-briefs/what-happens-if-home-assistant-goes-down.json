@@ -1,0 +1,123 @@
+{
+  "version": 2,
+  "slug": "what-happens-if-home-assistant-goes-down",
+  "researchedAt": "2026-08-02",
+  "primaryQuery": "what happens if Home Assistant goes down",
+  "readerQuestion": "Which devices and controls still work if the Home Assistant server stops, and how should I keep essential household functions usable?",
+  "selectedBecause": "The same whole-house reliability concern recurs across recent and older Reddit threads, Home Assistant Community discussions, and failure reports on GitHub. Exact-query Google results mostly answer the different internet-outage question, cover one protocol, or jump to advanced high-availability infrastructure instead of giving a homeowner a practical control-by-control answer. The Search Console opportunity export contains only already-optimized existing pages and no Tara URL that owns this failure question. A whole-house failure matrix is durable, fits Tara's emphasis on understandable local control and fallback behavior, and remains distinct from the narrower Tara guides about UPS power, backups, post-restart recovery, internet loss, and Matter binding.",
+  "candidatesConsidered": [
+    {
+      "query": "what happens if Home Assistant goes down",
+      "evidenceSummary": "Recent Reddit discussions ask how lighting and other essential functions can stay usable during restarts or host failure; older Reddit and Home Assistant Community threads repeat the same concern. A Home Assistant Core crash issue shows the real control loss, while current official documentation separately explains automations, local protocols, direct Zigbee binding, backups, and Supervisor architecture. Exact-query results remain fragmented and often confuse a stopped Home Assistant server with an internet outage.",
+      "decision": "selected",
+      "reason": "It combines recurring cross-surface demand, a direct homeowner question, durable reliability value, a weak exact-query result set, strong Tara fit, and a defensible non-cannibalizing scope better than the alternatives."
+    },
+    {
+      "query": "can you mix Zigbee brands on one hub",
+      "evidenceSummary": "Reddit and Home Assistant Community discussions repeatedly show buyers assuming that a Zigbee logo guarantees one-hub compatibility. Current Google results often answer too broadly, while ZHA documentation, the zigpy discussion, CSA material, vendor hub policies, and Zigbee2MQTT's device database show that profiles, clusters, allowlists, firmware, and vendor features still matter.",
+      "decision": "rejected",
+      "reason": "The setup and buying intent is strong, but Tara already has dense ZHA, Zigbee2MQTT, Hue, IKEA, Aqara, coordinator, and hub coverage. It would require a careful current product compatibility guide and has more overlap risk than the selected whole-house reliability question."
+    },
+    {
+      "query": "how to stop smart lights turning on after a power outage",
+      "evidenceSummary": "Reddit, Home Assistant Community, and Zigbee2MQTT issues show a recurring model-dependent power-return problem. Current search results are often Hue-only, while TP-Link and Shelly documentation confirms that behavior belongs primarily to device firmware and configuration rather than a Home Assistant recovery automation.",
+      "decision": "rejected",
+      "reason": "It has a useful troubleshooting gap, but it is a narrower lighting symptom and sits closer to Tara's UPS, Hue, Zigbee, and smart-lighting pages. The selected question serves more households and supports a clearer whole-home fallback decision."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1v5xrly/availability_during_restarts/",
+      "observedAt": "2026-08-02",
+      "evidence": "A July 2026 discussion asks how critical smart-home functions can remain available during a Home Assistant restart and concludes that essential controls need an independent path rather than a second active instance."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/what-happens-when-home-assistant-is-down/783154",
+      "observedAt": "2026-08-02",
+      "evidence": "A homeowner asks whether ordinary Zigbee switches can still control lights after replacing a vendor hub with ZHA, exposing the recurring need to understand direct control when the Home Assistant host fails."
+    },
+    {
+      "source": "github",
+      "url": "https://github.com/home-assistant/core/issues/153752",
+      "observedAt": "2026-08-02",
+      "evidence": "A Home Assistant Core crash report includes a household consequence: Z-Wave processing and automation requests stopped while Core repeatedly failed, illustrating that local radio does not by itself guarantee control when its software path is down."
+    },
+    {
+      "source": "google-search",
+      "url": "https://www.google.com/search?q=what+happens+if+Home+Assistant+goes+down",
+      "observedAt": "2026-08-02",
+      "evidence": "The exact query returns forum fragments, internet-outage explanations, and broad architecture material rather than one current homeowner answer that separates physical controls, hubs, radios, automations, apps, and recovery."
+    }
+  ],
+  "searchReview": {
+    "query": "what happens if Home Assistant goes down",
+    "reviewedAt": "2026-08-02",
+    "intent": "The searcher wants to know what will still work around the house when the Home Assistant process or host stops and what fallback controls to preserve before that happens.",
+    "resultGap": "Current results commonly answer whether Home Assistant works without the internet, discuss one Zigbee or Matter control path, or propose advanced server redundancy. They do not give a plain device-by-device failure matrix, distinguish a Core restart from host, router, power, and internet failure, or tell a homeowner how to test essential manual controls and recover safely.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/faq/works-without-internet/",
+      "https://community.home-assistant.io/t/what-happens-when-home-assistant-is-down/783154",
+      "https://zediot.com/blog/home-assistant-local-first-smart-home-architecture/"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant automation basics",
+      "url": "https://www.home-assistant.io/docs/automation/basics/",
+      "supports": "Home Assistant Core evaluates automation triggers, conditions, internal state, and actions, so Home Assistant-hosted automations need Core to be running."
+    },
+    {
+      "name": "Home Assistant internet-outage FAQ",
+      "url": "https://www.home-assistant.io/faq/works-without-internet/",
+      "supports": "Local Home Assistant protocols and automations can work without internet when the Home Assistant host and local network remain running, which is a different failure from the host being down."
+    },
+    {
+      "name": "Home Assistant Supervisor architecture",
+      "url": "https://developers.home-assistant.io/docs/supervisor/",
+      "supports": "Home Assistant Core and apps are managed as separate components, allowing the article to distinguish a Core restart from failure of the entire Home Assistant host."
+    },
+    {
+      "name": "Home Assistant ZHA documentation",
+      "url": "https://www.home-assistant.io/integrations/zha/",
+      "supports": "Compatible Zigbee devices can be bound directly so their commands bypass ZHA and Home Assistant, while normal ZHA control still depends on the coordinator and integration path."
+    },
+    {
+      "name": "Home Assistant Z-Wave JS documentation",
+      "url": "https://www.home-assistant.io/integrations/zwave_js/",
+      "supports": "Home Assistant uses a Z-Wave adapter, Z-Wave JS server, and integration, and Z-Wave associations are direct communication between products without a hub command path."
+    },
+    {
+      "name": "Home Assistant backup and restore documentation",
+      "url": "https://www.home-assistant.io/common-tasks/general/",
+      "supports": "Automatic backups, an emergency kit, off-device storage, and restore during onboarding provide the supported recovery path after host or storage failure."
+    },
+    {
+      "name": "Home Assistant restart documentation",
+      "url": "https://www.home-assistant.io/installation/alternative/#restart-home-assistant",
+      "supports": "Home Assistant documents supported restart methods for alternative installation types, supporting a controlled Core restart rather than an abrupt power cut."
+    },
+    {
+      "name": "Home Assistant recovery mode documentation",
+      "url": "https://www.home-assistant.io/integrations/recovery_mode/",
+      "supports": "Home Assistant can enter recovery mode after an unclean shutdown or startup failure, reinforcing the need to avoid using sudden power loss as a routine restart test."
+    },
+    {
+      "name": "Lutron Caseta Pico remote documentation",
+      "url": "https://support.lutron.com/us/en/product/casetawireless/article/product-installation/The-Pico-Remote",
+      "supports": "Lutron states that a Caseta Smart Hub is not required for functionality between a Pico remote and a Caseta device, illustrating a control path that does not depend on Home Assistant."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-ups-nut-safe-shutdown/",
+      "/blog/how-to-back-up-home-assistant/",
+      "/blog/home-assistant-devices-unavailable-after-restart/",
+      "/blog/matter-binding-home-assistant-switch-light-offline/",
+      "/blog/will-home-assistant-matter-work-without-internet/"
+    ],
+    "decision": "The new article owns the broad whole-house question of what continues during a stopped Core process or failed Home Assistant host. It will summarize failure boundaries and link to the existing pages for UPS sizing, backup procedures, post-restart troubleshooting, one Matter binding path, and internet-only outages instead of repeating those narrower instructions."
+  }
+}
