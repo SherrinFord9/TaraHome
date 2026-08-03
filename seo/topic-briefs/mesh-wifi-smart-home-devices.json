@@ -1,0 +1,125 @@
+{
+  "version": 2,
+  "slug": "mesh-wifi-smart-home-devices",
+  "researchedAt": "2026-08-03",
+  "primaryQuery": "mesh Wi-Fi for smart home devices",
+  "readerQuestion": "How should I set up mesh Wi-Fi so smart-home devices stay connected and local platforms can still find them?",
+  "selectedBecause": "Reddit and Home Assistant Community discussions repeatedly describe smart-home devices dropping, joining a distant mesh point, or becoming undiscoverable even when phones and laptops appear fine. ESPHome's January 2026 release called automatic Wi-Fi roaming one of its most requested features, confirming that distant-access-point attachment is a durable device problem rather than a one-off complaint. Current Google results are dominated by mesh-system shopping pages, basic mesh explanations, and vendor-specific settings instead of a neutral homeowner setup and diagnosis sequence. Tara's Search Console export is page-level rather than query-level, so it cannot establish query volume, but its 1,166-impression LAN-versus-IoT-VLAN page and 639-impression post-restart availability page show adjacent network interest. The question has clear setup intent, strong Tara installation fit, and a distinct scope from existing Tara articles about replacing a router, VLAN design, Matter devices going offline, and Zigbee channel interference.",
+  "candidatesConsidered": [
+    {
+      "query": "mesh Wi-Fi for smart home devices",
+      "evidenceSummary": "Recent and evergreen Reddit and Home Assistant Community threads repeatedly ask why low-bandwidth devices drop or attach to the wrong mesh point. A long-running ESPHome GitHub request and the current ESPHome roaming documentation verify the client-roaming limitation, while Home Assistant's Thread documentation verifies that some mesh systems can block multicast discovery. Exact-query results mostly sell mesh hardware, explain mesh at a high level, or prescribe one vendor's switches without separating coverage, backhaul, client roaming, isolation, discovery, and cloud reachability.",
+      "decision": "selected",
+      "reason": "It has the strongest combination of recurring independent pain, broad and durable setup value, a weak vendor-neutral result set, current primary evidence, Tara fit, and a defensible non-cannibalizing scope."
+    },
+    {
+      "query": "smart home without a smartphone",
+      "evidenceSummary": "Reddit and Home Assistant Community discussions repeatedly argue that daily control should not depend on a phone, and current official platform documentation shows that physical controls, browser dashboards, and automations can reduce daily app use while some commissioning and location features still require a mobile device. Search results are fragmented between installer promotion, broad smart-home explainers, and internet-outage articles.",
+      "decision": "rejected",
+      "reason": "The household-use question is broad and useful, but its exact search intent is less consistently expressed than the mesh setup problem and risks drifting into generic smart-home philosophy unless tightly constrained."
+    },
+    {
+      "query": "can 2.4 GHz smart home devices work with 5 GHz Wi-Fi",
+      "evidenceSummary": "Reddit and Home Assistant Community questions repeatedly ask whether a 2.4-GHz-only device can coexist with a phone on 5 GHz. Current Google, eero, TP-Link, and Espressif documentation confirms that the bands can normally share one local network and provides vendor-specific onboarding workarounds.",
+      "decision": "rejected",
+      "reason": "The intent is clear and demand is durable, but WIRED and current vendor documentation already answer much of the question. Tara's remaining angle—distinguishing radio bands from network isolation—would be narrower and overlap more heavily with existing Wi-Fi and IoT-network coverage."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1owdqex/wifi_devices_dropping/",
+      "observedAt": "2026-08-03",
+      "evidence": "A homeowner with three wired-backhaul Deco X55 units and about sixty connected devices reports recurring smart-device disconnects, showing that a seemingly sound mesh layout does not by itself reveal whether Wi-Fi, local integrations, or device behavior is failing."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1jpdp2m/do_wifi_mesh_systems_affect_home_automation_wifi/",
+      "observedAt": "2026-08-03",
+      "evidence": "A buyer asks whether mesh Wi-Fi will affect Wi-Fi, Zigbee, and other home-automation devices; the discussion repeatedly raises wireless backhaul airtime, 2.4-GHz coexistence, and multicast discovery rather than a single defective product."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/esphome-device-wifi-connection-issues-within-a-mesh-environment/693002",
+      "observedAt": "2026-08-03",
+      "evidence": "A multi-node Deco installation shows ESPHome devices disconnecting while other users report stable large installations on related hardware, illustrating why readers need a layered diagnosis instead of one universal mesh setting."
+    },
+    {
+      "source": "github",
+      "url": "https://github.com/esphome/feature-requests/issues/731",
+      "observedAt": "2026-08-03",
+      "evidence": "A long-running ESPHome request documents stationary devices remaining attached to weak access points and was closed by the 2026 implementation of post-connect roaming."
+    },
+    {
+      "source": "google-search",
+      "url": "https://www.google.com/search?q=mesh+Wi-Fi+for+smart+home+devices",
+      "observedAt": "2026-08-03",
+      "evidence": "The exact query surfaces current mesh-system buying guides, a basic Google mesh definition, and vendor marketing or support pages rather than a platform-neutral setup and troubleshooting sequence for smart-home reliability."
+    }
+  ],
+  "searchReview": {
+    "query": "mesh Wi-Fi for smart home devices",
+    "reviewedAt": "2026-08-03",
+    "intent": "The searcher wants to place and configure a mesh Wi-Fi system so smart lights, switches, cameras, sensors, hubs, and local-control platforms remain connected and discoverable throughout the home.",
+    "resultGap": "Current results emphasize which mesh system to buy, explain mesh in general, or list settings for one brand. They rarely help a homeowner distinguish weak device signal from weak wireless backhaul, a client stuck to a distant access point, 2.4-GHz onboarding trouble, isolation or multicast discovery failure, and a vendor-cloud outage. They also tend to present fast roaming, beamforming, dedicated IoT networks, or extra nodes as universal fixes when their effect is model- and topology-specific.",
+    "resultsReviewed": [
+      "https://www.tomsguide.com/computing/routers/best-mesh-wi-fi-systems",
+      "https://support.google.com/googlehome/answer/7182746?hl=en",
+      "https://www.tp-link.com/uk/support/faq/4420/?app=web",
+      "https://easygoingnerd.com/blog/best-mesh-wifi-for-smart-home/"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "ESPHome 2026.1 release notes",
+      "url": "https://esphome.io/changelog/2026.1.0/",
+      "supports": "ESPHome added automatic post-connect Wi-Fi roaming as one of its most requested features to address stationary devices that remain on distant access points after restarts, outages, or provisioning."
+    },
+    {
+      "name": "ESPHome WiFi component documentation",
+      "url": "https://esphome.io/components/wifi/",
+      "supports": "Current ESPHome devices use conservative post-connect roaming by default, may move when another access point with the same SSID is at least 10 dB better, and briefly interrupt TCP connections during the switch; this behavior is specific to ESPHome rather than all smart devices."
+    },
+    {
+      "name": "Home Assistant Thread documentation",
+      "url": "https://www.home-assistant.io/integrations/thread",
+      "supports": "Some mesh Wi-Fi systems can filter multicast and prevent a phone from discovering a Thread border router through mDNS, making discovery a different failure from ordinary internet access."
+    },
+    {
+      "name": "Google Nest Wifi placement guidance",
+      "url": "https://support.google.com/googlehome/answer/7183150?hl=en-CA",
+      "supports": "Mesh points need a strong connection to one another and should be placed partway toward the coverage area rather than inside the dead zone, then checked with the vendor's mesh test."
+    },
+    {
+      "name": "Google Nest Wifi wired-backhaul guidance",
+      "url": "https://support.google.com/googlehome/answer/7215624",
+      "supports": "Supported mesh products can use Ethernet backhaul, but points and switches must be connected in the topology documented by the vendor."
+    },
+    {
+      "name": "Google Nest Wifi band guidance",
+      "url": "https://support.google.com/googlehome/answer/6293481?hl=en-419",
+      "supports": "Google Nest Wifi uses one network name across its supported bands and notes that some smart-home devices support only 2.4 GHz."
+    },
+    {
+      "name": "eero 2.4 GHz setup guidance",
+      "url": "https://eero.com/support/articles/360049983772-How-do-I-temporarily-hide-the-5-and-6-GHz-bands",
+      "supports": "eero uses one network name across bands and provides a temporary ten-minute pause of 5 and 6 GHz for onboarding a device that requires 2.4 GHz."
+    },
+    {
+      "name": "TP-Link Deco smart-home connection guidance",
+      "url": "https://www.tp-link.com/uk/support/faq/4420/?app=web",
+      "supports": "TP-Link documents model-specific Deco options for an IoT network, capacity mode, fast roaming, beamforming, and device isolation, and warns that feature availability varies by model."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-main-lan-vs-iot-vlan/",
+      "/blog/change-wifi-router-matter-thread-devices/",
+      "/blog/home-assistant-matter-wifi-devices-offline/",
+      "/blog/home-assistant-zigbee-channel-wifi-interference/",
+      "/blog/home-assistant-devices-unavailable-after-restart/"
+    ],
+    "decision": "The new article owns preventive, platform-neutral mesh placement, setup, and layer-by-layer diagnosis for smart-home Wi-Fi clients. It will link to the existing pages for network segmentation, router replacement, Matter-specific offline recovery, Zigbee channel coexistence, and post-restart entity recovery instead of repeating those narrower procedures."
+  }
+}
