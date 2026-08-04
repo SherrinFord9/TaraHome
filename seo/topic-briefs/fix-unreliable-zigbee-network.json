@@ -1,0 +1,104 @@
+{
+  "version": 2,
+  "slug": "fix-unreliable-zigbee-network",
+  "researchedAt": "2026-08-04",
+  "primaryQuery": "how to fix an unreliable Zigbee network",
+  "readerQuestion": "How can I fix a Zigbee network that keeps dropping devices or responding unreliably without rebuilding everything?",
+  "selectedBecause": "The same reliability problem recurs across current Reddit discussions, Home Assistant Community threads, and a durable zigpy discussion, while the exact Google results split the answer between implementation-specific documentation, a long video, and generic cause lists. The strongest missing result is a homeowner-first sequence that starts by identifying whether one device, one area, or the whole mesh is affected, then works through power, batteries, coordinator placement, always-on routers, interference, firmware, and only finally re-pairing. The question is broadly useful across ZHA and Zigbee2MQTT, fits Tara's installation and troubleshooting work, and does not duplicate Tara's narrower pages about channel planning, ZHA versus Zigbee2MQTT, coordinator migration, or devices unavailable after a restart. Search Console is page-level rather than query-level and cannot establish demand for this exact phrase, but its 1,166-impression network-segmentation page and 639-impression post-restart availability page show adjacent reader interest in practical connectivity diagnosis.",
+  "candidatesConsidered": [
+    {
+      "query": "how to fix an unreliable Zigbee network",
+      "evidenceSummary": "Recent and evergreen Reddit and Home Assistant Community discussions repeatedly describe devices falling off, whole meshes becoming unreliable, and uncertainty about routers, interference, and repair order. A long-running zigpy discussion shows that mesh healing and router-loss behavior remain confusing, while the exact search results do not provide one concise diagnosis path that works for both ZHA and Zigbee2MQTT.",
+      "decision": "selected",
+      "reason": "It combines recurring independent demand, clear fix-it intent, durable household usefulness, current primary documentation, a weak homeowner-oriented result set, strong Tara fit, and a clean gap in existing coverage."
+    },
+    {
+      "query": "move from Alexa to Home Assistant",
+      "evidenceSummary": "Reddit and Home Assistant Community discussions show recurring migration interest from people who want more local control while preserving voice commands, routines, and household usability.",
+      "decision": "rejected",
+      "reason": "It is a strong broad migration topic, but the answer depends heavily on a reader's exact device mix and cloud services, creating more overlap with existing voice and platform material than the focused Zigbee reliability question."
+    },
+    {
+      "query": "Reolink vs UniFi cameras",
+      "evidenceSummary": "Current community comparisons show high purchase intent around local recording, subscriptions, Home Assistant integration, and total system cost, while Tara's camera pages receive adjacent Search Console impressions.",
+      "decision": "rejected",
+      "reason": "The question is useful but requires a larger current model-by-model buying matrix and rights-safe product-led imagery; it is less durable than the protocol-level reliability question and has more capable comparison results already."
+    },
+    {
+      "query": "Home Assistant multiple homes",
+      "evidenceSummary": "Recent Reddit and Home Assistant Community questions ask how to manage a primary home, holiday property, or family member's home, and official Companion documentation verifies multi-server support.",
+      "decision": "rejected",
+      "reason": "The recurring need is real, but search intent divides between one centralized installation and separate installations in the app. That narrower architecture decision serves fewer households than the recurring Zigbee reliability problem."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1qawyif/zigbee_network_unreliable_despite_many_routers/",
+      "observedAt": "2026-08-04",
+      "evidence": "A current homeowner reports a Zigbee network remaining unreliable despite adding many routers, showing that device count alone does not answer placement, coordinator, interference, or weak-branch problems."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/13jvyj1/zha_added_zigbee_devices_keep_disconnecting/",
+      "observedAt": "2026-08-04",
+      "evidence": "An older but still relevant troubleshooting thread describes paired ZHA devices repeatedly disconnecting, confirming that the symptom and its confusing repair choices are durable rather than tied to one release."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/all-my-zigbee-devices-keep-becoming-unavailable/901483",
+      "observedAt": "2026-08-04",
+      "evidence": "A community troubleshooting case asks why an entire Zigbee device set becomes unavailable, reflecting the need to distinguish a coordinator-wide failure from one weak device or one branch of the mesh."
+    },
+    {
+      "source": "github",
+      "url": "https://github.com/zigpy/zigpy/discussions/614",
+      "observedAt": "2026-08-04",
+      "evidence": "A durable zigpy discussion documents recurring confusion about whether and how a Zigbee mesh repairs routes after a router disappears, an important caveat behind the common advice to wait for the mesh to heal."
+    },
+    {
+      "source": "google-search",
+      "url": "https://www.google.com/search?q=how+to+fix+an+unreliable+Zigbee+network",
+      "observedAt": "2026-08-04",
+      "evidence": "The exact query surfaces implementation-specific documentation, a roughly 22-minute troubleshooting video, and generic range or cause lists rather than one homeowner-first, platform-neutral order of operations."
+    }
+  ],
+  "searchReview": {
+    "query": "how to fix an unreliable Zigbee network",
+    "reviewedAt": "2026-08-04",
+    "intent": "The searcher wants a safe, practical sequence to stop Zigbee devices dropping or responding slowly while avoiding a full network rebuild unless it is genuinely necessary.",
+    "resultGap": "Current results explain individual causes or one Zigbee implementation, but they do not begin with the symptom pattern—one device, one room, or the whole network—and then guide a non-technical homeowner through the lowest-risk fixes in order. They also tend to understate that sleepy battery devices can look absent in a map, that powered devices are not useful routers when a wall switch cuts their power, and that mass re-pairing or a channel change should not be the first experiment.",
+    "resultsReviewed": [
+      "https://www.zigbee2mqtt.io/how_tos/how_to_improve_network_range_and_stability.html",
+      "https://www.youtube.com/watch?v=MDD7RRjr7uo",
+      "https://zigbeeguru.com/zigbee-range-problems-easy-solutions/"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant ZHA documentation",
+      "url": "https://www.home-assistant.io/integrations/zha",
+      "supports": "Defines coordinators, always-powered routers, and sleepy end devices; documents topology-map limitations, coordinator placement and USB interference precautions, availability behavior, and the risks and settling time associated with channel changes."
+    },
+    {
+      "name": "Zigbee2MQTT network range and stability guide",
+      "url": "https://www.zigbee2mqtt.io/how_tos/how_to_improve_network_range_and_stability.html",
+      "supports": "Documents coordinator placement, host and USB interference, transmission power, and the role and placement of routers in Zigbee2MQTT networks."
+    },
+    {
+      "name": "Connectivity Standards Alliance Zigbee FAQ",
+      "url": "https://csa-iot.org/all-solutions/zigbee/zigbee-faq/",
+      "supports": "Provides protocol-level context for Zigbee mesh networking, collision avoidance, retransmission, radio bands, and the factors that affect real-world reliability."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-zigbee-channel-wifi-interference/",
+      "/blog/zha-vs-zigbee2mqtt-home-assistant/",
+      "/blog/home-assistant-devices-unavailable-after-restart/",
+      "/blog/home-assistant-zigbee-coordinator-migration/"
+    ],
+    "decision": "The new page owns the broad symptom-led repair sequence for an unreliable Zigbee mesh across ZHA and Zigbee2MQTT. It will summarize only the diagnostic handoffs and link to the existing pages for detailed channel planning, platform choice, restart-specific entity recovery, and coordinator migration, so it does not compete for those narrower intents."
+  }
+}
