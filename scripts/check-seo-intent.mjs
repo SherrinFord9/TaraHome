@@ -7,6 +7,10 @@ import {fileURLToPath} from 'node:url';
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const keywordMapPath = path.join(repo, 'seo', 'keyword-map.json');
 const keywordMap = JSON.parse(fs.readFileSync(keywordMapPath, 'utf8'));
+const keywordStrategyPath = path.join(repo, 'seo', 'keyword-strategy.json');
+const keywordStrategy = fs.existsSync(keywordStrategyPath)
+  ? JSON.parse(fs.readFileSync(keywordStrategyPath, 'utf8'))
+  : {commercialOwners: [], deviceOwners: []};
 const args = process.argv.slice(2);
 
 function valueAfter(flag) {
@@ -117,6 +121,16 @@ function collectComparablePages() {
   return [...files].filter((file) => fs.existsSync(file)).map(readPage);
 }
 
+function strategyOwners() {
+  return [...(keywordStrategy.commercialOwners || []), ...(keywordStrategy.deviceOwners || [])];
+}
+
+function ownedKeywordsForPath(pagePath) {
+  return strategyOwners()
+    .filter((owner) => owner.path === pagePath)
+    .flatMap((owner) => owner.keywords || []);
+}
+
 function validateSite() {
   const errors = [];
   const seenQueries = new Map();
@@ -145,13 +159,26 @@ function validateSite() {
     if (/Search intent Tara can answer|Related smart home searches/i.test(actual.html)) errors.push(`${page.path} exposes internal SEO workflow language.`);
   }
 
+  const seenOwnedKeywords = new Map();
+  for (const owner of strategyOwners()) {
+    const file = fileForPath(owner.path);
+    if (!fs.existsSync(file)) errors.push(`Missing keyword-strategy owner page: ${owner.path}`);
+    for (const keyword of owner.keywords || []) {
+      const query = normalized(keyword);
+      if (seenOwnedKeywords.has(query) && seenOwnedKeywords.get(query) !== owner.path) {
+        errors.push(`Keyword strategy assigns "${keyword}" to both ${seenOwnedKeywords.get(query)} and ${owner.path}`);
+      }
+      seenOwnedKeywords.set(query, owner.path);
+    }
+  }
+
   if (errors.length) {
     console.error(`SEO intent check FAIL (${errors.length} issue${errors.length === 1 ? '' : 's'}):`);
     for (const error of errors) console.error(`- ${error}`);
     process.exit(1);
   }
 
-  console.log(`SEO intent check PASS: ${keywordMap.protectedPages.length} protected pages match unique roles, metadata, canonicals, and H1 rules.`);
+  console.log(`SEO intent check PASS: ${keywordMap.protectedPages.length} protected pages and ${seenOwnedKeywords.size} owned keyword variants match unique roles, metadata, canonicals, and H1 rules.`);
 }
 
 function checkCandidate({title, query, articleFile = ''}) {
@@ -183,9 +210,11 @@ function checkCandidate({title, query, articleFile = ''}) {
     if (candidatePath && (pagePath === candidatePath || page.file === articleFile)) continue;
 
     const mapped = keywordMap.protectedPages.find((item) => item.path === pagePath);
-    const comparisonText = [page.title, page.h1, mapped?.primaryQuery, ...(mapped?.secondaryQueries || [])].filter(Boolean).join(' ');
+    const ownedKeywords = ownedKeywordsForPath(pagePath);
+    const comparisonText = [page.title, page.h1, mapped?.primaryQuery, ...(mapped?.secondaryQueries || []), ...ownedKeywords].filter(Boolean).join(' ');
     const result = score(candidateText, comparisonText);
-    const exactQuery = mapped && [mapped.primaryQuery, ...(mapped.secondaryQueries || [])]
+    const exactQuery = [mapped?.primaryQuery, ...(mapped?.secondaryQueries || []), ...ownedKeywords]
+      .filter(Boolean)
       .some((mappedQuery) => normalized(mappedQuery) === normalized(query));
     const overlaps = result.shared >= keywordMap.rules.minimumSharedTopicTokens && (
       result.jaccard >= keywordMap.rules.candidateJaccardBlock ||

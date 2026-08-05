@@ -61,6 +61,12 @@
       .steps { counter-reset: step; display: grid; gap: 12px; list-style: none; margin: 0; padding: 0; }
       .steps li { align-items: center; border-top: 1px solid var(--line); counter-increment: step; display: grid; gap: 16px; grid-template-columns: 56px 1fr; min-height: 62px; }
       .steps li::before { color: var(--accent); content: counter(step, decimal-leading-zero); font-size: 1.55rem; font-weight: 600; }
+      .detail-section { display: grid; gap: clamp(28px, 4vw, 54px); grid-template-columns: minmax(0, 0.72fr) minmax(360px, 1.28fr); }
+      .detail-heading { align-self: start; }
+      .detail-list { border-top: 1px solid var(--line); }
+      .detail-row { border-bottom: 1px solid var(--line); display: grid; gap: 18px; grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr); padding: 20px 0; }
+      .detail-row h3 { font-size: 1.12rem; line-height: 1.25; margin: 0; }
+      .detail-row p { font-size: 1.02rem; line-height: 1.58; }
       .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
       .faq summary { cursor: pointer; font-size: 1.2rem; font-weight: 600; }
       .faq p { margin-top: 10px; }
@@ -121,7 +127,8 @@
       footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
       @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
       @media (max-width: 1080px) { .blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-	      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+	      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .grid, .list, .article-hero, .source-grid, .detail-section { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } .lede { max-width: 34ch; } .blog-list { grid-template-columns: 1fr; } }
+	      @media (max-width: 620px) { .detail-row { gap: 8px; grid-template-columns: 1fr; } }
       @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } }
     </style>
     <script type="application/ld+json">{
@@ -131,8 +138,17 @@
       "@type": "Organization",
       "@id": "https://tarahome.ai/#organization",
       "name": "Tara Home",
+      "alternateName": [
+        "TaraHome",
+        "Tara"
+      ],
       "url": "https://tarahome.ai/",
-      "logo": "https://tarahome.ai/assets/logo/logo.png"
+      "logo": "https://tarahome.ai/assets/logo/logo.png",
+      "email": "hello@tarahome.ai",
+      "location": {
+        "@type": "City",
+        "name": "Spokane"
+      }
     },
     {
       "@type": "WebPage",
@@ -210,6 +226,30 @@
             "@type": "Answer",
             "text": "Yes. Tara is designed around a local server that can support new routines and connected devices over time."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "Will everything really appear in one app?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The primary household controls are organized in one app. Some products may still need a vendor app for firmware updates or optional cloud-only features, and Tara calls that out before selection."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the home stop working when the internet is down?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Core routines built from locally controlled devices are designed to continue on the in-home server. Remote access and any selected cloud-only feature can still depend on internet service."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I keep Apple Home, Google Home, or Alexa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes when the final platform and devices support the handoff. Tara treats them as optional family controls instead of creating duplicate automation logic in several apps."
+          }
         }
       ]
     }
@@ -247,6 +287,19 @@
         <h2>What this page covers.</h2>
         <ul class="list"><li>Room labels</li><li>Local routines</li><li>Automation drafting</li><li>Protocol planning</li><li>Device health checks</li><li>Presence-based comfort</li><li>Door and window checks</li><li>App handoff</li></ul>
       </section>
+      <section class="block detail-section">
+        <div class="detail-heading">
+          <p class="kicker">One coordinated system</p>
+          <h2>Automations have one owner, even when devices come from several brands.</h2>
+        </div>
+        <div class="detail-list"><div class="detail-row"><h3>Local routines first</h3><p>Lighting, presence, door and window checks, comfort, and other dependable house logic are planned to run on the local server instead of bouncing between unrelated vendor routines.</p></div><div class="detail-row"><h3>One app for the household</h3><p>Rooms, devices, routine status, and supported camera events are organized in one primary app. Vendor apps are kept only when a product still needs one for firmware or an optional feature.</p></div><div class="detail-row"><h3>Apple, Google, and Alexa at the edge</h3><p>Existing voice assistants and family ecosystems can remain useful control surfaces when the selected devices support them. Tara avoids duplicating the same automation in every platform.</p></div><div class="detail-row"><h3>Normal controls still matter</h3><p>Light switches, thermostat controls, and other familiar manual paths are planned so guests and family can use the home without learning an automation dashboard.</p></div></div>
+      </section><section class="block detail-section">
+        <div class="detail-heading">
+          <p class="kicker">What happens later</p>
+          <h2>A maintainable setup is part of the kit.</h2>
+        </div>
+        <div class="detail-list"><div class="detail-row"><h3>Health checks</h3><p>The server can watch supported device availability, battery state, and routine failures so an issue appears as a useful maintenance item instead of a mystery.</p></div><div class="detail-row"><h3>Changes are reviewed</h3><p>Tara can draft new routines in plain language, but the homeowner reviews the behavior before it is enabled.</p></div><div class="detail-row"><h3>Existing devices are audited</h3><p>Tara checks each existing product for local integration, cloud reliance, protocol, model-specific limits, and whether it belongs in the final system.</p></div></div>
+      </section>
       <section class="block grid">
         <div>
           <p class="kicker">How it works</p>
@@ -257,7 +310,7 @@
       <section class="block faq">
         <p class="kicker">FAQ</p>
         <h2>Quick answers.</h2>
-        <details><summary>Does Tara choose Matter, Thread, or Bluetooth?</summary><p>Tara confirms the right mix after the call based on the home, device reliability, and install plan.</p></details><details><summary>Can automations be changed later?</summary><p>Yes. Tara is designed around a local server that can support new routines and connected devices over time.</p></details>
+        <details><summary>Does Tara choose Matter, Thread, or Bluetooth?</summary><p>Tara confirms the right mix after the call based on the home, device reliability, and install plan.</p></details><details><summary>Can automations be changed later?</summary><p>Yes. Tara is designed around a local server that can support new routines and connected devices over time.</p></details><details><summary>Will everything really appear in one app?</summary><p>The primary household controls are organized in one app. Some products may still need a vendor app for firmware updates or optional cloud-only features, and Tara calls that out before selection.</p></details><details><summary>Does the home stop working when the internet is down?</summary><p>Core routines built from locally controlled devices are designed to continue on the in-home server. Remote access and any selected cloud-only feature can still depend on internet service.</p></details><details><summary>Can I keep Apple Home, Google Home, or Alexa?</summary><p>Yes when the final platform and devices support the handoff. Tara treats them as optional family controls instead of creating duplicate automation logic in several apps.</p></details>
       </section>
       <section class="block related">
         <p class="kicker">Continue with Tara</p>
