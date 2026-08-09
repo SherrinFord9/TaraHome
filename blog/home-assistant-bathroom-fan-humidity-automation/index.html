@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Bathroom Fan Humidity Automation</title>
+    <meta name="description" content="Build a Home Assistant bathroom fan humidity automation that avoids seasonal false starts, respects manual control, and shuts off reliably." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-bathroom-fan-humidity-automation/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-bathroom-fan-humidity-automation/" />
+    <meta property="og:title" content="Home Assistant Bathroom Fan Humidity Automation" />
+    <meta property="og:description" content="Build a Home Assistant bathroom fan humidity automation that avoids seasonal false starts, respects manual control, and shuts off reliably." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-bathroom-fan-humidity-automation/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Bathroom Fan Humidity Automation" />
+    <meta name="twitter:description" content="Build a Home Assistant bathroom fan humidity automation that avoids seasonal false starts, respects manual control, and shuts off reliably." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-bathroom-fan-humidity-automation/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-bathroom-fan-humidity-automation/#blogposting",
+          "headline": "Home Assistant Bathroom Fan Humidity Automation",
+          "description": "Build a Home Assistant bathroom fan humidity automation that avoids seasonal false starts, respects manual control, and shuts off reliably.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-bathroom-fan-humidity-automation/cover.png",
+          "datePublished": "2026-08-09",
+          "dateModified": "2026-08-09",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/home-assistant-bathroom-fan-humidity-automation/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/statistics/",
+            "https://www.home-assistant.io/integrations/derivative/",
+            "https://www.home-assistant.io/integrations/trend/",
+            "https://www.home-assistant.io/integrations/generic_hygrostat/",
+            "https://www.home-assistant.io/triggers/humidity.crossed_threshold/",
+            "https://www.home-assistant.io/integrations/input_boolean/",
+            "https://www.home-assistant.io/integrations/timer/",
+            "https://www.epa.gov/mold/ten-things-you-should-know-about-mold",
+            "https://iaq.na.panasonic.com/ventilation/fans/whispersense-light",
+            "https://community.home-assistant.io/t/bathroom-humidity-exhaust-fan/509992?page=42",
+            "https://community.home-assistant.io/t/humidity-control-fan/478461",
+            "https://www.reddit.com/r/homeassistant/comments/1tks6tr/humidity_sensor_in_the_bathroom/",
+            "https://gist.github.com/Blackshome/8e09a8213b834f1be4ab49ba880abed8"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-bathroom-fan-humidity-automation/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Bathroom fan humidity automation", "item": "https://tarahome.ai/blog/home-assistant-bathroom-fan-humidity-automation/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-bathroom-fan-humidity-automation/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What humidity should turn on a bathroom fan in Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "There is no universal trigger percentage because normal indoor humidity changes with weather and ventilation. A dependable starting rule watches for a quick rise over about five minutes; use a fixed percentage only after observing that it stays above the bathroom's normal dry range in every season." }
+            },
+            {
+              "@type": "Question",
+              "name": "How long should the bathroom fan run after a shower?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Run it until bathroom humidity has returned close to a dry-room reference or recent baseline for several minutes. Add both a minimum run time to prevent short cycling and a tested maximum time so a failed sensor cannot leave the fan on indefinitely." }
+            },
+            {
+              "@type": "Question",
+              "name": "Where should a bathroom humidity sensor go?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Follow the sensor maker's placement instructions and keep it outside direct spray, away from the exhaust grille, and away from an open window or supply vent. Check that it updates often enough to show a shower-related rise rather than only an occasional large jump." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can the wall switch still control an automated bathroom fan?",
+              "acceptedAnswer": { "@type": "Answer", "text": "It should. Keep an ordinary physical control and make automatic shutoff act only on a fan cycle that the automation started. A visible Manual hold helper is the clearest option when the device cannot reliably report whether a person or an automation changed it." }
+            },
+            {
+              "@type": "Question",
+              "name": "What happens to the bathroom fan if Home Assistant is down?",
+              "acceptedAnswer": { "@type": "Answer", "text": "That depends on the fan control. A physical switch or a purpose-built fan with its own humidity sensor can still work without Home Assistant. An automation-only smart control will not make new decisions while the server or required device connection is unavailable, so preserve manual operation." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant automations</span><span>August 9, 2026</span><span>10 min read</span></p>
+            <h1>Home Assistant Bathroom Fan Humidity Automation</h1>
+            <p class="lede">Start the exhaust fan when humidity rises quickly, not merely when it reaches one magic percentage. Stop it only after the room is close to its normal dry level, while keeping the wall switch and a maximum-runtime fallback.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-bathroom-fan-humidity-automation/cover.png" alt="A warm bathroom with a ceiling exhaust grille, wall humidity sensor, and ordinary fan switch after a shower" width="1586" height="992" decoding="async" fetchpriority="high" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>What to do:</strong> Watch for a quick rise in bathroom humidity over about five minutes, then turn the fan on. This follows the shower instead of relying on one year-round percentage.</li>
+              <li><strong>When to stop:</strong> Wait until humidity is close to a nearby dry room or the bathroom's recent dry baseline for several minutes. Add a minimum run time and a tested 45–60 minute maximum.</li>
+              <li><strong>What to avoid:</strong> Do not let an automatic off rule cancel a fan that someone turned on manually, and do not place the sensor beside the shower spray or exhaust grille.</li>
+              <li><strong>Main caveat:</strong> Use a fan-rated control installed as its manufacturer and local electrical rules require. Keep physical operation, or choose a fan with its own humidity control, so ventilation does not depend entirely on Home Assistant.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Use a humidity rise to start and a dry-room level to stop</h2>
+          <p>The most reliable Home Assistant bathroom-fan automation uses two different decisions. It starts when the room's humidity climbs unusually fast, which is a good sign that a shower has begun. It stops after the reading settles close to the bathroom's normal dry level—or close to a humidity sensor in a nearby dry room—for several minutes.</p>
+          <p>This works better than “turn on above 60%” in many climates. A bathroom might sit near 60% on a muggy summer day without anyone showering, yet begin a winter shower at 32%. A rise of several percentage points over a short period follows what changed in that room. There is no universal rise number: observe your own sensor through several showers, then set the trigger below the smallest clear shower rise and above ordinary noise.</p>
+          <p>Home Assistant now has a simple <strong>Relative humidity crossed threshold</strong> trigger for a fixed level. It fires once when the reading enters the chosen zone instead of firing on every update that remains above it. That makes it a good first version when the bathroom's dry humidity stays in a narrow range. An <strong>automation</strong> is the saved “when this happens, do that” rule. A <strong>helper</strong> is a saved or calculated value the rule can use. For a more seasonal setup, a Statistics helper can report the change over a recent window, while a Derivative helper estimates the speed of change. Both can be created from the Helpers screen without installing extra software.</p>
+
+          <div class="callout">
+            <p><strong>A sensible first target:</strong> let the automation recognize the shower, keep the fan on for at least 10–15 minutes, wait for the room to remain near its dry reference for 5–10 minutes, and force the automatic cycle to end after 45–60 minutes. Treat those as starting values to test, not universal ventilation rules.</p>
+          </div>
+
+          <h2 id="choose-method">Choose the simplest method that survives your weather</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Control method</th>
+                  <th>Best fit</th>
+                  <th>What it does well</th>
+                  <th>Main caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Fixed humidity threshold</strong></td>
+                  <td>Stable indoor climate and a clear gap between dry and shower readings</td>
+                  <td>Fastest to build with the Relative humidity crossed threshold trigger or Generic Hygrostat</td>
+                  <td>Can start on muggy days or miss a shower when the room begins very dry</td>
+                </tr>
+                <tr>
+                  <td><strong>Five-minute humidity rise</strong></td>
+                  <td>Most bathrooms with a sensor that updates often</td>
+                  <td>Detects the shower-related change instead of one absolute number</td>
+                  <td>Needs observation and tuning; a slow-reporting sensor may react late</td>
+                </tr>
+                <tr>
+                  <td><strong>Bathroom versus nearby room</strong></td>
+                  <td>Homes with another dependable humidity sensor outside the bathroom</td>
+                  <td>Creates a useful seasonal reference for deciding when the bathroom is dry again</td>
+                  <td>The reference sensor must be in a genuinely drier space, not the steamy hallway</td>
+                </tr>
+                <tr>
+                  <td><strong>Purpose-built humidity fan or control</strong></td>
+                  <td>Households that want ventilation independent of smart-home software</td>
+                  <td>Can keep responding locally when Home Assistant or the network is unavailable</td>
+                  <td>Offers less room-by-room coordination and still needs correct sizing and installation</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The US Environmental Protection Agency says indoor relative humidity should generally stay below 60%, ideally around 30–50%. That is useful whole-home moisture guidance, not a universal fan-start number. A bathroom will briefly rise above the rest of the home during a shower; the useful question is whether ventilation brings it back down and whether any wet surface or moisture problem persists.</p>
+
+          <h2 id="build">Build the dependable version in seven steps</h2>
+          <ol>
+            <li><strong>Confirm ordinary control first.</strong> Make sure the fan works from a physical switch and that Home Assistant shows the correct fan or switch state. If it is an in-wall smart control, it must be rated for the fan motor and installed according to its instructions and local rules.</li>
+            <li><strong>Place the humidity sensor thoughtfully.</strong> Follow the maker's instructions. Keep it outside direct spray and away from the exhaust grille, an open window, or a heating and cooling vent. Let it report for a day before judging it.</li>
+            <li><strong>Record at least three normal showers.</strong> In the sensor's history, note the dry reading, the change during the first five minutes, the peak, and the time it takes to settle. Include a muggy day if possible. This turns a guessed threshold into a household-specific one.</li>
+            <li><strong>Create the rise helper.</strong> Open <strong>Settings &gt; Devices &amp; services &gt; Helpers &gt; Create helper &gt; Statistics</strong>. Choose the bathroom humidity sensor, the <strong>Change</strong> characteristic, and a five-minute maximum age. Use a generous sampling size, such as 50, so it does not cut off readings that still belong in the five-minute window. A Derivative helper with a five-minute time window is another valid way to smooth and measure the rise.</li>
+            <li><strong>Create the start automation.</strong> Trigger when the five-minute change rises above the smallest reliable shower increase you observed. Requiring it to remain above that level for a short period can reject a single bad reading. The actions should turn on a Toggle helper called <strong>Bathroom fan automatic cycle</strong>—the marker that remembers this run belongs to the automation—then turn on the fan.</li>
+            <li><strong>Create the stop automation.</strong> With one humidity sensor, start with a Below trigger set a few percentage points above the bathroom's usual dry reading and require it to stay there for 5–10 minutes. Recheck that number when the season changes. With a nearby dry-room sensor, compare the two using a Template helper—a calculated sensor that subtracts the dry-room reading from the bathroom reading—or a reviewed community blueprint. In either version, require the automatic-cycle marker to be on and the minimum run time to have passed; then turn off the fan and marker together.</li>
+            <li><strong>Add a separate maximum-runtime rule.</strong> If the automatic-cycle marker is still on after the chosen limit, turn the fan off, clear the marker, and send a low-priority notice if you want to investigate. A missing or stale humidity reading should never leave an automatic cycle running forever.</li>
+          </ol>
+
+          <p>A Statistics helper is especially convenient here because Home Assistant's own documentation includes a five-minute bathroom-humidity change example and says recorded history can restore its recent samples after a restart. A Derivative helper is useful when readings arrive in visible steps; its time-window option smooths short noise. A Trend helper can label a reading as rising or falling, but it needs at least two updates and a falling reading alone does not prove the room is dry.</p>
+          <p>If your sensor reports only when humidity changes by a large amount, a five-minute calculation may be late or uneven. Do not hide that with an extremely sensitive threshold. First check the device's update behavior and battery settings, then use a longer window if needed.</p>
+
+          <h2 id="manual-control">Keep manual control from fighting automatic shutoff</h2>
+          <p>An automatic stop should turn off only a fan cycle that the automation started. The clear way to remember that is a Toggle helper named something like <strong>Bathroom fan automatic cycle</strong>. The start rule turns the helper on; the normal stop and maximum-runtime rules check that it is on, then clear it when they finish.</p>
+          <p>If a person turns the fan on while that helper is off, the automatic stop ignores it. If someone needs to take over during an automatic cycle, provide a visible <strong>Manual fan hold</strong> toggle or a dependable separate button gesture that clears the automatic-cycle marker. A plain fan state often cannot reveal whether a wall switch, app, voice command, or automation caused the change.</p>
+          <p>This is the same household handoff described in Tara's <a href="/blog/home-assistant-automation-manual-override/">manual-override guide</a>: make the pause or hold visible, give it an understandable reset, and do not expect Home Assistant to infer intent from every state change.</p>
+
+          <h2 id="back-to-back">Handle back-to-back showers without restarting the timer</h2>
+          <p>The fan may already be running when the next person starts a shower. That should extend the drying cycle, not create a second competing run. The plain solution is a Timer helper named <strong>Bathroom fan minimum run</strong>. Have every clear shower rise start that timer. Home Assistant restarts an active timer when it receives another start action, so the second shower moves the earliest possible stop later. When the timer finishes, let the stop automation check the dry-room condition; the timer ending is permission to check, not proof that the room is dry.</p>
+          <p>Do not use “fan has been on for 15 minutes” as the only stop rule. Fifteen minutes after the first person begins may be the middle of the second shower. The minimum time prevents a brief false off; the humidity settling rule decides whether drying is actually done; the maximum time catches faults.</p>
+
+          <h2 id="simple-version">When a fixed threshold is good enough</h2>
+          <p>If the bathroom normally stays between, for example, 40% and 48% and every shower quickly passes 60%, a fixed threshold can be perfectly understandable. In a new automation, choose the bathroom sensor, select <strong>Relative humidity crossed threshold</strong>, choose <strong>Above</strong>, and enter the wet threshold you observed. Use a separate Below crossing with a lower value and set <strong>For at least</strong> to 5–10 minutes for stopping. Different on and off values prevent rapid switching around one number.</p>
+          <p>The Generic Hygrostat helper can also control one switch as a dehumidifier from a target humidity, with tolerances and a minimum cycle duration. It is still a fixed-target controller, so it is most suitable when your seasonal dry range is stable. If summer humidity reaches the on point without a shower, move to a shower-rise start rather than raising the threshold until winter showers are missed.</p>
+
+          <h2 id="failures">Plan for stale sensors, restarts, and outages</h2>
+          <ul>
+            <li><strong>Sensor becomes unavailable:</strong> do not treat a missing value as “dry.” Keep the maximum-runtime rule and make the sensor problem visible.</li>
+            <li><strong>Home Assistant restarts mid-shower:</strong> test whether the automatic-cycle helper and recent Statistics data restore as expected. The Toggle helper restores its previous state unless you configure an initial value; Statistics can reload recent sensor readings when Home Assistant's history recording is enabled, as it normally is.</li>
+            <li><strong>Fan command fails:</strong> confirm the actual fan state instead of assuming an action call succeeded. A notification is useful if an automatic cycle starts but the fan remains off.</li>
+            <li><strong>Internet goes down:</strong> locally connected sensors and fan controls may still work, but cloud-dependent devices may not. Test your exact control path rather than assuming “Home Assistant” automatically means local.</li>
+            <li><strong>Home Assistant server is down:</strong> new software decisions cannot run. The physical wall control—and any independent humidity control built into the fan—should remain understandable and usable.</li>
+          </ul>
+          <p>Use the <a href="/blog/home-assistant-automation-not-firing/">automation trace checklist</a> when the trigger, condition, or fan action does not behave as expected. If the room must ventilate even when the smart-home controller is unavailable, read <a href="/blog/what-happens-if-home-assistant-goes-down/">the local fallback guide</a> and choose hardware that keeps an independent control path.</p>
+
+          <h2 id="test">Test with real showers before trusting it</h2>
+          <ol>
+            <li><strong>Watch one run without controlling the fan.</strong> Let a temporary test automation notify or log when it would start and stop. Confirm the proposed events match the shower.</li>
+            <li><strong>Test a humid day and a dry day.</strong> The start rule should ignore a slow whole-home weather change.</li>
+            <li><strong>Test a short shower.</strong> Confirm the minimum run time prevents an immediate stop.</li>
+            <li><strong>Test back-to-back showers.</strong> The fan should remain on and the dry decision should move later.</li>
+            <li><strong>Test manual on and manual off.</strong> The automation should not immediately reverse the person's choice.</li>
+            <li><strong>Temporarily make the sensor unavailable.</strong> Confirm the maximum-runtime rule remains able to end an automatic cycle.</li>
+            <li><strong>Restart Home Assistant in a safe window.</strong> Check the cycle marker, helpers, fan state, and next stop decision.</li>
+          </ol>
+
+          <h2 id="safety">Keep ventilation and electrical safety independent</h2>
+          <p>Home Assistant can improve when a fan runs; it cannot correct an undersized or blocked fan, a duct that vents into the wrong space, a water leak, or existing mold. Clean and maintain the fan as its manufacturer directs, deal with persistent moisture at its source, and use appropriate professional help for ventilation, moisture, or mold problems.</p>
+          <p>Do not use an ordinary smart-light control unless it is explicitly suitable for the fan load and installation. Bathroom wiring locations and electrical rules vary. Keep the normal physical control, follow the fan and control manufacturers' instructions, and use a qualified electrician where required. A purpose-built humidity-sensing exhaust fan is often the simpler choice when independent operation matters more than advanced Home Assistant coordination.</p>
+
+          <h2 id="tara-approach">Tara's practical approach</h2>
+          <p>A good bathroom automation has one understandable job: notice the shower, dry the room, and then get out of the way. Start with history from the actual bathroom, use a rise instead of a magic percentage when the seasons demand it, and keep manual control obvious.</p>
+          <p>A <a href="/home-automation-kit/">configured local home-automation system</a> should document the fan's start, stop, hold, timeout, and outage behavior in plain language. Build and test those five pieces before adding occupancy, lighting, heating, or window conditions that make a simple room harder to diagnose.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-trigger">What humidity should turn on a bathroom fan in Home Assistant?</h3>
+          <p>There is no universal trigger percentage because normal indoor humidity changes with weather and ventilation. A dependable starting rule watches for a quick rise over about five minutes. Use a fixed percentage only after observing that it stays above the bathroom's normal dry range in every season.</p>
+
+          <h3 id="faq-runtime">How long should the bathroom fan run after a shower?</h3>
+          <p>Run it until bathroom humidity has returned close to a dry-room reference or recent baseline for several minutes. Add both a minimum run time to prevent short cycling and a tested maximum time so a failed sensor cannot leave the fan on indefinitely.</p>
+
+          <h3 id="faq-placement">Where should a bathroom humidity sensor go?</h3>
+          <p>Follow the sensor maker's placement instructions and keep it outside direct spray, away from the exhaust grille, and away from an open window or supply vent. Check that it updates often enough to show a shower-related rise rather than only an occasional large jump.</p>
+
+          <h3 id="faq-wall-switch">Can the wall switch still control an automated bathroom fan?</h3>
+          <p>It should. Keep an ordinary physical control and make automatic shutoff act only on a fan cycle that the automation started. A visible Manual hold helper is the clearest option when the device cannot reliably report whether a person or an automation changed it.</p>
+
+          <h3 id="faq-outage">What happens to the bathroom fan if Home Assistant is down?</h3>
+          <p>That depends on the fan control. A physical switch or a purpose-built fan with its own humidity sensor can still work without Home Assistant. An automation-only smart control will not make new decisions while the server or required device connection is unavailable, so preserve manual operation.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/statistics/" target="_blank" rel="noopener noreferrer">Home Assistant: Statistics helpers and the five-minute bathroom-humidity example</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/derivative/" target="_blank" rel="noopener noreferrer">Home Assistant: Derivative helper and time-window smoothing</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/trend/" target="_blank" rel="noopener noreferrer">Home Assistant: Trend helpers for rising and falling readings</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/generic_hygrostat/" target="_blank" rel="noopener noreferrer">Home Assistant: Generic Hygrostat targets, tolerances, and minimum cycles</a></li>
+                <li><a href="https://www.home-assistant.io/triggers/humidity.crossed_threshold/" target="_blank" rel="noopener noreferrer">Home Assistant: Relative humidity crossed threshold trigger</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/input_boolean/" target="_blank" rel="noopener noreferrer">Home Assistant: Toggle helpers and restored state</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/timer/" target="_blank" rel="noopener noreferrer">Home Assistant: Timer helpers, restart behavior, and bathroom-fan example</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Ventilation and product documentation</h3>
+              <ul>
+                <li><a href="https://www.epa.gov/mold/ten-things-you-should-know-about-mold" target="_blank" rel="noopener noreferrer">US EPA: indoor humidity, moisture control, and mold guidance</a></li>
+                <li><a href="https://iaq.na.panasonic.com/ventilation/fans/whispersense-light" target="_blank" rel="noopener noreferrer">Panasonic: current purpose-built humidity-sensing bathroom fan example</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/bathroom-humidity-exhaust-fan/509992?page=42" target="_blank" rel="noopener noreferrer">Home Assistant Community: bathroom-fan rise, fall, timing, and override behavior</a></li>
+                <li><a href="https://community.home-assistant.io/t/humidity-control-fan/478461" target="_blank" rel="noopener noreferrer">Home Assistant Community: detecting a rise within a time window</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1tks6tr/humidity_sensor_in_the_bathroom/" target="_blank" rel="noopener noreferrer">r/homeassistant: bathroom sensor placement and shower detection</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1pys7tu/works_great_bathroom_fan_automation_using_the/" target="_blank" rel="noopener noreferrer">r/homeassistant: rate-of-change fan automation and tuning</a></li>
+                <li><a href="https://gist.github.com/Blackshome/8e09a8213b834f1be4ab49ba880abed8" target="_blank" rel="noopener noreferrer">GitHub: maintained community bathroom-humidity blueprint</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Make the fan easier to trust</h2>
+          <div class="links">
+            <a href="/blog/home-assistant-automation-manual-override/">Preserve manual control</a>
+            <a href="/blog/home-assistant-automation-not-firing/">Find a missed trigger</a>
+            <a href="/blog/what-happens-if-home-assistant-goes-down/">Plan for controller downtime</a>
+            <a href="/blog/where-should-smart-home-automations-live/">Choose one automation owner</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the whole routine</p>
+          <h2>Want the fan to work without household guesswork?</h2>
+          <p>Tara maps the sensor, local control path, manual handoff, timeout, and outage behavior before the room automation is put into daily use.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
