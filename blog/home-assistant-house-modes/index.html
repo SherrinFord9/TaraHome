@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant House Modes: Home, Away, Sleep, and Guest</title>
+    <meta name="description" content="Create Home, Away, Sleep, Guest, and Vacation modes in Home Assistant with one dropdown, one optional toggle, clear precedence, and safe conditions." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-house-modes/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-house-modes/" />
+    <meta property="og:title" content="Home Assistant House Modes: Home, Away, Sleep, and Guest" />
+    <meta property="og:description" content="Create Home, Away, Sleep, Guest, and Vacation modes in Home Assistant with one dropdown, one optional toggle, clear precedence, and safe conditions." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-house-modes/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant House Modes: Home, Away, Sleep, and Guest" />
+    <meta name="twitter:description" content="Create Home, Away, Sleep, Guest, and Vacation modes in Home Assistant with one dropdown, one optional toggle, clear precedence, and safe conditions." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-house-modes/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 820px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/home-assistant-house-modes/#blogposting",
+          "headline": "Home Assistant House Modes: Home, Away, Sleep, and Guest",
+          "description": "Create Home, Away, Sleep, Guest, and Vacation modes in Home Assistant with one dropdown, one optional toggle, clear precedence, and safe conditions.",
+          "image": "https://tarahome.ai/assets/generated/blog/home-assistant-house-modes/cover.png",
+          "datePublished": "2026-08-11",
+          "dateModified": "2026-08-11",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/home-assistant-house-modes/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/input_select/",
+            "https://www.home-assistant.io/integrations/input_boolean/",
+            "https://www.home-assistant.io/docs/automation/condition/",
+            "https://www.home-assistant.io/integrations/person/",
+            "https://www.home-assistant.io/docs/automation/troubleshooting/",
+            "https://community.home-assistant.io/t/home-modes-what-are-they/772416",
+            "https://community.home-assistant.io/t/correct-way-to-implement-home-modes/460255",
+            "https://github.com/home-assistant/frontend/discussions/23888",
+            "https://www.reddit.com/r/homeassistant/comments/18cjh6h/am_i_the_only_one_who_thinks_home_modes_should_be/",
+            "https://www.reddit.com/r/homeassistant/comments/1sj6wgd/is_ha_just_too_devicecentric_for_normal_people/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/home-assistant-house-modes/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Home Assistant house modes", "item": "https://tarahome.ai/blog/home-assistant-house-modes/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/home-assistant-house-modes/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does Home Assistant have built-in house modes?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant provides the building blocks rather than one universal House Mode control. Create a Dropdown helper for one shared state, such as Home, Away, Sleep, or Vacation, then use that state in automation conditions. Add a separate Guest toggle only if Guest needs to overlap another state." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should Guest mode be in the house-mode dropdown or a separate toggle?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use a separate Guest toggle when a guest can be present while the home is also in Home or Sleep mode. Put Guest in the dropdown only when it is truly exclusive and cannot overlap another household state." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do Home Assistant house modes survive a restart?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Dropdown and Toggle helpers restore their previous state after Home Assistant restarts unless an initial value is configured in YAML. After a restart, confirm that presence data is current before allowing an automatic rule to replace that restored choice." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should a house mode disable Home Assistant automations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually no. Keep automations enabled and add mode conditions to the actions that should or should not run. Disabling a whole automation can also remove useful alerts, recovery steps, or physical-button behavior." }
+            },
+            {
+              "@type": "Question",
+              "name": "How should Vacation mode behave?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Treat Vacation as a deliberate hold that normal presence and schedule rules cannot overwrite. Keep it visible on a household dashboard, leave safety systems independent, and require a clear manual exit or a separately tested return-home confirmation." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Home Assistant setup</span><span>August 11, 2026</span><span>13 min read</span></p>
+            <h1>Home Assistant House Modes: Home, Away, Sleep, and Guest</h1>
+            <p class="lede">For most homes, use one Dropdown helper for Home, Away, Sleep, and Vacation, plus a separate Guest toggle only when guests can overlap those states. Let automations check that shared context instead of making every device guess what the household is doing.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/home-assistant-house-modes/cover.png" alt="A homeowner with an overnight bag using an ordinary wall control in a warm entryway beside a quiet living room" width="1568" height="1003" decoding="async" fetchpriority="high" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Start simple:</strong> create one Dropdown helper—a virtual control that stores one choice—called House mode with Home, Away, Sleep, and Vacation.</li>
+              <li><strong>Use a separate Guest toggle</strong> if visitors can be present while the house is also in Home or Sleep mode.</li>
+              <li><strong>Give manual choices priority:</strong> automatic presence rules should not cancel Guest, Sleep, or Vacation unexpectedly.</li>
+              <li><strong>Avoid disabling whole automations.</strong> Make each rule check House mode before it acts so physical controls, recovery steps, and useful alerts can keep working.</li>
+              <li><strong>Main caveat:</strong> a helper is context, not a safety system. Locks, alarms, smoke detection, leak protection, and safe heating limits need independent behavior and physical fallback.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">Use one shared state, then add one exception only if you need it</h2>
+          <p><strong>The simplest reliable Home Assistant house-mode setup is one Dropdown helper with Home, Away, Sleep, and Vacation.</strong> Home Assistant calls a saved virtual control like this a <strong>helper</strong>. It is not a physical device. It is one named item in Home Assistant that stores a choice your dashboard and automatic rules can both read or change.</p>
+          <p>Add a separate <strong>Guest mode</strong> Toggle only if guests can overlap another state. A visitor may be staying while the house is in Sleep mode, for example. One dropdown can hold only one choice, so forcing Guest into that list would erase useful context. If your household treats Guest as a completely separate, exclusive state, keeping it in the dropdown is also reasonable—just do not build five toggles that can contradict one another.</p>
+          <p>An <strong>automation</strong> is a rule that reacts when something happens. Use the selected mode as a <strong>condition</strong> inside lighting, heating, notification, and presence automations. A condition lets a rule trigger but prevents the wrong actions from running. That keeps the logic visible in one place and avoids turning whole automations off. The crucial design rule is priority: a routine Home or Away update must not undo a deliberate Vacation or Guest choice.</p>
+
+          <h2 id="recommended-model">The small model that works for most homes</h2>
+          <p>Start with fewer states than you think you need. A state deserves to exist only when at least two automations should behave differently because of it. “Movie” is often a room scene. “Cleaning” may be a temporary override. Home, Away, Sleep, and Vacation are broad enough to change behavior across the home.</p>
+          <div class="callout">
+            <p><strong>A house mode is not a scene.</strong> A scene applies a saved device state, such as dimming several lights. A house mode describes the household context that many rules can check for hours or days. A mode change may call a scene, but the two jobs are different.</p>
+          </div>
+          <p>A <strong>Person entity</strong> is Home Assistant's home-or-away record for one household member, usually based on a phone or another tracker. Automatic Away works only when every regular occupant has reliable tracking. If Home Assistant cannot confidently tell when the last person leaves, keep Away manual until that presence signal is fixed.</p>
+
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>State</th>
+                  <th>Who changes it</th>
+                  <th>Useful behavior</th>
+                  <th>What should remain independent</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Home</strong></td>
+                  <td>Automatically when any trusted Person entity returns, or manually from the household dashboard</td>
+                  <td>Normal occupied lighting, heating, announcements, and reminders</td>
+                  <td>Manual switches, smoke and leak alarms, door operation, and safe equipment limits</td>
+                </tr>
+                <tr>
+                  <td><strong>Away</strong></td>
+                  <td>Automatically only after everyone has been away for a short confirmation period and Guest is off</td>
+                  <td>Reduce comfort heating, stop routine announcements, and send selected entry or appliance alerts</td>
+                  <td>Security arming and locks unless their own verified rule and recovery path exist</td>
+                </tr>
+                <tr>
+                  <td><strong>Sleep</strong></td>
+                  <td>A bedside control, a deliberate Good night action, or a tested bedtime rule</td>
+                  <td>Use dim night lighting, reduce non-urgent announcements, and change overnight comfort settings</td>
+                  <td>Emergency alerts, bedside physical controls, and safe temperature limits</td>
+                </tr>
+                <tr>
+                  <td><strong>Vacation</strong></td>
+                  <td>Deliberately by a household member; normal presence rules should not overwrite it</td>
+                  <td>Suspend ordinary schedules, use a safe lower heating target for the trip, and send selected entry, leak, or equipment alerts</td>
+                  <td>Smoke, carbon-monoxide, and leak alarms, trusted access for a sitter, and manufacturer-supported recovery</td>
+                </tr>
+                <tr>
+                  <td><strong>Guest toggle</strong></td>
+                  <td>Manually when a visitor stays, with a visible reminder to turn it off</td>
+                  <td>Prevent false Away behavior, preserve shared-room comfort, and protect guest privacy</td>
+                  <td>The current Home or Sleep state; Guest should add context rather than replace it</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="dropdown-vs-toggles">Choose a dropdown for exclusive states and toggles for overlap</h2>
+          <p>A Dropdown helper can store exactly one option. That is useful when the choices cannot be true at the same time: the whole home is Home, Away, Sleep, or Vacation. Home Assistant records the selected option as the helper's current state, and both a person and an automation can change it.</p>
+          <p>A Toggle helper stores on or off. Use it for a fact that can overlap the main state, such as Guest mode. You might later add a separate “Manual hold” toggle if automatic changes repeatedly cause trouble, but do not start there. Every extra switch creates another combination the household must understand and you must test.</p>
+          <ul>
+            <li><strong>Use the dropdown</strong> when only one answer should be true.</li>
+            <li><strong>Use a toggle</strong> when the answer can be true alongside another state.</li>
+            <li><strong>Use a scene</strong> when you want to apply saved device settings now.</li>
+            <li><strong>Use an ordinary sensor or Person entity</strong> when the value should be observed rather than manually chosen.</li>
+          </ul>
+          <p>This separation also keeps privacy honest. A guest toggle can stop automatic indoor announcements or room-level presence behavior without pretending that a visitor has a tracked phone. Tara's <a href="/blog/home-assistant-person-not-updating/">Person tracking troubleshooting guide</a> is the right place to fix unreliable home and away data; house mode should not hide a broken tracker.</p>
+
+          <h2 id="create-helpers">Create the two helpers in the Home Assistant interface</h2>
+          <ol>
+            <li>Open <strong>Settings &gt; Devices &amp; services &gt; Helpers</strong>.</li>
+            <li>Select <strong>Create helper</strong>, then choose <strong>Dropdown</strong>.</li>
+            <li>Name it <strong>House mode</strong>. Add the options <strong>Home</strong>, <strong>Away</strong>, <strong>Sleep</strong>, and <strong>Vacation</strong> in that order.</li>
+            <li>Create a second helper of type <strong>Toggle</strong> and name it <strong>Guest mode</strong>.</li>
+            <li>Add both helpers to the household's main dashboard. Someone should be able to see the current state and correct it without opening an automation editor.</li>
+          </ol>
+          <p>Home Assistant's official helper documentation says Dropdown and Toggle helpers restore their previous values after a restart unless you set a fixed starting value in its advanced text configuration, called <strong>YAML</strong>. For a household choice, restoring the last value is usually preferable. A fixed starting value could turn Vacation back into Home merely because Home Assistant restarted.</p>
+          <p>Restored does not mean newly verified. After a server or router restart, Person trackers may need time to update. Keep automatic presence changes conservative until the household state is current. Tara's guide to <a href="/blog/what-happens-if-home-assistant-goes-down/">what still works when Home Assistant is down</a> helps separate convenience behavior from essential fallback.</p>
+
+          <h2 id="priority">Give the modes a clear priority</h2>
+          <p>Most house-mode failures are not helper failures. Two automations simply make different choices within seconds of each other. Write the priority in plain language before building any rule:</p>
+          <ol>
+            <li><strong>Vacation is a deliberate hold.</strong> Ordinary arrival, departure, sunrise, and schedule rules leave it alone until a person ends the trip mode.</li>
+            <li><strong>Guest prevents automatic Away.</strong> It can coexist with Home or Sleep and stays visible until someone turns it off.</li>
+            <li><strong>Sleep beats routine Home behavior while someone is still home.</strong> A phone briefly reconnecting or a late schedule should not make the house bright and noisy. If everyone actually leaves and Guest is off, the confirmed departure may replace a forgotten Sleep state with Away.</li>
+            <li><strong>Away needs confirmation.</strong> Wait several minutes after every trusted person leaves so one delayed tracker does not flip the house immediately.</li>
+            <li><strong>Home is the safe everyday default.</strong> A confirmed arrival can select Home unless Vacation is still deliberately held.</li>
+          </ol>
+          <p>Create one automation whose job is to update the main dropdown. Give it a name such as <strong>Update house mode from presence</strong>. It can react when the household changes between occupied and unoccupied, but its conditions must preserve Vacation, Sleep when appropriate, and Guest. Keeping this decision in one automation is easier to trace than letting every thermostat, lamp, and alarm rule write to the dropdown.</p>
+
+          <h3 id="mode-changing-rules">Build only three mode-changing rules</h3>
+          <p>Open <strong>Settings &gt; Automations &amp; scenes</strong> and create these as small, separately named rules. In each action, choose the House mode Dropdown and select the required option. You do not need to write YAML.</p>
+          <ol>
+            <li><strong>Arrival:</strong> when any trusted Person changes to Home, select Home unless the dropdown is already Sleep or Vacation. An arrival during the night should not wake the rest of the house.</li>
+            <li><strong>Last departure:</strong> when every tracked household member has shown Away for about 10 minutes, select Away unless Guest is on or the dropdown is Vacation. If you cannot reliably confirm that everyone is away, leave this rule out and change Away manually.</li>
+            <li><strong>Good night and morning:</strong> let a bedside button or dashboard action select Sleep when the home is occupied and not in Vacation. In the morning, select Home if someone is home; otherwise select Away, unless Guest or Vacation should hold the current behavior.</li>
+          </ol>
+          <p>Vacation stays a deliberate dashboard choice. End it manually when the household returns, or add a separate return confirmation only after the basic setup has been reliable for several trips. This makes it much harder for a delayed phone update to cancel the behavior that protects an empty home.</p>
+          <div class="callout">
+            <p><strong>Do not let every device decide the mode.</strong> Presence, a bedside action, and a deliberate trip control may propose a change. Ordinary lights, thermostats, and notifications should read the result rather than writing it.</p>
+          </div>
+
+          <h2 id="conditions">Use the mode as a condition, not a master off switch</h2>
+          <p>Suppose a hall motion automation normally turns on a warm lamp. Keep the automation enabled. Add a condition that allows the ordinary daytime action in Home, uses a dim action in Sleep, and does nothing in Away or Vacation. The physical wall switch still works, and the automation remains visible in Home Assistant's run history, called <strong>traces</strong>.</p>
+          <p>The same pattern applies elsewhere:</p>
+          <ul>
+            <li><strong>Heating:</strong> choose a comfort target for Home, a lower overnight target for Sleep, and a safe setback for Away or Vacation. Keep the thermostat's own equipment limits intact.</li>
+            <li><strong>Notifications:</strong> suppress routine spoken reminders during Sleep, but keep smoke, water, and urgent security alerts independent.</li>
+            <li><strong>Lighting:</strong> let motion use different brightness by mode without continuously forcing every lamp back to a preset.</li>
+            <li><strong>Privacy:</strong> use Guest to stop optional indoor camera processing, occupancy announcements, or personal reminders only after verifying what the exact devices still record or send.</li>
+            <li><strong>Manual control:</strong> do not have a mode rule immediately undo a person's wall-switch choice. Use Tara's <a href="/blog/home-assistant-automation-manual-override/">manual-override pattern</a> where a device needs a temporary hold.</li>
+          </ul>
+          <p>Disabling an entire automation is tempting, but that automation may also contain a useful recovery path or notification. Conditions are more precise: Home Assistant checks the current state when the automation triggers and runs the actions only when the conditions are true.</p>
+
+          <h2 id="mode-change-actions">Keep mode-change actions short and reversible</h2>
+          <p>A change to Away or Sleep can trigger a small set of immediate actions. For example, turn off forgotten interior lights, adjust an ordinary comfort setting, and pause a non-essential announcement. Keep those actions short. The ongoing behavior should live in the automations that check the mode, not in one enormous script that tries to set every device in the home.</p>
+          <p>This prevents a common problem: Home Assistant applies an Away scene, someone changes a light manually, and a giant “keep Away active” loop changes it back. A house mode should describe policy, not fight the people in the house. If several platforms can run the same behavior, first decide <a href="/blog/where-should-smart-home-automations-live/">where each smart-home automation should live</a> so Home Assistant, Alexa, Apple Home, and a vendor app do not all react to the same event.</p>
+
+          <h2 id="test">Test one mode at a time with another household member</h2>
+          <ol>
+            <li><strong>Start in Home.</strong> Confirm normal physical switches, heating controls, and important notifications behave as before.</li>
+            <li><strong>Turn on Guest.</strong> Simulate everyone leaving. The house should not choose Away or shut down occupied-room behavior.</li>
+            <li><strong>Select Sleep.</strong> Test one motion light and one routine announcement. Confirm urgent alerts and bedside controls are unchanged.</li>
+            <li><strong>Select Away manually.</strong> Check only the few actions you intentionally attached. Return to Home and confirm everything recovers.</li>
+            <li><strong>Select Vacation.</strong> Trigger an arrival and a time schedule. Neither should silently cancel the deliberate hold.</li>
+            <li><strong>Restart Home Assistant.</strong> Confirm both helpers restore correctly and wait for Person states to refresh before judging the presence rule.</li>
+          </ol>
+          <p>Home Assistant records a trace each time an automation runs. Open <strong>Settings &gt; Automations &amp; scenes</strong>, choose the automation, and open <strong>Traces</strong> to see which path and condition it used. Be careful with <strong>Run actions</strong>: the official troubleshooting guide says that button skips triggers and conditions, so it can operate devices even when the real mode would have blocked them. Test non-critical lights first.</p>
+          <p>Ask someone who did not build the setup to change Guest and Vacation from the dashboard, then explain what they expect the home to do. If they cannot predict it in one sentence, simplify the state names or the rules. A professionally configured <a href="/home-automation-kit/">Home Assistant automation system</a> should leave this household policy visible, documented, and recoverable rather than burying it in device-by-device logic.</p>
+
+          <h2 id="avoid">Five designs to avoid</h2>
+          <ul>
+            <li><strong>One toggle for every mode:</strong> Home, Away, Sleep, Guest, and Vacation can all become on at once, so every automation must resolve the contradiction.</li>
+            <li><strong>Presence with no delay:</strong> one late or noisy tracker can make the house bounce between Home and Away.</li>
+            <li><strong>Automatic Vacation:</strong> a long absence is not always a trip, and a trip may include a sitter. Make this a deliberate state unless your return confirmation is separately tested.</li>
+            <li><strong>Mode-controlled life safety:</strong> never silence listed smoke or carbon-monoxide alarms, defeat safe heating limits, or make a helper the only control for locks, water shutoff, or emergency access.</li>
+            <li><strong>A giant mode automation:</strong> one rule that controls every device becomes hard to test and easy to break. Keep the mode updater, immediate transition actions, and device behavior understandable as separate jobs.</li>
+          </ul>
+
+          <h2 id="tara-approach">Tara's practical default</h2>
+          <p>Use four exclusive dropdown choices: Home, Away, Sleep, and Vacation. Add one Guest toggle. Let a single presence updater choose only Home or Away, with a short departure delay. It must leave Vacation alone and must not choose Away while Guest is on. Let a bedside action choose Sleep, and make the current state visible on the main household dashboard.</p>
+          <p>Then add the mode as a condition only where behavior genuinely changes. Begin with one motion light, one comfort rule, and one routine notification. Preserve physical controls and important alerts. Once another household member can explain and correct the state, expand it room by room.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-built-in">Does Home Assistant have built-in house modes?</h3>
+          <p>Home Assistant provides the building blocks rather than one universal House Mode control. Create a Dropdown helper for one shared state, such as Home, Away, Sleep, or Vacation, then use that state in automation conditions. Add a separate Guest toggle only if Guest needs to overlap another state.</p>
+
+          <h3 id="faq-guest">Should Guest mode be in the dropdown or a separate toggle?</h3>
+          <p>Use a separate Guest toggle when a guest can be present while the home is also in Home or Sleep mode. Put Guest in the dropdown only when it is truly exclusive and cannot overlap another household state.</p>
+
+          <h3 id="faq-restart">Do Home Assistant house modes survive a restart?</h3>
+          <p>Dropdown and Toggle helpers restore their previous state after Home Assistant restarts unless an initial value is configured in YAML. After a restart, confirm that presence data is current before allowing an automatic rule to replace that restored choice.</p>
+
+          <h3 id="faq-disable">Should a house mode disable automations?</h3>
+          <p>Usually no. Keep automations enabled and add mode conditions to the actions that should or should not run. Disabling a whole automation can also remove useful alerts, recovery steps, or physical-button behavior.</p>
+
+          <h3 id="faq-vacation">How should Vacation mode behave?</h3>
+          <p>Treat Vacation as a deliberate hold that normal presence and schedule rules cannot overwrite. Keep it visible on a household dashboard, leave safety systems independent, and require a clear manual exit or a separately tested return-home confirmation.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/input_select/" target="_blank" rel="noopener noreferrer">Home Assistant: Dropdown helpers, triggers, conditions, actions, and restored state</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/input_boolean/" target="_blank" rel="noopener noreferrer">Home Assistant: Toggle helpers, automation use, and restored state</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/condition/" target="_blank" rel="noopener noreferrer">Home Assistant: how automation conditions check current state</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/person/" target="_blank" rel="noopener noreferrer">Home Assistant: Person entities, device trackers, home, away, and zones</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/" target="_blank" rel="noopener noreferrer">Home Assistant: testing automations, traces, and the Run actions caveat</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/home-modes-what-are-they/772416" target="_blank" rel="noopener noreferrer">Home Assistant Community: home modes, scenes, dropdowns, and overlapping household states</a></li>
+                <li><a href="https://community.home-assistant.io/t/correct-way-to-implement-home-modes/460255" target="_blank" rel="noopener noreferrer">Home Assistant Community: representing Home and Away state</a></li>
+                <li><a href="https://github.com/home-assistant/frontend/discussions/23888" target="_blank" rel="noopener noreferrer">Home Assistant frontend discussion: displaying an input-select Home Mode clearly</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/18cjh6h/am_i_the_only_one_who_thinks_home_modes_should_be/" target="_blank" rel="noopener noreferrer">r/homeassistant: Home, Away, Guest, Night, and separate dimensions</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1sj6wgd/is_ha_just_too_devicecentric_for_normal_people/" target="_blank" rel="noopener noreferrer">r/homeassistant: house modes as a household-friendly automation layer</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep household behavior understandable</h2>
+          <div class="links">
+            <a href="/blog/home-assistant-automation-manual-override/">Preserve manual control</a>
+            <a href="/blog/where-should-smart-home-automations-live/">Choose one automation owner</a>
+            <a href="/blog/home-assistant-person-not-updating/">Fix unreliable presence</a>
+            <a href="/blog/what-happens-if-home-assistant-goes-down/">Plan for Home Assistant downtime</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the system</p>
+          <h2>Want house modes your whole household can understand?</h2>
+          <p>Tara can map the states, priorities, physical fallbacks, and first safe automations before the logic spreads across every room.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
