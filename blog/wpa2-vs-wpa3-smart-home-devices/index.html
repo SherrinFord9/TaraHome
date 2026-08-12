@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WPA2 or WPA3 for Smart Home Devices?</title>
+    <meta name="description" content="Use WPA3 when every smart device supports it. Otherwise choose WPA2/WPA3 mode or a separate WPA2-AES network without breaking local control." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/wpa2-vs-wpa3-smart-home-devices/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/wpa2-vs-wpa3-smart-home-devices/" />
+    <meta property="og:title" content="WPA2 or WPA3 for Smart Home Devices?" />
+    <meta property="og:description" content="Use WPA3 when every smart device supports it. Otherwise choose WPA2/WPA3 mode or a separate WPA2-AES network without breaking local control." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/wpa2-vs-wpa3-smart-home-devices/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WPA2 or WPA3 for Smart Home Devices?" />
+    <meta name="twitter:description" content="Use WPA3 when every smart device supports it. Otherwise choose WPA2/WPA3 mode or a separate WPA2-AES network without breaking local control." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/wpa2-vs-wpa3-smart-home-devices/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 820px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/wpa2-vs-wpa3-smart-home-devices/#blogposting",
+          "headline": "WPA2 or WPA3 for Smart Home Devices?",
+          "description": "Use WPA3 when every smart device supports it. Otherwise choose WPA2/WPA3 mode or a separate WPA2-AES network without breaking local control.",
+          "image": "https://tarahome.ai/assets/generated/blog/wpa2-vs-wpa3-smart-home-devices/cover.png",
+          "datePublished": "2026-08-12",
+          "dateModified": "2026-08-12",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/wpa2-vs-wpa3-smart-home-devices/"
+          },
+          "citation": [
+            "https://support.apple.com/en-ca/102766",
+            "https://support.apple.com/en-ie/guide/iphone/iphcbaf7e8f3/ios",
+            "https://support.google.com/googlehome/answer/6293481?hl=en",
+            "https://support.google.com/googlehome/answer/12395776?hl=en-CA",
+            "https://esphome.io/components/wifi/",
+            "https://media.defense.gov/2023/Feb/22/2003165170/-1/-1/1/CSI_BEST_PRACTICES_FOR_SECURING_YOUR_HOME_NETWORK.PDF",
+            "https://csa-iot.org/newsroom/for-a-smarter-smart-home-why-matter-devices-belong-on-your-primary-wi-fi-network/",
+            "https://csa-iot.org/all-solutions/matter/matter-faq/",
+            "https://www.tp-link.com/us/support/faq/2229/",
+            "https://www.tp-link.com/us/home-networking/smart-plug/tapo-p110m/",
+            "https://www.tp-link.com/us/home-networking/smart-plug/ep25p4/v1%20%281-pack%29/",
+            "https://www.tp-link.com/us/support/faq/3240/",
+            "https://www.tp-link.com/us/support/faq/3390/",
+            "https://www.home-assistant.io/integrations/tplink/",
+            "https://github.com/esphome/esphome/pull/11814",
+            "https://community.home-assistant.io/t/wifi-authentication/855445",
+            "https://community.home-assistant.io/t/connecting-to-wifi-fails-multiple-times-every-time-before-finally-working/839528",
+            "https://www.reddit.com/r/homeassistant/comments/1iefau8/wpa3_for_sensors_and_iot_devices/",
+            "https://www.reddit.com/r/homeautomation/comments/1is54b7/wap2_switches_to_wap3/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/wpa2-vs-wpa3-smart-home-devices/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "WPA2 or WPA3 for smart home devices", "item": "https://tarahome.ai/blog/wpa2-vs-wpa3-smart-home-devices/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/wpa2-vs-wpa3-smart-home-devices/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Should smart home devices use WPA2 or WPA3?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Use WPA3 Personal when every required device connects reliably. For a home with a mixture of old and new devices, use WPA2/WPA3 Transitional. If a legacy device still fails, put only that device on a separate WPA2 Personal network using AES while preserving any local communication it needs." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is WPA2 still safe for smart devices?",
+              "acceptedAnswer": { "@type": "Answer", "text": "WPA2 Personal with AES remains a practical compatibility setting when WPA3 cannot be used, especially with a long unique Wi-Fi password and current router software. Avoid WPA, WPA/WPA2 mixed mode, WEP, TKIP, and open networks." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why will a WPA2 device not connect to WPA2/WPA3 transitional mode?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Some older devices mishandle the extra security information broadcast by a transitional network. Update the software inside both the router and device, then test WPA2 Personal with AES briefly to confirm that the security mode is the cause." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does a 2.4 GHz smart device support WPA3?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not necessarily. 2.4 GHz describes the radio band; WPA2 and WPA3 describe connection security. A device can use 2.4 GHz yet support only WPA2, so check the exact model and hardware version." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Matter and Home Assistant devices use a separate WPA2 network?",
+              "acceptedAnswer": { "@type": "Answer", "text": "They can only if that network still allows the local communication their controllers need. Guest or device-to-device isolation can block Matter setup, discovery, and local Home Assistant integrations. A Thread accessory does not join Wi-Fi itself, but its Thread border router and controller still need appropriate network access." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Wi-Fi security</span><span>August 12, 2026</span><span>14 min read</span></p>
+            <h1>WPA2 or WPA3 for Smart Home Devices?</h1>
+            <p class="lede">Use WPA3 Personal only when every device you depend on connects reliably. In a mixed smart home, start with WPA2/WPA3 Transitional. If one older device still fails, keep the main network stronger and put that holdout on a separate WPA2 Personal network using AES.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/wpa2-vs-wpa3-smart-home-devices/cover.png" alt="An unbranded home router beside a closed brass padlock, smart plug, door sensor, and bulb on an oak console" width="1586" height="992" decoding="async" fetchpriority="high" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>For most mixed homes:</strong> choose <strong>WPA2/WPA3 Transitional</strong> so new devices can use WPA3 and older ones can use WPA2.</li>
+              <li><strong>Use WPA3-only</strong> only after every required plug, camera, speaker, hub, printer, and controller passes a real connection test.</li>
+              <li><strong>Avoid WEP, WPA, WPA/WPA2 mixed mode, TKIP, and open networks.</strong> If a holdout needs WPA2, use <strong>WPA2 Personal with AES</strong> and a long unique Wi-Fi password.</li>
+              <li><strong>Main caveat:</strong> a guest or isolated network can break Matter, Apple Home, or local Home Assistant control. The fallback network must allow the local communication that device needs.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The short answer: transitional mode is the practical starting point</h2>
+          <p>WPA3 is the stronger Wi-Fi security choice, but a setting is useful only when the household's required devices can join it. Apple recommends WPA3 Personal for better security and WPA2/WPA3 Transitional for compatibility. The NSA gives the same broad direction: use WPA3, or WPA2/WPA3 when older devices require it.</p>
+          <p>Transitional mode lets a capable device connect with WPA3 while an older device uses WPA2 Personal. It is not the same as the old <strong>WPA/WPA2</strong> option. That older option can allow the outdated WPA protocol or TKIP encryption and should stay off. On a WPA2 fallback, choose <strong>AES</strong>, the current encryption label shown beside WPA2 in many router menus.</p>
+          <p>There is one frustrating exception: some legacy devices fail even when transitional mode is supposed to accommodate them. Google's current Nest Wifi guidance explicitly warns that older WPA2 devices can have connection trouble while WPA3 transitional mode is enabled. If that happens, confirm the cause with a short WPA2-AES test rather than guessing that the Wi-Fi signal or 2.4 GHz band is broken.</p>
+
+          <div class="comparison-table" role="region" aria-label="Wi-Fi security setting comparison" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Router setting</th>
+                  <th>Use it when</th>
+                  <th>What to know</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>WPA3 Personal</strong></td>
+                  <td>Every required device has been tested and works</td>
+                  <td>Strongest normal home setting; an older WPA2-only device cannot join</td>
+                </tr>
+                <tr>
+                  <td><strong>WPA2/WPA3 Transitional</strong></td>
+                  <td>The home contains a mixture of new and older devices</td>
+                  <td>Best starting point for most mixed homes; a few legacy devices still fail when WPA3 is advertised</td>
+                </tr>
+                <tr>
+                  <td><strong>WPA2 Personal (AES)</strong></td>
+                  <td>A required device cannot use either setting above</td>
+                  <td>Reasonable compatibility fallback with a long unique Wi-Fi password and current router software; prefer a limited fallback network over downgrading every device</td>
+                </tr>
+                <tr>
+                  <td><strong>WPA, WPA/WPA2, WEP, TKIP, or open</strong></td>
+                  <td>Never for an ordinary home network</td>
+                  <td>Outdated or unprotected choices; replace the router or device instead of keeping them</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="band">2.4 GHz and WPA3 answer different questions</h2>
+          <p>A smart plug can be <strong>2.4 GHz only</strong> and still support WPA3. Another 2.4 GHz plug may support only WPA2. The band describes which radio frequency the device uses; WPA describes how the device proves it knows the Wi-Fi password and protects traffic to the router.</p>
+          <p>That distinction matters during setup. Changing from WPA3 to WPA2 may fix the security-mode problem, while turning off 5 GHz may only help a setup app that handles a combined network badly. Do not leave bands split or disabled merely because a security-mode test worked. Tara's <a href="/blog/mesh-wifi-smart-home-devices/">mesh Wi-Fi guide for smart-home devices</a> explains combined network names, temporary setup modes, and coverage separately.</p>
+          <div class="callout">
+            <p><strong>Read the full router label.</strong> “WPA2/WPA3” is a current transitional choice. “WPA/WPA2” is an older weak choice. One character changes the recommendation.</p>
+          </div>
+
+          <h2 id="choose">Choose the setting by the devices you must keep</h2>
+          <ol>
+            <li><strong>Use WPA3 Personal</strong> for a new or carefully tested network where every required device supports it.</li>
+            <li><strong>Use WPA2/WPA3 Transitional</strong> when the household mixes newer phones and computers with older smart-home devices. This is the sensible first setting for most existing homes.</li>
+            <li><strong>Use a separate WPA2 Personal (AES) network</strong> for the few essential devices that still fail transitional mode, if the router can provide it without using WEP, WPA, or TKIP.</li>
+            <li><strong>Replace the holdout</strong> when the only compatible router setting is obsolete, the device no longer receives updates, or the fallback network cannot be limited safely.</li>
+          </ol>
+          <p>Do not judge compatibility from a brand name alone. Model, region, hardware revision, and firmware—the software stored inside the device—can change the answer. Community reports are useful warnings, not a promise that every unit with the same logo behaves identically.</p>
+
+          <h2 id="examples">Concrete examples show why model-level checking matters</h2>
+          <p>The examples below separate the Wi-Fi claim from the control path. WPA2 or WPA3 protects the radio link to the router. <strong>Local control</strong> means commands travel inside the home's own network, also called its LAN. <strong>Cloud control</strong> sends commands through the vendor's internet service. Neither is guaranteed by the WPA setting. Matter—the cross-brand smart-home standard—and Apple Home are separate connection paths too.</p>
+          <div class="comparison-table" role="region" aria-label="Current smart-home product and platform examples" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Example</th>
+                  <th>Official Wi-Fi support</th>
+                  <th>Local control and cloud dependency</th>
+                  <th>Matter, Apple Home, and caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Google Nest Wifi Pro</strong></td>
+                  <td>Google provides a WPA3 setting and describes the compatibility behavior as transitional mode</td>
+                  <td>The network is managed in the Google Home app; that says nothing about whether each accessory itself is local or cloud-controlled</td>
+                  <td>Nest Wifi Pro is a Matter-enabled hub and a Thread border router for Google Home. Thread is a low-power mesh used by some Matter devices. Google still warns that some legacy WPA2 devices fail in transition mode</td>
+                </tr>
+                <tr>
+                  <td><strong>TP-Link Tapo P110M (US)</strong></td>
+                  <td>The current US product page says 2.4 GHz Wi-Fi but does not list a WPA mode, so the band alone is not proof of WPA3 support</td>
+                  <td>TP-Link says the Tapo app can control it on the home network when the internet is down and also offers remote app control. Home Assistant's TP-Link integration asks supported P110M devices for status locally after initial setup, while newer devices require TP-Link account credentials to prove local access is allowed</td>
+                  <td>It is Matter-certified and lists Apple Home, Alexa, Google Assistant, and SmartThings. Check the exact regional page, hardware version, and device software before changing the router</td>
+                </tr>
+                <tr>
+                  <td><strong>TP-Link Kasa EP25</strong></td>
+                  <td>The current product page lists 2.4 GHz and Apple HomeKit. TP-Link's current setup guidance tells users to leave WPA3-only for Auto or WPA2/WPA3 when HomeKit onboarding times out</td>
+                  <td>Home Assistant lists EP25 for direct local status and control, although newer revisions use TP-Link account credentials to prove access is allowed. The Kasa app can use TP-Link cloud services</td>
+                  <td>EP25 can join Apple Home directly. Hardware versions vary, and TP-Link's broader Kasa troubleshooting guide uses WPA2-AES as a diagnostic fallback rather than promising WPA3 for every Kasa model</td>
+                </tr>
+                <tr>
+                  <td><strong>ESPHome on ESP32 or ESP8266</strong></td>
+                  <td>Current ESPHome documentation allows an ESP32 to require WPA3; ESP8266 can require WPA2 or newer but cannot use the WPA3-only minimum setting</td>
+                  <td>ESPHome, open-source software for small smart-device boards, can communicate directly with Home Assistant and does not require a vendor cloud for normal local control</td>
+                  <td>A WPA setting does not add Matter or HomeKit. The merged ESPHome security-mode work also shows why chip and software version matter more than the case around the device</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Reddit reports reinforce the caution. One r/homeassistant test found different results among Kasa plugs and device-software versions, a Zemismart Matter bulb, and a Sonoff plug running ESPHome. Treat that as evidence that mixed households need testing—not as an official compatibility list.</p>
+
+          <h2 id="migration">Change Wi-Fi security without taking the whole house down</h2>
+          <ol>
+            <li><strong>Record the current state.</strong> Save the router configuration if it supports backups, and note the network name, security setting, band setting, and any separate guest or IoT network.</li>
+            <li><strong>Update first.</strong> Install current router software and available device software before changing the Wi-Fi security mode.</li>
+            <li><strong>List the devices that matter.</strong> Include locks, thermostats, cameras, smoke-alarm bridges, voice speakers, hubs, printers, robot vacuums, and the phones or tablets used for setup.</li>
+            <li><strong>Choose a quiet test window.</strong> Changing WPA mode restarts many routers and disconnects every wireless device for a short time.</li>
+            <li><strong>Try WPA2/WPA3 Transitional first.</strong> Keep the same network name and password so compatible devices can reconnect without being reconfigured.</li>
+            <li><strong>Test behavior, not just a green Wi-Fi icon.</strong> Operate each critical device from its physical control, local platform, routine, and remote app where relevant. Check live camera video rather than only its online badge.</li>
+            <li><strong>Keep the rollback simple.</strong> If essential devices fail, restore the previous mode, then isolate one failing model for diagnosis.</li>
+          </ol>
+          <p>If you are changing the router itself as well as its security, preserve only one variable at a time. Tara's <a href="/blog/change-wifi-router-matter-thread-devices/">router-change checklist for Matter and Thread homes</a> covers names, credentials, controllers, and resets without confusing them with the WPA decision.</p>
+
+          <h2 id="troubleshoot">When a device will not join transitional mode</h2>
+          <ol>
+            <li><strong>Confirm the exact failure.</strong> If the device cannot see the network, suspect bands, signal, or the network name. If it sees the network but rejects the password or loops during joining, the security mode is more likely.</li>
+            <li><strong>Check the exact model and revision.</strong> Look at the device label and the vendor's regional support page. Do not rely on another model in the same family.</li>
+            <li><strong>Update both ends.</strong> Install current router and device software, then restart the router and the failing device once.</li>
+            <li><strong>Temporarily test WPA2 Personal with AES.</strong> If the device joins immediately, the problem is likely WPA3-only or transitional-mode compatibility. Return the main network to its intended setting after the test.</li>
+            <li><strong>Check setup isolation.</strong> The setup phone and device may need to discover each other locally. A guest network, device-to-device isolation (often called client isolation), VPN, or blocked local-network permission can stop setup even when the password is correct.</li>
+            <li><strong>Create the smallest safe exception.</strong> Move only confirmed holdouts to a WPA2-AES fallback network or replace them. Do not turn on WPA, TKIP, WEP, or an open network to rescue one plug.</li>
+          </ol>
+          <p>TP-Link's April 2026 Kasa troubleshooting page is a good example of careful diagnosis: it recommends checking the exact model, local-network permission, signal, and setup state, then trying WPA2-AES when the device still cannot join. It does not say every failure is WPA3.</p>
+
+          <h2 id="fallback-network">A separate WPA2 network needs two different decisions</h2>
+          <p>First choose its <strong>Wi-Fi security mode</strong>: WPA2 Personal with AES, a long unique Wi-Fi password, and current router software. Then choose its <strong>network access</strong>: what the device may reach locally and on the internet. These are related security choices, but they are not the same setting.</p>
+          <ul>
+            <li><strong>Cloud-only accessory:</strong> it may need internet access but no access to personal computers. A limited IoT network can reduce what it can reach.</li>
+            <li><strong>Locally controlled accessory:</strong> it must reach, or be reachable by, the local controller. Home Assistant's TP-Link integration, for example, connects to supported devices locally; automatic discovery can fail when the controller and device sit on separate network sections.</li>
+            <li><strong>Matter over Wi-Fi accessory:</strong> it needs local communication with its Matter controller. The Connectivity Standards Alliance warns that ordinary guest isolation can block first-time setup and control.</li>
+            <li><strong>Matter over Thread accessory:</strong> the accessory does not join the Wi-Fi SSID. Its Thread border router and Matter controller still connect through the home network, so isolating those supporting devices can still break control.</li>
+            <li><strong>Apple Home accessory:</strong> local accessory communication must remain available, while remote access uses a home hub. A vendor cloud path, if the accessory also has one, is a separate choice.</li>
+          </ul>
+          <p>A consumer router's guest-network switch often isolates devices with no fine control. An advanced firewall or VLAN—a separately controlled part of the home network—can be more precise, but it is also easier to misconfigure. Read Tara's <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">main network versus IoT network guide</a> before placing local devices on different network sections. If you want one stable local controller at the center of that design, the <a href="/local-smart-home-hub/">local smart-home hub guide</a> explains that role without tying it to a cloud subscription.</p>
+
+          <h2 id="avoid">Five mistakes to avoid</h2>
+          <ul>
+            <li><strong>Choosing WPA3-only because the router is new:</strong> the router's support does not upgrade every device in the home.</li>
+            <li><strong>Assuming transitional mode is perfect:</strong> it is the right first compromise, but some old WPA2 devices still mishandle it.</li>
+            <li><strong>Confusing WPA2/WPA3 with WPA/WPA2:</strong> the former is a current transition; the latter can enable an obsolete protocol.</li>
+            <li><strong>Putting local devices on an isolated guest network:</strong> they may reach the cloud yet become invisible to Matter, Apple Home, or Home Assistant.</li>
+            <li><strong>Weakening the whole home for one abandoned device:</strong> use the smallest WPA2-AES exception that works, then plan to replace the holdout.</li>
+          </ul>
+          <p>WPA mode is only one layer. Keep the router updated, use a long unique Wi-Fi password, remove devices that no longer receive security updates, and review Tara's <a href="/blog/smart-home-security-basics/">plain-English smart-home security basics</a> for accounts, remote access, and device lifecycle.</p>
+
+          <h2 id="tara-default">Tara's practical default</h2>
+          <p>Start an existing mixed smart home on WPA2/WPA3 Transitional. Test every device that affects access, safety, comfort, or household routines. Move to WPA3-only only when the complete required list works—not when most devices work.</p>
+          <p>If one necessary device fails transitional mode, confirm it on WPA2 Personal with AES. Then give only the holdout a separate WPA2-AES path, preserve the local communication it genuinely needs, limit everything else, and record why the exception exists. Never solve the problem with WEP, WPA, TKIP, or an open network.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-which">Should smart home devices use WPA2 or WPA3?</h3>
+          <p>Use WPA3 Personal when every required device connects reliably. For a home with a mixture of old and new devices, use WPA2/WPA3 Transitional. If a legacy device still fails, put only that device on a separate WPA2 Personal network using AES while preserving any local communication it needs.</p>
+
+          <h3 id="faq-wpa2-safe">Is WPA2 still safe for smart devices?</h3>
+          <p>WPA2 Personal with AES remains a practical compatibility setting when WPA3 cannot be used, especially with a long unique Wi-Fi password and current router software. Avoid WPA, WPA/WPA2 mixed mode, WEP, TKIP, and open networks.</p>
+
+          <h3 id="faq-transition">Why will a WPA2 device not connect to transitional mode?</h3>
+          <p>Some older devices mishandle the extra security information broadcast by a transitional network. Update the software inside both the router and device, then test WPA2 Personal with AES briefly to confirm that the security mode is the cause.</p>
+
+          <h3 id="faq-band">Does a 2.4 GHz smart device support WPA3?</h3>
+          <p>Not necessarily. 2.4 GHz describes the radio band; WPA2 and WPA3 describe connection security. A device can use 2.4 GHz yet support only WPA2, so check the exact model and hardware version.</p>
+
+          <h3 id="faq-matter">Can Matter and Home Assistant devices use a separate WPA2 network?</h3>
+          <p>They can only if that network still allows the local communication their controllers need. Guest or device-to-device isolation can block Matter setup, discovery, and local Home Assistant integrations. A Thread accessory does not join Wi-Fi itself, but its Thread border router and controller still need appropriate network access.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official and product documentation</h3>
+              <ul>
+                <li><a href="https://support.apple.com/en-ca/102766" target="_blank" rel="noopener noreferrer">Apple: WPA3, transitional mode, WPA2-AES, and settings to avoid</a></li>
+                <li><a href="https://support.apple.com/en-ie/guide/iphone/iphcbaf7e8f3/ios" target="_blank" rel="noopener noreferrer">Apple: local accessory access and the home hub required for remote access</a></li>
+                <li><a href="https://support.google.com/googlehome/answer/6293481?hl=en" target="_blank" rel="noopener noreferrer">Google Nest: WPA3 transition-mode compatibility warning</a></li>
+                <li><a href="https://support.google.com/googlehome/answer/12395776?hl=en-CA" target="_blank" rel="noopener noreferrer">Google Nest: Nest Wifi Pro management, Matter support, and Thread border router</a></li>
+                <li><a href="https://esphome.io/components/wifi/" target="_blank" rel="noopener noreferrer">ESPHome: current Wi-Fi authentication modes and platform limits</a></li>
+                <li><a href="https://media.defense.gov/2023/Feb/22/2003165170/-1/-1/1/CSI_BEST_PRACTICES_FOR_SECURING_YOUR_HOME_NETWORK.PDF" target="_blank" rel="noopener noreferrer">NSA: home-network WPA, passphrase, update, and segmentation guidance</a></li>
+                <li><a href="https://csa-iot.org/newsroom/for-a-smarter-smart-home-why-matter-devices-belong-on-your-primary-wi-fi-network/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: Matter and guest-network isolation</a></li>
+                <li><a href="https://csa-iot.org/all-solutions/matter/matter-faq/" target="_blank" rel="noopener noreferrer">Connectivity Standards Alliance: Matter over Wi-Fi and Thread basics</a></li>
+                <li><a href="https://www.tp-link.com/us/support/faq/2229/" target="_blank" rel="noopener noreferrer">TP-Link: current Kasa connection troubleshooting and WPA2-AES test</a></li>
+                <li><a href="https://www.tp-link.com/us/home-networking/smart-plug/tapo-p110m/" target="_blank" rel="noopener noreferrer">TP-Link: Tapo P110M connectivity, local app access, and Matter paths</a></li>
+                <li><a href="https://www.tp-link.com/us/home-networking/smart-plug/ep25p4/v1%20%281-pack%29/" target="_blank" rel="noopener noreferrer">TP-Link: Kasa EP25 connectivity and Apple HomeKit specifications</a></li>
+                <li><a href="https://www.tp-link.com/us/support/faq/3240/" target="_blank" rel="noopener noreferrer">TP-Link: current EP25 and Kasa Apple Home setup paths</a></li>
+                <li><a href="https://www.tp-link.com/us/support/faq/3390/" target="_blank" rel="noopener noreferrer">TP-Link: WPA3-only and WPA2/WPA3 guidance for Apple Home setup</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/tplink/" target="_blank" rel="noopener noreferrer">Home Assistant: supported TP-Link models, local polling, authentication, and subnet caveats</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://github.com/esphome/esphome/pull/11814" target="_blank" rel="noopener noreferrer">ESPHome GitHub: merged minimum WPA authentication handling</a></li>
+                <li><a href="https://community.home-assistant.io/t/wifi-authentication/855445" target="_blank" rel="noopener noreferrer">Home Assistant Community: choosing Wi-Fi authentication for home automation</a></li>
+                <li><a href="https://community.home-assistant.io/t/connecting-to-wifi-fails-multiple-times-every-time-before-finally-working/839528" target="_blank" rel="noopener noreferrer">Home Assistant Community: transitional-mode connection behavior</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1iefau8/wpa3_for_sensors_and_iot_devices/" target="_blank" rel="noopener noreferrer">r/homeassistant: mixed WPA3 results across smart-device models and firmware</a></li>
+                <li><a href="https://www.reddit.com/r/homeautomation/comments/1is54b7/wap2_switches_to_wap3/" target="_blank" rel="noopener noreferrer">r/homeautomation: keeping WPA2-only switches during a WPA3 move</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the network secure and usable</h2>
+          <div class="links">
+            <a href="/blog/mesh-wifi-smart-home-devices/">Fix mesh and band issues</a>
+            <a href="/blog/change-wifi-router-matter-thread-devices/">Change routers safely</a>
+            <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Plan device isolation</a>
+            <a href="/blog/smart-home-security-basics/">Review security basics</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the system</p>
+          <h2>Want a network plan that keeps local devices working?</h2>
+          <p>Tara can map the router settings, local-control paths, safe exceptions, and test order before a Wi-Fi change reaches every room.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
