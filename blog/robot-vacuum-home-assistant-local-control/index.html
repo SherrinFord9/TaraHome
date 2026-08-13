@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Which Robot Vacuums Work Locally With Home Assistant?</title>
+    <meta name="description" content="Compare current robot vacuums for local Home Assistant control: SwitchBot Matter, Roborock, older Roomba models, and Valetudo—with cloud caveats." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/robot-vacuum-home-assistant-local-control/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/robot-vacuum-home-assistant-local-control/" />
+    <meta property="og:title" content="Which Robot Vacuums Work Locally With Home Assistant?" />
+    <meta property="og:description" content="Compare current robot vacuums for local Home Assistant control: SwitchBot Matter, Roborock, older Roomba models, and Valetudo—with cloud caveats." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/robot-vacuum-home-assistant-local-control/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Which Robot Vacuums Work Locally With Home Assistant?" />
+    <meta name="twitter:description" content="Compare current robot vacuums for local Home Assistant control: SwitchBot Matter, Roborock, older Roomba models, and Valetudo—with cloud caveats." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/robot-vacuum-home-assistant-local-control/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 820px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/robot-vacuum-home-assistant-local-control/#blogposting",
+          "headline": "Which Robot Vacuums Work Locally With Home Assistant?",
+          "description": "Compare current robot vacuums for local Home Assistant control: SwitchBot Matter, Roborock, older Roomba models, and Valetudo—with cloud caveats.",
+          "image": "https://tarahome.ai/assets/generated/blog/robot-vacuum-home-assistant-local-control/cover.png",
+          "datePublished": "2026-08-13",
+          "dateModified": "2026-08-13",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/robot-vacuum-home-assistant-local-control/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/switchbot_matter/",
+            "https://www.home-assistant.io/integrations/switchbot/",
+            "https://www.home-assistant.io/integrations/roborock",
+            "https://www.home-assistant.io/integrations/roomba",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/vacuum",
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://www.home-assistant.io/blog/2026/03/04/release-20263/",
+            "https://www.home-assistant.io/blog/2026/05/06/release-20265/",
+            "https://www.switch-bot.com/products/switchbot-robot-vacuum-k11",
+            "https://www.switch-bot.com/pages/matter",
+            "https://support.switch-bot.com/hc/en-us/articles/33952341173143-SwitchBot-Robot-Vacuum-K11-Matter-Setup-Instructions-iOS",
+            "https://global.roborock.com/pages/roborock-saros-20",
+            "https://valetudo.cloud/pages/general/newcomer-guide/",
+            "https://valetudo.cloud/pages/rooting-essentials/",
+            "https://valetudo.cloud/pages/general/supported-robots/",
+            "https://valetudo.cloud/pages/general/buying-supported-robots/",
+            "https://valetudo.cloud/pages/integrations/home-assistant-integration/",
+            "https://support.apple.com/en-ca/102287",
+            "https://community.home-assistant.io/t/the-robot-roadmap-integrating-automating-robots-in-home-assistant/927831",
+            "https://github.com/orgs/home-assistant/discussions/738",
+            "https://www.reddit.com/r/homeassistant/comments/1vbkdbl/whats_a_great_robot_vacuum_thats_locally/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/robot-vacuum-home-assistant-local-control/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Which robot vacuums work locally with Home Assistant?", "item": "https://tarahome.ai/blog/robot-vacuum-home-assistant-local-control/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/robot-vacuum-home-assistant-local-control/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is the best robot vacuum for local Home Assistant control?",
+              "acceptedAnswer": { "@type": "Answer", "text": "For a new purchase without modifying the robot, the SwitchBot K11+ is the clearest current local-control choice because Home Assistant lists it as a standalone Matter-over-Wi-Fi Works with Home Assistant device. Matter control is local, although vendor-app features and setup may still need the SwitchBot app." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is the Home Assistant Roborock integration fully local?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. It prefers the local network for commands and status checks, but requires the Roborock cloud for setup and fallback; maps and routines always use the cloud. Home Assistant says blocking the vacuum's internet access disables its direct local connection." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can a Matter robot vacuum work without the internet?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, normal Matter control between the vacuum and Home Assistant is local. A vendor app or account may still be required to enable Matter, install device updates, or use features that Matter does not expose." }
+            },
+            {
+              "@type": "Question",
+              "name": "Which Roomba models work locally with Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant lists the Roomba s9+, 980, 960, and 890 plus the Braava jet m6 as tested examples. Its documentation explicitly says the newer Roomba 105, 405, and 505 models do not work with the integration." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is Valetudo the easiest way to get a fully local robot vacuum?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Valetudo is a strong fully local cloud replacement, but installation requires administrator access to an exactly supported robot and changes its software. Model names, hardware revisions, tools, and risk differ, so it is an advanced route rather than the default homeowner recommendation." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Robot vacuum compatibility</span><span>August 13, 2026</span><span>15 min read</span></p>
+            <h1>Which Robot Vacuums Work Locally With Home Assistant?</h1>
+            <p class="lede">For a new purchase without modifying the robot, the SwitchBot K11+ has the clearest current local path through Matter over Wi-Fi, the cross-brand standard that keeps normal commands on your home network. Choose the official Roborock connection for richer controls only if you accept its cloud requirement.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/robot-vacuum-home-assistant-local-control/cover.png" alt="Roborock Saros 20 robot vacuum and dock in a warm living room with an oak floor and dark-green fireplace" width="1600" height="1000" decoding="async" fetchpriority="high" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>For a new vacuum you do not want to modify:</strong> start with the <strong>SwitchBot K11+</strong> using Matter. Normal commands travel over your home Wi-Fi instead of through SwitchBot's servers.</li>
+              <li><strong>For the richest Home Assistant controls:</strong> Roborock's S, QV, Qrevo, and Saros families have official support, but this path still needs a Roborock account and internet access. Maps and routines use the cloud.</li>
+              <li><strong>For a robot you already own:</strong> Home Assistant's built-in iRobot connection works locally with tested older models including the s9+, 980, 960, 890, and Braava jet m6. Avoid buying a new Roomba 105, 405, or 505 for this route; Home Assistant says they are unsupported.</li>
+              <li><strong>For a fully local advanced build:</strong> Valetudo replaces the vendor cloud, but it needs administrator access and special software on an exactly supported robot. Some models require tools or opening the case.</li>
+              <li><strong>Main caveat:</strong> local Matter or Bluetooth control can expose fewer maps, dock settings, and cleaning options than the vendor app. Decide which controls you need before choosing the connection path.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The short answer: choose the control path before the brand</h2>
+          <p>If the robot must keep responding to Home Assistant when the internet is down, the cleanest current starting point is a <strong>SwitchBot K11+ connected by Matter over Wi-Fi</strong>. Matter is a cross-brand standard that lets compatible smart-home devices talk locally. Home Assistant lists the K11+ and K20+ Pro in its Works with Home Assistant program. Commands and status stay inside the home after setup; no SwitchBot hub sits in the middle.</p>
+          <p>If detailed maps, dock controls, and brand-specific settings matter more, the official <strong>Roborock integration</strong> is broader. An integration is the software connection that lets Home Assistant talk to a device. Home Assistant supports the S, QV, Qrevo, and Saros families, including a current model such as the Saros 20. It can check and command the robot over your home network, but that does not make the setup cloud-free: setup and fallback use Roborock's service, maps and routines always come from the cloud, and blocking internet access disables its local connection.</p>
+          <p><strong>Local control</strong> means the normal command travels between Home Assistant and the robot inside your home. It does not automatically mean no account, no setup app, no internet-based updates, or every feature offline. That is why the model and the chosen integration both matter.</p>
+          <div class="callout">
+            <p><strong>Scope:</strong> this guide compares Home Assistant support, offline behavior, and setup risk. It does not rank carpet pickup, mopping quality, obstacle avoidance, parts cost, or repairability. Check those physical-cleaning needs separately before buying.</p>
+          </div>
+
+          <div class="comparison-table" role="region" aria-label="Current local robot vacuum control paths for Home Assistant" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Route and current examples</th>
+                  <th>Official Home Assistant support</th>
+                  <th>What is local</th>
+                  <th>Cloud or app dependency</th>
+                  <th>Matter and Apple Home path</th>
+                  <th>Main caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>SwitchBot K11+ or K20+ Pro over Matter</strong></td>
+                  <td>Works with Home Assistant partner listing through the built-in Matter integration</td>
+                  <td>Commands and status updates travel directly over the home's Wi-Fi</td>
+                  <td>The SwitchBot app and current device software may still be needed to enable Matter and reach vendor-only settings</td>
+                  <td>Standalone Matter; no SwitchBot hub. The K11+ can also join Apple Home through Matter</td>
+                  <td>Fewer vendor-specific controls than the app; room cleaning works only when the robot exposes usable areas</td>
+                </tr>
+                <tr>
+                  <td><strong>SwitchBot K11+, K10+ family, S10, or S20 over Bluetooth</strong></td>
+                  <td>Built-in SwitchBot Bluetooth connection</td>
+                  <td>Direct Bluetooth control without the SwitchBot cloud</td>
+                  <td>An account may be needed to retrieve the device's security key if local discovery cannot supply it</td>
+                  <td>Separate from Matter. No full Apple vacuum path through Bluetooth alone</td>
+                  <td>Basic state, start, return-to-base, and battery controls; Bluetooth range matters</td>
+                </tr>
+                <tr>
+                  <td><strong>Roborock Saros 20 or supported S, QV, Qrevo, and Saros models</strong></td>
+                  <td>Built-in Roborock integration</td>
+                  <td>Commands use the local network, and Home Assistant checks status there every 30 seconds</td>
+                  <td>Roborock app and account for setup; cloud fallback; maps and routines always use the cloud; internet cannot be blocked</td>
+                  <td>Some models, including the Saros 20, offer a separate Matter route that can also reach Apple Home</td>
+                  <td>The richest route here, but not a no-cloud route. Q-series compatibility varies by exact model</td>
+                </tr>
+                <tr>
+                  <td><strong>Roomba s9+, 980, 960, 890, or Braava jet m6</strong></td>
+                  <td>Built-in iRobot Roomba and Braava connection with direct updates over the home network</td>
+                  <td>Normal Home Assistant control uses the robot's direct local messaging connection</td>
+                  <td>Getting credentials can require an internet path on some models; the app may use its cloud when Home Assistant holds the local connection</td>
+                  <td>No Matter path is documented for this integration. HomeKit Bridge can expose a Home Assistant vacuum only as basic switches</td>
+                  <td>Best for reuse. New Roomba 105, 405, and 505 models are explicitly unsupported</td>
+                </tr>
+                <tr>
+                  <td><strong>Valetudo on an exact supported model</strong>, such as Dreame L10s Ultra, L40 Ultra, X40 Ultra, or Eureka J15 Max Ultra</td>
+                  <td>Valetudo documents automatic discovery through Home Assistant's built-in local messaging integration; it is not a native vendor integration or partner listing</td>
+                  <td>Robot web interface, maps, commands, and messages stay local with no vendor account or cloud</td>
+                  <td>Administrator access and ongoing owner maintenance are required; some models need special tools or opening the robot</td>
+                  <td>No Matter requirement. Apple Home exposure through HomeKit Bridge is limited</td>
+                  <td>Advanced, model-specific installation. Similar names and later hardware revisions may be incompatible</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="switchbot">The simplest choice without modifying the robot: SwitchBot K11+ through Matter</h2>
+          <p>Home Assistant's SwitchBot Matter page is unusually clear: the <strong>SwitchBot K11+</strong> and <strong>K20+ Pro</strong> are certified standalone Matter-over-Wi-Fi devices, and their Home Assistant traffic is local. That makes the K11+ the most straightforward answer for someone buying today primarily for local Home Assistant control. The current K11+ product page also documents Matter support without an extra SwitchBot hub.</p>
+          <p>Matter is the cross-brand control standard, not a separate radio in this case. The K11+ joins ordinary Wi-Fi, while Home Assistant acts as a Matter controller. Home Assistant OS with its official Matter Server app is the supported setup. The SwitchBot app may still be needed to update the robot, enable Matter, or obtain its pairing code. That setup dependency is different from sending every cleaning command through a cloud service.</p>
+          <p>Home Assistant added a common <strong>clean by area</strong> action in 2026.3 and a room-selection interface in 2026.5. Those controls appear only when the robot provides areas that Home Assistant can map. SwitchBot lists automatic cleaning, cleaning modes, return to base, and room selection for its Matter vacuums, but confirm the exact robot software and visible controls during the return window.</p>
+          <div class="callout">
+            <p><strong>Apple household?</strong> SwitchBot documents adding the K11+ to Apple Home with Matter. That is a Matter path in the modern Apple Home architecture, not a claim that the robot uses the older HomeKit accessory protocol. Matter can let one device be shared with both Apple Home and Home Assistant when the robot and both controllers support that option.</p>
+          </div>
+
+          <h2 id="switchbot-bluetooth">SwitchBot Bluetooth is local too, but much more basic</h2>
+          <p>The built-in SwitchBot Bluetooth integration supports the K11+, K10+ family, K20, S10, and S20. Home Assistant says this integration talks directly to devices and does not route control through SwitchBot Cloud. It can report the robot's state and battery, start cleaning, and send it back to the dock.</p>
+          <p>That is useful as a fallback or for a simple whole-home cleaning button, but it is not a substitute for the full Matter or vendor-app experience. Bluetooth range can require a <strong>Bluetooth proxy</strong>, a small Home Assistant relay placed near the dock. Importing an encrypted device's key may also involve a SwitchBot account if you do not enter the key manually. Choose Matter for a new K11+ unless you specifically need the smaller Bluetooth feature set.</p>
+
+          <h2 id="roborock">Roborock: more controls, but a real cloud dependency</h2>
+          <p>The official Roborock integration is attractive because it can expose maps, cleaning state, fan and mop settings, dock sensors, maintenance information, and room cleaning on supported models. Home Assistant currently calls the S, QV, Qrevo, and Saros series fully supported. The <strong>Roborock Saros 20</strong> is a concrete current example; its product page also lists Matter support.</p>
+          <p>The boundary needs to be stated plainly. Home Assistant uses the local network when it can, but the Roborock app and account are prerequisites. Cloud services discover the robot and supply connection information. Cloud fallback remains active, while maps and Roborock routines are always fetched online. Home Assistant explicitly says that a Roborock vacuum disconnected from the internet blocks its direct local connection.</p>
+          <p>There are therefore two distinct Saros 20 choices:</p>
+          <ul>
+            <li><strong>Native Roborock integration:</strong> choose this for the broadest maps, dock data, and model-specific controls. Accept that the route is hybrid local/cloud.</li>
+            <li><strong>Matter integration:</strong> choose this when normal commands must work offline. Expect fewer controls and sensors than the native route, and verify that Matter is enabled in the exact regional model and current device software.</li>
+          </ul>
+          <p>Do not add both routes merely because both are available. Start with the one that matches the household's priority, confirm room cleaning and dock behavior, then add a second controller only for a specific feature. Tara's guide to <a href="/blog/matter-device-missing-features-home-assistant/">why Matter devices can show fewer features</a> explains that tradeoff in more detail.</p>
+
+          <h2 id="roomba">Roomba: a useful local path for older robots, not the new x05 line</h2>
+          <p>Home Assistant's official iRobot integration communicates locally and lists the Roomba <strong>s9+, 980, 960, and 890</strong> plus the <strong>Braava jet m6</strong> as tested examples. Other older Wi-Fi models may work, but those named models are the safest claims. If one is already cleaning well, the local integration can extend its useful life without turning this into a new hardware purchase.</p>
+          <p>The warning matters more than the broad brand name: Home Assistant says the newer <strong>Roomba 105, 405, and 505</strong> models do not work with this integration. Do not buy one of those “x05” models expecting the older local connection method. Credential retrieval can also need cloud access on some models, including the J7 path described in the documentation.</p>
+          <p>A Roomba allows one direct local messaging connection. When Home Assistant uses it continuously, the iRobot app can fall back to the cloud. That does not make the Home Assistant command cloud-controlled, but it is another example of why “local” should describe a specific path rather than the whole product.</p>
+
+          <h2 id="valetudo">Valetudo: fully local, deliberately advanced</h2>
+          <p><strong>Valetudo is a cloud replacement that runs on a rooted robot.</strong> Rooting means gaining administrator access to the small computer inside the robot so different software can be installed. Valetudo is not a Home Assistant add-on, not an integration from Home Assistant's community add-on store, and not simply a new mobile app.</p>
+          <p>After installation, the robot provides its own local web page and sends updates through <strong>MQTT</strong>, a lightweight way for smart devices and Home Assistant to exchange messages on the home network. Home Assistant can then discover the vacuum, map, sensors, and room-cleaning controls without a vendor account.</p>
+          <p>The compatibility list is exact by design. Current examples include the <strong>Dreame L10s Ultra</strong>—not the similarly named Gen 2—the <strong>Dreame L40 Ultra</strong>—not the AE or L40s variants—the <strong>Dreame X40 Ultra or X40 Ultra Complete</strong>, and the <strong>Eureka J15 Max Ultra</strong>. A nearby model name is not evidence of support.</p>
+          <p>Do not buy a new Roborock Q7 Max specifically for Valetudo. Valetudo warns that units produced from roughly the second quarter of 2024 can contain a different storage chip that is not rootable with the documented method, and the difference may only become visible after disassembly. Use Valetudo's current buying page and exact model entry before ordering anything.</p>
+          <p>Rooting changes the robot and makes you responsible for installation and updates. The tools and steps vary by model; some require opening the robot, while others do not. Valetudo warns that a failed procedure can leave the robot permanently unusable. A modification may also affect warranty or vendor service, depending on the model and local law. For a nontechnical household, Matter is the safer first recommendation.</p>
+
+          <h2 id="not-official">What does not count as confirmed official local support</h2>
+          <ul>
+            <li><strong>A vacuum entity in Home Assistant:</strong> this is the robot control Home Assistant creates. It does not reveal whether the underlying connection uses the home network, Bluetooth, Matter, or a vendor cloud.</li>
+            <li><strong>A community integration from HACS:</strong> HACS is Home Assistant's community store. Community work can be excellent, but it is not the same as a built-in integration or Works with Home Assistant certification. Read its current documentation for cloud use, account access, supported models, and update risk.</li>
+            <li><strong>“Works with Alexa,” Google Home, or Apple Home:</strong> that badge does not prove a direct Home Assistant integration. For Apple Home, distinguish a direct Matter vacuum from Home Assistant's legacy HomeKit Bridge, which exposes a vacuum only as basic switches.</li>
+            <li><strong>Local polling:</strong> Roborock proves why the label needs context. Local commands can coexist with mandatory account setup, cloud fallback, cloud maps, and an internet requirement.</li>
+            <li><strong>A brand-wide compatibility claim:</strong> Roomba's x05 exception, Roborock's variable Q-series support, and Valetudo's exact hardware limits all make the model number essential.</li>
+          </ul>
+
+          <h2 id="features">Decide which features must survive an outage</h2>
+          <p>A useful buying list separates routine essentials from app extras:</p>
+          <ul>
+            <li><strong>Usually essential:</strong> start, pause, return to dock, battery, error state, and whole-home cleaning.</li>
+            <li><strong>Often important:</strong> select a room, choose vacuum or mop mode, adjust cleaning power, and know when water, dust, or a brush needs attention.</li>
+            <li><strong>Frequently vendor-specific:</strong> live maps, obstacle photographs, remote camera views, detailed dock washing and drying controls, saved routines, and firmware updates.</li>
+          </ul>
+          <p>Test the exact features you will automate. A local start button is not enough if the household expects “clean the kitchen after dinner,” and a pretty map is not proof that the robot will start during an internet outage. For a wider explanation of what can fail when a vendor closes, read Tara's <a href="/blog/will-matter-devices-work-if-manufacturer-shuts-down/">Matter and manufacturer-shutdown guide</a>.</p>
+
+          <h2 id="setup">A safe setup and test order</h2>
+          <ol>
+            <li><strong>Write the outage requirement first.</strong> Decide whether whole-home cleaning is enough, or whether room selection, maps, and dock controls must also remain available.</li>
+            <li><strong>Check the exact model.</strong> Use the current Home Assistant integration page, vendor page, and—only for Valetudo—the exact supported-robot entry. Match suffixes, region, and hardware notes.</li>
+            <li><strong>Update before setup.</strong> Install current robot software while the vendor setup path is still available. For Matter, confirm that the pairing code or option is visible rather than relying on an “upcoming” claim.</li>
+            <li><strong>Add one Home Assistant route.</strong> Start with Matter, native integration, Bluetooth, or Valetudo—not all of them. Name the robot and dock clearly.</li>
+            <li><strong>Map rooms when supported.</strong> Use the vacuum entity's area-mapping control, then test one low-risk room while someone is home.</li>
+            <li><strong>Test an internet outage.</strong> Disconnect the home's internet while leaving Wi-Fi and Home Assistant running. Try start, pause, room clean, and return to dock. Record which features remain.</li>
+            <li><strong>Do not block internet unless the documentation permits it.</strong> It is appropriate for a working Matter path or Valetudo, but it breaks the native Roborock route.</li>
+          </ol>
+          <p>If the wider goal is a home that does not depend on subscriptions or vendor servers, Tara's <a href="/no-subscription-smart-home/">no-subscription smart-home guide</a> shows how to make the same decision across the rest of the system.</p>
+
+          <h2 id="privacy-safety">Maps, cameras, pets, and unattended cleaning</h2>
+          <p>A robot vacuum can hold a detailed floor map, and some models add obstacle photographs or remote camera features. The native Roborock integration fetches map data through Roborock's cloud. Matter may keep basic control local while leaving those richer functions in the vendor app. Review the exact model's privacy settings and disable camera or image features the household does not need.</p>
+          <p>Do the first several cleans while someone is home. Clear cords, small toys, liquid spills, and pet accidents; confirm drop sensors at stairs; and make sure the dock is stable. A cleaning robot can also trigger ordinary indoor motion sensors. Home Assistant's own Roborock documentation warns that an away-mode cleaning automation can cause a false alarm unless the alarm sensors and response plan account for the robot.</p>
+          <p>Once the route is reliable, a local automation can pause cleaning for a call, clean the kitchen after cooking, or run when the household leaves. Tara's <a href="/blog/home-automation-without-cloud/">guide to home automation without the cloud</a> helps keep those triggers and fallbacks understandable.</p>
+
+          <h2 id="buyer-checklist">The five-minute buyer check</h2>
+          <ol>
+            <li>Copy the full model name and region from the product page, not just the family name.</li>
+            <li>Find the current official Home Assistant integration page and read its prerequisites and known limitations.</li>
+            <li>Choose the native, Matter, Bluetooth, or Valetudo route before paying.</li>
+            <li>Confirm the controls you need: room selection, mop mode, dock controls, maps, and Apple Home access.</li>
+            <li>Keep the return option open until an actual internet-outage test passes.</li>
+          </ol>
+          <div class="callout">
+            <p><strong>Tara's practical default:</strong> buy the SwitchBot K11+ for a straightforward local Matter route; choose a supported Roborock when richer controls justify cloud dependence; reuse a compatible older Roomba instead of replacing it; and reserve Valetudo for a technically maintained, fully local home.</p>
+          </div>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-best">What is the best robot vacuum for local Home Assistant control?</h3>
+          <p>For a new purchase without modifying the robot, the SwitchBot K11+ is the clearest current local-control choice because Home Assistant lists it as a standalone Matter-over-Wi-Fi Works with Home Assistant device. Matter control is local, although vendor-app features and setup may still need the SwitchBot app.</p>
+
+          <h3 id="faq-roborock-local">Is the Home Assistant Roborock integration fully local?</h3>
+          <p>No. It prefers the local network for commands and status checks, but requires the Roborock cloud for setup and fallback; maps and routines always use the cloud. Home Assistant says blocking the vacuum's internet access disables its direct local connection.</p>
+
+          <h3 id="faq-matter-offline">Can a Matter robot vacuum work without the internet?</h3>
+          <p>Yes, normal Matter control between the vacuum and Home Assistant is local. A vendor app or account may still be required to enable Matter, install device updates, or use features that Matter does not expose.</p>
+
+          <h3 id="faq-roomba">Which Roomba models work locally with Home Assistant?</h3>
+          <p>Home Assistant lists the Roomba s9+, 980, 960, and 890 plus the Braava jet m6 as tested examples. Its documentation explicitly says the newer Roomba 105, 405, and 505 models do not work with the integration.</p>
+
+          <h3 id="faq-valetudo">Is Valetudo the easiest way to get a fully local robot vacuum?</h3>
+          <p>No. Valetudo is a strong fully local cloud replacement, but installation requires administrator access to an exactly supported robot and changes its software. Model names, hardware revisions, tools, and risk differ, so it is an advanced route rather than the default homeowner recommendation.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/switchbot_matter/" target="_blank" rel="noopener noreferrer">Home Assistant: SwitchBot Matter partner devices and local-push behavior</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/switchbot/" target="_blank" rel="noopener noreferrer">Home Assistant: SwitchBot Bluetooth models, controls, and local connection</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/roborock" target="_blank" rel="noopener noreferrer">Home Assistant: Roborock support, local/cloud boundary, controls, and limitations</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/roomba" target="_blank" rel="noopener noreferrer">Home Assistant: iRobot local integration, tested models, and x05 exclusion</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter local control, setup, and multi-controller paths</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/vacuum" target="_blank" rel="noopener noreferrer">Home Assistant: vacuum areas, actions, and automations</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant: HomeKit Bridge vacuum representation</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/03/04/release-20263/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.3: common clean-by-area action</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/05/06/release-20265/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.5: vacuum room-cleaning interface</a></li>
+                <li><a href="https://support.apple.com/en-ca/102287" target="_blank" rel="noopener noreferrer">Apple: current Apple Home support for robot vacuum cleaners</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product documentation</h3>
+              <ul>
+                <li><a href="https://www.switch-bot.com/products/switchbot-robot-vacuum-k11" target="_blank" rel="noopener noreferrer">SwitchBot: current K11+ specifications and Matter paths</a></li>
+                <li><a href="https://www.switch-bot.com/pages/matter" target="_blank" rel="noopener noreferrer">SwitchBot: current Matter-over-Wi-Fi vacuum features</a></li>
+                <li><a href="https://support.switch-bot.com/hc/en-us/articles/33952341173143-SwitchBot-Robot-Vacuum-K11-Matter-Setup-Instructions-iOS" target="_blank" rel="noopener noreferrer">SwitchBot: K11+ Matter setup with Apple Home</a></li>
+                <li><a href="https://global.roborock.com/pages/roborock-saros-20" target="_blank" rel="noopener noreferrer">Roborock: current Saros 20 product and Matter support</a></li>
+                <li><a href="https://valetudo.cloud/pages/general/newcomer-guide/" target="_blank" rel="noopener noreferrer">Valetudo: what the local cloud replacement is—and is not</a></li>
+                <li><a href="https://valetudo.cloud/pages/rooting-essentials/" target="_blank" rel="noopener noreferrer">Valetudo: rooting skills, steps, and failure risk</a></li>
+                <li><a href="https://valetudo.cloud/pages/general/supported-robots/" target="_blank" rel="noopener noreferrer">Valetudo: exact supported robots and hardware caveats</a></li>
+                <li><a href="https://valetudo.cloud/pages/general/buying-supported-robots/" target="_blank" rel="noopener noreferrer">Valetudo: current buying guidance</a></li>
+                <li><a href="https://valetudo.cloud/pages/integrations/home-assistant-integration/" target="_blank" rel="noopener noreferrer">Valetudo: Home Assistant MQTT discovery and room cleaning</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1vbkdbl/whats_a_great_robot_vacuum_thats_locally/" target="_blank" rel="noopener noreferrer">r/homeassistant: current local robot-vacuum buying discussion</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1s389l2/robot_vacuum_cleaner_with_local_ha/" target="_blank" rel="noopener noreferrer">r/homeassistant: separate 2026 local-control discussion</a></li>
+                <li><a href="https://community.home-assistant.io/t/the-robot-roadmap-integrating-automating-robots-in-home-assistant/927831" target="_blank" rel="noopener noreferrer">Home Assistant Community: robot integration and automation roadmap</a></li>
+                <li><a href="https://github.com/orgs/home-assistant/discussions/738" target="_blank" rel="noopener noreferrer">Home Assistant GitHub: Matter vacuum room-selection history</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Plan the rest of the local-control path</h2>
+          <div class="links">
+            <a href="/blog/home-automation-without-cloud/">Keep automations local</a>
+            <a href="/blog/matter-device-missing-features-home-assistant/">Understand missing Matter features</a>
+            <a href="/blog/will-matter-devices-work-if-manufacturer-shuts-down/">Plan for vendor shutdowns</a>
+            <a href="/blog/where-should-smart-home-automations-live/">Choose the automation owner</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the system</p>
+          <h2>Want the vacuum to fit the rest of the home?</h2>
+          <p>Tara can match the robot's local-control path, room routines, privacy choices, and offline behavior to the system your household can actually maintain.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
