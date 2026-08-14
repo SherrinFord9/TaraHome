@@ -1,0 +1,141 @@
+{
+  "version": 2,
+  "slug": "should-smart-home-devices-have-static-ip-addresses",
+  "researchedAt": "2026-08-14",
+  "primaryQuery": "should smart home devices have static IP addresses",
+  "readerQuestion": "Which smart-home devices need a fixed address, and should I configure it as a router-side DHCP reservation or manually on the device?",
+  "selectedBecause": "This is a recurring, practical homeowner question across separate 2026 Reddit discussions and a multi-year Home Assistant Community discussion, with a real consequence: local devices can become unavailable when an integration continues using an old address. Current Google results include one useful smart-home explainer but otherwise lean toward generic router instructions, leaving room for a clearer device-by-device decision, the safer router-reservation method, and the important current Home Assistant discovery and Matter exceptions. It is durable, fits Tara's local-reliability focus, and is materially distinct from Tara's restart troubleshooting, mesh Wi-Fi, IoT VLAN, and Matter IPv6 pages. Search Console was reviewed before selection: every explicit opportunity already has an ownerPath and belongs in the refresh queue, while this question does not duplicate those owned query families.",
+  "candidatesConsidered": [
+    {
+      "query": "should smart home devices have static IP addresses",
+      "evidenceSummary": "Separate 2026 r/homeassistant threads ask whether fixed addresses help and whether to manage addresses centrally, while a Home Assistant Community discussion follows the same device-IP-change problem across multiple years. Current primary documentation confirms both sides of the answer: some integrations recommend a reservation, while discovery-aware integrations can update a device's address and Matter depends on IPv6 and multicast rather than an ordinary IPv4 reservation.",
+      "decision": "selected",
+      "reason": "It combines recurring demand, clear action intent, broad and durable usefulness, a meaningful gap in the exact results, strong Tara fit, and low cannibalization risk better than the alternatives. It also lets the answer stay natural instead of forcing Home Assistant into the query wording."
+    },
+    {
+      "query": "Home Assistant low battery notification",
+      "evidenceSummary": "Reddit and Home Assistant Community discussions repeatedly ask for one useful household battery warning, and Home Assistant's 2026 Battery integration makes the task timely. Search Console has no unowned low-battery opportunity, however, and current results now include Home Assistant's dedicated low-battery trigger page and a complete official daily-notification tutorial.",
+      "decision": "rejected",
+      "reason": "Demand is real, but the current official result set answers both the simple and advanced versions well, so the unmet reader need is narrower than for the selected address-planning question."
+    },
+    {
+      "query": "Home Assistant scenes vs scripts vs automations",
+      "evidenceSummary": "A current Reddit discussion and a long-running Home Assistant Community thread show recurring conceptual confusion. Official script documentation is current, and fresh general-audience articles already compare these building blocks directly. Search Console provides no unowned opportunity for this distinction.",
+      "decision": "rejected",
+      "reason": "The question is durable, but the search results are already more direct and competitive, and Tara would add less practical value than it can on the selected network decision."
+    },
+    {
+      "query": "Home Assistant NFC tags",
+      "evidenceSummary": "Two current r/homeassistant discussions show active interest in useful placements and routines. Home Assistant's tag documentation is current, while existing setup guides already explain writing a tag and attaching an automation. Search Console has no unowned tag opportunity.",
+      "decision": "rejected",
+      "reason": "The idea demand is strong, but the setup intent is already well served and the remaining gap is mainly a list of inspirations rather than a recurring reliability or compatibility decision."
+    },
+    {
+      "query": "can Tapo and Kasa devices work locally with Home Assistant",
+      "evidenceSummary": "Recent Reddit and Home Assistant Community discussions repeatedly ask whether local control survives internet blocking, while the official integration and python-kasa project document an increasingly nuanced mix of local commands, local authentication, account prerequisites, cameras, and model support.",
+      "decision": "rejected",
+      "reason": "It is viable but changes by model and firmware, requires a product-led asset and a dated compatibility matrix, and sits close to Tara's existing smart-plug, switch, and doorbell owners. The selected question is broader, more durable, and less likely to compete with protected device intent."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1u0e513/does_it_help_to_have_static_ips_on_your_smart/",
+      "observedAt": "2026-08-14",
+      "evidence": "A current r/homeassistant question asks whether assigning fixed addresses to smart-home devices improves Home Assistant reliability; replies repeatedly distinguish a device-side static address from a router-side reservation and raise the Matter exception."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1rg45ft/managing_ip_addresses_for_iot_devices_is_it_an/",
+      "observedAt": "2026-08-14",
+      "evidence": "A separate 2026 discussion asks whether a growing IoT network needs formal address management, showing the same decision arises before and after devices become unreliable."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/handle-device-ip-changes/774359",
+      "observedAt": "2026-08-14",
+      "evidence": "A multi-page Home Assistant Community discussion documents the recurring pain of devices changing addresses, integrations retaining old hosts, and homeowners debating reservations, hostnames, and device-side static configuration."
+    },
+    {
+      "source": "github",
+      "url": "https://github.com/home-assistant/operating-system/issues/2454",
+      "observedAt": "2026-08-14",
+      "evidence": "A Home Assistant operating-system issue shows a real address-change failure after a power outage and the limits of treating every reachability problem as a simple fixed-IP problem."
+    },
+    {
+      "source": "google-search",
+      "url": "https://www.google.com/search?q=should+smart+home+devices+have+static+IP+addresses",
+      "observedAt": "2026-08-14",
+      "evidence": "The exact-query results include one current smart-home explainer, then generic router and small-business networking guidance; the result set does not clearly connect selective reservations to current Home Assistant discovery behavior or explain why IPv4 reservations do not repair Matter, multicast, VLAN, or Wi-Fi faults."
+    }
+  ],
+  "searchReview": {
+    "query": "should smart home devices have static IP addresses",
+    "reviewedAt": "2026-08-14",
+    "intent": "The searcher wants a direct yes-or-no answer, a short list of which smart-home devices should keep the same address, and safe steps for choosing between a router reservation and manual device configuration.",
+    "resultGap": "One current result gives a useful general DHCP-reservation explanation, but the wider exact-result set is generic. It does not give homeowners a control-path decision table, show which current Home Assistant integrations can follow an address change, use a concrete integration exception such as WLED, or separate IPv4 address stability from Matter's IPv6 and multicast requirements. Tara can answer those points without recommending a reservation for every gadget.",
+    "resultsReviewed": [
+      "https://smarthomesensei.com/articles/dhcp-reservation-static-ip-smart-home-devices/",
+      "https://support.google.com/googlehome/answer/6274660?hl=en-GB",
+      "https://www.cisco.com/c/en/us/support/docs/smb/General/best-practices-for-setting-a-static-IP-addresses-in-Cisco-Small-Business.html"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant DHCP discovery documentation",
+      "url": "https://www.home-assistant.io/integrations/dhcp/",
+      "supports": "Home Assistant watches DHCP requests for supported integrations and exposes discovered network devices in the DHCP Browser."
+    },
+    {
+      "name": "Home Assistant discovery address-update rule",
+      "url": "https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/discovery-update-info/",
+      "supports": "Discovery-aware integrations should update a known device's network address when its identity can be confirmed, so a static address is not universally required."
+    },
+    {
+      "name": "Home Assistant networking and discovery documentation",
+      "url": "https://developers.home-assistant.io/docs/network_discovery/",
+      "supports": "Home Assistant supports mDNS, Zeroconf, SSDP, and DHCP discovery for devices that do not have a known fixed address."
+    },
+    {
+      "name": "Home Assistant WLED integration documentation",
+      "url": "https://www.home-assistant.io/integrations/wled",
+      "supports": "DHCP address reuse can point a saved address at another WLED device; Home Assistant detects the MAC mismatch, and reconfiguration or a router reservation can prevent recurrence while discovery may update the address automatically in some cases."
+    },
+    {
+      "name": "Home Assistant Reolink integration documentation",
+      "url": "https://www.home-assistant.io/integrations/reolink/",
+      "supports": "Reolink cameras and NVRs should receive a reservation in the router while remaining on DHCP in the device, because device-side static configuration can produce incorrect DHCP requests."
+    },
+    {
+      "name": "Home Assistant Shelly integration documentation",
+      "url": "https://www.home-assistant.io/integrations/shelly/",
+      "supports": "Some Shelly local push configurations store the Home Assistant server's literal local address, illustrating why the controller can benefit from an address reservation."
+    },
+    {
+      "name": "Home Assistant Matter integration documentation",
+      "url": "https://www.home-assistant.io/integrations/matter/",
+      "supports": "Matter communicates primarily over IPv6 and depends on local IPv6 and mDNS multicast, so an ordinary IPv4 reservation does not solve typical Matter discovery failures."
+    },
+    {
+      "name": "Google Nest Help DHCP reservation instructions",
+      "url": "https://support.google.com/googlehome/answer/6274660?hl=en-GB",
+      "supports": "A consumer router can reserve the current address for a device by selecting it from the DHCP device list, while the device remains configured for automatic addressing."
+    },
+    {
+      "name": "Cisco static addressing guidance",
+      "url": "https://www.cisco.com/c/en/us/support/docs/smb/General/best-practices-for-setting-a-static-IP-addresses-in-Cisco-Small-Business.html",
+      "supports": "A manually configured static address should sit outside the DHCP pool to avoid duplicate-address conflicts."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-devices-unavailable-after-restart/",
+      "/blog/mesh-wifi-smart-home-devices/",
+      "/blog/home-assistant-main-lan-vs-iot-vlan/",
+      "/blog/does-home-assistant-matter-need-ipv6/",
+      "/blog/change-wifi-router-matter-thread-devices/"
+    ],
+    "decision": "The new page owns the proactive decision about which IP-based devices should keep an address and why router-side DHCP reservations are normally safer than device-side static settings. The restart article owns post-restart diagnosis, the mesh article owns radio coverage and roaming, the VLAN article owns segmentation, the Matter page owns IPv6 requirements, and the router-change page owns migration. Those pages are supporting links, not alternate answers to the primary query."
+  }
+}

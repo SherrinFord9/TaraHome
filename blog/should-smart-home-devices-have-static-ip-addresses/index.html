@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Should Smart Home Devices Have Static IP Addresses?</title>
+    <meta name="description" content="Do not assign every smart device a static IP. Learn which hubs, cameras, and local devices need a router reservation—and why Matter is different." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/should-smart-home-devices-have-static-ip-addresses/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/should-smart-home-devices-have-static-ip-addresses/" />
+    <meta property="og:title" content="Should Smart Home Devices Have Static IP Addresses?" />
+    <meta property="og:description" content="Do not assign every smart device a static IP. Learn which hubs, cameras, and local devices need a router reservation—and why Matter is different." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/should-smart-home-devices-have-static-ip-addresses/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Should Smart Home Devices Have Static IP Addresses?" />
+    <meta name="twitter:description" content="Do not assign every smart device a static IP. Learn which hubs, cameras, and local devices need a router reservation—and why Matter is different." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/should-smart-home-devices-have-static-ip-addresses/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 820px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/should-smart-home-devices-have-static-ip-addresses/#blogposting",
+          "headline": "Should Smart Home Devices Have Static IP Addresses?",
+          "description": "Do not assign every smart device a static IP. Learn which hubs, cameras, and local devices need a router reservation—and why Matter is different.",
+          "image": "https://tarahome.ai/assets/generated/blog/should-smart-home-devices-have-static-ip-addresses/cover.png",
+          "datePublished": "2026-08-14",
+          "dateModified": "2026-08-14",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/should-smart-home-devices-have-static-ip-addresses/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/dhcp/",
+            "https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/discovery-update-info/",
+            "https://developers.home-assistant.io/docs/network_discovery/",
+            "https://www.home-assistant.io/integrations/zeroconf/",
+            "https://www.home-assistant.io/integrations/wled",
+            "https://www.home-assistant.io/integrations/reolink/",
+            "https://www.home-assistant.io/integrations/shelly/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://support.google.com/googlehome/answer/6274660?hl=en-GB",
+            "https://www.cisco.com/c/en/us/support/docs/smb/General/best-practices-for-setting-a-static-IP-addresses-in-Cisco-Small-Business.html",
+            "https://www.reddit.com/r/homeassistant/comments/1u0e513/does_it_help_to_have_static_ips_on_your_smart/",
+            "https://www.reddit.com/r/homeassistant/comments/1rg45ft/managing_ip_addresses_for_iot_devices_is_it_an/",
+            "https://community.home-assistant.io/t/handle-device-ip-changes/774359",
+            "https://github.com/home-assistant/operating-system/issues/2454"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/should-smart-home-devices-have-static-ip-addresses/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Should smart home devices have static IP addresses?", "item": "https://tarahome.ai/blog/should-smart-home-devices-have-static-ip-addresses/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/should-smart-home-devices-have-static-ip-addresses/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do all smart-home devices need static IP addresses?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Reserve addresses only for the smart-home controller, bridges, cameras, or local devices that another system reaches by IP address. Leave most automatically discovered, cloud-only, Zigbee, and Z-Wave end devices alone." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is a DHCP reservation better than a manual static IP?",
+              "acceptedAnswer": { "@type": "Answer", "text": "For most homes, yes. A reservation keeps address management in the router while the device remains on automatic DHCP. A manual static address requires you to enter the address, network, gateway, and DNS correctly on the device and avoid the router's DHCP pool." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should the Home Assistant server have a fixed IP address?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually, yes. Give the Home Assistant host a router-side DHCP reservation so apps, local integrations, dashboards, and other services can keep finding it. Keep the host itself on automatic DHCP unless your network design specifically requires manual addressing." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will a DHCP reservation stop smart devices going offline?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only when a changed or reused IP address is the cause. It will not fix weak Wi-Fi, lost power, a cloud outage, blocked multicast, a VLAN rule, or a failing device." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do Matter or Thread devices need static IP addresses?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not for their Matter connection. Matter uses IPv6 and mDNS multicast over Wi-Fi, Ethernet, or Thread. An ordinary IPv4 reservation does not repair Matter discovery; fix IPv6, multicast, and Thread border-router reachability instead." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Network reliability</span><span>August 14, 2026</span><span>11 min read</span></p>
+            <h1>Should Smart Home Devices Have Static IP Addresses?</h1>
+            <p class="lede">No. Most smart-home devices should stay on automatic addressing. Reserve an address in your router for the controller, bridges, cameras, and local devices that are actually saved by IP; do not manually program every bulb or sensor.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/should-smart-home-devices-have-static-ip-addresses/cover.png" alt="A homeowner organizing labeled Ethernet cables beside an unbranded router, network switch, and smart-home hub on a warm oak shelf" width="1586" height="992" decoding="async" fetchpriority="high" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Do this:</strong> reserve the current address in your router for the smart-home controller and for cameras, bridges, or local devices that Home Assistant or another app reaches by IP address.</li>
+              <li><strong>Use the router, not each gadget:</strong> this is called a DHCP reservation. Leave the device set to Automatic or DHCP; the router remembers which address to give it.</li>
+              <li><strong>Do not reserve everything:</strong> most cloud-only gadgets and discovery-aware devices do not need it. Zigbee and Z-Wave end devices do not have a home-network IP address at all.</li>
+              <li><strong>Main caveat:</strong> an IPv4 reservation will not fix weak Wi-Fi, cloud trouble, blocked multicast, or Matter. Matter relies mainly on IPv6 and mDNS, so troubleshoot those paths instead.</li>
+            </ul>
+          </aside>
+
+          <h2 id="answer">Reserve a few important addresses, not the whole house</h2>
+          <p>A smart device does not need a permanent address merely because it is smart. It needs one when another device or app has saved that address and will fail to follow a change. That commonly applies to a smart-home controller, a network video recorder (NVR) that records cameras, a bridge or hub that joins devices to the home network, or a Wi-Fi device added to a Home Assistant connection—called an integration—by typing its address.</p>
+          <p>Sometimes the device stores the controller's address, too. Current Shelly documentation, for example, tells some devices to send local updates to the Home Assistant server's IP address. That makes the controller itself the first sensible reservation.</p>
+          <p>The safest default for a normal home is a <strong>DHCP reservation</strong>. DHCP is the router service that hands out local addresses automatically. A reservation tells the router, “When this exact device asks, give it the same address again.” The device itself can remain on Automatic or DHCP, so the router keeps the address plan in one place.</p>
+          <p>A <strong>manual static IP</strong> is different: you type the address, network details, gateway, and DNS into the device. That can be useful for special network equipment, but one wrong value can make the device disappear. It is unnecessary for most smart-home gear.</p>
+
+          <h2 id="decision-table">Which devices should keep the same address?</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Device or connection</th>
+                  <th scope="col">Reserve an address?</th>
+                  <th scope="col">Why</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Home Assistant or another local controller</td>
+                  <td><strong>Usually yes</strong></td>
+                  <td>Apps, dashboards, callbacks, and other local services need to keep finding the controller. Prefer a router reservation.</td>
+                </tr>
+                <tr>
+                  <td>Local camera or NVR</td>
+                  <td><strong>Usually yes</strong></td>
+                  <td>Reserve it when a recording system or stream address contains the device's IP.</td>
+                </tr>
+                <tr>
+                  <td>Ethernet or Wi-Fi bridge</td>
+                  <td><strong>Often useful</strong></td>
+                  <td>Reserve a Hue-style bridge or similar hub if any controller reaches it by IP. Discovery-only setups may recover without one.</td>
+                </tr>
+                <tr>
+                  <td>WLED, ESPHome, Shelly, or another local Wi-Fi device</td>
+                  <td><strong>Only when needed</strong></td>
+                  <td>Reserve it if the integration stores its IP, it crosses a subnet, or address changes have caused failures. Good discovery support may follow a change.</td>
+                </tr>
+                <tr>
+                  <td>Cloud-controlled Wi-Fi plug, bulb, or appliance</td>
+                  <td><strong>Usually no</strong></td>
+                  <td>The app normally finds it through the vendor account. A fixed local address does not remove the cloud dependency.</td>
+                </tr>
+                <tr>
+                  <td>Matter device on Wi-Fi or Thread</td>
+                  <td><strong>Not for Matter</strong></td>
+                  <td>Matter uses IPv6 and mDNS. Reserve IPv4 only if a separate non-Matter integration also needs that address.</td>
+                </tr>
+                <tr>
+                  <td>Zigbee or Z-Wave end device</td>
+                  <td><strong>No</strong></td>
+                  <td>A sensor, bulb, or switch on those radio networks has no home-network IP to reserve. The Ethernet or Wi-Fi hub may have one.</td>
+                </tr>
+                <tr>
+                  <td>Phone, tablet, or laptop</td>
+                  <td><strong>Usually no</strong></td>
+                  <td>These devices move between networks and may use a private, rotating Wi-Fi address. Reserve one only for a specific local service.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="discovery">Home Assistant can follow some address changes—but not all</h2>
+          <p>Current Home Assistant supports device discovery through DHCP, mDNS or Zeroconf, and SSDP. In plain English, those are ways for a device to announce “I am here” without you typing its address. Home Assistant's current integration guidance says a supported integration should use a trusted device identity to update its saved network address when that address changes.</p>
+          <p>That is a design goal, not a promise for every integration. Some devices cannot announce themselves, some community integrations store the host you entered, and discovery may not cross a separated IoT network. Home Assistant's DHCP Browser at <strong>Settings &gt; System &gt; Network &gt; DHCP Browser</strong> can show what it has seen on the network.</p>
+          <p>WLED gives a useful current example. Home Assistant documents how DHCP can reuse an old address for a different WLED controller, producing a safety-minded MAC-address mismatch instead of controlling the wrong lights. The official fix is to enter the correct address and consider a reservation or device-side static address. The same page also notes that discovery may update the address automatically. In other words, use a reservation when the actual integration needs stability; do not assume every device does.</p>
+          <p>Reolink shows why the router-first rule matters. Home Assistant currently recommends a router reservation for Reolink cameras and NVRs, but explicitly says to leave the Reolink device itself on DHCP because its device-side static setting can still send incorrect DHCP requests. Follow the current integration instructions when a vendor has a known exception like this.</p>
+
+          <h2 id="setup">How to create a safe DHCP reservation</h2>
+          <ol>
+            <li><strong>Make a short list.</strong> Start with the smart-home controller, NVR, cameras, bridges, and devices you added by hostname or IP. Do not begin with every Wi-Fi gadget.</li>
+            <li><strong>Open the router's device list.</strong> Look for a menu named DHCP reservation, reserved IP, address reservation, fixed lease, or static lease. This is usually in LAN or Network settings.</li>
+            <li><strong>Select the device that is online now.</strong> Confirm its device name and MAC address—the hardware identifier shown by the router—before saving. Do not guess from a similar name.</li>
+            <li><strong>Keep the current address when practical.</strong> That avoids breaking an integration while you organize the network. If you choose a new address, make sure the router says it is available.</li>
+            <li><strong>Leave the device on Automatic or DHCP.</strong> The router, not the gadget, should remember the assignment.</li>
+            <li><strong>Renew one device at a time.</strong> Restart or reconnect it during a quiet time, confirm it receives the reserved address, and test its dashboard, camera stream, and automations.</li>
+            <li><strong>Record the result.</strong> Export the router configuration if it supports that, or keep a simple list of device, MAC address, and reserved IP. You will need it when replacing the router.</li>
+          </ol>
+          <div class="callout">
+            <p><strong>Do not edit Home Assistant's hidden storage files to change a device address.</strong> Use the integration's Reconfigure option when available, or remove and add that integration again after confirming the device's current address. Back up Home Assistant first if a change affects several integrations.</p>
+          </div>
+
+          <h2 id="manual-static">When a manual static IP is justified</h2>
+          <p>Manual addressing can make sense for equipment that must remain reachable even when the router's DHCP service is unavailable, or for a carefully managed network where reservations are not possible. It is an advanced exception, not the first step for a light bulb or camera.</p>
+          <p>If you must set one, choose an address outside the router's automatic DHCP pool—or explicitly exclude it from that pool—and enter the correct network mask, gateway, and DNS server. Otherwise the router may give the same address to another device, creating an intermittent duplicate-address failure. Write down the setting before changing anything.</p>
+          <p>A router reservation is easier to find, back up, and move later. It also lets a reset device return to automatic networking without becoming stranded on an address from the old network.</p>
+
+          <h2 id="matter">Matter and Thread are the important exception</h2>
+          <p>Matter is an IP-based smart-home standard, but it communicates primarily over <strong>IPv6</strong>, the newer form of local network addressing. Matter devices can use Wi-Fi, Ethernet, or Thread. A Thread end device receives IPv6 connectivity through a Thread border router; it does not need an ordinary IPv4 reservation in the home router.</p>
+          <p>Matter also relies on <strong>mDNS multicast</strong>, the local announcements controllers use to find devices. Home Assistant's current Matter guidance says IPv6 and multicast must travel freely between the Matter device, border router, and Home Assistant. A reserved IPv4 address cannot repair filtered multicast, a broken IPv6 path, or a Thread border router on the wrong network.</p>
+          <p>If Matter pairing fails or devices become unavailable, leave address reservations alone at first. Check the steps in Tara's <a href="/blog/does-home-assistant-matter-need-ipv6/">plain-English Matter and IPv6 guide</a>, and keep the network simple until commissioning works.</p>
+
+          <h2 id="wont-fix">What a fixed address will not fix</h2>
+          <ul>
+            <li><strong>Weak Wi-Fi:</strong> a device at the same address is still offline if it cannot reach the access point. Use Tara's <a href="/blog/mesh-wifi-smart-home-devices/">mesh Wi-Fi checklist for smart devices</a>.</li>
+            <li><strong>Cloud dependence:</strong> a stable private address does not make a vendor-cloud integration local or keep it working during an internet outage.</li>
+            <li><strong>VLAN and firewall rules:</strong> a VLAN is a separate network for smart devices. A reservation does not allow blocked traffic or carry discovery between networks. Tara's <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">main-LAN versus IoT-VLAN guide</a> covers that decision.</li>
+            <li><strong>Multicast trouble:</strong> mDNS and Matter can fail even while a device answers at a familiar IPv4 address.</li>
+            <li><strong>Power and hardware faults:</strong> no address setting can revive an unplugged hub, a failed power supply, or a crashed device.</li>
+          </ul>
+          <p>If several devices disappeared immediately after a reboot or outage, follow Tara's <a href="/blog/home-assistant-devices-unavailable-after-restart/">unavailable-after-restart troubleshooting order</a> before assigning new addresses. A reservation is a prevention tool only when address changes were the cause.</p>
+
+          <h2 id="router-change">Plan for the next router before it arrives</h2>
+          <p>DHCP reservations live in the router, not in the smart device. When you replace the router, they do not automatically move unless the new system imports the old configuration. Save the reservation list before the change, then recreate the most important entries using the same MAC addresses.</p>
+          <p>Reusing the old Wi-Fi name and password can help many Wi-Fi devices reconnect, but it does not recreate reservations, VLAN rules, or multicast settings. Tara's <a href="/blog/change-wifi-router-matter-thread-devices/">router-change guide for Matter, Thread, and Wi-Fi devices</a> separates what can be preserved from what must be rebuilt.</p>
+
+          <h2 id="security">A private fixed address is not a security feature</h2>
+          <p>A reservation makes a device easier to find inside the home. It does not authenticate the device, encrypt its traffic, or safely expose it to the internet. Do not create a public port-forward merely because a camera or controller now has a predictable address.</p>
+          <p>The useful goal is a small, understandable core: a controller with a reserved address, documented bridges and cameras, normal DHCP for everything else, and local controls that still work when the internet is down. Tara's <a href="/local-smart-home-hub/">local smart-home hub guide</a> shows how that controller fits the larger no-cloud design.</p>
+
+          <h2 id="recommendation">Tara's practical default</h2>
+          <ol>
+            <li>Reserve the address of the smart-home controller.</li>
+            <li>Reserve each camera, NVR, bridge, or local Wi-Fi device only when another system stores its IP or discovery has proved unreliable.</li>
+            <li>Leave the device itself on Automatic or DHCP.</li>
+            <li>Do not reserve Zigbee or Z-Wave end devices, and do not use an IPv4 reservation as a Matter fix.</li>
+            <li>Keep a copy of the reservation list and test the important devices after a router, VLAN, or Wi-Fi change.</li>
+          </ol>
+          <p>This gives the few devices that need a dependable address one, without turning the home network into a spreadsheet that must be repaired every time a gadget is reset.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-all">Do all smart-home devices need static IP addresses?</h3>
+          <p>No. Reserve addresses only for the smart-home controller, bridges, cameras, or local devices that another system reaches by IP address. Leave most automatically discovered, cloud-only, Zigbee, and Z-Wave end devices alone.</p>
+
+          <h3 id="faq-reservation">Is a DHCP reservation better than a manual static IP?</h3>
+          <p>For most homes, yes. A reservation keeps address management in the router while the device remains on automatic DHCP. A manual static address requires you to enter the address, network, gateway, and DNS correctly on the device and avoid the router's DHCP pool.</p>
+
+          <h3 id="faq-home-assistant">Should the Home Assistant server have a fixed IP address?</h3>
+          <p>Usually, yes. Give the Home Assistant host a router-side DHCP reservation so apps, local integrations, dashboards, and other services can keep finding it. Keep the host itself on automatic DHCP unless your network design specifically requires manual addressing.</p>
+
+          <h3 id="faq-offline">Will a DHCP reservation stop smart devices going offline?</h3>
+          <p>Only when a changed or reused IP address is the cause. It will not fix weak Wi-Fi, lost power, a cloud outage, blocked multicast, a VLAN rule, or a failing device.</p>
+
+          <h3 id="faq-matter">Do Matter or Thread devices need static IP addresses?</h3>
+          <p>Not for their Matter connection. Matter uses IPv6 and mDNS multicast over Wi-Fi, Ethernet, or Thread. An ordinary IPv4 reservation does not repair Matter discovery; fix IPv6, multicast, and Thread border-router reachability instead.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/dhcp/" target="_blank" rel="noopener noreferrer">Home Assistant: DHCP discovery and DHCP Browser</a></li>
+                <li><a href="https://developers.home-assistant.io/docs/core/integration-quality-scale/rules/discovery-update-info/" target="_blank" rel="noopener noreferrer">Home Assistant developer guidance: update a known device's network address from discovery</a></li>
+                <li><a href="https://developers.home-assistant.io/docs/network_discovery/" target="_blank" rel="noopener noreferrer">Home Assistant developer guidance: networking and discovery methods</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/zeroconf/" target="_blank" rel="noopener noreferrer">Home Assistant: Zeroconf and mDNS discovery</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/wled" target="_blank" rel="noopener noreferrer">Home Assistant: WLED address reuse, reconfiguration, and reservation options</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/reolink/" target="_blank" rel="noopener noreferrer">Home Assistant: Reolink router reservations and device-side DHCP warning</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/shelly/" target="_blank" rel="noopener noreferrer">Home Assistant: Shelly local update paths that use the controller address</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter IPv6, multicast, and network requirements</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Router documentation</h3>
+              <ul>
+                <li><a href="https://support.google.com/googlehome/answer/6274660?hl=en-GB" target="_blank" rel="noopener noreferrer">Google Nest Help: reserve an address for a device</a></li>
+                <li><a href="https://www.cisco.com/c/en/us/support/docs/smb/General/best-practices-for-setting-a-static-IP-addresses-in-Cisco-Small-Business.html" target="_blank" rel="noopener noreferrer">Cisco: avoid DHCP conflicts when manually assigning an address</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1u0e513/does_it_help_to_have_static_ips_on_your_smart/" target="_blank" rel="noopener noreferrer">r/homeassistant: when fixed addresses help—and the Matter exception</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1rg45ft/managing_ip_addresses_for_iot_devices_is_it_an/" target="_blank" rel="noopener noreferrer">r/homeassistant: managing addresses in a growing IoT network</a></li>
+                <li><a href="https://community.home-assistant.io/t/handle-device-ip-changes/774359" target="_blank" rel="noopener noreferrer">Home Assistant Community: integrations and changed device addresses</a></li>
+                <li><a href="https://github.com/home-assistant/operating-system/issues/2454" target="_blank" rel="noopener noreferrer">Home Assistant GitHub: an address-change and local-network edge case</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the network dependable</h2>
+          <div class="links">
+            <a href="/blog/home-assistant-devices-unavailable-after-restart/">Fix devices missing after a restart</a>
+            <a href="/blog/mesh-wifi-smart-home-devices/">Check smart-device Wi-Fi</a>
+            <a href="/blog/home-assistant-main-lan-vs-iot-vlan/">Choose the main LAN or an IoT VLAN</a>
+            <a href="/blog/does-home-assistant-matter-need-ipv6/">Understand Matter and IPv6</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the system</p>
+          <h2>Want a network plan the household can maintain?</h2>
+          <p>Tara can help choose the controller, device paths, address plan, and offline fallbacks before the smart-home network becomes difficult to change.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
