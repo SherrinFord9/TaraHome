@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Do You Still Need Homebridge With Home Assistant?</title>
+    <meta name="description" content="Most Home Assistant homes can replace Homebridge with HomeKit Bridge. See what to keep, how to migrate, and how to avoid duplicate Apple Home devices." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/do-you-need-homebridge-with-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/do-you-need-homebridge-with-home-assistant/" />
+    <meta property="og:title" content="Do You Still Need Homebridge With Home Assistant?" />
+    <meta property="og:description" content="Most Home Assistant homes can replace Homebridge with HomeKit Bridge. See what to keep, how to migrate, and how to avoid duplicate Apple Home devices." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-homebridge-with-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Do You Still Need Homebridge With Home Assistant?" />
+    <meta name="twitter:description" content="Most Home Assistant homes can replace Homebridge with HomeKit Bridge. See what to keep, how to migrate, and how to avoid duplicate Apple Home devices." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-homebridge-with-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 820px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/do-you-need-homebridge-with-home-assistant/#blogposting",
+          "headline": "Do You Still Need Homebridge With Home Assistant?",
+          "description": "Most Home Assistant homes can replace Homebridge with HomeKit Bridge. See what to keep, how to migrate, and how to avoid duplicate Apple Home devices.",
+          "image": "https://tarahome.ai/assets/generated/blog/do-you-need-homebridge-with-home-assistant/cover.png",
+          "datePublished": "2026-08-15",
+          "dateModified": "2026-08-15",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/do-you-need-homebridge-with-home-assistant/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://www.home-assistant.io/integrations/homekit_controller/",
+            "https://www.home-assistant.io/integrations/matter/",
+            "https://www.home-assistant.io/integrations/hue/",
+            "https://support.apple.com/en-us/102557",
+            "https://github.com/homebridge/homebridge",
+            "https://github.com/homebridge/homebridge/releases",
+            "https://github.com/homebridge/homebridge/wiki/Backup-and-Restore",
+            "https://github.com/homebridge/homebridge/wiki/Matter-Plugins",
+            "https://github.com/homebridge/plugins/blob/latest/verified-plugins.json",
+            "https://www.reddit.com/r/homeassistant/comments/1s0rsex/how_do_i_make_the_switch_to_home_assistant/",
+            "https://community.home-assistant.io/t/integration-with-homekit/818261",
+            "https://github.com/orgs/home-assistant/discussions/751"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/do-you-need-homebridge-with-home-assistant/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Do you still need Homebridge with Home Assistant?", "item": "https://tarahome.ai/blog/do-you-need-homebridge-with-home-assistant/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/do-you-need-homebridge-with-home-assistant/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant replace Homebridge?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually. Home Assistant can connect many devices through native integrations or HomeKit Device, then expose selected entities to Apple Home and Siri through HomeKit Bridge. Keep Homebridge only for a specific plugin or feature that your tested Home Assistant path cannot replace." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant and Homebridge run at the same time?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. They can coexist during migration or permanently. Give each accessory one owner and one route into Apple Home; exposing the same light, lock, or sensor through both systems creates duplicates and confusing automations." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do I have to stop using the Apple Home app?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Home Assistant's HomeKit Bridge can send selected Home Assistant entities to Apple Home, so the family can keep the Home app and Siri while Home Assistant owns device connections and automations." }
+            },
+            {
+              "@type": "Question",
+              "name": "Must I remove a HomeKit device from Apple Home before adding it to Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes when you are pairing that accessory through Home Assistant's HomeKit Device integration, because a HomeKit accessory can have only one controller. A Matter device can instead be shared to another controller through Matter multi-admin when the device and platforms support it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Homebridge 2 Matter support make Homebridge necessary?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Matter support is optional, plugins must support the path, and Homebridge says its Matter bridge is not certified by the Connectivity Standards Alliance. Keep it only when that exact bridge or plugin solves a tested need that Home Assistant does not." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Apple Home migration</span><span>August 15, 2026</span><span>11 min read</span></p>
+            <h1>Do You Still Need Homebridge With Home Assistant?</h1>
+            <p class="lede">Usually, no. If Home Assistant already controls your devices, its built-in HomeKit Bridge can place selected devices in Apple Home and Siri. Keep Homebridge only where a specific plugin still does something your tested Home Assistant setup cannot.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/do-you-need-homebridge-with-home-assistant/cover.png" alt="Homeowner unplugging an older small smart-home bridge beside a connected local controller on a warm oak console" width="1586" height="992" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <div class="tldr" aria-label="TLDR">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Most homes can retire Homebridge:</strong> connect devices to Home Assistant, then use HomeKit Bridge to show selected lights, sensors, locks, and other controls in Apple Home.</li>
+              <li><strong>Audit every plugin first:</strong> keep Homebridge only for a named plugin or feature that has no tested Home Assistant replacement.</li>
+              <li><strong>Avoid duplicate accessories:</strong> give each device one route into Apple Home and move one device family at a time.</li>
+              <li><strong>Main caveat:</strong> Homebridge 2 can also bridge supported plugins through Matter, but that path is optional and uncertified. Back up Homebridge and test Apple scenes, Siri, remote access, and critical devices before shutdown.</li>
+            </ul>
+          </div>
+
+          <h2 id="short-answer">Short answer: most Home Assistant homes do not need both</h2>
+          <p><strong>Home Assistant can replace the main job Homebridge performs for many Apple-first homes.</strong> Homebridge translates community plugin data into accessories that Apple Home understands. Home Assistant can connect those devices, run their automations, and send selected controls to Apple Home through its official <strong>HomeKit Bridge</strong> integration.</p>
+          <p>An <strong>entity</strong> is one control or reading in Home Assistant, such as a lamp, door lock, temperature, or motion state. HomeKit Bridge publishes chosen entities outward to Apple Home. That lets the family keep the Home app and Siri while Home Assistant becomes the place where devices and automations are managed.</p>
+          <p>The similarly named <strong>HomeKit Device</strong> integration goes in the opposite direction. It brings a HomeKit accessory into Home Assistant. Home Assistant's current documentation says a HomeKit accessory can be paired to only one controller at a time, so an accessory already paired to Apple Home may need to be removed or reset before Home Assistant can claim it. You can then publish it back to Apple Home with HomeKit Bridge.</p>
+          <p>Neither Homebridge nor Home Assistant's HomeKit Bridge is an Apple home hub. Apple says a HomePod or Apple TV home hub is what enables away-from-home control, household sharing, Apple Home automations, and adding Matter accessories. You can retire Homebridge and still keep that Apple hardware and interface.</p>
+          <p>Do not unplug Homebridge today just because the answer is “usually no.” First prove how every current plugin will be replaced. The safest end state may be no Homebridge, or it may be one small Homebridge exception alongside a much larger Home Assistant system.</p>
+
+          <h2 id="paths">Choose the right path for each device</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Connection path</th>
+                  <th scope="col">Official support</th>
+                  <th scope="col">Local control or cloud</th>
+                  <th scope="col">Apple Home or Matter role</th>
+                  <th scope="col">Main caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Native Home Assistant integration</strong></td>
+                  <td>Official when listed in Home Assistant's integrations directory; some other integrations are community maintained.</td>
+                  <td>Varies by integration. Check whether it says Local Push, Local Polling, Cloud Push, or Cloud Polling.</td>
+                  <td>Home Assistant owns the device connection; HomeKit Bridge can expose selected entities to Apple Home.</td>
+                  <td>Usually the first choice because it can preserve more product-specific features than a generic bridge.</td>
+                </tr>
+                <tr>
+                  <td><strong>HomeKit Device</strong></td>
+                  <td>Official Home Assistant integration.</td>
+                  <td>Local connection through Ethernet, Wi-Fi, Bluetooth, or Thread, depending on the accessory.</td>
+                  <td>Pairs a HomeKit accessory into Home Assistant. HomeKit Bridge can send it back to Apple Home afterward.</td>
+                  <td>A HomeKit accessory can have only one HomeKit controller, so plan the unpair and pairing-code step.</td>
+                </tr>
+                <tr>
+                  <td><strong>HomeKit Bridge</strong></td>
+                  <td>Official Home Assistant integration.</td>
+                  <td>The bridge runs on the local network. Apple remote access, sharing, and Siri still use Apple's home-hub and service path.</td>
+                  <td>Publishes Home Assistant entities to Apple Home. This replaces Homebridge's Apple-facing job for many homes.</td>
+                  <td>Use a deliberate include list. Cameras, locks, and televisions have special accessory-mode rules.</td>
+                </tr>
+                <tr>
+                  <td><strong>Matter multi-admin</strong><br />Sharing one Matter device with more than one platform</td>
+                  <td>Official Home Assistant Matter support plus the device maker's implementation.</td>
+                  <td>Matter control is local, although vendor apps and extra features can still depend on the cloud.</td>
+                  <td>Pairs the same real Matter device with Home Assistant and Apple Home as separate controllers.</td>
+                  <td>It does not move Apple automations, and a native integration may expose more features than Matter.</td>
+                </tr>
+                <tr>
+                  <td><strong>Homebridge plugin</strong></td>
+                  <td>Community plugin support. A Homebridge “verified” plugin is still not the same as an official device-maker or Home Assistant integration.</td>
+                  <td>Depends on the plugin and vendor API. A bridge running locally can still be controlling a cloud-only device.</td>
+                  <td>Usually emulates a HomeKit accessory; Homebridge 2 also offers optional Matter output for plugins that support it.</td>
+                  <td>Keep only when the exact plugin and feature remain useful, maintained, and reliable.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Those connection labels are simpler than they sound: <strong>local</strong> means normal control stays inside the home network, while <strong>cloud</strong> means it passes through a vendor's internet service. <strong>Push</strong> means the device or service sends changes to Home Assistant; <strong>polling</strong> means Home Assistant checks for changes on a schedule.</p>
+
+          <h2 id="retire">When you can retire Homebridge</h2>
+          <p>You can normally retire Homebridge when every device family it exposes passes four checks:</p>
+          <ul>
+            <li><strong>Home Assistant has a working connection.</strong> Prefer a current native integration—the direct connector built for that product or service. Use HomeKit Device or Matter when that is the appropriate supported path.</li>
+            <li><strong>The features you actually use are present.</strong> A light that turns on is not a full replacement if dimming, color, button events, or power readings disappeared.</li>
+            <li><strong>Apple Home receives only the controls the household needs.</strong> A small HomeKit Bridge include list is easier to understand than sending thousands of entities into Apple Home.</li>
+            <li><strong>Scenes, Siri names, and automations have been tested after cutover.</strong> A device arriving through a new bridge may have a new Apple accessory identity, even when its visible name is the same.</li>
+          </ul>
+          <p>Philips Hue Bridge v2 is a useful example. Home Assistant's official Hue integration is Local Push, imports Hue scenes, and receives state changes instantly over the local event stream. Home Assistant's Matter documentation also uses Hue to explain why the native integration can retain richer features than the generic Matter path. If a Homebridge plugin was only making Hue lights visible to Apple Home, the native Hue integration plus HomeKit Bridge is the cleaner route.</p>
+          <p>Repeat that check for each plugin rather than declaring the whole server replaceable at once. One weak device family should not force every other accessory to keep taking the longer path.</p>
+
+          <h2 id="keep">When keeping Homebridge still makes sense</h2>
+          <ul>
+            <li><strong>A specific maintained plugin exposes something Home Assistant cannot.</strong> Name the plugin, the missing feature, and whether it is local or cloud dependent. “We might need it” is not enough.</li>
+            <li><strong>You are still migrating.</strong> Homebridge is a useful temporary source while devices, automations, and household habits move in small batches.</li>
+            <li><strong>You intentionally use Homebridge 2's Matter output.</strong> This can serve other Matter-capable platforms, but only participating plugins gain that path, and Homebridge says its Matter implementation is not certified by the Connectivity Standards Alliance.</li>
+            <li><strong>A camera, television, or unusual accessory has a proven plugin path that the new stack does not match.</strong> Test it separately. Home Assistant's HomeKit Bridge handles some of these as individually paired accessories, and camera recording remains a separate decision.</li>
+          </ul>
+          <p>Keeping one exception is not a failure. The goal is a system whose ownership is clear: Home Assistant handles the devices it supports well, Homebridge handles a short documented exception list, and each accessory appears in Apple Home only once.</p>
+          <p>Also check cloud dependence at the plugin level. Homebridge itself runs in the house, but a plugin may still sign in to a vendor's servers. Moving the same cloud account into Home Assistant does not automatically make the device local.</p>
+
+          <h2 id="migration">A safe Homebridge-to-Home-Assistant migration</h2>
+          <ol>
+            <li><strong>Back up Homebridge.</strong> Use Homebridge UI's Backup &amp; Restore page. Its current documentation says the archive includes the configuration, cached accessories, HomeKit pairings, plugin information, and UI accounts. Store that archive securely because configuration and account data can be sensitive.</li>
+            <li><strong>Inventory the current plugins.</strong> For each plugin, record the device family, Apple Home name and room, must-keep features, account or hub it uses, whether control survives an internet outage, and any locks, doors, cameras, alarms, or heating controls involved.</li>
+            <li><strong>Choose one new owner for each device.</strong> Mark it as native Home Assistant, HomeKit Device, Matter multi-admin, or “keep on Homebridge.” Do not use HomeKit Bridge as the incoming device connection; it sends Home Assistant entities out to Apple Home.</li>
+            <li><strong>Add and test the device in Home Assistant first.</strong> Check state updates and every important command inside Home Assistant before changing what Apple Home sees. Run a simple test automation if the device will be used as a trigger.</li>
+            <li><strong>Create a selective HomeKit Bridge.</strong> Include one small test group, such as a room or device family. The existing Tara guide to <a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">HomeKit Device versus HomeKit Bridge</a> shows which direction each integration moves data.</li>
+            <li><strong>Cut over one family.</strong> Disable the old Homebridge plugin or its separate child bridge for that group before exposing the replacement accessories from Home Assistant. This avoids two “Kitchen Lamp” tiles controlling the same light.</li>
+            <li><strong>Repair the Apple side deliberately.</strong> Put the new accessories in the correct rooms, confirm names, and rebuild any Apple Home scenes or automations that referenced the old accessory identity. Test Siri from more than one household member's device.</li>
+            <li><strong>Move critical devices last.</strong> Keep a physical key, wall control, thermostat control, or manual door release available. Do not make a lock, garage door, alarm, or heating system the first experiment.</li>
+            <li><strong>Stop Homebridge before deleting it.</strong> Leave the old host and backup untouched through several ordinary days, an away-from-home test, and a restart of Home Assistant and the Apple home hub. Remove the old server only after nothing depends on it.</li>
+          </ol>
+          <div class="callout">
+            <p><strong>The duplicate-device rule:</strong> one physical accessory should have one route into Apple Home. It is fine for Home Assistant and Apple Home to control the same device through HomeKit Bridge or Matter multi-admin. It is not fine to publish the same device from both Homebridge and Home Assistant and hope names keep the copies straight.</p>
+          </div>
+
+          <h2 id="does-not-move">What does not move automatically</h2>
+          <p>A Homebridge backup is a rollback for Homebridge; it is not an import file for Home Assistant. Plugin settings, credentials, cached accessories, and HomeKit pairings do not turn into Home Assistant integrations or entities.</p>
+          <p>Apple Home also identifies the newly exposed accessory by its bridge and accessory information, not just the friendly name on the tile. Assume that room assignments, favorites, scenes, and Apple Home automations may need attention after a device changes bridge. Write down important routines before the cutover and test them from the family-facing app afterward.</p>
+          <p>Matter multi-admin is not an automation migration tool either. It gives another controller access to a supported Matter device. It does not copy room names, dashboards, scenes, or rules from Apple Home to Home Assistant.</p>
+          <p>This is why Tara recommends moving the device connection first and the automation owner second. The guide to <a href="/blog/where-should-smart-home-automations-live/">choosing where smart-home automations should live</a> helps separate routines that belong in Home Assistant from simple family controls that can remain in Apple Home.</p>
+
+          <h2 id="matter">Homebridge 2 and Matter do not change the basic decision</h2>
+          <p>As of August 15, 2026, Homebridge's release page lists version 2.3.1 as current. Homebridge 2 can optionally publish supported plugin accessories through Matter as well as HomeKit. The project says this is enabled per bridge, plugins choose whether to publish Matter accessories, and the implementation is not certified by the Connectivity Standards Alliance. A controller may show an uncertified-accessory warning.</p>
+          <p>That is useful progress, but it does not mean every Homebridge plugin now has a complete Matter route. Check the current Matter-plugin list and the exact plugin's documentation before relying on it.</p>
+          <p>Home Assistant's Matter integration has a different job: it controls Matter devices and can join a device that was shared from another platform. Its documentation does not describe a general way to publish arbitrary Home Assistant entities as Matter accessories. When Apple Home is the destination for ordinary Home Assistant entities, HomeKit Bridge remains the direct supported path.</p>
+          <p>For a real Matter accessory already in Apple Home, multi-admin may be cleaner than removing and pairing it again. Follow Tara's <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Matter multi-admin guide</a> and check whether the device keeps the features you need in both controllers.</p>
+
+          <h2 id="mistakes">Six mistakes that make this migration painful</h2>
+          <ul>
+            <li><strong>Exposing everything:</strong> start with an include list, not every entity Home Assistant knows.</li>
+            <li><strong>Running two Apple paths for one device:</strong> duplicates create ambiguous Siri names and fragile scenes.</li>
+            <li><strong>Assuming local software means local control:</strong> check whether the documentation says Local Push, Local Polling, Cloud Push, or Cloud Polling, and note any vendor login requirement.</li>
+            <li><strong>Confusing HomeKit Device with HomeKit Bridge:</strong> one brings an accessory into Home Assistant; the other sends an entity to Apple Home.</li>
+            <li><strong>Deleting before backing up:</strong> a rollback is useful only when the old configuration and host still exist.</li>
+            <li><strong>Starting with safety-sensitive devices:</strong> prove the process on a lamp or sensor before a lock, garage door, alarm, or thermostat.</li>
+          </ul>
+          <p>Cameras deserve their own check because live view, motion events, two-way audio, and recording are separate features. Tara's guide to <a href="/blog/can-home-assistant-use-homekit-secure-video/">Home Assistant and HomeKit Secure Video</a> explains why moving a camera tile does not automatically move its recording path.</p>
+
+          <h2 id="recommendation">Tara's practical recommendation</h2>
+          <p>If Homebridge is mainly there to make devices visible in Apple Home, and Home Assistant now has stable connections for those devices, migrate them in small groups and retire Homebridge. Keep Apple Home as the household interface if the family likes it. Keep the Apple home hub for Apple remote access and sharing.</p>
+          <p>If one Homebridge plugin remains uniquely useful, keep that one bridge with a written reason and no duplicate accessories. Review it during normal maintenance instead of letting an old server become invisible infrastructure.</p>
+          <p>If you want the controller, bridge boundaries, local-versus-cloud paths, and Apple handoff planned as one system, Tara's <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> is the closest service path.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-replace">Can Home Assistant replace Homebridge?</h3>
+          <p>Usually. Home Assistant can connect many devices through native integrations or HomeKit Device, then expose selected entities to Apple Home and Siri through HomeKit Bridge. Keep Homebridge only for a specific plugin or feature that your tested Home Assistant path cannot replace.</p>
+
+          <h3 id="faq-coexist">Can Home Assistant and Homebridge run at the same time?</h3>
+          <p>Yes. They can coexist during migration or permanently. Give each accessory one owner and one route into Apple Home; exposing the same light, lock, or sensor through both systems creates duplicates and confusing automations.</p>
+
+          <h3 id="faq-apple-home">Do I have to stop using the Apple Home app?</h3>
+          <p>No. Home Assistant's HomeKit Bridge can send selected Home Assistant entities to Apple Home, so the family can keep the Home app and Siri while Home Assistant owns device connections and automations.</p>
+
+          <h3 id="faq-remove-first">Must I remove a HomeKit device from Apple Home before adding it to Home Assistant?</h3>
+          <p>Yes when you are pairing that accessory through Home Assistant's HomeKit Device integration, because a HomeKit accessory can have only one controller. A Matter device can instead be shared to another controller through Matter multi-admin when the device and platforms support it.</p>
+
+          <h3 id="faq-matter">Does Homebridge 2 Matter support make Homebridge necessary?</h3>
+          <p>No. Matter support is optional, plugins must support the path, and Homebridge says its Matter bridge is not certified by the Connectivity Standards Alliance. Keep it only when that exact bridge or plugin solves a tested need that Home Assistant does not.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant: HomeKit Bridge setup, filtering, and accessory modes</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit_controller/" target="_blank" rel="noopener noreferrer">Home Assistant: pair HomeKit devices locally and export them back to Apple Home</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/matter/" target="_blank" rel="noopener noreferrer">Home Assistant: Matter fabrics, multi-admin, and native-integration tradeoffs</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/hue/" target="_blank" rel="noopener noreferrer">Home Assistant: official Philips Hue local integration and scene behavior</a></li>
+                <li><a href="https://support.apple.com/en-us/102557" target="_blank" rel="noopener noreferrer">Apple Support: what an Apple home hub does</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product documentation</h3>
+              <ul>
+                <li><a href="https://github.com/homebridge/homebridge" target="_blank" rel="noopener noreferrer">Homebridge: official project overview, plugin model, and Matter limitations</a></li>
+                <li><a href="https://github.com/homebridge/homebridge/releases" target="_blank" rel="noopener noreferrer">Homebridge: current releases</a></li>
+                <li><a href="https://github.com/homebridge/homebridge/wiki/Backup-and-Restore" target="_blank" rel="noopener noreferrer">Homebridge: Backup and Restore</a></li>
+                <li><a href="https://github.com/homebridge/homebridge/wiki/Matter-Plugins" target="_blank" rel="noopener noreferrer">Homebridge: current Matter plugin guidance</a></li>
+                <li><a href="https://github.com/homebridge/plugins/blob/latest/verified-plugins.json" target="_blank" rel="noopener noreferrer">Homebridge: current verified-plugin registry</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1s0rsex/how_do_i_make_the_switch_to_home_assistant/" target="_blank" rel="noopener noreferrer">r/homeassistant: moving an Apple Home and Homebridge setup to Home Assistant</a></li>
+                <li><a href="https://community.home-assistant.io/t/integration-with-homekit/818261" target="_blank" rel="noopener noreferrer">Home Assistant Community: when built-in HomeKit support replaces Homebridge</a></li>
+                <li><a href="https://github.com/orgs/home-assistant/discussions/751" target="_blank" rel="noopener noreferrer">Home Assistant GitHub discussion: HomeKit Bridge management and entity-selection friction</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Keep the Apple and Home Assistant roles clear</h2>
+          <div class="links">
+            <a href="/blog/homekit-device-vs-homekit-bridge-home-assistant/">Choose HomeKit Device or HomeKit Bridge</a>
+            <a href="/blog/where-should-smart-home-automations-live/">Choose where automations should live</a>
+            <a href="/blog/matter-multi-admin-home-assistant-apple-google-alexa-smartthings/">Share Matter devices across controllers</a>
+            <a href="/blog/can-home-assistant-use-homekit-secure-video/">Plan Apple camera recording separately</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the handoff</p>
+          <h2>Want one clear owner for every device?</h2>
+          <p>Tara can help map the old plugins, new local connections, Apple-facing controls, and rollback plan before anything the household depends on is switched off.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
