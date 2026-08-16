@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Replace a Home Assistant Device Without Rebuilding Automations</title>
+    <meta name="description" content="Replace a Home Assistant device safely without rebuilding automations, scenes, or dashboards. Learn when entity IDs work and which references need repair." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/replace-home-assistant-device-without-rebuilding-automations/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/replace-home-assistant-device-without-rebuilding-automations/" />
+    <meta property="og:title" content="Replace a Home Assistant Device Without Rebuilding Automations" />
+    <meta property="og:description" content="Replace a Home Assistant device safely without rebuilding automations, scenes, or dashboards. Learn when entity IDs work and which references need repair." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/replace-home-assistant-device-without-rebuilding-automations/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Replace a Home Assistant Device Without Rebuilding Automations" />
+    <meta name="twitter:description" content="Replace a Home Assistant device safely without rebuilding automations, scenes, or dashboards. Learn when entity IDs work and which references need repair." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/replace-home-assistant-device-without-rebuilding-automations/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 820px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/replace-home-assistant-device-without-rebuilding-automations/#blogposting",
+          "headline": "Replace a Home Assistant Device Without Rebuilding Automations",
+          "description": "Replace a Home Assistant device safely without rebuilding automations, scenes, or dashboards. Learn when entity IDs work and which references need repair.",
+          "image": "https://tarahome.ai/assets/generated/blog/replace-home-assistant-device-without-rebuilding-automations/cover.png",
+          "datePublished": "2026-08-16",
+          "dateModified": "2026-08-16",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/replace-home-assistant-device-without-rebuilding-automations/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/blog/2026/08/05/release-20268/",
+            "https://www.home-assistant.io/blog/2026/07/01/release-20267/",
+            "https://www.home-assistant.io/docs/configuration/customizing-devices",
+            "https://www.home-assistant.io/docs/automation/trigger/",
+            "https://www.home-assistant.io/docs/scripts/perform-actions/",
+            "https://www.home-assistant.io/docs/organizing/",
+            "https://www.home-assistant.io/common-tasks/general/#backups",
+            "https://developers.home-assistant.io/docs/device_automation_index/",
+            "https://github.com/orgs/home-assistant/discussions/80",
+            "https://github.com/home-assistant/frontend/issues/19694",
+            "https://community.home-assistant.io/t/easy-way-to-swap-like-device-for-like-device/1010144",
+            "https://community.home-assistant.io/t/abstraction-layer/1010826",
+            "https://www.reddit.com/r/homeassistant/comments/1ro43os/im_a_bit_baffled_that_theres_no_way_to_convert/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/replace-home-assistant-device-without-rebuilding-automations/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Replace a Home Assistant device without rebuilding automations", "item": "https://tarahome.ai/blog/replace-home-assistant-device-without-rebuilding-automations/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/replace-home-assistant-device-without-rebuilding-automations/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Can I replace a Home Assistant device and keep its automations?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually, if those automations refer to the old entity IDs. Give the replacement the same compatible entity IDs after testing it. Automations tied directly to the old device ID will not follow and must be updated." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is using the same friendly name enough?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. A friendly name is the label people see. Automations and dashboards commonly use an entity ID such as light.kitchen_lamp, while some automations use a hidden device ID. Record and check the actual references." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does buying the same model preserve the Home Assistant device ID?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not generally. A new physical unit normally has a different hardware identity and therefore a new device record. The same model may expose matching entities, but direct device references still need checking unless the integration offers its own replacement procedure." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will Home Assistant history and Energy data carry over?",
+              "acceptedAnswer": { "@type": "Answer", "text": "They may line up when the replacement reuses the same entity ID and reports compatible units and statistics, but this is not guaranteed. Treat history and Energy as a separate check, keep a backup, and never combine unrelated measurements under one ID." }
+            },
+            {
+              "@type": "Question",
+              "name": "Should I delete the old Home Assistant device first?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Usually no. Keep its record long enough to note entity IDs and related uses. Add and test the replacement under temporary names where possible, move each reference deliberately, and delete the old device only after the household routines pass." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Device replacement</span><span>August 16, 2026</span><span>10 min read</span></p>
+            <h1>Replace a Home Assistant Device Without Rebuilding Automations</h1>
+            <p class="lede">Usually, you can swap the hardware and keep the routines. Give each matching new control or reading the old Home Assistant address. Anything linked to the old physical device must be reselected, and history needs a separate check.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/replace-home-assistant-device-without-rebuilding-automations/cover.png" alt="Homeowner swapping an unbranded smart plug while a replacement plug and motion sensor wait on an oak table" width="1536" height="1024" loading="eager" decoding="async" fetchpriority="high" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-labelledby="tldr-heading">
+            <p class="tldr-label" id="tldr-heading">TLDR</p>
+            <ul>
+              <li><strong>Back up first</strong> and use the old device's Related view to list every automation, script, scene, group, label, and area before removing it.</li>
+              <li><strong>Add and test the replacement under temporary names</strong> when possible; check that it exposes the same kind of control or reading.</li>
+              <li><strong>Reuse the exact old entity IDs</strong>—the internal addresses such as <code>light.kitchen_lamp</code>. Matching only the visible name is not enough.</li>
+              <li><strong>Do not expect device-based automations to follow.</strong> A new unit gets a new device record, so those triggers, conditions, and actions need repair.</li>
+              <li><strong>Keep the old record through inventory and new-device testing.</strong> If history matters, do not rename the old entity first; use the separate history handoff below.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">The short answer: yes for entities, no for every reference</h2>
+          <p>Home Assistant has several ways to point at the same piece of hardware. An <strong>entity</strong> is one control or reading, such as <code>light.kitchen_lamp</code> or <code>binary_sensor.back_door</code>. A <strong>device</strong> is the physical product's record behind those entities. An <strong>area</strong> is the room or space where it lives.</p>
+          <p>If an automation, scene, or dashboard points to an entity ID, a compatible replacement can often take over that exact ID. The reference then keeps pointing at the same logical job even though the hardware changed. If an automation points directly to the old device, the new unit cannot inherit that hidden device ID just because it has the same name or model. You must select the replacement in that automation.</p>
+          <p>Area-based intent can be sturdier still. Home Assistant's 2026.7 release gives the example of an automation built around motion in a room: swap one sensor, put the new one in the same area, and the automation can keep describing “motion in the living room” instead of one serial-numbered box.</p>
+          <div class="callout">
+            <p><strong>The rule to remember:</strong> reuse a logical identity when the new entity does the same job. Repair a physical-device reference when the physical device changes.</p>
+          </div>
+
+          <h2 id="reference-types">Know which kind of reference you are replacing</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>What the routine points to</th>
+                  <th>What happens after a swap</th>
+                  <th>What to do</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Entity ID</strong><br /><code>switch.coffee_plug</code></td>
+                  <td>The reference can keep working if the new entity uses that exact compatible ID.</td>
+                  <td>Test the new entity, choose the ordinary or history-preserving handoff below, then assign the exact old ID.</td>
+                </tr>
+                <tr>
+                  <td><strong>Device trigger, condition, or action</strong></td>
+                  <td>It stays tied to the old device record. Reusing an entity ID does not rewrite it.</td>
+                  <td>Open every related automation and choose the new device or rebuild that step around an entity or supported purpose-specific trigger.</td>
+                </tr>
+                <tr>
+                  <td><strong>Area, floor, label, or group</strong></td>
+                  <td>The intent may survive when the replacement joins the same grouping and offers the required feature.</td>
+                  <td>Assign the replacement correctly, remove the old member, then test which entities the target now includes.</td>
+                </tr>
+                <tr>
+                  <td><strong>Friendly name only</strong><br />“Kitchen lamp”</td>
+                  <td>The label can look identical while the real reference underneath is different.</td>
+                  <td>Check the entity ID or device reference; do not trust the visible name alone.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A button or remote may expose no ordinary state entity for its presses, so its automation can legitimately be tied to the device or its events. Those are normal exceptions, not mistakes. The important part is knowing they will need deliberate attention during a replacement.</p>
+
+          <h2 id="before-removing">Before removing the old device</h2>
+          <ol>
+            <li><strong>Create a manual backup.</strong> Go to Settings, System, Backups, choose Backup now, and store the emergency kit safely if Home Assistant asks for it. A backup is the recovery point for the configuration work around the device.</li>
+            <li><strong>Leave the old record in Home Assistant.</strong> Even if the hardware is dead, its device and entity pages can still show names, IDs, area placement, and related items.</li>
+            <li><strong>Record every useful entity ID.</strong> A multi-sensor may have temperature, humidity, battery, signal, and diagnostic readings. Map only the ones the household actually uses.</li>
+            <li><strong>Open Related for the device and its important entities.</strong> Home Assistant 2026.8 expanded this view so it can surface scenes, scripts, groups, shared labels, and areas as well as automations. Open each important result instead of assuming the list tells the whole story.</li>
+            <li><strong>Check the places Home Assistant cannot fully inspect.</strong> Look at manual dashboards, templates, Node-RED, AppDaemon, MQTT rules, voice-assistant exposure, and routines in a vendor app. A text template can contain an entity ID without appearing as a simple picker relationship.</li>
+            <li><strong>Write down the expected behavior.</strong> Include button presses, brightness, units, open and closed states, battery reporting, alerts, and any safety fallback. “It connected” is not the same as “it replaced the old job.”</li>
+          </ol>
+          <p>Do not edit Home Assistant's hidden <code>.storage</code> files to force a new device to look like the old one. Those files are internal data, and a hand-edited device ID can damage more than the one routine you are trying to save.</p>
+
+          <h2 id="safe-workflow">A safe replacement workflow</h2>
+          <ol>
+            <li><strong>Add the new device with temporary names.</strong> If its integration—the connector that brought it into Home Assistant—permits both records at once, names such as “Kitchen lamp new” make it obvious which hardware you are testing. If the old wireless device must be removed first, finish the inventory and backup before that removal.</li>
+            <li><strong>Test the replacement in Home Assistant.</strong> Confirm that commands work, state changes arrive, and the new entity is the same type. A new <code>switch</code> cannot simply take a <code>light</code> ID; the word before the dot is part of the address. Use a supported “Show as” option or update the references instead of forcing a mismatch.</li>
+            <li><strong>Move the replacement into the old area.</strong> Copy relevant labels and group membership. Check that area-targeted actions do not accidentally pick up both old and new devices during the overlap.</li>
+            <li><strong>Choose how to free the old entity ID.</strong> If old history does not matter, you can rename the old entity to a clear temporary ID such as <code>switch.coffee_plug_retired</code>. If history or Energy matters, do not rename it first: after the inventory and new-device test, remove the old entity through its integration so its original ID is free. Home Assistant's current documentation says an entity-ID change requires checking uses in automations and scripts; the visible friendly name alone does not change those references.</li>
+            <li><strong>Give the new entity the exact old ID.</strong> Match the complete domain and name, including underscores. Repeat only for compatible entities that should continue the same logical job. The history path is community guidance, not an official guarantee, so verify it before discarding the backup.</li>
+            <li><strong>Repair direct device references.</strong> Open each related device trigger, condition, or action and select the replacement. If a supported entity, purpose-specific trigger, area, label, group, or small script expresses the household intent better, this is a good time to make that one routine less hardware-dependent.</li>
+            <li><strong>Check scenes and dashboards.</strong> Reusing the entity ID often helps, but a new model may not support the same brightness, color, fan mode, cover position, or other stored attribute. Open, test, and resave important scenes and cards.</li>
+            <li><strong>Test from every control surface.</strong> Run the automations manually, create the real trigger, use the dashboard, try voice control, and test remote access. Restart Home Assistant once before calling the cutover complete.</li>
+            <li><strong>Retire any remaining old record last.</strong> If you used the ordinary rename path, delete or exclude the old device only after Related is clear enough, the new device has survived ordinary use, and a rollback is no longer needed. The history path removes the old entity at the handoff, after the replacement has already been tested.</li>
+          </ol>
+          <p>When the failed item is a Zigbee coordinator, Thread border router, Matter controller, or the Home Assistant host itself, stop here: that is an infrastructure migration, not a one-endpoint swap. Use the matching backup or radio-migration process because renaming one entity cannot preserve an entire network.</p>
+
+          <h2 id="same-model">The same model still counts as a new device</h2>
+          <p>A replacement bulb, sensor, or plug normally arrives with a new radio address, serial number, MAC address, or other hardware identity. Home Assistant therefore creates a new device record even when the box and model number match. The new unit may expose a familiar set of entities, but it does not generally inherit the old device ID.</p>
+          <p>Some integrations or radio tools offer their own replacement operation. A Z-Wave “replace failed node” workflow is a protocol-specific example. Use an integration's current documentation when that option exists, and still verify entities and routines afterward. It is not proof that Home Assistant has a universal replacement button for Wi-Fi, Zigbee, Bluetooth, Matter, HomeKit, and every vendor integration.</p>
+          <p>Replacing one brand with another needs an extra check: make sure the new product exposes the same behavior, not merely the same category. A motion sensor that reports motion but has no illuminance reading cannot take over an automation that also used the old light-level entity.</p>
+
+          <h2 id="history">History and Energy data need a separate decision</h2>
+          <p>Reusing an entity ID can make recorder history and long-term statistics line up, but do not promise yourself a seamless chart. Current community guidance from a Home Assistant maintainer is to delete the old entity, then give the new entity the old entity ID. Renaming the old entity first can move its history to the renamed ID instead. This is not a documented one-click migration, and overlapping old and new histories add uncertainty.</p>
+          <p>Home Assistant's statistics system also cares about the measurement's unit, what the sensor represents, and how its total is calculated. A change from watts to kilowatts—or from one kind of measurement to another—can create a misleading record even when the ID looks right.</p>
+          <ul>
+            <li><strong>Keep the backup.</strong> History repairs are not the time to discover the only copy lived on the Home Assistant drive.</li>
+            <li><strong>Use the same ID only for the same measurement.</strong> A new temperature sensor can continue an old temperature role; a different kind of value should start a new identity.</li>
+            <li><strong>Check Energy separately.</strong> Confirm that the replacement is still selected as an Energy source and that its totals, units, and calculation type are valid before trusting a bill or solar calculation.</li>
+            <li><strong>Avoid overlapping histories when continuity matters.</strong> Test the new sensor first, but follow the delete-old-then-reuse-ID order for the final handoff. If both entities have accumulated statistics, pause and inspect the exact case before combining anything.</li>
+          </ul>
+          <p>If preserving a long historical series matters more than a tidy cutover, pause before deleting anything and use the current recorder and statistics guidance for your exact entities. A working automation and a continuous chart are related goals, but they are not the same migration.</p>
+
+          <h2 id="critical-devices">Be slower with locks, alarms, heating, and leak protection</h2>
+          <p>Prove the workflow on a lamp or ordinary sensor before a lock, garage door, thermostat, smoke or leak alert, alarm input, water valve, or other safety-sensitive device. Keep the physical key, manual switch, thermostat control, shutoff, or alarm path available throughout the swap.</p>
+          <p>For a mains-powered wall switch or hardwired device, follow its electrical instructions and use a qualified electrician where required. Home Assistant should add convenience and visibility; it should not become the only safe way to operate essential equipment.</p>
+          <p>After the cutover, test failure as well as success: disconnect the internet if the path should be local, restart Home Assistant, let a battery device sleep and wake, and confirm that an unavailable state does not make a routine behave dangerously.</p>
+
+          <h2 id="future-proof">Make the next replacement easier</h2>
+          <ul>
+            <li><strong>Use entities for a stable household role.</strong> “Kitchen lamp” can outlive a particular bulb. Home Assistant's developer documentation says it is exploring alternatives to legacy device automations; existing ones still work, but new device automations are no longer accepted from integrations.</li>
+            <li><strong>Use areas when the room is the intent.</strong> “Turn off the downstairs lights” is often more durable than a list of individual serial-numbered devices.</li>
+            <li><strong>Use groups or labels for a changing set.</strong> They are useful when several devices share a role, but test what the target includes after adding or removing a member.</li>
+            <li><strong>Put repeated actions in a script.</strong> Several automations can call one “set evening lights” script, leaving one place to update when the controlled hardware changes.</li>
+            <li><strong>Keep plain documentation.</strong> Record the physical location, integration, entity IDs, critical routines, and manual fallback for important devices.</li>
+          </ul>
+          <p>Tara's guide to <a href="/blog/where-should-smart-home-automations-live/">choosing where automations should live</a> helps keep one clear source of truth instead of duplicating the same routine in Home Assistant and a vendor app. If you are building a system around replaceable roles from the start, the <a href="/home-automation-kit/">local home automation kit</a> is the closest planning path.</p>
+
+          <h2 id="recommendation">Tara's practical recommendation</h2>
+          <p>Keep the old record, make a backup, and discover every use before touching identifiers. Add the replacement under temporary names, prove that it performs the same job, then reuse exact entity IDs where that is technically compatible. Repair each direct device reference instead of trying to transfer a hidden device ID.</p>
+          <p>Put the new device in the same area, test scenes, dashboards, voice, external tools, and real triggers, and delete the old record only after the home behaves normally. That sequence takes a little longer than removing the dead device first, but it preserves the information you need when something does not follow automatically.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-keep-automations">Can I replace a Home Assistant device and keep its automations?</h3>
+          <p>Usually, if those automations refer to the old entity IDs. Give the replacement the same compatible entity IDs after testing it. Automations tied directly to the old device ID will not follow and must be updated.</p>
+
+          <h3 id="faq-friendly-name">Is using the same friendly name enough?</h3>
+          <p>No. A friendly name is the label people see. Automations and dashboards commonly use an entity ID such as <code>light.kitchen_lamp</code>, while some automations use a hidden device ID. Record and check the actual references.</p>
+
+          <h3 id="faq-same-model">Does buying the same model preserve the Home Assistant device ID?</h3>
+          <p>Not generally. A new physical unit normally has a different hardware identity and therefore a new device record. The same model may expose matching entities, but direct device references still need checking unless the integration offers its own replacement procedure.</p>
+
+          <h3 id="faq-history">Will Home Assistant history and Energy data carry over?</h3>
+          <p>They may line up when the replacement reuses the same entity ID and reports compatible units and statistics, but this is not guaranteed. Treat history and Energy as a separate check, keep a backup, and never combine unrelated measurements under one ID.</p>
+
+          <h3 id="faq-delete-first">Should I delete the old Home Assistant device first?</h3>
+          <p>Usually no. Keep its record long enough to note entity IDs and related uses. Add and test the replacement under temporary names where possible, move each reference deliberately, and delete the old device only after the household routines pass.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/blog/2026/08/05/release-20268/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.8: entity IDs, device handling, and deeper Related results</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/07/01/release-20267/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.7: purpose-specific and area-based automations</a></li>
+                <li><a href="https://www.home-assistant.io/docs/configuration/customizing-devices" target="_blank" rel="noopener noreferrer">Home Assistant: change entity IDs and friendly names</a></li>
+                <li><a href="https://www.home-assistant.io/docs/automation/trigger/" target="_blank" rel="noopener noreferrer">Home Assistant: entity, state, and device triggers</a></li>
+                <li><a href="https://www.home-assistant.io/docs/scripts/perform-actions/" target="_blank" rel="noopener noreferrer">Home Assistant: action targets for entities, devices, areas, floors, and labels</a></li>
+                <li><a href="https://www.home-assistant.io/docs/organizing/" target="_blank" rel="noopener noreferrer">Home Assistant: areas, floors, labels, categories, and groups</a></li>
+                <li><a href="https://www.home-assistant.io/common-tasks/general/#backups" target="_blank" rel="noopener noreferrer">Home Assistant: create and store a manual backup</a></li>
+                <li><a href="https://developers.home-assistant.io/docs/device_automation_index/" target="_blank" rel="noopener noreferrer">Home Assistant developer documentation: direction of device automations</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://community.home-assistant.io/t/easy-way-to-swap-like-device-for-like-device/1010144" target="_blank" rel="noopener noreferrer">Home Assistant Community: same-model replacement and entity-versus-device references</a></li>
+                <li><a href="https://community.home-assistant.io/t/abstraction-layer/1010826" target="_blank" rel="noopener noreferrer">Home Assistant Community: replacement, dashboards, and history continuity</a></li>
+                <li><a href="https://community.home-assistant.io/t/automatically-update-automations-scripts-when-using-show-as-switch-to-light/1012818" target="_blank" rel="noopener noreferrer">Home Assistant Community: why reference changes are not a global refactor</a></li>
+                <li><a href="https://github.com/home-assistant/frontend/issues/19694" target="_blank" rel="noopener noreferrer">Home Assistant frontend issue: deleted direct-device references in the automation editor</a></li>
+                <li><a href="https://github.com/orgs/home-assistant/discussions/80" target="_blank" rel="noopener noreferrer">Home Assistant GitHub discussion: replacement history and statistics caveats</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1ro43os/im_a_bit_baffled_that_theres_no_way_to_convert/" target="_blank" rel="noopener noreferrer">r/homeassistant: repairing many device-ID automation references</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Replace the right layer</h2>
+          <div class="links">
+            <a href="/blog/home-assistant-device-triggers-missing/">Understand current trigger choices</a>
+            <a href="/blog/home-assistant-zigbee-coordinator-migration/">Move a Zigbee coordinator instead</a>
+            <a href="/blog/move-home-assistant-to-new-hardware/">Move the Home Assistant host</a>
+            <a href="/blog/home-assistant-backup-restore-matter-devices-without-repairing/">Restore a Matter controller safely</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan a maintainable home</p>
+          <h2>Want device swaps to stay ordinary?</h2>
+          <p>Tara can help map stable roles, local connections, areas, backups, and manual fallbacks before the next bulb, sensor, or switch needs replacing.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
