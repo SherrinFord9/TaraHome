@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Do You Need a Reolink NVR With Home Assistant?</title>
+    <meta name="description" content="Most powered Reolink cameras connect directly to Home Assistant. Learn when microSD, Home Hub, Reolink NVR, Frigate, or a hybrid is the better fit." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/do-you-need-reolink-nvr-home-assistant/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/do-you-need-reolink-nvr-home-assistant/" />
+    <meta property="og:title" content="Do You Need a Reolink NVR With Home Assistant?" />
+    <meta property="og:description" content="Most powered Reolink cameras connect directly to Home Assistant. Learn when microSD, Home Hub, Reolink NVR, Frigate, or a hybrid is the better fit." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-reolink-nvr-home-assistant/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Do You Need a Reolink NVR With Home Assistant?" />
+    <meta name="twitter:description" content="Most powered Reolink cameras connect directly to Home Assistant. Learn when microSD, Home Hub, Reolink NVR, Frigate, or a hybrid is the better fit." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/do-you-need-reolink-nvr-home-assistant/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body code { background: rgba(65, 168, 103, 0.12); border: 1px solid rgba(65, 168, 103, 0.22); border-radius: 6px; padding: 1px 5px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 820px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://tarahome.ai/#organization",
+          "name": "Tara Home",
+          "url": "https://tarahome.ai/",
+          "logo": "https://tarahome.ai/assets/logo/logo.png"
+        },
+        {
+          "@type": "BlogPosting",
+          "@id": "https://tarahome.ai/blog/do-you-need-reolink-nvr-home-assistant/#blogposting",
+          "headline": "Do You Need a Reolink NVR With Home Assistant?",
+          "description": "Most powered Reolink cameras connect directly to Home Assistant. Learn when microSD, Home Hub, Reolink NVR, Frigate, or a hybrid is the better fit.",
+          "image": "https://tarahome.ai/assets/generated/blog/do-you-need-reolink-nvr-home-assistant/cover.png",
+          "datePublished": "2026-08-18",
+          "dateModified": "2026-08-18",
+          "author": { "@id": "https://tarahome.ai/#organization" },
+          "publisher": { "@id": "https://tarahome.ai/#organization" },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://tarahome.ai/blog/do-you-need-reolink-nvr-home-assistant/"
+          },
+          "citation": [
+            "https://www.home-assistant.io/integrations/reolink/",
+            "https://www.home-assistant.io/blog/2026/06/03/release-20266/",
+            "https://www.home-assistant.io/blog/2025/04/17/reolink-joins-works-with-home-assistant",
+            "https://support.reolink.com/articles/44904170792345-Reolink-Home-Assistant-Integration/",
+            "https://support.reolink.com/articles/35874271312665-Understanding-the-Differences-Between-Reolink-Add-On-Cameras-and-Standalone-Cameras/",
+            "https://support.reolink.com/articles/900000617826-Which-Reolink-Products-Support-CGI-RTSP-ONVIF/",
+            "https://reolink.com/blog/reolink-home-hub-vs-nvr/",
+            "https://support.reolink.com/articles/900000537406-How-to-Connect-PoE-Switch-Router-and-Reolink-NVRs/",
+            "https://support.reolink.com/articles/900000628746-Do-Reolink-Cameras-Support-Apple-Homekit/",
+            "https://www.home-assistant.io/integrations/homekit/",
+            "https://docs.frigate.video/configuration/camera_specific/",
+            "https://docs.frigate.video/configuration/record/",
+            "https://github.com/home-assistant/core/pull/171836",
+            "https://community.home-assistant.io/t/reolink-devices-poe-and-nvr/929268",
+            "https://www.reddit.com/r/homeassistant/comments/1hmsxpl/",
+            "https://www.reddit.com/r/homeassistant/comments/1groeg2/"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://tarahome.ai/blog/do-you-need-reolink-nvr-home-assistant/#breadcrumb",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tarahome.ai/" },
+            { "@type": "ListItem", "position": 2, "name": "Library", "item": "https://tarahome.ai/blog/" },
+            { "@type": "ListItem", "position": 3, "name": "Do you need a Reolink NVR with Home Assistant?", "item": "https://tarahome.ai/blog/do-you-need-reolink-nvr-home-assistant/" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://tarahome.ai/blog/do-you-need-reolink-nvr-home-assistant/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do Reolink cameras need a Reolink NVR for Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Most supported standalone Reolink PoE and plug-in Wi-Fi cameras can connect directly to the official Home Assistant Reolink integration. A compatible NVR or Home Hub is required for certain no-UID kit cameras and remains the preferred bridge for battery cameras." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can Home Assistant replace a Reolink NVR?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Not by itself. Home Assistant can show live views, use camera detections in automations, and browse recordings already stored by a supported camera, NVR, or Home Hub. Use camera microSD, a Reolink recorder, Frigate, or another purpose-built recorder for dependable video retention." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can a Reolink battery camera connect directly to Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant 2026.6 added direct support for some Reolink battery cameras, but not every model or feature is supported. Home Assistant still calls a Reolink Home Hub or compatible NVR the preferred method, especially when battery life and full feature support matter." }
+            },
+            {
+              "@type": "Question",
+              "name": "Which Reolink cameras need an NVR or Home Hub?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Home Assistant's current bridge-only list includes the B400, B500, B500W, B800, B800W, B1200, D400, D500, D800, D1200, and E1 because they lack the required direct web API. Reolink LTE camera models are listed as incompatible with the integration." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is a Reolink NVR or Frigate better with Home Assistant?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A Reolink NVR is the simpler supported choice for a Reolink-heavy PoE system and continuous recording. Frigate is more flexible for mixed camera brands, custom retention, and additional local video analysis, but it requires compatible streams, suitable hardware, storage planning, and more maintenance." }
+            },
+            {
+              "@type": "Question",
+              "name": "Do Reolink cameras support Matter or Apple Home?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The official Reolink connection to Home Assistant is a local Reolink integration, not Matter. Reolink's current support page says its cameras do not natively support Apple HomeKit. Home Assistant can expose a camera entity to Apple Home through HomeKit Bridge, but HomeKit Secure Video recording is not supported." }
+            }
+          ]
+        }
+      ]
+    }</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article">
+      <article>
+        <header class="hero article-hero">
+          <div>
+            <p class="article-meta"><span>Reolink cameras and recording</span><span>August 18, 2026</span><span>13 min read</span></p>
+            <h1>Do You Need a Reolink NVR With Home Assistant?</h1>
+            <p class="lede">Usually, no. An NVR—a network video recorder—is a box that saves camera footage. Most supported standalone Reolink wired and plug-in Wi-Fi cameras can connect directly to Home Assistant. Buy a recorder for dependable footage, more storage, or a camera that needs a bridge—not merely to make a compatible camera appear.</p>
+          </div>
+          <figure class="article-cover">
+            <img src="/assets/generated/blog/do-you-need-reolink-nvr-home-assistant/cover.png" alt="Reolink Duo 3 PoE camera above an RLN8-410 NVR and Reolink Home Hub in a warm utility nook" loading="eager" />
+          </figure>
+        </header>
+
+        <div class="article-body">
+          <aside class="tldr" aria-labelledby="tldr-title">
+            <p class="tldr-label" id="tldr-title">TLDR</p>
+            <ul>
+              <li>For one to four supported cameras that stay powered, connect them directly and record to surveillance-rated microSD cards; you do not need a Reolink recorder just for Home Assistant controls or alerts.</li>
+              <li>Choose a Home Hub for a smaller or battery-heavy Reolink setup, or an RLN8-410, RLN16-410, or RLN36 for a larger wired system and longer continuous recording.</li>
+              <li>Do not treat Home Assistant's own storage as an always-on video recorder, and do not open camera or recorder access directly to the internet.</li>
+              <li>Main caveat: some kit-only cameras require a Hub or NVR, direct battery support is still incomplete, and Reolink LTE models do not work with the official integration.</li>
+            </ul>
+          </aside>
+
+          <h2 id="short-answer">No, not for most powered Reolink cameras</h2>
+          <p>A supported standalone Reolink camera can be both the camera and the Home Assistant connection point. First set it up and update it with the Reolink app or computer client, give it a unique device password, then add the official Reolink integration using the camera's address on your home network. Home Assistant will create the controls and detection signals—such as motion, person, vehicle, pet, or doorbell press—that the exact model provides.</p>
+          <p>The recorder is a separate decision. Home Assistant can show live video, send a notification when the camera detects someone, control settings, and browse recordings already stored on a supported microSD card, Reolink NVR, or Home Hub. That does not turn Home Assistant into an appliance designed to record several camera streams every hour of every day.</p>
+          <p>PoE means <strong>Power over Ethernet</strong>: one network cable carries both data and electrical power to a wired camera. A plug-in Wi-Fi camera uses Wi-Fi for data but still plugs into power. Both types can often connect directly; battery and kit-only cameras need closer checking.</p>
+          <div class="callout">
+            <p><strong>Plain-English rule:</strong> Home Assistant decides what should happen; the camera or a dedicated recorder keeps the evidence. A recorder can be useful even when it is not required for integration.</p>
+          </div>
+
+          <h2 id="quick-choice">Choose the recording path by the job</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Home and goal</th>
+                  <th>Best starting path</th>
+                  <th>Why</th>
+                  <th>Main compromise</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>One to four powered standalone cameras</strong></td>
+                  <td>Direct to Home Assistant, recording to a camera-rated microSD card</td>
+                  <td>Lowest cost and fewest boxes; supported cameras remain individually reachable.</td>
+                  <td>The card is outside with the camera, has finite write life, and offers less retention than a central disk.</td>
+                </tr>
+                <tr>
+                  <td><strong>Mostly battery cameras or a small wireless system</strong></td>
+                  <td>Reolink Home Hub; consider Home Hub Pro when more capacity is needed</td>
+                  <td>The bridge provides the fuller supported battery path and keeps recordings indoors.</td>
+                  <td>It stays within the Reolink ecosystem and model compatibility still needs checking.</td>
+                </tr>
+                <tr>
+                  <td><strong>Several PoE cameras with continuous recording</strong></td>
+                  <td>Current RLN8-410, RLN16-410, or RLN36</td>
+                  <td>A dedicated appliance, central HDD storage, direct monitor output, and a simpler Reolink support path.</td>
+                  <td>Less flexible than a self-built recorder; hardware version and channel limits matter.</td>
+                </tr>
+                <tr>
+                  <td><strong>Mixed brands or custom local video analysis</strong></td>
+                  <td>Frigate on suitable separate hardware</td>
+                  <td>Flexible recording, retention, review, restreaming, and additional local detection across compatible streams.</td>
+                  <td>More setup, compute, storage, stream tuning, updates, and troubleshooting.</td>
+                </tr>
+                <tr>
+                  <td><strong>You want appliance recording and flexible automations</strong></td>
+                  <td>Hybrid: Reolink NVR records; Home Assistant integrates the NVR or reachable cameras</td>
+                  <td>The recorder keeps doing one job during Home Assistant maintenance while automations retain rich camera events.</td>
+                  <td>Too many simultaneous consumers can overload a camera; design the stream paths deliberately.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="model-check">Check the exact camera before buying</h2>
+          <p>“Reolink works with Home Assistant” is not a promise that every Reolink model works in the same way. The official integration maintains separate lists for direct cameras, battery cameras, bridge-only cameras, and incompatible cameras. Check that page again before ordering because firmware and support continue to change.</p>
+
+          <h3 id="powered-models">Powered standalone cameras</h3>
+          <p>Current tested direct examples include the CX410, CX810, RLC-810A, RLC-820A, RLC-823S2, TrackMix PoE, Reolink Video Doorbell PoE and Wi-Fi models, and Duo 3 PoE. Reolink's Duo 3 PoE page lists microSD, NVR, and FTP recording, so an NVR is a capacity choice rather than a direct-integration requirement. Duo 3 PoE is also among Reolink's certified Works with Home Assistant devices.</p>
+          <p>Do not use a model-family name alone. Reolink reuses names across power types and generations, while the same NVR name can cover several hardware revisions. Confirm the complete model, power method, hardware version, firmware, microSD support, and the current Home Assistant tested list.</p>
+
+          <h3 id="battery-models">Battery cameras changed in Home Assistant 2026.6</h3>
+          <p>Home Assistant 2026.6 added a direct connection for some Reolink battery cameras. The release notes and the merged implementation both call this support early: not every model or feature works, and a battery camera cannot be connected directly and through a Hub/NVR at the same time. Home Assistant still says the Home Hub or compatible NVR is the preferred route.</p>
+          <p>That preference matters in a real home. A bridge can provide the fuller feature set and manage wake-ups more carefully. Repeated live viewing keeps a battery camera awake, so do not leave its stream open on an always-on wall dashboard. Current bridge-tested examples include Argus 3 Pro, Argus 4 Pro, Argus Eco Ultra, Argus PT, Argus Track, Reolink Altas, Altas PT Ultra, and Reolink Doorbell Battery.</p>
+
+          <h3 id="bridge-only">Kit-only and incompatible models</h3>
+          <p>Home Assistant's current bridge-only list is B400, B500, B500W, B800, B800W, B1200, D400, D500, D800, D1200, and the base E1. These cameras lack the local web API needed for a direct connection; most of the B and D models are sold as NVR kits. Reolink also explains that add-on kit cameras may have no UID, no microSD slot, and no standalone RTSP or ONVIF path.</p>
+          <p>Reolink Go and TrackMix LTE variants are on the official incompatible list. A Home Hub or NVR does not turn an LTE camera into a supported Home Assistant camera. If Home Assistant is a requirement, choose a model that is explicitly on the current direct or bridged support list.</p>
+
+          <h2 id="support-table">What each current path actually supports</h2>
+          <div class="comparison-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Current example</th>
+                  <th>Official Home Assistant support</th>
+                  <th>Local control and cloud dependency</th>
+                  <th>Matter and Apple Home path</th>
+                  <th>Community caveat</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Duo 3 PoE, CX410, RLC-810A</strong><br />Powered standalone cameras</td>
+                  <td>Tested direct connection through the built-in Reolink integration; available entities depend on the model.</td>
+                  <td>The integration uses the camera's local device account. Home Assistant says it and the Reolink app/client can keep working locally when camera internet access is blocked; a Reolink cloud account or subscription is not required for the integration.</td>
+                  <td>This is a Reolink local integration, not Matter. Reolink says its cameras do not natively support Apple HomeKit. Home Assistant HomeKit Bridge can expose a camera live view, but not HomeKit Secure Video recording.</td>
+                  <td>High-resolution H.265 streams do not play in every browser. Start with the lower H.264 fluent stream and read Tara's <a href="/blog/home-assistant-camera-feed-delay-rtsp-webrtc/">camera delay and stream guide</a> before adding extra stream consumers.</td>
+                </tr>
+                <tr>
+                  <td><strong>Argus 4 Pro, Argus Track, Doorbell Battery</strong><br />Battery cameras</td>
+                  <td>Some direct support arrived in 2026.6, but the official preferred path remains a compatible Home Hub or NVR for broader features and battery handling.</td>
+                  <td>Home Assistant's Reolink path remains local. Remote phone access, optional vendor services, and firmware retrieval are separate concerns.</td>
+                  <td>No Matter route is used. There is no native Reolink Apple HomeKit support; Home Assistant can bridge a supported camera entity to Apple live view without Secure Video recording.</td>
+                  <td>Direct support is incomplete, a camera cannot use direct and Hub/NVR paths at once, and frequent live viewing drains the battery.</td>
+                </tr>
+                <tr>
+                  <td><strong>B800, D800, B1200, base E1</strong><br />Bridge-only examples</td>
+                  <td>Home Assistant requires the camera to arrive through a compatible Reolink NVR or Home Hub.</td>
+                  <td>The NVR/Hub can provide local integration and indoor storage without requiring a cloud subscription for Home Assistant.</td>
+                  <td>The recorder does not convert the camera to Matter or native HomeKit. Home Assistant's optional Apple bridge has the same live-view and no-Secure-Video boundary.</td>
+                  <td>No-UID add-on cameras do not gain a standalone API merely because the recorder is on the LAN. Buy the complete supported system rather than expecting to separate a kit camera later.</td>
+                </tr>
+                <tr>
+                  <td><strong>Frigate with compatible Reolink streams</strong></td>
+                  <td>Frigate is separate software with its own Home Assistant integration, not the built-in Reolink integration or a Reolink-supported recorder.</td>
+                  <td>It can record and analyze locally on hardware and storage you operate. Optional remote access or outside AI services depend on the features you choose.</td>
+                  <td>Frigate is not a Matter camera path. Apple viewing requires a separate HomeKit route; it should not be confused with HomeKit Secure Video.</td>
+                  <td>Frigate's current documentation gives Reolink-specific stream advice because model behavior varies. Hardware acceleration, H.264/H.265 playback, storage, and stream stability need planning.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Tara's <a href="/blog/can-home-assistant-use-homekit-secure-video/">HomeKit Secure Video guide</a> explains the Apple recording boundary in detail. A live Reolink camera in Apple Home and Apple-managed encrypted Secure Video history are different features.</p>
+
+          <h2 id="recording-options">The four practical recording choices</h2>
+
+          <h3 id="microsd">1. Camera microSD: simplest for a few powered cameras</h3>
+          <p>A high-endurance microSD card is a reasonable start when the camera supports it, the system is small, and motion-based history is enough. It keeps recording independent of the Home Assistant host and avoids another appliance. The official Reolink integration can browse compatible stored clips through Home Assistant's Media section, although Home Assistant currently limits that view to recordings up to one month old.</p>
+          <p>The tradeoff is physical and operational. If the camera is stolen or damaged, the card may go with it. Cards wear out, so choose a surveillance-rated high-endurance model, enable storage warnings where available, and test playback—not merely the live view—on a schedule.</p>
+
+          <h3 id="home-hub">2. Reolink Home Hub: smaller and battery-focused</h3>
+          <p>The base Reolink Home Hub is a compact indoor bridge for up to eight compatible cameras and uses two microSD slots for up to 2TB total according to Reolink's current page. It is the natural starting point when most cameras are battery-powered or Wi-Fi and you want recordings indoors without a full PoE NVR.</p>
+          <p>Home Hub Pro is the middle option: Reolink currently lists a built-in 2TB hard drive expandable to 16TB and up to 24 cameras. It suits a battery-heavy system that has outgrown the base Hub. Capacity claims are not a substitute for a compatibility check; verify the exact camera, firmware, recording mode, and expected retention.</p>
+
+          <h3 id="reolink-nvr">3. Reolink NVR: appliance recording for a PoE-heavy home</h3>
+          <p>A current RLN8-410 is the straightforward choice for a modest Reolink PoE system. Reolink's current N7MB01 page lists eight PoE ports, continuous local recording, storage expansion up to 16TB, and up to 12 cameras under its stated mix of powered and battery devices. RLN16-410 adds more ports, while RLN36 is intended for larger systems and uses external PoE switching.</p>
+          <p>Check the hardware version, not just “RLN8” or “RLN16.” Home Assistant's own compatibility list excludes older hardware revisions from some battery-camera paths because their firmware stopped receiving updates. A used recorder with the right name can still be the wrong revision.</p>
+
+          <h3 id="frigate">4. Frigate: flexible local recorder for people who want to operate it</h3>
+          <p>Frigate is useful when you want one local recorder for several camera brands, custom retention, review tools, restreaming, or additional local object analysis. Its current documentation includes specific Reolink guidance because stream behavior varies by resolution and generation; newer high-resolution models may use enhanced HTTP-FLV or RTSP, while older RLC-8xx models generally use RTSP.</p>
+          <p>This path needs deliberate hardware and maintenance. Plan video decoding, detection hardware, disk endurance and capacity, backups of the configuration, and how updates will be tested. Frigate records camera streams without re-encoding when configured appropriately and can retain continuous, motion, alert, and detection footage for different periods. It is powerful, but it is not a checkbox inside Home Assistant.</p>
+
+          <h2 id="hybrid">A hybrid is often the calmest design</h2>
+          <p>For a Reolink-heavy home, the low-drama architecture is often: let a Reolink NVR record continuously, let the official Reolink integration provide camera events and controls, and let Home Assistant run notifications and household automations. A Home Assistant restart then does not interrupt the recorder's main job.</p>
+          <p>If you want powered standalone cameras to remain directly reachable as well as recorded by the NVR, Reolink documents placing the cameras on a normal PoE switch connected to the router, then adding them to the NVR over the same LAN. Cameras plugged into the NVR's private PoE ports normally sit behind the NVR instead. Current compatible NVRs also have a firmware-dependent HyBridge mode, but it changes network topology and camera addresses, so it is not a casual switch to flip on an established system.</p>
+          <p>Avoid collecting every possible stream path. The official Home Assistant documentation warns that a camera has a limited number of simultaneous connections; Home Assistant, Frigate, ONVIF, Scrypted, and a vendor client can compete until the camera briefly drops connections. Use one restreamer where practical, favor the lower-resolution feed for dashboards and detection, and reserve the main stream for recording.</p>
+
+          <h2 id="setup">A safe setup order</h2>
+          <ol>
+            <li><strong>Confirm the exact model and hardware version.</strong> Check the current Home Assistant direct, battery, bridge-only, and incompatible lists before opening the box.</li>
+            <li><strong>Choose recording before cabling.</strong> Decide whether footage lives on microSD, Home Hub, Reolink NVR, Frigate, or two independent places. Estimate retention from camera count, resolution, frame rate, and continuous versus event recording.</li>
+            <li><strong>Put powered PoE cameras on the right network path.</strong> Use a normal PoE switch when individual LAN access matters. Use the NVR's PoE ports when the appliance-managed private camera network is the desired design.</li>
+            <li><strong>Initialize and update each Reolink device.</strong> Set a unique local device password. Reolink auto-update does not always show the newest firmware, so compare the installed version with the official download center.</li>
+            <li><strong>Add one supported endpoint to Home Assistant.</strong> Use the camera's address for a direct setup or the NVR/Hub address for bridged channels. Test live view, a real detection event, a notification, and playback.</li>
+            <li><strong>Test failure cases.</strong> Restart Home Assistant, disconnect the internet while leaving the LAN running, and verify that the recorder still captures footage. Then check remote access separately.</li>
+            <li><strong>Expand only after the first camera is boring.</strong> Stable playback and useful alerts matter more than adding every stream and sensor at once.</li>
+          </ol>
+
+          <h2 id="security">Keep the camera system local without locking yourself out</h2>
+          <ul>
+            <li><strong>Do not port-forward RTSP, ONVIF, HTTP, or NVR administration pages.</strong> Use a trusted VPN or a properly secured remote Home Assistant path when you need access away from home.</li>
+            <li><strong>Give cameras and recorders unique passwords.</strong> Home Assistant uses the local Reolink device account, not a Reolink cloud login. Store credentials in a password manager.</li>
+            <li><strong>Separate remote access from local operation.</strong> Test the camera, Home Assistant integration, and recorder with internet access blocked before assuming the whole path is local.</li>
+            <li><strong>Protect the recorder and its power.</strong> Put the NVR, Hub, or Frigate disk somewhere less accessible than the cameras. A small UPS can help it finish writes cleanly during a short outage.</li>
+            <li><strong>Review who can see cameras.</strong> Camera dashboards, notifications, Apple Home exposure, vendor accounts, and remote users can each have different permissions.</li>
+            <li><strong>Respect household and local privacy rules.</strong> Aim cameras away from private neighboring areas, disable audio where it is not lawful or wanted, and agree on indoor-camera behavior with everyone who lives there.</li>
+          </ul>
+
+          <h2 id="recommendation">Tara's practical recommendation</h2>
+          <p>For a small home with supported powered Reolink cameras, begin without a Reolink NVR. Use a normal PoE switch or reliable Wi-Fi, put a high-endurance microSD card in each camera, connect the cameras directly to Home Assistant, and prove that alerts and playback are genuinely useful. Add central recording when the consequences of losing a card or a camera justify it.</p>
+          <p>For a battery-heavy setup, use a current compatible Home Hub unless you have a specific reason to accept the limits of direct battery support. For several PoE cameras and continuous history, use a current Reolink NVR or a carefully planned Frigate host. Choose Frigate for flexibility, not because Home Assistant needs it.</p>
+          <p>For a larger home where camera placement, cable routes, retention, and privacy need to be designed together, Tara's <a href="/camera-kit/">local camera kit planning path</a> is the closest commercial owner for the full system. The broader <a href="/guides/no-subscription-smart-home-camera-setup/">no-subscription camera guide</a> explains the layers without tying the decision to one brand.</p>
+
+          <h2 id="faq">Frequently asked questions</h2>
+
+          <h3 id="faq-need-nvr">Do Reolink cameras need a Reolink NVR for Home Assistant?</h3>
+          <p>No. Most supported standalone Reolink PoE and plug-in Wi-Fi cameras connect directly to the official integration. Certain no-UID kit cameras need a compatible NVR or Home Hub, and a bridge remains the preferred route for battery cameras.</p>
+
+          <h3 id="faq-ha-nvr">Can Home Assistant replace a Reolink NVR?</h3>
+          <p>Not by itself. Home Assistant can show cameras, react to detections, and browse compatible recordings already stored elsewhere. Use microSD, a Reolink recorder, Frigate, or another dedicated recorder for dependable retention.</p>
+
+          <h3 id="faq-battery">Can a Reolink battery camera connect directly to Home Assistant?</h3>
+          <p>Some can as of Home Assistant 2026.6, but model and feature support remain incomplete. Home Assistant still calls a Home Hub or compatible NVR the preferred method, and the camera cannot be connected directly and through the bridge at the same time.</p>
+
+          <h3 id="faq-models">Which Reolink cameras need a Hub or NVR?</h3>
+          <p>Home Assistant's current bridge-only list includes B400, B500, B500W, B800, B800W, B1200, D400, D500, D800, D1200, and the base E1. Reolink LTE cameras are listed as incompatible. Always recheck the official page for the exact model and hardware revision.</p>
+
+          <h3 id="faq-frigate">Is a Reolink NVR or Frigate better with Home Assistant?</h3>
+          <p>A Reolink NVR is simpler for a Reolink-heavy PoE system and continuous appliance recording. Frigate is more flexible for mixed brands and custom local video analysis, but it brings more hardware, storage, stream tuning, and maintenance work.</p>
+
+          <h3 id="faq-apple">Do Reolink cameras support Matter or Apple Home?</h3>
+          <p>The official Home Assistant path is a local Reolink integration, not Matter. Reolink's current support page says its cameras do not natively support Apple HomeKit. Home Assistant can expose a camera entity to Apple Home through HomeKit Bridge, but HomeKit Secure Video recording is not supported.</p>
+        </div>
+
+        <section class="block source-list">
+          <p class="kicker">Sources</p>
+          <h2>Documentation and further reading</h2>
+          <div class="source-grid">
+            <div>
+              <h3>Official platform documentation</h3>
+              <ul>
+                <li><a href="https://www.home-assistant.io/integrations/reolink/" target="_blank" rel="noopener noreferrer">Home Assistant: Reolink integration, models, entities, and limitations</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2026/06/03/release-20266/" target="_blank" rel="noopener noreferrer">Home Assistant 2026.6: initial direct Reolink battery-camera support</a></li>
+                <li><a href="https://www.home-assistant.io/blog/2025/04/17/reolink-joins-works-with-home-assistant" target="_blank" rel="noopener noreferrer">Home Assistant: Reolink joins Works with Home Assistant</a></li>
+                <li><a href="https://github.com/home-assistant/core/pull/171836" target="_blank" rel="noopener noreferrer">Home Assistant Core: direct battery-camera implementation and caveats</a></li>
+                <li><a href="https://www.home-assistant.io/integrations/homekit/" target="_blank" rel="noopener noreferrer">Home Assistant: HomeKit Bridge camera support and Secure Video limit</a></li>
+                <li><a href="https://docs.frigate.video/configuration/camera_specific/" target="_blank" rel="noopener noreferrer">Frigate: current Reolink camera stream guidance</a></li>
+                <li><a href="https://docs.frigate.video/configuration/record/" target="_blank" rel="noopener noreferrer">Frigate: recording and retention behavior</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Product documentation</h3>
+              <ul>
+                <li><a href="https://support.reolink.com/articles/44904170792345-Reolink-Home-Assistant-Integration/" target="_blank" rel="noopener noreferrer">Reolink: Home Assistant setup and current support table</a></li>
+                <li><a href="https://support.reolink.com/articles/35874271312665-Understanding-the-Differences-Between-Reolink-Add-On-Cameras-and-Standalone-Cameras/" target="_blank" rel="noopener noreferrer">Reolink: add-on cameras versus standalone cameras</a></li>
+                <li><a href="https://support.reolink.com/articles/900000617826-Which-Reolink-Products-Support-CGI-RTSP-ONVIF/" target="_blank" rel="noopener noreferrer">Reolink: CGI, RTSP, and ONVIF support by camera type</a></li>
+                <li><a href="https://reolink.com/blog/reolink-home-hub-vs-nvr/" target="_blank" rel="noopener noreferrer">Reolink: Home Hub, Home Hub Pro, and NVR comparison</a></li>
+                <li><a href="https://reolink.com/product/rln8-410/" target="_blank" rel="noopener noreferrer">Reolink RLN8-410: current hardware and storage specifications</a></li>
+                <li><a href="https://support.reolink.com/articles/900000537406-How-to-Connect-PoE-Switch-Router-and-Reolink-NVRs/" target="_blank" rel="noopener noreferrer">Reolink: connecting cameras, a PoE switch, router, and NVR</a></li>
+                <li><a href="https://support.reolink.com/articles/37372221001625-Introduction-to-Reolink-NVR-HyBridge-Mode/" target="_blank" rel="noopener noreferrer">Reolink: HyBridge compatibility and network changes</a></li>
+                <li><a href="https://support.reolink.com/articles/900000628746-Do-Reolink-Cameras-Support-Apple-Homekit/" target="_blank" rel="noopener noreferrer">Reolink: current Apple HomeKit support statement</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Community discussions and caveats</h3>
+              <ul>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1hmsxpl/" target="_blank" rel="noopener noreferrer">r/homeassistant: using individual Reolink PoE cameras without an NVR</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1groeg2/" target="_blank" rel="noopener noreferrer">r/homeassistant: direct cameras, a Reolink NVR, and long-term recording</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1poec9l/" target="_blank" rel="noopener noreferrer">r/homeassistant: microSD, Reolink NVR, and Frigate tradeoffs</a></li>
+                <li><a href="https://www.reddit.com/r/homeassistant/comments/1uref8k/" target="_blank" rel="noopener noreferrer">r/homeassistant: a 2026 hybrid Reolink and local-recorder discussion</a></li>
+                <li><a href="https://community.home-assistant.io/t/reolink-devices-poe-and-nvr/929268" target="_blank" rel="noopener noreferrer">Home Assistant Community: Reolink PoE, NVR, and direct integration choices</a></li>
+                <li><a href="https://community.home-assistant.io/t/support-for-reolink-battery-devices-as-of-2026-6/1012766/10" target="_blank" rel="noopener noreferrer">Home Assistant Community: early direct battery-camera behavior in 2026.6</a></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="block related">
+          <p class="kicker">Related reading</p>
+          <h2>Build the camera path deliberately</h2>
+          <div class="links">
+            <a href="/guides/no-subscription-smart-home-camera-setup/">Plan a no-subscription camera stack</a>
+            <a href="/blog/home-assistant-camera-feed-delay-rtsp-webrtc/">Fix camera delay and stream choices</a>
+            <a href="/blog/best-doorbell-camera-home-assistant-2026/">Compare current doorbell cameras</a>
+            <a href="/blog/can-home-assistant-use-homekit-secure-video/">Understand the Apple camera boundary</a>
+          </div>
+        </section>
+
+        <section class="block article-cta">
+          <p class="kicker">Plan the whole camera system</p>
+          <h2>Want local recording without buying the wrong recorder?</h2>
+          <p>Tara can map camera models, cable routes, storage, retention, privacy, alerts, and Home Assistant control before hardware is ordered.</p>
+          <a class="cta" href="/configurator/">Plan your smart home</a>
+        </section>
+      </article>
+    </main>
+
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
