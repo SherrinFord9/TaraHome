@@ -1,0 +1,55 @@
+{
+  "slug": "home-assistant-washing-machine-finished-notification",
+  "action": "new",
+  "publicationDate": "2026-09-08",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant notify me when my washing machine finishes without mistaking a pause or an idle machine for a completed load?",
+  "directAnswer": "Prefer the washer\u2019s verified completion status when its integration exposes one. Otherwise use one washer\u2019s live power reading, remember a sustained start with a Toggle helper, and send one check-the-washer message after a quiet period longer than the observed pauses. The numerical settings are illustrative, power cannot prove a successful cycle, and interruptions can cause missed messages. First test the exact phone action, then record and validate the washer\u2019s real programs.",
+  "originalContribution": "The #worked-example table follows six illustrative idle, start, pause, resumed-running, finish and continued-idle observations through the rule. It explains why a three-minute pause should not satisfy a five-minute finish hold and how to choose thresholds from the reader\u2019s observations. Step 4 supplies a complete five-trigger, three-branch YAML automation with a visible running flag, reset handling and a single notification; #troubleshooting maps six symptoms to specific checks and changes. The procedure also defines when this simple method should be abandoned for actual cycle status or separate measurement.",
+  "limitations": "Documentation research, not a hands-on product test or expert review. The embedded YAML was parsed with PyYAML and reviewed against current trigger, helper, action and mode documentation; it was not executed in a Home Assistant runtime or on a physical washer. All worked power readings are explicitly fictional teaching data. Thresholds need per-program validation. Long pauses, cancelled cycles, silently frozen readings and shared appliance meters can defeat inference. Startup or unavailable/unknown readings clear the running flag; restarts/reloads reset holds and may miss an alert. Model-specific completion states must be verified, Miele and LG ThinQ use cloud connections, and ordinary phone push has a separate delivery dependency.",
+  "proofreadFixes": "Final automated proofreading found that readers could update the finishing trigger while overlooking the matching finishing condition, so step 4 now explicitly says to change both copies of below: 5. Expanded the research-method note to distinguish a successful YAML parse from Home Assistant execution and hardware testing. The external-link check found a missing Choose-section fragment, so both visible links and the JSON-LD citation now use the working script documentation URL. The initial static-link audit could not see the homepage About anchor; browser navigation through By Tara Home confirmed that #about exists after homepage rendering, so no unrelated homepage edit was needed. Re-read the four TLDR decisions, first answer, calibration steps, table and failure cases after these fixes: PASS. No human or expert proofreading is claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Numeric state triggers fire on threshold entry rather than repeatedly while remaining inside a range; they compare raw units, and a for hold resets on restart or automation reload.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/numeric_state/"
+    },
+    {
+      "claim": "Toggle helpers are input_boolean entities with turn_on/turn_off actions and normally restore their prior state unless an initial value is set; the example therefore explicitly clears its flag at startup.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Multiple triggers can carry shared IDs, and a homeassistant start trigger can select the reset action branch.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "Choose runs the matching condition/action sequence, supporting distinct started, finished and reset branches.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "Queued automation mode runs admitted executions in order.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Miele documentation provides a program_ended state-trigger example and identifies its integration as Cloud Push; this state is not a universal washer entity value.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/miele/"
+    },
+    {
+      "claim": "LG ThinQ integration requires the LG cloud and an internet connection.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/lg_thinq/"
+    },
+    {
+      "claim": "Companion notification actions use notify.mobile_app_ plus the device ID and require at least a message field.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    },
+    {
+      "claim": "Companion Local Push is a distinct local-connection option, so a local power decision does not by itself guarantee internet-independent phone delivery.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-local/"
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Inspected screenshots at 1440 \u00d7 1000 of the article hero/TLDR, worked table, Sources and CTA, and first library card. The title wraps cleanly across two lines, Tara Avenir resolves with regular heading weight 400, the body is centered at 780 px and the table at 920 px. The 1200 px WebP hero loads and the basket/shirt remains recognizable in the crop. Both /blog/ and /blog.html show the new dated card first in two columns, with loaded image and no page overflow (scrollWidth 1440). The .html redirect reaches the canonical draft route. Clicking By Tara Home reaches /#about; the About content appears after homepage rendering.",
+    "mobile": "Inspected 390 \u00d7 844 screenshots of the hero, full four-bullet TLDR, worked table, expanded YAML and new library card. H1 is 35.1 px, body paragraphs 16.96 px, and Avenir text is readable. The 480 px WebP loads with a useful crop. Each table has a 344 px viewport over 760 px content, accessible scroll instructions and a focusable container; scrolling 416 px reaches the final column. Expanded YAML scrolls inside its 312 px container rather than widening the page. Article, /blog/ and /blog.html remain 390 px wide without horizontal page overflow. Rechecked the revised research note and table/YAML scroll interaction."
+  }
+}
