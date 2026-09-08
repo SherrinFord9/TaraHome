@@ -73,7 +73,10 @@
       body, #root, .seo-static-fallback, .tara-rx { font-family: var(--font-tara) !important; }
       a { color: inherit; }
       .seo-static-fallback { min-height: 100vh; position: relative; }
-      .seo-hero { isolation: isolate; min-height: 100svh; overflow: hidden; padding: 8rem 1.5rem 0; position: relative; }
+      .seo-hero { isolation: isolate; min-height: min(100svh, 64rem); overflow: hidden; padding: 8rem 1.5rem 0; position: relative; }
+      /* Keep bottom-aligned copy near the top even in very tall render viewports. */
+      .tara-rx .tara-rx-hero { min-height: min(100dvh, 64rem); }
+      .tara-rx .tara-rx-hero-grid { min-height: min(calc(100dvh - 8rem), 56rem); }
       .seo-hero-image { height: 100%; inset: 0; object-fit: cover; opacity: 0.4; position: absolute; width: 100%; z-index: -3; }
       .seo-hero::after { background: linear-gradient(180deg, rgba(244, 234, 215, 0.52), var(--seo-paper)), linear-gradient(90deg, var(--seo-paper), rgba(244, 234, 215, 0.8) 48%, rgba(244, 234, 215, 0.42)); content: ""; inset: 0; position: absolute; z-index: -2; }
       .seo-nav { align-items: center; background: rgba(255, 250, 240, 0.72); border: 1px solid var(--seo-line); border-radius: 999px; display: flex; gap: 1rem; justify-content: space-between; left: 1.5rem; min-height: 4.75rem; padding: 0.7rem 0.9rem 0.7rem 1.4rem; position: absolute; right: 1.5rem; top: 1rem; z-index: 1; }
@@ -87,7 +90,7 @@
       .seo-menu-toggle span, .seo-menu-toggle::before, .seo-menu-toggle::after { background: var(--seo-ink); border-radius: 999px; content: ""; display: block; height: 0.13rem; width: 1.05rem; }
       .seo-menu-toggle { flex-direction: column; gap: 0.22rem; }
       .seo-nav-cta { align-items: center; background: var(--seo-accent); border-radius: 999px; color: #061f18; display: inline-flex; font-size: 1rem; font-weight: 850; gap: 0.65rem; justify-content: center; min-height: 3.45rem; padding: 0 1.3rem; text-decoration: none; white-space: nowrap; }
-      .seo-shell { align-items: end; display: grid; gap: clamp(2rem, 5vw, 4.5rem); grid-template-columns: minmax(0, 0.86fr) minmax(18rem, 0.42fr); margin: 0 auto; max-width: 80rem; min-height: calc(100svh - 8rem); padding-bottom: 5.125rem; }
+      .seo-shell { align-items: end; display: grid; gap: clamp(2rem, 5vw, 4.5rem); grid-template-columns: minmax(0, 0.86fr) minmax(18rem, 0.42fr); margin: 0 auto; max-width: 80rem; min-height: min(calc(100svh - 8rem), 56rem); padding-bottom: 5.125rem; }
       .seo-kicker { color: var(--seo-accent); font-size: 1rem; font-weight: 950; line-height: 1.22; margin: 0 0 0.85rem; text-transform: uppercase; }
       .seo-static-fallback h1 { font-size: clamp(2.85rem, 5.65vw, 6.45rem); font-weight: 950; letter-spacing: 0; line-height: 0.96; margin: 0; max-width: 12ch; overflow-wrap: normal; }
       .seo-lede { color: var(--seo-muted); font-size: clamp(1.1rem, 1.7vw, 1.48rem); font-weight: 760; line-height: 1.34; margin: 1.35rem 0 0; max-width: 40rem; }
