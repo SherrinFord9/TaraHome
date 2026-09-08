@@ -81,7 +81,7 @@ def main():
     args.output.write_text(json.dumps(result, indent=2) + '\n')
     daily_path = args.output.with_name('search-daily-' + args.date + '.csv')
     with daily_path.open('w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=['date', 'clicks', 'impressions', 'position'])
+        writer = csv.DictWriter(file, fieldnames=['date', 'clicks', 'impressions', 'position'], lineterminator='\n')
         writer.writeheader()
         writer.writerows(result['daily'])
     print(json.dumps({key: result[key] for key in ('last28Days', 'previous28Days', 'change', 'largestSevenDayBreak')}, indent=2))
