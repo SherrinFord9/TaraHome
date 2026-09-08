@@ -71,11 +71,11 @@ change. AI authorship itself is not a demonstrated penalty.
 
 ## Technical audit
 
-All 175 URLs in the live sitemap returned 200, one H1, the correct self-canonical,
-and no noindex on September 8. robots.txt allows crawling. The latest Pages build
-succeeded. These checks rule out a current obvious serving/configuration outage;
-they do not establish Google's chosen canonical, indexing status, or manual
-action status. That requires authenticated Search Console access.
+All 175 URLs in the original live sitemap returned 200, one H1, the correct
+self-canonical, and no noindex on September 8. The post-publication check covered
+176 URLs. robots.txt allows crawling, and Pages deployment succeeded. These
+serving checks do not establish inclusion in Google's index. The authenticated
+follow-up below found important URLs excluded despite those successful checks.
 
 ## Recovery priorities
 
@@ -150,18 +150,118 @@ the user's unfinished main-worktree edits. Inspect the current state with
 
 ## Search Console follow-up
 
-Compare July 12-18 with July 20-26 by page/query, then August 10-September 6 with
-July 13-August 9. Inspect Manual Actions, Security Issues, Page Indexing, Crawl
-Stats, and URL Inspection for homepage, IKEA, Bluetooth and a recent August post.
-Record Google's last crawl date, chosen canonical, and rendered HTML. Export
-Links for actual external linking evidence. An absent public search result is
-not proof that a URL is unindexed.
+Completed with authenticated access September 8. The structured observations are
+in `seo/search-console-review-2026-09-08.json`. Raw comparison workbooks remain in
+the local private audit directory, not in the public website repository.
+
+### Current indexing, not just ranking
+
+| Canonical page | Individual inspection | Last crawl displayed |
+| --- | --- | --- |
+| Homepage | Crawled - currently not indexed | September 7 |
+| IKEA direct pairing | Crawled - currently not indexed | September 4 |
+| Bluetooth proxy | Crawled - currently not indexed | August 22 |
+| Main LAN versus IoT VLAN | Crawled - currently not indexed | August 27 |
+| Energy Dashboard versus utility bill | Discovered - currently not indexed | N/A |
+
+The four crawled pages show successful fetches, crawling and indexing allowed,
+and Google-selected canonical "Inspected URL". This is direct URL Inspection
+evidence, not a conclusion from a missing public `site:` result. Their last crawl
+dates do not reveal when they stopped being indexed or prove July's cause.
+
+The aggregate Page Indexing report is dated September 3: 145 indexed and 48 not
+indexed, including 27 discovered and 5 crawled but not indexed. It predates these
+individual checks. Its five example URLs are not a current exhaustive inventory
+of the affected priority pages. Do not use the 145 total as reassurance that the
+previous traffic leaders are indexed.
+
+Manual Actions and Security Issues both report no issues. There are no temporary
+removal requests in the last six months. The submitted sitemap reports Success,
+last read September 5, with 175 discovered pages. Some inspections show a temporary
+sitemap processing error, but that is not proof that the sitemap itself is broken.
+The Crawl Stats report has no host problems, 1,272 requests over 90 days, 94% HTTP
+200 responses and 107ms average response time. This is not a measured page-load
+time or proof that every resource and historical crawl was healthy.
+
+### Exact period comparisons
+
+The authenticated July comparison is July 12-18 versus July 20-26: 81 to zero
+clicks and 9,486 to 1,206 impressions. Of 90 page rows with impressions in the
+earlier week, 82 lost impressions and 15 lost all impressions. Examples:
+
+| Page | Before impressions | After impressions |
+| --- | ---: | ---: |
+| IKEA pairing | 1,513 | 60 |
+| Wall tablet dashboard | 548 | 23 |
+| Doorbell selection | 403 | 29 |
+| Bluetooth proxy | 355 | 40 |
+| Main LAN versus IoT VLAN | 283 | 48 |
+| Apple TV/HomePod border router | 99 | 483 |
+
+This was a broad decline across established Home Assistant topics, not simply
+one IKEA trend ending. The Apple/HomePod exception also contradicts a blanket
+claim that adding Apple/Google topics necessarily caused the decline. Topic
+selection should remain demand-led rather than forced platform rotation.
+
+The separate latest-28-day comparison confirms 91 to 14 clicks and 10,704 to
+1,408 impressions. IKEA fell from 1,312 to 15 impressions; Bluetooth from 435 to
+111. Historical impressions within a reporting window do not contradict a later
+inspection showing that the URL is currently not indexed.
+
+Some lost queries wrongly describe IKEA PARASOLL or VALLHORN as Matter over
+Thread. These are queries to correct, not factual claims to restore in a rollback.
+Visible query rows omit anonymized searches and cannot explain all lost clicks.
+The earlier daily-export analysis remains the source for the overall timeline.
+
+### Rendering and actions
+
+Google's homepage live HTML contained the React app, one H1, the main sections,
+and self-canonical, with all resources loaded. However, two smartphone screenshot
+checks showed only navigation and background. The same visual failure was
+reproduced locally at 412x12000: the bottom-aligned `100dvh` hero placed the H1 at
+y=11022. Google's exact viewport height is not exposed by the screenshot; the
+local reproduction identifies a matching layout failure, not an observed Google
+viewport dimension.
+
+Commit `fec07e4` caps the homepage hero and its inner grid at 64rem and 56rem,
+respectively, including the static fallback. Normal viewport sizing still uses
+viewport units. No user-agent targeting, hidden bot-only copy, content rewrite,
+new title, or canonical change was added. The source theme has the same rules so
+a rebuild preserves the fix. A reusable Playwright MCP regression checks normal
+mobile/desktop and 12000px-tall viewports, H1 visibility, images and overflow.
+[The exact commit's Pages deployment succeeded](https://github.com/SherrinFord9/TaraHome/actions/runs/34255787818).
+
+Google's live availability tests passed for homepage, IKEA and Bluetooth. The
+IKEA screenshot and rendered HTML show the revised direct-pairing title, full
+article, unique cover and TLDR. All three indexing requests were accepted into
+the priority crawl queue. This is not confirmation of reindexing or recovery;
+repeated submissions do not raise priority. One post-deployment homepage live
+test returned Search Console's generic "Something went wrong" error. The retry
+at 10:17 AM passed: Google's tested HTML contains the new cap, and its smartphone
+screenshot now visibly shows the headline, hero image, buttons, kit summary and
+the next feature section. The fix is verified in Google's own rendering, not
+only the local browser. This does not establish that the homepage defect caused
+the broader blog decline or that Google has now indexed these pages.
+
+The Links report currently shows one external link, from technikheim.de to the
+IKEA article, and 766 internal links. This is Google's reported sample, not a
+complete backlink census. There is little reported external endorsement; useful
+first-hand evidence and relevant earned mentions deserve attention alongside
+technical work. Do not buy links or spam community discussions.
+
+The cron now reads the authenticated evidence as well as the daily export. It
+must not count publishing as recovery, duplicate an unindexed topic owner, or
+restore wrong protocol claims. The one-new-article daily maximum and retry slot
+are unchanged. Refresh remaining high-loss pages in separate reviewed tasks,
+starting with the wall-tablet, doorbell, restart/unavailable and VLAN guides.
+Do not mass-delete, redirect, or revert pages without page/query evidence.
 
 Review on September 15 and September 22 using a new dated export. Track non-brand
 clicks, total impressions, individual affected page/query pairs, and actual kit
-inquiries. Do not count more published URLs as SEO progress. If the new work has
-not been recrawled, distinguish that from a ranking failure. Meaningful quality
-reassessment can take weeks or months.
+inquiries. Inspect the four priority canonicals for actual indexed state and a
+crawl after their changes. If the new work has not been recrawled, distinguish
+that from a ranking failure. Meaningful quality reassessment can take weeks or
+months; no specific recovery date is promised.
 
 ## References
 
@@ -170,3 +270,5 @@ reassessment can take weeks or months.
 - [Google: people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
 - [Google: generative AI content guidance](https://developers.google.com/search/docs/fundamentals/using-gen-ai-content)
 - [Google: title links](https://developers.google.com/search/docs/appearance/title-link)
+- [Google: URL Inspection and live-test limitations](https://support.google.com/webmasters/answer/9012289)
+- [Google: Page Indexing report](https://support.google.com/webmasters/answer/7440203)

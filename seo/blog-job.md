@@ -1,12 +1,24 @@
 # Daily Tara article job
 
 Use $tarahome-blog-research and $tarahome-grandma-proofread. Read
-seo/article-schedule.json, its strategyInputs.latestSearchPerformance file,
-seo/recovery-review-2026-09-08.md, seo/keyword-strategy.json, seo/keyword-map.json,
+seo/article-schedule.json, the files named by its
+strategyInputs.latestSearchPerformance and strategyInputs.latestSearchConsoleReview,
+seo/recovery-review-2026-09-08.md,
+seo/keyword-strategy.json, seo/keyword-map.json,
 and existing article titles and topic briefs before choosing a question.
 Use a JSON parser to read the performance summary and relevant page/query rows;
 do not dump the entire export into the working context. Treat dated evidence as
 historical, not as a live ranking report, and verify present-day demand separately.
+
+The September 8 authenticated inspections show former traffic leaders crawled
+but not indexed, not merely missing keywords. A successful publication, live
+availability test, sitemap entry, or indexing request is not proof of indexing
+or traffic recovery. Keep the one-per-day maximum; do not flood new URLs to
+compensate. Preserve established topic owners even when they are not indexed.
+Flag refresh opportunities in the internal brief for a separate task; the daily
+writer still must not edit existing articles or the homepage. Do not restore
+factually wrong claims to chase historical queries, including queries that
+mistakenly describe PARASOLL or VALLHORN as Matter-over-Thread products.
 
 This is an isolated draft worktree supplied by scripts/blog-runner.py.
 Prepare exactly one useful new article per day at most. The runner owns commit,
