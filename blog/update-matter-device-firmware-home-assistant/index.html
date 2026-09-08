@@ -282,7 +282,7 @@
             <p class="lede">Yes—sometimes. Home Assistant can install Matter firmware when the device supports Matter OTA and its maker publishes a usable update, but local control does not guarantee app-free updates.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/update-matter-device-firmware-home-assistant/cover.png" alt="Homeowner checking a smart plug and contact sensor before a Home Assistant Matter firmware update" loading="eager" />
+            <img src="/assets/generated/blog/update-matter-device-firmware-home-assistant/cover-1200.webp" srcset="/assets/generated/blog/update-matter-device-firmware-home-assistant/cover-480.webp 480w, /assets/generated/blog/update-matter-device-firmware-home-assistant/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1672" height="941" decoding="async" alt="Homeowner checking a smart plug and contact sensor before a Home Assistant Matter firmware update" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
@@ -301,10 +301,7 @@
 <div class="callout">
   <p><strong>Tara's rule:</strong> let Home Assistant try the signed, standard Matter update first. Keep the vendor app as a maintenance tool only when the manufacturer has not supplied that path or the controller network blocks it.</p>
 </div>
-<h2 id="why-this-question-is-current">Why This Question Is Active Right Now</h2>
-<p>The demand is specific, not theoretical. A <strong>June 18, 2025</strong> r/homeassistant thread asked why Cync Matter bulbs and plugs showed firmware in the vendor app but not Home Assistant. An <strong>August 13, 2025</strong> discussion asking why Matter still needed a native app drew dozens of replies. In early <strong>2026</strong>, IKEA ALPSTUGA and KLIPPBOK owners reported the exact “Target node did not process the update file” error; BILRESA owners separately reported updates that repeatedly failed.</p>
-<p>Then the answer changed. Home Assistant released <strong>Matter Server app 9.0 on June 23, 2026</strong> and explicitly said over-the-air updates were more reliable. Four days later, a June 27 r/homeassistant post reported that previously failing IKEA BILRESA updates completed after the move to Matter Server 9. Community reports are evidence that the new server helps; they are not a promise that every device, border router, or vendor channel now works.</p>
-<p>This is also a gap in TaraHome's library. Existing guides explain <a href="/blog/ikea-matter-thread-home-assistant-no-cloud-no-dirigera/">direct IKEA pairing</a>, <a href="/blog/will-home-assistant-matter-work-without-internet/">Matter during an internet outage</a>, and <a href="/blog/which-thread-border-router-home-assistant-2026/">Thread border-router choice</a>. None answers who actually supplies firmware or why the vendor app sometimes remains necessary.</p>
+<span id="why-this-question-is-current"></span>
 <h2 id="four-gates">The Four Gates Behind a Visible Matter Update</h2>
 <p>Matter creates a common update method, but it does not force every manufacturer to use it. Home Assistant's official documentation says OTA support is optional and that it creates an Update entity only for a device that implements the feature. Home Assistant then checks the <strong>Distributed Compliance Ledger (DCL)</strong> every 12 hours. The DCL is the Connectivity Standards Alliance's signed public record for product and software information.</p>
 <p>A Matter logo indicates certification for the product's declared Matter features; it does not guarantee that every controller exposes every feature or firmware release. As of <strong>July 9, 2026</strong>, Home Assistant's current docs still name <strong>Eve and Nanoleaf</strong> as DCL publishers, but that list is not exhaustive. The live production DCL also contains official IKEA-hosted firmware files for ALPSTUGA, KLIPPBOK, and both the BILRESA scroll-wheel and dual-button remotes. Other vendors may use a different ecosystem pipeline or their own app even when everyday Matter control is local.</p>

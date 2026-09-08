@@ -235,7 +235,7 @@
             <p class="lede">Most Home Assistant homes do not need MQTT on day one. Add it when a specific device, bridge, camera system, or DIY project needs a local message relay called a broker; otherwise a native integration is usually simpler to maintain.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover.png" alt="Local Home Assistant MQTT broker and hub hardware cover image" loading="eager" />
+            <img src="/assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover-1200.webp" srcset="/assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover-480.webp 480w, /assets/generated/blog/do-you-need-mqtt-mosquitto-home-assistant/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Local Home Assistant MQTT broker and hub hardware cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body">
@@ -255,11 +255,7 @@
 <p>Use MQTT when a product or bridge is designed around it. <strong>Zigbee2MQTT</strong> needs a broker, which is the local relay service that accepts messages and passes them to Home Assistant. <strong>Tasmota</strong> talks to Home Assistant over MQTT. <strong>Frigate</strong> can run without MQTT by itself, but its Home Assistant integration requires MQTT to be configured. Some DIY sensors, energy monitors, alarm panels, and local bridge projects also publish MQTT messages because it is a simple way for devices to announce state.</p>
 <p>The plain-English rule is this: <strong>MQTT is a tool, not a requirement</strong>. It is excellent when you need a local message bus. It is unnecessary complexity when a direct Home Assistant integration already handles the device well.</p>
 
-<h2 id="why-people-ask">Why This Question Keeps Coming Up</h2>
-<p>The demand is real because MQTT appears in a lot of Home Assistant tutorials before anyone explains the parts. Reddit r/homeassistant has long beginner threads asking whether MQTT replaces Zigbee or Z-Wave, whether new users need it, and what username should be used for the broker. Home Assistant Community threads show the practical failure mode: Zigbee2MQTT does not add devices, Frigate asks for MQTT, or the MQTT integration asks for broker credentials and the homeowner is not sure which component is which.</p>
-<p>The timing matters too. Home Assistant keeps improving native integrations and protocol screens. The Home Assistant 2026.7 release notes, published July 1, 2026, highlight new device-management and protocol work such as the ZHA Zigbee overhaul and dedicated infrared/radio-frequency panels. That does not make MQTT obsolete. It does mean old advice that treated MQTT as the default answer for everything is not the right homeowner default in 2026.</p>
-<p>A useful MQTT setup starts with vocabulary, not YAML.</p>
-
+<span id="why-people-ask"></span>
 <h2 id="pieces">MQTT, Mosquitto, and the Home Assistant Integration Are Different Things</h2>
 <p><strong>MQTT</strong> is a lightweight message protocol. A device publishes a message to a topic, such as a temperature value, and another system subscribes to that topic. Think of it as a local message board for devices, not as a radio like Zigbee or Z-Wave.</p>
 <p><strong>Mosquitto</strong> is a broker. The broker is the service that receives MQTT messages and distributes them to subscribed clients. On Home Assistant OS, the official Mosquitto broker app is the common broker. Home Assistant's Mosquitto app docs say to install the app, start it, create a new Home Assistant user for MQTT, then add the discovered MQTT integration.</p>

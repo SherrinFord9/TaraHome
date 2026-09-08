@@ -265,7 +265,7 @@
             <p class="lede">If Home Assistant still thinks you are home when you are at work, or away when you are already in the driveway, the failure is usually not mysterious GPS drift. It is almost always a broken remote path, missing background permissions, the wrong tracker on the person entity, or the phone app being throttled.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/home-assistant-person-not-updating/cover.png" alt="Home Assistant Person Stuck Home or Away? Fix It cover image" loading="eager" />
+            <img src="/assets/generated/blog/home-assistant-person-not-updating/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-person-not-updating/cover-480.webp 480w, /assets/generated/blog/home-assistant-person-not-updating/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Home Assistant Person Stuck Home or Away? Fix It cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
@@ -284,11 +284,7 @@
   <p><strong>Tara's presence rule:</strong> get one phone working cleanly end to end before you add router trackers, BLE trackers, or clever occupancy logic on top of it.</p>
 </div>
 
-<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
-<p>This is not a niche one-off problem. A Home Assistant Community thread on <strong>March 29, 2024</strong> described companion app location updating while the person entity stayed stuck at home. Another thread on <strong>September 11, 2024</strong> showed an Android phone appearing to update correctly while the wrong tracker or person mapping kept the state wrong. On <strong>February 4, 2026</strong>, an iPhone thread repeated the same question almost verbatim: the phone was always reported as home even though location permissions looked correct.</p>
-<p>GitHub issues reinforce that not every failure is user error. An iOS app issue opened on <strong>February 23, 2024</strong> reported location updating in the app but not making it into Home Assistant correctly, and a Home Assistant Core issue opened on <strong>March 6, 2025</strong> described the <code>device_tracker</code> staying <code>Home</code> even when manual location updates clearly showed the phone away from home. Reddit threads from the last year kept describing two homeowner-visible symptoms: presence only updates when the app is opened, or arrival is recognized several minutes too late to feel reliable.</p>
-<p>The practical takeaway is useful: <strong>there are real bugs sometimes, but the repeating causes are still remote connectivity, permissions, throttling, or tracker design.</strong> Eliminate those first so you know whether you are dealing with configuration or an actual regression.</p>
-
+<span id="why-this-question-keeps-coming-up"></span>
 <h2 id="how-home-assistant-decides-home-away">How Home Assistant Decides If You Are Home</h2>
 <p>Home Assistant's <strong>Person</strong> integration does not just blindly trust one source. It merges the device trackers assigned to that person. The official docs say the state is chosen in this order:</p>
 <ol>

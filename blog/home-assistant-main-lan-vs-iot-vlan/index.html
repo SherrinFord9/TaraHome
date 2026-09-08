@@ -263,7 +263,7 @@
             <p class="lede">If you want the fewest surprises, keep Home Assistant on the same local segment as the discovery-heavy devices it controls, or give it a clean path into that segment. If you isolate it too aggressively, the house starts turning into a multicast debugging exercise.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/home-assistant-main-lan-vs-iot-vlan/cover.png" alt="Should Home Assistant Be on an IoT VLAN? cover image" loading="eager" />
+            <img src="/assets/generated/blog/home-assistant-main-lan-vs-iot-vlan/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-main-lan-vs-iot-vlan/cover-480.webp 480w, /assets/generated/blog/home-assistant-main-lan-vs-iot-vlan/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Should Home Assistant Be on an IoT VLAN? cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
@@ -282,11 +282,7 @@
   <p><strong>Tara's network rule:</strong> isolate laptops, phones, and finance-grade devices from cheap IoT gear, but do not isolate Home Assistant from every discovery-heavy device unless you are ready to own the multicast consequences.</p>
 </div>
 
-<h2 id="why-this-keeps-coming-up">Why This Question Keeps Coming Up</h2>
-<p>The demand signal is broad and current. A <strong>September 19, 2024</strong> Home Assistant Community thread asked how to restore Kasa auto-discovery when Home Assistant lived on the main network and the devices moved to a separate IoT range. A <strong>January 27, 2025</strong> forum reply in a migration thread explained that once Home Assistant and ESPHome-style devices live on different subnets, you need a discovery proxy or you fall back to manual IP entry where the integration allows it.</p>
-<p>Reddit threads kept circling the same tradeoff from the homeowner side: people want separate IoT networks for security, but they also keep discovering that mDNS, SSDP, and local pairing do not magically survive routing boundaries. Home Assistant's own <strong>May 7, 2025</strong> release notes acknowledged this troubleshooting burden by adding discovery browsers for DHCP, mDNS/Zeroconf, and SSDP/UPnP so users could see what the system is actually seeing on the network.</p>
-
-
+<span id="why-this-keeps-coming-up"></span>
 <h2 id="what-actually-breaks">What Actually Breaks When You Cross VLANs</h2>
 <p>Home Assistant's developer docs say integrations may discover devices through <strong>mDNS/Zeroconf</strong>, <strong>SSDP</strong>, or other methods when they need to find devices with changing IPs or dynamically appearing services. That matters because routed VLANs are not the same thing as a shared local broadcast domain.</p>
 <p>The official Network integration docs also say Home Assistant auto-detects discovery interfaces based on the routing next hop for the mDNS broadcast address <code>224.0.0.251</code>. In plain English: interface choice matters. If the wrong interface wins, discovery may look "random" even when IP routing itself is fine.</p>

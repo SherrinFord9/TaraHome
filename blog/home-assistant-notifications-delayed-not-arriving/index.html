@@ -238,7 +238,7 @@
             <p class="lede">If Home Assistant says it sent an alert but your phone is quiet, debug the path in order: Home Assistant action, Companion App registration, phone permissions, push delivery, and only then the automation that created the alert.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover.png" alt="Home Assistant notification troubleshooting cover image" loading="eager" />
+            <img src="/assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover-480.webp 480w, /assets/generated/blog/home-assistant-notifications-delayed-not-arriving/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Home Assistant notification troubleshooting cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body">
@@ -258,11 +258,7 @@
 <p>Open <strong>Settings &gt; Developer tools &gt; Actions</strong> in Home Assistant and send a simple message to the exact phone notify entity or action, such as <code>notify.mobile_app_pixel</code> or the newer <code>notify.send_message</code> action with your phone selected. A <strong>notify entity</strong> is the named target Home Assistant uses to send a message. If the plain test does not arrive, the problem is usually Companion App setup, notification permission, push token, rate limit, or the phone's operating-system settings. If the test arrives instantly, the notification system works and the problem is probably the automation payload, action target, template, camera attachment, or trigger.</p>
 <p>For Android delays, the common culprit is power saving while the screen is off. For iPhone delays, check Focus and Scheduled Summary first. For both platforms, remember that ordinary mobile push is a cloud-assisted delivery path, while Local Push is the local WebSocket path that only works in the right home-network conditions.</p>
 
-<h2 id="why-common">Why This Question Keeps Coming Up</h2>
-<p>Home Assistant notification threads repeat because the symptom is simple but the path is not. Reddit r/homeassistant and the Home Assistant Community forum have separate threads for Android alerts delayed until unlock, Nabu Casa users seeing slow delivery, iPhone notifications arriving late, and phones that simply stop appearing as mobile app targets. The advice that solves one case can be wrong for another.</p>
-<p>The official docs point to the same split. Home Assistant's Notify documentation says to test a notification action from Developer Tools and warns that <code>notify.notify</code> is shorthand for the first notify action the system can find. The Companion App troubleshooting docs say to check the phone-specific <code>notify.mobile_app_</code> action, the plain message payload, notification limits, Push ID, and system notification settings.</p>
-<p>That is why the right troubleshooting order matters. If your test message never arrives, Android <code>ttl</code> and iPhone critical-alert YAML are distractions. If your test message arrives but a camera alert is late, the problem may be the image URL, automation delay, phone power saving, or an attachment that takes time to render.</p>
-
+<span id="why-common"></span>
 <h2 id="first-test">The 10-Minute Test Before You Change Anything Else</h2>
 <p>Use this order for one phone at a time.</p>
 <ol>

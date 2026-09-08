@@ -23,7 +23,7 @@ fi
 
 status=0
 for file in "${files[@]}"; do
-  if rg -n -i 'Sources and community references|References used\.|<h3>[^<]*demand[^<]*</h3>|Demand came from|research notes|source dump' "$file"; then
+  if rg -n -i 'Sources and community references|References used\.|<h[23][^>]*>[^<]*demand[^<]*</h[23]>|Demand came from|demand signals?|research notes|source dump|worth publishing|why this question keeps|why this question is (active|hot|current)|why people are asking this' "$file"; then
     echo "Editorial copy check FAIL: internal workflow language appears in ${file#$REPO/}." >&2
     status=1
   fi

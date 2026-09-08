@@ -261,7 +261,7 @@
             <p class="lede">There is no magical primary controller setting in Matter. The right first pairing depends on whether the device is Wi-Fi or Thread, what features Matter actually exposes, and which Thread credentials your phone can really use today.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/pair-matter-devices-home-assistant-or-apple-google-first/cover.png" alt="Should You Pair Matter Devices to Home Assistant or Apple/Google First? cover image" loading="eager" />
+            <img src="/assets/generated/blog/pair-matter-devices-home-assistant-or-apple-google-first/cover-1200.webp" srcset="/assets/generated/blog/pair-matter-devices-home-assistant-or-apple-google-first/cover-480.webp 480w, /assets/generated/blog/pair-matter-devices-home-assistant-or-apple-google-first/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Should You Pair Matter Devices to Home Assistant or Apple/Google First? cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
@@ -280,12 +280,7 @@
   <p><strong>Tara's practical rule:</strong> let Home Assistant be the automation brain, but let the first pairing follow the most reliable radio and phone-credential path you actually have today.</p>
 </div>
 
-<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
-<p>This is not a theoretical corner case. As of <strong>June 20, 2026</strong>, the Home Assistant Matter/Thread category was still full of active onboarding and commissioning threads, including topics like <em>Can not commission matter device (Matter integration broken?)</em>, <em>HA unable to pair Level Lock which is connect to Apple Home</em>, and <em>Unable to pair IKEA Matter devices to HA</em>. On <strong>May 13-14, 2026</strong>, a Home Assistant Community thread asked the exact question out loud: should Home Assistant or Google/Apple be the first Matter controller?</p>
-<p>Reddit is using nearly the same language. Recent threads ask about <em>Matter via Apple Home and THEN Home Assistant</em> and whether dual pairing across HomeKit and Home Assistant is better than bridging. Owners are not debating whether Matter is local. They are trying to figure out which commissioning path wastes the least time.</p>
-<p>The official Home Assistant guidance reflects that confusion. The Matter docs split onboarding into two separate paths: adding a <strong>new device</strong> and adding a device that is <strong>already in use</strong> by another controller. That split exists because direct commissioning and multi-admin sharing are different workflows with different failure modes.</p>
-<p>Home Assistant's own story around Matter changed materially over the last year. On <strong>March 10, 2025</strong>, Home Assistant announced its Matter certification and framed Matter as a fully local, multi-ecosystem standard. On <strong>April 1, 2026</strong>, Home Assistant <strong>2026.4</strong> added direct user and PIN management for Matter locks, and the <strong>June 3, 2026</strong> release referenced that Matter work again when bringing similar credential management to Z-Wave locks. That does not mean every commissioning problem is solved. It does mean Home Assistant is now mature enough that the <strong>HA-first</strong> option is worth taking seriously instead of treating it like a science experiment.</p>
-
+<span id="why-this-question-keeps-coming-up"></span>
 <h2 id="first-principle">First Principle: Matter Uses Fabrics, Not a Permanent Boss Controller</h2>
 <p>The official Matter docs describe <strong>multi-fabric</strong> support as one of the standard's key features: the same device can join multiple controllers, including Home Assistant, Apple Home, and Google Home. Home Assistant's docs also separate each controller into its own <strong>fabric</strong>, which is the real unit that matters here.</p>
 <p>That means the common idea of a permanent <q>primary controller</q> is mostly the wrong mental model. <strong>Inference from the docs:</strong> the first controller mainly affects the <strong>commissioning path</strong>, the <strong>Thread credentials available on your phone</strong>, and the <strong>platform-specific features</strong> that might still live outside the generic Matter surface. It is not a one-time throne selection that decides the rest of the device's life forever.</p>

@@ -240,7 +240,7 @@
             <p class="lede">If a Home Assistant camera feed opens late, drifts behind real life, or takes forever on a dashboard, fix the stream path before you replace the camera: local stream, WebRTC or go2rtc where possible, lighter dashboard streams, and a real recording owner.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/home-assistant-camera-feed-delay-rtsp-webrtc/cover.png" alt="Home Assistant camera stream troubleshooting cover image" loading="eager" />
+            <img src="/assets/generated/blog/home-assistant-camera-feed-delay-rtsp-webrtc/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-camera-feed-delay-rtsp-webrtc/cover-480.webp 480w, /assets/generated/blog/home-assistant-camera-feed-delay-rtsp-webrtc/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Home Assistant camera stream troubleshooting cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body">
@@ -260,11 +260,7 @@
 <p>Start with three tests. First, open the camera in its own local app, NVR, Frigate page, or raw RTSP-capable player on the same network. An <strong>NVR</strong> is a network video recorder, and <strong>RTSP</strong> is a common local camera streaming URL format. Second, open one Home Assistant camera entity by itself. An <strong>entity</strong> is the named camera object Home Assistant shows in dashboards and automations. Third, open the real dashboard with the other cards and streams. If the direct view is delayed, fix the camera or NVR settings. If the single Home Assistant entity is delayed, focus on WebRTC, go2rtc, LL-HLS, codec, and stream-source settings. If only the full dashboard falls behind, make a lighter dashboard and use substreams.</p>
 <p>For most homes, the stable answer is a wired or strong local camera, H.264 video for live view, WebRTC/go2rtc when possible, a lower-resolution stream for dashboards, and a separate recording owner such as the camera SD card, Reolink NVR/Home Hub, UniFi Protect, Frigate, or another NVR.</p>
 
-<h2 id="why-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
-<p>The demand signal is current and practical. A 2026 Reddit r/homeassistant thread asked what cameras "actually work" for local-only Home Assistant use and quickly turned into a discussion of live cards, Frigate, go2rtc, UniFi Protect, Reolink, Tapo, NVRs, and feeds that were not "LIVE live." A 2025 Home Assistant Community thread described a Reolink doorbell dashboard drifting more than a minute behind real life, then later comments in January 2026 compared 12-15 second dashboard load times against a 3 second WebRTC path.</p>
-<p>Home Assistant itself has been moving in this direction. The <strong>November 6, 2024</strong> Home Assistant 2024.11 release explicitly called out low-latency camera streams using WebRTC because camera feeds could feel slow and delayed. Current Home Assistant 2026.6.4 docs show the camera, stream, WebRTC, and go2rtc pieces as separate layers: the camera entity presents the feed, the stream integration proxies HLS and LL-HLS, WebRTC provides camera streaming functionality, and go2rtc acts as a WebRTC proxy for cameras.</p>
-<p>The GitHub and Frigate issue trackers add the caveat: there is no one magic switch. Real reports include slow WebRTC startup, streams kept open after a view closes, laggy Home Assistant streams from Frigate, and choppy Advanced Camera Card playback even when Frigate or go2rtc looked fine. Treat those reports as edge-case evidence, not as proof that any one tool is bad. The pattern is that camera streaming is a chain, and each link has to match the house.</p>
-
+<span id="why-question-keeps-coming-up"></span>
 <h2 id="quick-diagnosis">The Quick Diagnosis Map</h2>
 <div class="comparison-table">
   <table>

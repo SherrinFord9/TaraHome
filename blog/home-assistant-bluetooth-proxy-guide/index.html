@@ -11,18 +11,18 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home Assistant Bluetooth Proxy Setup (ESPHome)</title>
-    <meta name="description" content="Set up an ESPHome Bluetooth proxy for Home Assistant, place it for reliable BLE coverage, and learn when a proxy helps or adds no value." />
+    <title>Home Assistant Bluetooth Proxy: Setup, Range and Limits</title>
+    <meta name="description" content="Add an ESPHome Bluetooth proxy to Home Assistant, check device support, improve BLE range, and diagnose missing readings with a step-by-step example." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/" />
-    <meta property="og:title" content="Home Assistant Bluetooth Proxy Setup (ESPHome)" />
-    <meta property="og:description" content="Set up an ESPHome Bluetooth proxy for Home Assistant, place it for reliable BLE coverage, and learn when a proxy helps or adds no value." />
+    <meta property="og:title" content="Home Assistant Bluetooth Proxy: Setup, Range and Limits" />
+    <meta property="og:description" content="Add an ESPHome Bluetooth proxy to Home Assistant, check device support, improve BLE range, and diagnose missing readings with a step-by-step example." />
     <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-bluetooth-proxy-guide/cover.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Home Assistant Bluetooth Proxy Setup (ESPHome)" />
-    <meta name="twitter:description" content="Set up an ESPHome Bluetooth proxy for Home Assistant, place it for reliable BLE coverage, and learn when a proxy helps or adds no value." />
+    <meta name="twitter:title" content="Home Assistant Bluetooth Proxy: Setup, Range and Limits" />
+    <meta name="twitter:description" content="Add an ESPHome Bluetooth proxy to Home Assistant, check device support, improve BLE range, and diagnose missing readings with a step-by-step example." />
     <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
     <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
     <style>
@@ -145,11 +145,11 @@
     {
       "@type": "BlogPosting",
       "@id": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/#blogposting",
-      "headline": "Home Assistant Bluetooth Proxy Setup (ESPHome)",
-      "description": "Set up an ESPHome Bluetooth proxy for Home Assistant, place it for reliable BLE coverage, and learn when a proxy helps or adds no value.",
+      "headline": "Home Assistant Bluetooth Proxy: Setup, Range and Limits",
+      "description": "Add an ESPHome Bluetooth proxy to Home Assistant, check device support, improve BLE range, and diagnose missing readings with a step-by-step example.",
       "image": "https://tarahome.ai/assets/generated/blog/home-assistant-bluetooth-proxy-guide/cover.png",
       "datePublished": "2026-06-17",
-      "dateModified": "2026-07-17",
+      "dateModified": "2026-09-08",
       "author": {
         "@id": "https://tarahome.ai/#organization"
       },
@@ -194,7 +194,7 @@
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Home Assistant Bluetooth Proxy Setup (ESPHome)",
+          "name": "Home Assistant Bluetooth Proxy: Setup, Range and Limits",
           "item": "https://tarahome.ai/blog/home-assistant-bluetooth-proxy-guide/"
         }
       ]
@@ -258,34 +258,33 @@
         <header class="hero article-hero">
           <div>
             <p class="article-meta"><span>Home Assistant Bluetooth</span><span>June 17, 2026</span><span>10 min read</span></p>
-            <h1>Home Assistant Bluetooth Proxy Setup (ESPHome)</h1>
-            <p class="lede">A Bluetooth proxy is usually the cleanest way to reach BLE sensors, thermostats, and locks when the Home Assistant hub is not in the same room, especially on virtualized or rack-mounted installs.</p>
+            <h1>Home Assistant Bluetooth Proxy: Setup, Range and Limits</h1>
+            <p class="lede">An ESP32 Bluetooth proxy extends Home Assistant's reach to supported Bluetooth Low Energy devices. Here is when to add one, how to set it up, and how to tell a coverage problem from an unsupported device.</p>
+            <p class="article-byline">By <a href="/#about">Tara Home</a> · Updated September 8, 2026</p>
+            <p class="research-method">Researched from Home Assistant and ESPHome documentation. The setup example below is a planning walkthrough, not a hands-on hardware benchmark.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/home-assistant-bluetooth-proxy-guide/cover.png" alt="Home Assistant Bluetooth Proxy Setup (ESPHome) cover image" loading="eager" />
+            <img src="/assets/generated/blog/home-assistant-bluetooth-proxy-guide/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-bluetooth-proxy-guide/cover-480.webp 480w, /assets/generated/blog/home-assistant-bluetooth-proxy-guide/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Home Assistant Bluetooth Proxy: Setup, Range and Limits cover image" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
   <p class="tldr-label">TLDR</p>
   <ul>
-    <li><strong>Short answer:</strong> A Bluetooth proxy is usually the cleanest way to reach BLE sensors, thermostats, and locks when the Home Assistant hub is not in the same room, especially on virtualized or rack-mounted installs.</li>
-    <li><strong>Start here:</strong> If your Bluetooth devices already work reliably from the Home Assistant box, you may not need a proxy.</li>
-    <li><strong>Keep in mind:</strong> That is not just community folklore.</li>
+    <li><strong>Add one for a real coverage problem:</strong> An ESPHome ESP32 proxy moves the Bluetooth radio close to supported sensors while Home Assistant stays on your existing server.</li>
+    <li><strong>Start with one board:</strong> Choose its exact model in the ESPHome installer, connect it to your home network, and add the discovered ESPHome device in Home Assistant.</li>
+    <li><strong>Check compatibility first:</strong> A proxy extends Bluetooth Low Energy coverage. It does not add support for an unknown device, ordinary Bluetooth speakers, or keyboards.</li>
+    <li><strong>Test before expanding:</strong> Place it near the sensor, check incoming advertisements and entity updates, and move it before buying more. Devices needing a continuous connection also use limited connection slots.</li>
   </ul>
 </aside>
 <h2 id="short-answer">Short Answer: Use a Proxy When the Radio Needs to Move, Not the Hub</h2>
 <p>If your Bluetooth devices already work reliably from the Home Assistant box, you may not need a proxy. <strong>If they are too far away, if Home Assistant is running in a VM or tucked into a rack, or if a direct USB adapter has become fussy, an ESP32 Bluetooth proxy is usually the better answer.</strong> It lets the Bluetooth radio live near the devices while the hub stays where Ethernet, storage, backups, and clean power make sense.</p>
-<p>That is not just community folklore. Home Assistant's own Bluetooth documentation says that, in many cases, a Bluetooth proxy is a better approach than a directly connected adapter because Linux kernel updates and USB pass-through can create Bluetooth problems. The docs specifically call proxies out as especially interesting for virtualized Home Assistant installs. Also, despite the name, a Bluetooth proxy in this context is for <strong>BLE</strong>, not classic Bluetooth audio or keyboards.</p>
+<p>Bluetooth Low Energy, or <strong>BLE</strong>, is the low-power Bluetooth connection used by many sensors. <a href="https://www.home-assistant.io/integrations/bluetooth/">Home Assistant recommends considering a proxy</a> when a server's Bluetooth adapter is unreliable, particularly inside a virtual machine where passing a USB radio through to Home Assistant adds another possible failure. A proxy does not carry ordinary Bluetooth speaker audio or keyboard input.</p>
 
 <div class="callout">
-  <p><strong>Tara's Bluetooth rule:</strong> keep the main hub where it is operationally boring, then distribute cheap radios to the rooms that actually need Bluetooth reach.</p>
+  <p><strong>Keep a working setup:</strong> If your existing adapter already reaches every device reliably, you do not need a proxy. Start with one only where coverage or USB reliability is causing a problem.</p>
 </div>
 
-<h2 id="why-this-question-keeps-coming-up">Why This Question Keeps Coming Up</h2>
-<p>The demand signal is strong and current. Reddit threads over the last year asked which devices can act as Home Assistant Bluetooth proxies and whether there are retail or pre-flashed options that avoid a lot of DIY friction. Home Assistant Community threads in <strong>July 2025</strong>, <strong>November 2025</strong>, and <strong>May 2026</strong> asked why proxies cap out around a few active devices, why an ESP32-C3 build can stop seeing broadcasts after customization, and why a proxy can show advertisements without giving you an obvious device to add.</p>
-<p>Official product changes made the topic more relevant too. Home Assistant <strong>2025.6</strong> added a Bluetooth connection visualization to make proxy troubleshooting easier, and Home Assistant <strong>2026.6</strong> changed default Bluetooth scanning behavior to a new Auto mode that is much friendlier to battery devices. So the community is asking not only <em>whether</em> to use proxies, but <em>how</em> to set them up without wasting slots, batteries, or time.</p>
-
-
+<span id="why-this-question-keeps-coming-up"></span>
 <h2 id="what-a-bluetooth-proxy-actually-does">What a Bluetooth Proxy Actually Does</h2>
 <p>Home Assistant aggregates Bluetooth data from local adapters and networked proxies into one Bluetooth integration. That means a proxy does not create a second smart-home stack. It extends the same Home Assistant Bluetooth system over your network.</p>
 <p>In practice, a proxy does three useful things:</p>
@@ -393,10 +392,22 @@
 <p>ESPHome's Bluetooth proxy docs say not to place the node in racks or close to routers, switches, or other network gear, and recommend at least <strong>3 meters</strong> of separation because EMI hurts Bluetooth reception. Put the proxy close to the Bluetooth devices you care about, not just close to the main hub.</p>
 
 <h3 id="step-5-test-in-the-bluetooth-ui">5. Test it in Home Assistant's Bluetooth UI</h3>
-<p>Home Assistant <strong>2025.6</strong> added a Bluetooth visualization that shows devices connected directly and through proxies. Community troubleshooting advice also points people to the <strong>Advertisement Monitor</strong> for each proxy so you can see what MAC addresses it is actually hearing. Home Assistant <strong>2026.6</strong> also added a Raw advertisement field in the Bluetooth device info dialog for deeper debugging.</p>
+<p>In the current Home Assistant interface, open <strong>Settings > Connectivity > Bluetooth</strong>. Look under <strong>Adapters</strong> for the proxy and use the advertisement monitor to check whether it hears your sensor. An advertisement is a small broadcast from the device. Seeing it confirms radio reception; the sensor still needs a supported integration before Home Assistant can turn that broadcast into a useful reading. On older releases, follow the Bluetooth integration's device page to its diagnostics.</p>
 
 <h3 id="step-6-add-more-only-where-needed">6. Add more only where needed</h3>
 <p>If range is still spotty, move the proxy first. If specific actively connected devices keep dropping, then add another proxy closer to those devices. Home Assistant's docs say the number of remote scanners is limited only by host performance, but they also say to separate scanners enough to avoid interference with each other.</p>
+
+<h2 id="example-upstairs-sensor">Example: one upstairs temperature sensor</h2>
+<p>Suppose Home Assistant runs in a basement mini PC and a supported BLE temperature sensor upstairs drops out. Keep the server in place, install one ESPHome proxy upstairs, and compare these observations before buying another board. This is a worked troubleshooting example; it is not a measurement from a Tara installation.</p>
+<div class="comparison-table"><table>
+  <thead><tr><th>What you observe</th><th>What to check next</th></tr></thead>
+  <tbody>
+    <tr><td>The proxy is missing from Adapters.</td><td>Check power, its network connection, and the ESPHome integration first.</td></tr>
+    <tr><td>The proxy is online but receives nothing from the sensor.</td><td>Move it closer, check the sensor battery, and allow for the sensor's reporting interval.</td></tr>
+    <tr><td>The sensor's broadcasts appear, but there is no reading.</td><td>Check the exact model's integration and any required setup or encryption key. Extra range cannot supply missing device support.</td></tr>
+    <tr><td>The reading works close by but fails in the final location.</td><td>Adjust placement and interference, then retest there before adding another proxy.</td></tr>
+  </tbody>
+</table></div>
 
 <h2 id="the-two-limits-that-matter">The Two Limits That Matter Most</h2>
 

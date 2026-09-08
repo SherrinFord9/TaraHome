@@ -267,7 +267,7 @@
             <p class="lede">Extend the Thread mesh you already have with powered routing devices. A second border router helps only when it joins the same Thread network password; a separate mesh does not extend the first one.</p>
           </div>
           <figure class="article-cover">
-            <img src="/assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover.png" alt="Homeowner adding an always-powered Thread smart plug midway through a warm home" loading="eager" />
+            <img src="/assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover-1200.webp" srcset="/assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover-480.webp 480w, /assets/generated/blog/extend-thread-range-home-assistant-without-second-network/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1672" height="941" decoding="async" alt="Homeowner adding an always-powered Thread smart plug midway through a warm home" loading="eager" />
           </figure>
         </header>
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
@@ -287,10 +287,7 @@
 <div class="callout">
   <p><strong>Tara's rule:</strong> fill a real gap on one Thread mesh. Do not add a second ecosystem network just because another box has a Thread logo.</p>
 </div>
-<h2 id="why-this-question-is-current">Why This Question Is Active Right Now</h2>
-<p>On <strong>July 6, 2026</strong>, an r/homeassistant user asked the exact question behind this guide: would a Google Nest hub or Echo Show extend an existing Home Assistant Thread network, or start another one? The replies quickly exposed the confusion between a border router, a normal Thread router, a sleepy battery device, and a separate vendor-created mesh.</p>
-<p>The same demand appears in Home Assistant Community posts about reaching sensors outside the house, improving range across multiple floors, and adding a second border router without rebuilding the network. IKEA's new Matter-over-Thread range made the question especially practical. Homeowners now have inexpensive plugs, bulbs, buttons, and sensors, but the boxes do not explain which devices strengthen the mesh and which only use it.</p>
-<p>Home Assistant also changed the troubleshooting workflow on <strong>June 23, 2026</strong>. Matter Server app 9.0 moved Home Assistant to the matter.js server, improved recovery, and added a network visualization that shows Thread leaders, routers, sleepy devices, hops, and connection quality. That means the best first step is now to look at the mesh rather than guess.</p>
+<span id="why-this-question-is-current"></span>
 <h2 id="plain-english-roles">Border Router, Mesh Router, and Battery Sensor in Plain English</h2>
 <p><strong>Thread</strong> is a low-power local mesh network. <strong>Matter</strong> is a control standard that can run over Thread, Wi-Fi, or Ethernet. <strong>Local control</strong> means commands can stay inside the house instead of waiting for a vendor cloud service. These layers are related, but they do different jobs.</p>
 <p><strong>Official support boundary:</strong> Home Assistant officially documents its own OpenThread Border Router and the credential-import path for existing Apple or Google Thread networks. The Thread Group documents powered mesh extenders and the difference between shared and separate credentials. IKEA's official page confirms that GRILLPLATS uses Matter over Thread, but it does not certify a Home Assistant-specific routing result. The placement and reliability examples from Reddit and the Home Assistant forum remain community experience, not product certification.</p>
@@ -375,7 +372,7 @@
   <li><strong>Repeated factory resets:</strong> they erase useful state and can move a device onto the wrong phone-preferred network without fixing the original gap.</li>
 </ul>
 <h2 id="when-more-routing-will-not-help">When More Powered Devices Will Not Fix It</h2>
-<p>An unavailable Matter-over-Thread device does not automatically mean weak radio coverage. Home Assistant Community reports in 2026 show several different patterns: one powered router dropping before its sleepy children, devices with apparently strong alternate routes failing to reattach, and otherwise healthy homes disrupted by <strong>IPv6</strong> (the local network addressing Thread uses), <strong>multicast</strong> (local discovery traffic), separate network segments called VLANs, or a broken device-to-controller connection. These are demand signals and diagnostic examples, not proof that any one brand is universally defective.</p>
+<p>An unavailable Matter-over-Thread device does not automatically mean weak radio coverage. Home Assistant Community reports in 2026 show several different patterns: one powered router dropping before its sleepy children, devices with apparently strong alternate routes failing to reattach, and otherwise healthy homes disrupted by <strong>IPv6</strong> (the local network addressing Thread uses), <strong>multicast</strong> (local discovery traffic), separate network segments called VLANs, or a broken device-to-controller connection. Check which failure your logs show before changing radio coverage; these reports do not establish that a particular brand is defective.</p>
 <ul>
   <li><strong>Several children fail right after one powered device:</strong> inspect that parent router and its <strong>firmware</strong>, meaning the software stored on the device, before buying more.</li>
   <li><strong>Every Thread device disappears together:</strong> inspect the border router, Matter Server, host networking, and local IPv6 path.</li>
