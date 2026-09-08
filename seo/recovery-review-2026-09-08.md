@@ -123,6 +123,31 @@ blocked unrelated edits, multiple articles, symlinks, writer commits and failed
 deployment verification. The publishing gate is tested against malformed dates,
 canonicals, indexing directives, images, TLDRs and internal commentary.
 
+## Verified daily run
+
+On September 8, the installed cron launcher ran from 08:37 to 08:55 Pacific while
+the original main working folder still contained the untouched August 23 draft.
+It researched three candidates, wrote a new Home Assistant washing-machine
+completion guide, generated a unique laundry cover and responsive variants,
+corrected proofreading findings, and saved its topic brief and editorial review.
+Independent checks passed before the runner committed and pushed `af7adf9`.
+[The exact commit's Pages deployment succeeded](https://github.com/SherrinFord9/TaraHome/actions/runs/34247702494),
+and the runner verified the [live article and canonical](https://tarahome.ai/blog/home-assistant-washing-machine-finished-notification/)
+before recording state `published` and exiting zero. The new article's configuration
+was syntax-checked and compared with documentation, not run on physical hardware.
+
+The final runner also preserves the verified article/deployment record when a
+later slot meets the daily quota; dry runs do not overwrite status. Browser
+artifacts are excluded from publication and future jobs have a separate artifact
+directory. Sparse future performance exports no longer fail on an empty list of
+large-traffic changes. Automated coverage totals 18 cases across runner behavior,
+publication gates and the workbook importer.
+
+The existing 06:00 and 18:00 cron entries remain unchanged. The local launcher
+loads the runner from remote main, so it does not depend on resetting or merging
+the user's unfinished main-worktree edits. Inspect the current state with
+`/home/sherrinford/bin/tarahome-blog-run.sh --status`.
+
 ## Search Console follow-up
 
 Compare July 12-18 with July 20-26 by page/query, then August 10-September 6 with

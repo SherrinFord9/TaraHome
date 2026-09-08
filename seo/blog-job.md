@@ -4,6 +4,9 @@ Use $tarahome-blog-research and $tarahome-grandma-proofread. Read
 seo/article-schedule.json, its strategyInputs.latestSearchPerformance file,
 seo/recovery-review-2026-09-08.md, seo/keyword-strategy.json, seo/keyword-map.json,
 and existing article titles and topic briefs before choosing a question.
+Use a JSON parser to read the performance summary and relevant page/query rows;
+do not dump the entire export into the working context. Treat dated evidence as
+historical, not as a live ranking report, and verify present-day demand separately.
 
 This is an isolated draft worktree supplied by scripts/blog-runner.py.
 Prepare exactly one useful new article per day at most. The runner owns commit,
@@ -59,6 +62,9 @@ Use the true publication date supplied by the runner, including visible dates an
 JSON-LD. Do not update old article dates for cosmetic edits. Run the skills' gates,
 check local internal links and source links, inspect desktop and mobile in a
 browser, then correct all findings.
+Save verification screenshots and temporary test files in the external directory
+named by TARAHOME_BLOG_ARTIFACTS, not in the website root. Only the article's
+publishable files may remain as changes in this worktree.
 
 Write seo/editorial-reviews/<slug>.json with this structure using concrete findings:
 

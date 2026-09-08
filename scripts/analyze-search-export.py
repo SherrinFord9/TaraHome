@@ -64,7 +64,7 @@ def analyze(source, export_date):
         'last28Days': current, 'previous28Days': previous,
         'change': {key + 'Percent': round((current[key] / previous[key] - 1) * 100, 2) if previous[key] else None for key in ('clicks', 'impressions')},
         'last7Days': summarize(chart[-7:]), 'previous7Days': summarize(chart[-14:-7]),
-        'largestSevenDayBreak': min(changes, key=lambda row: row['impressionsChangePercent']),
+        'largestSevenDayBreak': min(changes, key=lambda row: row['impressionsChangePercent'], default=None),
         'weekly': weekly, 'daily': chart, 'dimensionsFullPeriod': dimensions,
     }
 

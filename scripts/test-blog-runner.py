@@ -128,6 +128,31 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'symlink'):
             runner.validate_scope(self.repo, self.base)
 
+    def test_dry_run_and_quota_check_preserve_verified_publication(self):
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+        self.article()
+        self.command('add', '.')
+        self.command('commit', '-m', 'Today article')
+        self.command('push', 'origin', 'main')
+        state = self.root / 'state'
+        state.mkdir()
+        status = {'date': datetime.now(ZoneInfo('America/Los_Angeles')).date().isoformat(),
+                  'state': 'published', 'article': 'https://tarahome.ai/blog/test-guide/',
+                  'commit': self.command('rev-parse', 'HEAD'), 'deployment': 'https://example.invalid/run'}
+        status_path = state / 'status.json'
+        status_path.write_text(json.dumps(status))
+        args = argparse.Namespace(repo=self.repo, state_dir=state, status=False,
+                                  dry_run=True, codex='/bin/false', timeout_minutes=1)
+        self.assertEqual(runner.execute(args), 0)
+        self.assertEqual(json.loads(status_path.read_text()), status)
+        args.dry_run = False
+        self.assertEqual(runner.execute(args), 0)
+        result = json.loads(status_path.read_text())
+        for key, value in status.items():
+            self.assertEqual(result[key], value)
+        self.assertEqual(result['quotaCheck'], 'met')
+
 
 if __name__ == '__main__':
     unittest.main()

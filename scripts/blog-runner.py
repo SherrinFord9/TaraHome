@@ -202,15 +202,19 @@ def execute(args):
             if policy['publishing']['newArticlesPerDay'] != 1:
                 raise ValueError('This runner supports a maximum of one new article per day.')
             count = published_today(repo, day)
-            if count >= 1:
-                record(state='quota_met', publishedArticles=count)
-                print('A new article is already on remote main today; no second article will be created.')
-                return 0
             if args.dry_run:
                 print(json.dumps({'date': day, 'base': base, 'newArticlesPublishedToday': count,
                                   'isolatedWorktree': True, 'timeoutMinutes': args.timeout_minutes,
                                   'performanceInput': policy['strategyInputs']['latestSearchPerformance'],
                                   'sourceWorktreeDirty': bool(git(repo, 'status', '--porcelain'))}, indent=2))
+                return 0
+            if count >= 1:
+                if previous.get('date') == day and previous.get('state') == 'published':
+                    status.update(previous)
+                    record(quotaCheck='met', publishedArticles=count)
+                else:
+                    record(state='quota_met', publishedArticles=count)
+                print('A new article is already on remote main today; no second article will be created.')
                 return 0
             attempt = datetime.now().strftime('%Y%m%d-%H%M%S') + '-' + str(os.getpid())
             worktree = state / 'worktrees' / attempt
@@ -218,10 +222,13 @@ def execute(args):
             git(repo, 'worktree', 'add', '--detach', str(worktree), base)
             log = state / (attempt + '.log')
             last_message = state / (attempt + '.last.md')
-            record(state='writing', worktree=str(worktree), log=str(log), base=base)
+            artifacts = state / (attempt + '-artifacts')
+            artifacts.mkdir()
+            record(state='writing', worktree=str(worktree), log=str(log), artifacts=str(artifacts), base=base)
             prompt = (worktree / 'seo/blog-job.md').read_text()
             prompt += f'\nPublication date: {day}. Work only in {worktree}. Read seo/article-schedule.json for the current strategy input.\n'
-            env = dict(os.environ, TARAHOME_BLOG_REQUIRED_LANE='demand-led', TARAHOME_BLOG_DISABLE_COVER_FALLBACK='1')
+            env = dict(os.environ, TARAHOME_BLOG_REQUIRED_LANE='demand-led', TARAHOME_BLOG_DISABLE_COVER_FALLBACK='1',
+                       TARAHOME_BLOG_ARTIFACTS=str(artifacts))
             codex = args.codex or shutil.which('codex')
             if not codex:
                 raise ValueError('codex is not on PATH; set TARAHOME_CODEX_BIN.')
@@ -253,7 +260,11 @@ def execute(args):
             deployment = verify_deployment(worktree, commit, status['article'])
             record(state='published', deployment=deployment)
             print(f"Published and verified {status['article']} ({commit[:8]})")
-            git(repo, 'worktree', 'remove', str(worktree))
+            try:
+                git(repo, 'worktree', 'remove', str(worktree))
+            except subprocess.CalledProcessError as error:
+                record(cleanupWarning=str(error), worktreePreserved=True)
+                print('Published article is verified; local verification artifacts were retained.')
             return 0
         except Exception as error:
             record(state='failed', error=str(error), draftPreserved=bool(worktree and worktree.exists()))
