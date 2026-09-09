@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Trash Collection Reminder: Calendar Setup</title>
+    <meta name="description" content="Set up a Home Assistant trash collection reminder that lists tomorrow’s bins in one message, with local calendar setup and holiday-date examples." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-trash-collection-reminder/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-trash-collection-reminder/" />
+    <meta property="og:title" content="Home Assistant Trash Collection Reminder: Calendar Setup" />
+    <meta property="og:description" content="Set up a Home Assistant trash collection reminder that lists tomorrow’s bins in one message, with local calendar setup and holiday-date examples." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-trash-collection-reminder/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Trash Collection Reminder: Calendar Setup" />
+    <meta name="twitter:description" content="Set up a Home Assistant trash collection reminder that lists tomorrow’s bins in one message, with local calendar setup and holiday-date examples." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-trash-collection-reminder/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-trash-collection-reminder/#blogposting",
+      "headline": "Home Assistant Trash Collection Reminder: Calendar Setup",
+      "description": "Set up a Home Assistant trash collection reminder that lists tomorrow’s bins in one message, with local calendar setup and holiday-date examples.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-trash-collection-reminder/cover.png",
+      "datePublished": "2026-09-09",
+      "dateModified": "2026-09-09",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-trash-collection-reminder/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/local_calendar/",
+        "https://www.home-assistant.io/integrations/calendar/",
+        "https://www.home-assistant.io/actions/calendar.get_events/",
+        "https://www.home-assistant.io/integrations/remote_calendar/",
+        "https://github.com/mampfes/hacs_waste_collection_schedule",
+        "https://www.home-assistant.io/docs/templating/dates-and-times/",
+        "https://www.home-assistant.io/docs/automation/action/",
+        "https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/calendar/__init__.py",
+        "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+        "https://companion.home-assistant.io/docs/notifications/notification-local/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Trash Collection Reminder: Calendar Setup",
+          "item": "https://tarahome.ai/blog/home-assistant-trash-collection-reminder/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does the reminder work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A Local calendar and its date check can run while the internet is down if Home Assistant is powered and running. Ordinary phone push can depend on internet services. Companion App Local Push is a separate option with local connection requirements. A provider feed also needs access to its source to learn new dates."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need HACS or a smart bin sensor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The local-calendar example uses built-in Home Assistant features and the Companion App. HACS, the community store for custom integrations, is an optional route for projects such as Waste Collection Schedule. A bin sensor is only relevant if you also want to track movement; this guide does not detect whether a bin was put out or emptied."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will it keep reminding me until I take the bins out?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It makes one scheduled attempt each evening and sends only when tomorrow has events. A manual run may send another message. Repeated reminders need a separate acknowledgement and reset design; add that only after the dates and single message are correct."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+      <header class="hero article-hero">
+        <div>
+          <p class="article-meta"><span>Practical automations</span><span><time datetime="2026-09-09">September 9, 2026</time></span><span>9 min read</span></p>
+          <h1>Home Assistant Trash Collection Reminder: Calendar Setup</h1>
+          <p class="lede">List tomorrow’s bins in one evening message, using collection dates you can inspect and correct when the schedule changes.</p>
+          <p class="article-byline"><a href="/#about">By Tara Home</a></p>
+        </div>
+        <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-trash-collection-reminder/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-trash-collection-reminder/cover-480.webp 480w, /assets/generated/blog/home-assistant-trash-collection-reminder/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Green and charcoal household bins at the curb outside a warmly lit home at dusk" loading="eager" /></figure>
+      </header>
+      <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Use collection dates:</strong> put each pickup in a dedicated calendar. Use your collector’s calendar feed if available, or enter the dates in Home Assistant’s Local calendar.</li>
+              <li><strong>Send one evening message:</strong> at 7 pm, fetch all of tomorrow’s events and list the bins together. This includes recycling when it shares trash day.</li>
+              <li><strong>Handle holidays in the calendar:</strong> change the affected pickup date according to your collector. A weekly reminder cannot discover an exception on its own.</li>
+              <li><strong>Keep the limits visible:</strong> this is a reminder, not proof the bins are outside. Local dates can work without internet; ordinary phone push may still need it. Home Assistant must be running at reminder time.</li>
+            </ul>
+          </aside>
+          <h2>Start with a calendar, then add the reminder</h2>
+          <p>A <strong>Home Assistant trash collection reminder</strong> works best when the pickup dates live in one dedicated calendar. First check your collection provider’s schedule. Then bring those dates into Home Assistant, test a phone message, and add the evening check below. You do not need a sensor on the bin for this version.</p>
+          <p>If the provider offers a calendar subscription link, use it through <a href="https://www.home-assistant.io/integrations/remote_calendar/">Remote Calendar</a>. If you have a leaflet or a short list of dates, Home Assistant’s built-in <a href="https://www.home-assistant.io/integrations/local_calendar/">Local calendar</a> is a straightforward starting point. Local means those entered dates are stored in your Home Assistant installation. Somebody still needs to keep them correct.</p>
+          <p>The example runs once each evening, asks for every collection tomorrow, and sends one message containing their names. An empty day produces no message. Its calendar should contain only collection events, each covering its actual pickup day.</p>
+          <p class="research-method">Researched from current Home Assistant, Companion App and project documentation on September 9, 2026. The example dates are illustrative, not a municipal schedule. The YAML syntax and sample date/message calculations were checked locally; this configuration was not run in Home Assistant or tested with a collection provider or phone. The cover is an AI-generated residential illustration.</p>
+
+          <h2 id="setup">Set up the calendar and phone message</h2>
+          <h3>1. Choose where the dates come from</h3>
+          <p>Use one source of collection dates. Keep a provider calendar separate from your personal appointments so an unrelated event cannot become a bin reminder.</p>
+          <p class="table-hint">Scroll sideways to read all columns on a phone.</p>
+          <div class="comparison-table" role="region" aria-label="Collection calendar choices" tabindex="0"><table>
+            <thead><tr><th scope="col">What you have</th><th scope="col">Choose</th><th scope="col">What to maintain or check</th></tr></thead>
+            <tbody>
+              <tr><td>Provider’s calendar subscription URL, often ending in .ics</td><td>Built-in Remote Calendar</td><td>Check the address and bin types. It needs upstream access for updates; the documented default fetch interval is 24 hours, so a late correction may not appear immediately.</td></tr>
+              <tr><td>Paper leaflet, PDF or a manageable list of dates</td><td>Built-in Local calendar</td><td>Enter the real dates and update exceptions yourself. It will not read changes from the provider’s website.</td></tr>
+              <tr><td>A provider supported by Waste Collection Schedule</td><td>The community-maintained custom integration</td><td>Follow that provider’s setup instructions and verify its output. This adds third-party software and provider-specific maintenance.</td></tr>
+            </tbody>
+          </table></div>
+          <p><a href="https://www.home-assistant.io/integrations/remote_calendar/">Remote Calendar’s documentation</a> covers its URL and authentication options. <a href="https://github.com/mampfes/hacs_waste_collection_schedule">Waste Collection Schedule</a> is a separate community project; support for one council does not establish support for yours. The walkthrough below uses Local calendar. An existing calendar can replace it after you verify that it returns the right collection events.</p>
+
+          <h3>2. Enter a few confirmed pickup dates</h3>
+          <ol>
+            <li>Open <strong>Settings → Devices &amp; services → Add integration</strong>, choose <strong>Local calendar</strong>, and name it <strong>Bin collection</strong>.</li>
+            <li>Open <strong>Calendar</strong> in the sidebar and choose <strong>Add event</strong>. Select the new calendar. Add a one-day, all-day event on the <strong>pickup date</strong>, named something clear such as <strong>Trash</strong> or <strong>Recycling</strong>.</li>
+            <li>Enter the next few dates from your provider. If both bins are collected on one day, add two separate events on that day. Avoid multi-day events such as “holiday week,” which would make several days appear to have a collection.</li>
+            <li>Open the calendar’s entity settings and copy its <strong>entity ID</strong>, the internal name used in automations. This example uses <code>calendar.bin_collection</code>; yours may differ.</li>
+          </ol>
+          <p>The <a href="https://www.home-assistant.io/integrations/calendar/">Calendar documentation</a> explains the sidebar and event controls. Check the month view after entering dates: the event belongs on collection day, not the evening when you plan to move the bins. Set yourself a separate reminder to enter the next published schedule before these dates run out.</p>
+
+          <h3>3. Test a plain phone notification</h3>
+          <p>Connect the Home Assistant Companion App to this installation and allow notifications. Open Home Assistant’s <strong>Actions tool</strong> and find your phone’s <code>notify.mobile_app_…</code> action. In current navigation, look under <strong>Settings → Tools → Actions</strong>; older versions call it <strong>Developer tools → Actions</strong>.</p>
+          <p>Send a test with the message “Bin reminder test.” Copy that action’s exact name for the automation. The <a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion notification documentation</a> shows the <code>title</code> and <code>message</code> fields. If a plain message does not arrive, fix <a href="/blog/home-assistant-notifications-delayed-not-arriving/">Home Assistant notification delivery</a> before adding calendar logic.</p>
+
+          <h2 id="automation">Make one 7 pm check for tomorrow’s bins</h2>
+          <p>Open <strong>Settings → Automations &amp; scenes</strong>, create a new empty automation, and choose <strong>Edit in YAML</strong> from its menu. YAML is Home Assistant’s text configuration format. Paste the example as one automation; do not add an outer <code>automation:</code> line.</p>
+          <p><strong>Replace the calendar ID in both places</strong> and replace <code>notify.mobile_app_your_phone</code> with the action you tested. Keep the indentation. Change <code>19:00:00</code> if another evening time is more useful, then save and enable the automation.</p>
+          <details class="configuration" open><summary>Copy the single-calendar reminder</summary><pre tabindex="0" aria-label="Calendar reminder YAML"><code>alias: &quot;Bins - tomorrow at 7 pm&quot;
+description: &quot;One evening message for tomorrow&#x27;s collection events&quot;
+triggers:
+  - trigger: time
+    at: &quot;19:00:00&quot;
+conditions: []
+actions:
+  - action: calendar.get_events
+    target:
+      entity_id: calendar.bin_collection
+    data:
+      start_date_time: &gt;-
+        {{ (now().date() + timedelta(days=1)).isoformat() }} 00:00:00
+      end_date_time: &gt;-
+        {{ (now().date() + timedelta(days=2)).isoformat() }} 00:00:00
+    response_variable: collections
+  - variables:
+      bins: &gt;-
+        {{ collections[&#x27;calendar.bin_collection&#x27;][&#x27;events&#x27;]
+           | map(attribute=&#x27;summary&#x27;) | unique | list }}
+  - condition: template
+    value_template: &quot;{{ bins | count &gt; 0 }}&quot;
+  - action: notify.mobile_app_your_phone
+    data:
+      title: &quot;Bins for tomorrow&quot;
+      message: &quot;Put out: {{ bins | join(&#x27;, &#x27;) }}. Collection is tomorrow.&quot;
+mode: single
+</code></pre></details>
+          <p>The <a href="https://www.home-assistant.io/actions/calendar.get_events/">Get calendar events action</a> returns a list for the requested calendar. Here, <code>collections</code> holds that response and <code>bins</code> holds its event titles. The rule joins those titles with commas; identical titles are listed once. The <a href="https://www.home-assistant.io/docs/automation/action/">condition inside the action sequence</a> stops an empty list from sending a message.</p>
+          <p>The interval starts at tomorrow’s midnight and ends at the following midnight, which is excluded. It is not “the next 24 hours from 7 pm.” The expressions first calculate local <em>dates</em> and then add midnight; Home Assistant’s calendar action interprets those times locally. Check the installation’s configured time zone. See the <a href="https://www.home-assistant.io/docs/templating/dates-and-times/">date/time documentation</a> and <a href="https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/calendar/__init__.py">calendar action implementation</a>.</p>
+          <p>This setup queries the event list instead of reading the calendar entity’s single next-event attributes. That distinction matters when trash and recycling share a date. Keep both events in the calendar you query; the code does not automatically combine separate calendars.</p>
+
+          <h2 id="worked-example">Worked example: ordinary pickup, recycling and a changed date</h2>
+          <p>Imagine a household with Thursday trash pickup and recycling every other Thursday. These are made-up dates to explain the rule. The reminder’s wording comes from the event titles; it does not guess a bin’s color or collection type.</p>
+          <p class="table-hint">Scroll sideways to compare the calendar entries and expected message.</p>
+          <div class="comparison-table" role="region" aria-label="Worked bin reminder examples" tabindex="0"><table>
+            <thead><tr><th scope="col">Calendar entries</th><th scope="col">Evening check</th><th scope="col">Expected result</th></tr></thead>
+            <tbody>
+              <tr><td>Trash on Thursday, September 10</td><td>Wednesday, September 9 at 7 pm</td><td>“Put out: Trash. Collection is tomorrow.”</td></tr>
+              <tr><td>Trash and Recycling on Thursday, September 17</td><td>Wednesday, September 16 at 7 pm</td><td>One message listing Trash and Recycling. Their order follows the returned events.</td></tr>
+              <tr><td>That September 17 pickup is moved to Friday, September 18; both old entries are removed and both replacement entries are added</td><td>September 16, then September 17 at 7 pm</td><td>No message on Wednesday; one message listing both bins on Thursday.</td></tr>
+              <tr><td>No collection on Saturday, September 19</td><td>Friday, September 18 at 7 pm</td><td>No message.</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>For a real holiday change, follow the collector’s notice.</strong> A holiday does not necessarily move every collection by one day. In a manually maintained calendar, remove the affected original event and add its replacement on the confirmed date. If you use a repeating series, change only that occurrence and inspect the following normal week. With a provider feed, check that the corrected date has actually arrived in Home Assistant.</p>
+          <p>Two entries with the same title on one day are combined in the message, but an old event left on Thursday plus a replacement on Friday would create two evening reminders. Correct the dates rather than adding another weekday rule to compensate.</p>
+
+          <h2 id="verification">Check these four cases before relying on it</h2>
+          <p>Create a separate temporary Local calendar named <strong>Bin reminder test</strong> and temporarily use its entity ID in both code locations. This lets you test empty days without deleting real pickups. Restore your collection calendar’s ID in both places when you finish.</p>
+          <ol>
+            <li><strong>Tomorrow has two collections:</strong> create two temporary one-day events named “Test trash” and “Test recycling.” Run the automation’s actions manually. This example can be tested that way because it obtains its own calendar data. Expect one message with both names.</li>
+            <li><strong>Tomorrow is empty:</strong> remove those temporary events, confirm the test calendar is empty tomorrow, and run again. Expect no message. Inspect the trace to confirm the empty-list condition stopped it.</li>
+            <li><strong>A date moves:</strong> move the test events from tomorrow to the day after. The next manual run should be quiet. Verify the events are visible on the new date.</li>
+            <li><strong>The clock starts it:</strong> restore temporary events for tomorrow and briefly choose a test trigger time later today. Leave Home Assistant running, verify it creates a trace at that time, then restore your evening time and delete the test events.</li>
+          </ol>
+          <p>A <strong>trace</strong> is the automation’s record of its steps and data. Check the <code>collections</code> response when a bin is missing. Allow time for calendar changes to become visible before testing, especially with a remote source. Running the actions checks the calendar and message path; the scheduled test separately checks the clock trigger. See <a href="/blog/home-assistant-automation-not-firing/">how to diagnose an automation that does not start</a> if no scheduled trace appears.</p>
+
+          <h2 id="troubleshooting">Fix the layer that is wrong</h2>
+          <p class="table-hint">Scroll sideways to read the next step for each symptom.</p>
+          <div class="comparison-table" role="region" aria-label="Trash reminder troubleshooting" tabindex="0"><table>
+            <thead><tr><th scope="col">Symptom</th><th scope="col">Check first</th><th scope="col">Next step</th></tr></thead>
+            <tbody>
+              <tr><td>Reminder is a day early</td><td>Did you enter “put bins out” day rather than pickup day?</td><td>Put the event on collection day. This automation already checks one day ahead.</td></tr>
+              <tr><td>Recycling is missing</td><td>Is it in a different calendar or absent from the returned events?</td><td>Put both collection types in the queried calendar, or deliberately adapt the query and response handling for multiple calendars.</td></tr>
+              <tr><td>Holiday reminder is wrong</td><td>Does Home Assistant still display the old pickup?</td><td>Correct the local event, or check the provider feed and its last update. A successful query can still return stale dates.</td></tr>
+              <tr><td>The run fails before sending</td><td>Check the trace for an unavailable calendar or a calendar ID that does not match the returned calendar name.</td><td>Restore the calendar connection and match its ID in both code locations. Do not turn a calendar error into a claimed “no collection” result.</td></tr>
+              <tr><td>Trace reaches notification; phone stays quiet</td><td>Does the plain notification test arrive?</td><td>Check app permission, phone settings and delivery connectivity.</td></tr>
+              <tr><td>No message after a 7 pm restart</td><td>Was Home Assistant offline at the scheduled time?</td><td>Run the actions manually that evening if useful. This example has no startup catch-up or automatic retry.</td></tr>
+            </tbody>
+          </table></div>
+
+          <h2 id="faq">Other practical questions</h2>
+          <h3>Does the reminder work without internet?</h3><p>A Local calendar and its date check can run while the internet is down if Home Assistant is powered and running. Ordinary phone push can depend on internet services. <a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Companion App Local Push</a> is a separate option with local connection requirements. A provider feed also needs access to its source to learn new dates.</p>
+<h3>Do I need HACS or a smart bin sensor?</h3><p>No. The local-calendar example uses built-in Home Assistant features and the Companion App. HACS, the community store for custom integrations, is an optional route for projects such as Waste Collection Schedule. A bin sensor is only relevant if you also want to track movement; this guide does not detect whether a bin was put out or emptied.</p>
+<h3>Will it keep reminding me until I take the bins out?</h3><p>No. It makes one scheduled attempt each evening and sends only when tomorrow has events. A manual run may send another message. Repeated reminders need a separate acknowledgement and reset design; add that only after the dates and single message are correct.</p>
+          <p>For Tara’s <a href="/home-automation-kit/">home automation kit with coordinated local routines</a>, a useful handoff includes who maintains the dates, which phone gets the reminder, and how to check it. Keep the collector’s schedule accessible even after the automation is working.</p>
+</div>
+      <section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Calendar documentation</h3><ul><li><a href="https://www.home-assistant.io/integrations/local_calendar/">Local calendar setup</a></li><li><a href="https://www.home-assistant.io/integrations/calendar/">Calendar dashboard and event behavior</a></li><li><a href="https://www.home-assistant.io/actions/calendar.get_events/">Get calendar events: date ranges and response data</a></li><li><a href="https://www.home-assistant.io/integrations/remote_calendar/">Remote Calendar: feeds, authentication and updates</a></li><li><a href="https://github.com/mampfes/hacs_waste_collection_schedule">Waste Collection Schedule project and provider support</a></li></ul></div><div><h3>Automation and notification documentation</h3><ul><li><a href="https://www.home-assistant.io/docs/templating/dates-and-times/">Date and time templates</a></li><li><a href="https://www.home-assistant.io/docs/automation/action/">Conditions inside automation actions</a></li><li><a href="https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/calendar/__init__.py">Calendar action implementation, Home Assistant 2026.9.1</a></li><li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion App notifications</a></li><li><a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Companion App Local Push</a></li></ul></div></div></section>
+      <section class="block article-cta"><p class="kicker">Plan your home</p><h2>Bring everyday reminders into one home plan</h2><p>Choose the rooms and routines you want to connect.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+    </article></main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
