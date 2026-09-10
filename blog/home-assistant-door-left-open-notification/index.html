@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Door Left Open Notification: Repeat and Stop</title>
+    <meta name="description" content="Set up a Home Assistant door left open notification with a grace period, repeating reminders, acknowledgement, and clear sensor-failure limits." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-door-left-open-notification/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-door-left-open-notification/" />
+    <meta property="og:title" content="Home Assistant Door Left Open Notification: Repeat and Stop" />
+    <meta property="og:description" content="Set up a Home Assistant door left open notification with a grace period, repeating reminders, acknowledgement, and clear sensor-failure limits." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-door-left-open-notification/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Door Left Open Notification: Repeat and Stop" />
+    <meta name="twitter:description" content="Set up a Home Assistant door left open notification with a grace period, repeating reminders, acknowledgement, and clear sensor-failure limits." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-door-left-open-notification/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-door-left-open-notification/#blogposting",
+      "headline": "Home Assistant Door Left Open Notification: Repeat and Stop",
+      "description": "Set up a Home Assistant door left open notification with a grace period, repeating reminders, acknowledgement, and clear sensor-failure limits.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-door-left-open-notification/cover.png",
+      "datePublished": "2026-09-10",
+      "dateModified": "2026-09-10",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-door-left-open-notification/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/alert/",
+        "https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/alert/entity.py",
+        "https://www.home-assistant.io/integrations/binary_sensor/",
+        "https://www.home-assistant.io/docs/configuration/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+        "https://companion.home-assistant.io/docs/notifications/notification-local/",
+        "https://www.home-assistant.io/triggers/state/",
+        "https://www.home-assistant.io/common-tasks/os/#configuration-check"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Door Left Open Notification: Repeat and Stop",
+          "item": "https://tarahome.ai/blog/home-assistant-door-left-open-notification/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The alert logic runs in Home Assistant. With a locally connected sensor, that part can work during an internet outage while Home Assistant and the local network stay powered. Ordinary phone push may still need internet. Companion App Local Push needs a supported, active connection of its own; test delivery under your actual conditions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it for a garage door or several doors?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, with a verified open/closed reading. A garage opener may expose a cover whose states differ from a contact sensor. Inspect its actual states before adapting entity_id and state. For several doors, begin with a separately named alert, message and notification tag for each, so you know which opening you are silencing. For choosing opener hardware, use the Home Assistant garage-door setup guide."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will this close or lock the door?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It sends reminders only. A closed contact is not proof a lock is engaged. Keep normal physical security checks, and do not add unattended door movement without the hardware’s safety provisions. Consider whether door names should appear on a phone’s lock screen."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article><header class="hero article-hero"><div>
+<p class="article-meta"><span>Practical automations</span><span><time datetime="2026-09-10">September 10, 2026</time></span><span>10 min read</span></p>
+<h1>Home Assistant Door Left Open Notification: Repeat and Stop</h1><p class="lede">Wait before sending, repeat only while needed, and give the household a clear way to silence the current reminder.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-door-left-open-notification/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-door-left-open-notification/cover-480.webp 480w, /assets/generated/blog/home-assistant-door-left-open-notification/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A dark-green patio door left open beside a bench and grocery tote in a warmly lit home" loading="eager" /></figure></header><div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Use the built-in Alert integration for repeating reminders.</strong> Start with one working door sensor and one phone notification you have checked.</li>
+    <li><strong>Give ordinary trips through the door a grace period.</strong> The example waits five minutes, reminds again 15 minutes later, then every 30 minutes.</li>
+    <li><strong>Silence the current opening with <code>alert.turn_off</code>.</strong> Closing and reopening the door starts a fresh reminder cycle. Swiping away a phone message does not acknowledge this alert.</li>
+    <li><strong>Silence does not prove the door is closed.</strong> A missing sensor or Home Assistant restart can interrupt reminders. Keep checking the physical door; this is a convenience reminder, not a security alarm.</li>
+  </ul>
+</aside>
+
+<h2>Choose a repeating alert, then check its two inputs</h2>
+<p>For a <strong>Home Assistant door left open notification</strong> that repeats and can be silenced, use the built-in <a href="https://www.home-assistant.io/integrations/alert/">Alert integration</a>. An integration is a feature or connection inside Home Assistant. This one watches a reading, waits, and sends reminders while the problem continues. First confirm that the door reading changes correctly. Then test a plain phone message. Only after both work should you add the configuration below.</p>
+<p>This walkthrough monitors one patio door. It needs an existing contact sensor—the two-part device that detects whether a door is open—and the Home Assistant Companion App. It requires editing a configuration file. For a single message with no repeats, use a regular automation whose <a href="https://www.home-assistant.io/triggers/state/">state trigger</a> requires the sensor to stay <code>on</code> <strong>for five minutes</strong>. Put that duration in the trigger’s <code>for</code> setting; a delay action by itself would not cancel the message when the door closes. Choose Alert when you also want a deliberate “I know; stop reminding me for now” control.</p>
+<p class="research-method"><strong>Research method:</strong> researched from current Home Assistant documentation and the Alert implementation in Core 2026.9.1 on September 10, 2026. The YAML was syntax-checked, and the upstream alert logic was exercised with a simulated clock and notification service. This was not a running Home Assistant installation or a physical door or phone test. The cover is an AI-generated residential illustration.</p>
+
+<h2 id="setup">1. Confirm the door reading and phone action</h2>
+<ol>
+  <li>Open <strong>Settings → Tools → States</strong>. Older versions call this <strong>Developer tools → States</strong>. Find your door’s <strong>entity ID</strong>, its internal name, such as <code>binary_sensor.patio_door_contact</code>.</li>
+  <li>Open and close the door while watching that reading. A door <strong>binary sensor</strong> is an open-or-closed reading: its raw state is normally <code>on</code> for open and <code>off</code> for closed, even if the dashboard uses friendly words. Verify yours; do not assume an opener’s <code>cover.…</code> entity uses the same states.</li>
+  <li>In the <strong>Actions</strong> tool, select the phone’s <code>notify.mobile_app_…</code> action and send a message such as “Door reminder test.” Allow notifications in the Companion App and phone settings.</li>
+  <li>Copy the exact working action name. This example needs a named <code>notify.mobile_app_…</code> action; a <code>notify.send_message</code> target is not interchangeable with its notifier entry. If your action is <code>notify.mobile_app_jamies_phone</code>, the Alert notifier entry will be <code>mobile_app_jamies_phone</code>, without <code>notify.</code>.</li>
+</ol>
+<p>The <a href="https://www.home-assistant.io/integrations/binary_sensor/">binary-sensor documentation</a> explains raw states, including <code>unknown</code> and <code>unavailable</code>. The <a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion notification guide</a> covers the phone action. If the plain message fails, follow the <a href="/blog/home-assistant-notifications-delayed-not-arriving/">notification delivery checks</a> before changing door timing.</p>
+
+<h2 id="configuration">2. Add the delayed, repeating reminder</h2>
+<p>Save a copy of <code>configuration.yaml</code>, Home Assistant’s main settings file, before editing it. The <a href="https://www.home-assistant.io/docs/configuration/">configuration-file guide</a> explains how to find and edit it for your installation. YAML is the indented text format used in that file.</p>
+<p>Paste this at the top level of <code>configuration.yaml</code>, not in an automation’s YAML editor. Replace the sensor ID and notifier name with your own. If the file already has an <code>alert:</code> section, add <code>patio_door_left_open:</code> beneath that section; do not create a second <code>alert:</code> key. Keep any existing alerts.</p>
+<details class="configuration" open><summary>Patio-door reminder configuration</summary><pre tabindex="0" aria-label="Door reminder configuration YAML"><code>alert:
+  patio_door_left_open:
+    name: "Patio door reminder"
+    entity_id: binary_sensor.patio_door_contact
+    state: "on"
+    skip_first: true
+    repeat:
+      - 5
+      - 15
+      - 30
+    can_acknowledge: true
+    title: "Check the patio door"
+    message: "The patio door sensor still reports open. Please check it."
+    notifiers:
+      - mobile_app_your_phone
+    data:
+      tag: patio-door-left-open
+</code></pre></details>
+<p><code>skip_first: true</code> delays the initial message. The <code>repeat</code> numbers are gaps in minutes, not times measured from when the door opened. The final gap repeats. The notification <code>tag</code> groups this door’s updates so supported Companion notifications can replace the earlier message instead of filling the notification list. Give another door a different tag.</p>
+<p>Open <strong>Settings → Tools → YAML</strong> and select <strong>Check configuration</strong> under Configuration validation before restarting. Older versions place this under <strong>Developer tools → YAML</strong>. See the <a href="https://www.home-assistant.io/common-tasks/os/#configuration-check">configuration-check instructions</a>. If it reports an error, fix the indentation or restore your saved file first. Restart Home Assistant to load the alert. Then close and reopen the door under supervision to start a fresh test.</p>
+<p><strong>Why there is no “door closed” message:</strong> this alert watches for the exact value <code>on</code>. A change to <code>unavailable</code> also ends it. A generic completion message would therefore risk claiming the door had closed when its sensor merely lost contact. Our example omits <code>done_message</code>. Check the actual door reading; a stopped reminder is not an all-clear. This follows the <a href="https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/alert/entity.py">current Alert state-handling code</a>.</p>
+
+<h2 id="worked-example">Worked example: groceries through the patio door</h2>
+<p>Suppose Home Assistant observes the door opening at 6:00 pm. The times below are expected scheduling behavior for the example configuration, not measured phone-delivery times. Normal loading finishes before the first reminder; a forgotten door gets progressively less frequent follow-ups.</p>
+<p class="table-hint">Scroll sideways to compare each household situation.</p>
+<div class="comparison-table" role="region" aria-label="Door reminder worked timing example" tabindex="0"><table>
+  <thead><tr><th scope="col">What happens</th><th scope="col">Expected reminder behavior</th><th scope="col">What to do</th></tr></thead>
+  <tbody>
+    <tr><td>Door closes at 6:03 pm</td><td>No message: it closed within the five-minute grace period.</td><td>Nothing; the next opening gets a new grace period.</td></tr>
+    <tr><td>Door stays open</td><td>Messages are scheduled for 6:05, 6:20, 6:50, 7:20 pm, and so on.</td><td>Check the door when the first useful reminder arrives.</td></tr>
+    <tr><td>You acknowledge at 6:07 while unloading</td><td>No more reminders during this uninterrupted open state.</td><td>Remember to close it when finished; acknowledgement does not move the door.</td></tr>
+    <tr><td>After acknowledgement, it closes at 6:12 and opens again at 6:14</td><td>The new opening can produce a first reminder at 6:19.</td><td>You have silenced one opening, not tomorrow’s reminders.</td></tr>
+    <tr><td>At 6:08 the sensor becomes unavailable</td><td>The current alert stops, without a completion message.</td><td>Check the door and sensor. Do not interpret silence as closure.</td></tr>
+    <tr><td>Home Assistant restarts while the door is open</td><td>The old countdown and acknowledgement are lost; the original timetable is not preserved.</td><td>Check the door after restart and verify a fresh sensor event starts the alert.</td></tr>
+  </tbody>
+</table></div>
+
+<h2 id="silence">3. Make “stop reminding me” explicit</h2>
+<p>To acknowledge this opening, use the <strong>Actions</strong> tool, select <code>alert.turn_off</code>, and target <code>alert.patio_door_left_open</code>. The action snippet is:</p>
+<details class="configuration" open><summary>Acknowledge the current opening</summary><pre tabindex="0" aria-label="Acknowledge alert action YAML"><code>action: alert.turn_off
+target:
+  entity_id: alert.patio_door_left_open
+</code></pre></details>
+<p>The alert’s state becomes <code>off</code> while the sensor still reports open. That means <em>acknowledged</em>. Its <code>idle</code> state means the watched condition is no longer active. Neither describes whether a lock is secured. Swiping away the phone notification only dismisses that message; this configuration does not connect the swipe to acknowledgement.</p>
+<p>For convenient daily use, put the alert and the actual contact-sensor reading on a dashboard accessible to the household. Keep their names distinct: “Patio door reminder” and “Patio door contact.” If you add an acknowledgement button, label it <strong>Silence this opening</strong>, not “Close door.” It should run the action above, never an opener or lock action.</p>
+<p>Use <code>alert.turn_on</code> on the same alert to undo acknowledgement while the door remains open. Reminders resume at the next scheduled check; this action does not itself send an immediate phone message. Closing and reopening normally clears acknowledgement and starts over.</p>
+
+<h2 id="test">4. Test the behavior without leaving a door unsecured</h2>
+<p>For timing practice, create a <strong>Toggle helper</strong> under <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Name it “Door reminder test” and copy its entity ID. An <a href="https://www.home-assistant.io/integrations/input_boolean/">input boolean helper</a> is a software on/off switch you can change without moving hardware.</p>
+<ol>
+  <li>Before enabling the real-door setup, temporarily use the helper ID as the alert’s <code>entity_id</code> and set <code>repeat: 1</code>. Keep <code>skip_first: true</code>. Check configuration and restart.</li>
+  <li>Turn the helper off, then on. Turn it off again within a minute: expect no reminder.</li>
+  <li>Turn it on and leave it on. Expect one scheduled message after a minute and another a minute later. Actual phone arrival can be delayed.</li>
+  <li>Acknowledge using <code>alert.turn_off</code>. Leave the helper on for another two minutes and confirm no new reminder arrives.</li>
+  <li>Turn the helper off, then on. Confirm that a new cycle can notify you again. Restore the real sensor ID and the three original repeat intervals, check configuration, and restart.</li>
+  <li>Make one supervised real-door test. Confirm the sensor, first reminder, close-to-stop behavior, and household acknowledgement control. Remove the temporary helper when finished.</li>
+</ol>
+<p>Also check the sensor after a normal Home Assistant restart. The current Alert implementation listens for state-change events; it does not restore an elapsed deadline. Do not assume a door already open at startup will be caught immediately. A later qualifying sensor update can start a fresh cycle. A stale sensor that never changes may leave the reminder silent.</p>
+
+<h2 id="troubleshooting">When the result is wrong</h2>
+<p class="table-hint">Scroll sideways to read the next check for each symptom.</p>
+<div class="comparison-table" role="region" aria-label="Door reminder troubleshooting" tabindex="0"><table>
+  <thead><tr><th scope="col">Symptom</th><th scope="col">Check first</th><th scope="col">Next step</th></tr></thead>
+  <tbody>
+    <tr><td>No reminder entity after restart</td><td>Configuration errors, duplicate <code>alert:</code> sections, or code pasted into the automation editor.</td><td>Check the file and logs. Restore the saved configuration if necessary.</td></tr>
+    <tr><td>Contact says open, alert stays idle</td><td>Exact sensor ID and raw state, then whether an event occurred after the alert loaded.</td><td>With the door supervised, close and reopen it. Confirm both readings change.</td></tr>
+    <tr><td>Alert is on; phone stays quiet</td><td>Has the first delay elapsed? Does the plain phone action still work?</td><td>Check notifier spelling and phone delivery. Alert being on is not a delivery receipt.</td></tr>
+    <tr><td>Reminders continue after swiping away the message</td><td>Was the alert acknowledged in Home Assistant?</td><td>Use <code>alert.turn_off</code>; message dismissal is separate.</td></tr>
+    <tr><td>Reminders stop although the door is open</td><td>Alert acknowledgement, sensor availability, and recent restarts.</td><td>Inspect the door first. Restore the sensor connection before trusting the next cycle.</td></tr>
+    <tr><td>Reminder repeats even though the door is shut</td><td>Does the sensor itself still report open?</td><td>Check alignment and reporting using its manufacturer’s instructions. Changing the interval will not repair a wrong reading.</td></tr>
+  </tbody>
+</table></div>
+<p>This example does not send a separate warning for a missing sensor, enforce quiet hours, or remember acknowledgements across restarts. Start with one door and agree on its grace period. Add those features only when the household needs them and can test their behavior. Use <a href="/blog/home-assistant-automation-manual-override/">a separate automation override</a> if you need a longer planned pause across several openings.</p>
+
+<h2 id="faq">Other practical questions</h2>
+<h3>Does this work without internet?</h3>
+<p>The alert logic runs in Home Assistant. With a locally connected sensor, that part can work during an internet outage while Home Assistant and the local network stay powered. Ordinary phone push may still need internet. <a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Companion App Local Push</a> needs a supported, active connection of its own; test delivery under your actual conditions.</p>
+<h3>Can I use it for a garage door or several doors?</h3>
+<p>Yes, with a verified open/closed reading. A garage opener may expose a <code>cover</code> whose states differ from a contact sensor. Inspect its actual states before adapting <code>entity_id</code> and <code>state</code>. For several doors, begin with a separately named alert, message and notification tag for each, so you know which opening you are silencing. For choosing opener hardware, use the <a href="/blog/best-garage-door-opener-home-assistant-2026/">Home Assistant garage-door setup guide</a>.</p>
+<h3>Will this close or lock the door?</h3>
+<p>No. It sends reminders only. A closed contact is not proof a lock is engaged. Keep normal physical security checks, and do not add unattended door movement without the hardware’s safety provisions. Consider whether door names should appear on a phone’s lock screen.</p>
+<p>For Tara’s <a href="/home-automation-kit/">home automation kit with coordinated local routines</a>, the useful handoff is simple: which door is monitored, who gets the reminder, how to silence it, and what to check after a failure. Everyone using the home should be able to understand those four things.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Home Assistant documentation</h3><ul><li><a href="https://www.home-assistant.io/integrations/alert/">Alert configuration and notification intervals</a></li><li><a href="https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/alert/entity.py">Alert state handling, Core 2026.9.1</a></li><li><a href="https://www.home-assistant.io/integrations/binary_sensor/">Door binary-sensor states</a></li><li><a href="https://www.home-assistant.io/docs/configuration/">Configuration file and validation</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper for practice</a></li><li><a href="https://www.home-assistant.io/triggers/state/">State trigger and its duration setting</a></li><li><a href="https://www.home-assistant.io/common-tasks/os/#configuration-check">Configuration check in the user interface</a></li></ul></div><div><h3>Phone notifications</h3><ul><li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion App notifications and tags</a></li><li><a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Companion App Local Push</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make household reminders easy to live with</h2><p>Plan the rooms, controls and routines your household will use.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>

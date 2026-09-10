@@ -1,0 +1,51 @@
+{
+  "slug": "home-assistant-door-left-open-notification",
+  "action": "new",
+  "publicationDate": "2026-09-10",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant remind me when a door stays open, repeat at sensible intervals, and let me silence the reminders until that opening ends?",
+  "directAnswer": "Use the built-in Alert integration with a verified door contact and a working named Companion App notifier. The configuration skips the immediate message, waits five minutes, repeats 15 minutes later and every 30 minutes thereafter, and permits acknowledgement using alert.turn_off. Check the physical door and sensor because unavailable states and restarts interrupt reminders; first test with a Toggle helper, then make a supervised real-door check.",
+  "originalContribution": "The configuration section supplies a complete single-door example and deliberately omits done_message to avoid a false door-closed claim on sensor loss. The worked-example table follows a 6 pm opening through early closure, reminders at 6:05/6:20/6:50/7:20, acknowledgement, close/reopen, unavailable state and restart. A six-step Toggle-helper exercise and a symptom/check/next-step troubleshooting table make the behavior independently checkable. Both YAML blocks parsed, and the upstream Core 2026.9.1 AlertEntity class passed simulations for interval progression, early close, acknowledgement/reset, unknown/unavailable states, startup without an event and resuming acknowledgement.",
+  "limitations": "Documentation research and source-code simulation only. No running Home Assistant instance, physical contact sensor, door, phone delivery or customer installation was tested. The clock and notification transport were mocked in the local simulation. The reminder has no persistent deadline or acknowledgement across restart, no separate offline-sensor warning and no quiet-hours policy. Sensor reporting and actual push latency remain installation-dependent. This is a convenience reminder and performs no lock or opener actions. The image is an AI-generated residential illustration.",
+  "proofreadFixes": "Automated tarahome-grandma-proofread pass: replaced the ambiguous single-notification suggestion of a five-minute wait with an explicit state-trigger for duration, explaining that a bare delay does not cancel on closure; added the exact Settings > Tools > YAML > Check configuration route and older navigation wording; distinguished the required named notify.mobile_app action from notify.send_message targets; changed TLDR door contact to door sensor; updated the research-method note to describe simulated source-code checks without implying a running Home Assistant or hardware test. Re-read the final copy and inspected the rendered desktop/mobile sections: four actionable TLDR bullets, direct first-section recommendation, jargon explained, professional source labels and no internal selection rationale. A static link checker flagged /#about; browser verification confirmed the required dynamically rendered About section, so the link was retained. The configuration-check source uses a valid named anchor rather than an id. No remaining copy or layout failure.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "skip_first delays the first notification; repeat values are successive minute intervals and the final interval repeats. The example produces 5, 20, 50 and 80 elapsed minutes.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/alert/"
+    },
+    {
+      "claim": "Door binary sensors normally use raw on for open and off for closed and can also report unknown or unavailable.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/binary_sensor/"
+    },
+    {
+      "claim": "Alert stops when the watched state no longer equals its configured problem state, including unknown/unavailable. A completion message must not be treated as proof of physical closure.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/alert/entity.py"
+    },
+    {
+      "claim": "Acknowledgement suppresses sends until undone or the problem cycle ends; alert.turn_on does not immediately notify. The current object initializes without restored countdown/acknowledgement and starts from state-change events.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/alert/entity.py"
+    },
+    {
+      "claim": "Companion App notifications use named mobile_app actions and support tags for replacing notifications; phone dismissal is not wired to alert acknowledgement in this configuration.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    },
+    {
+      "claim": "A state trigger can require the state to remain on for a duration; this is different from merely delaying an already-triggered notification action.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "The current configuration validation UI is Settings > Tools > YAML, Configuration validation, Check configuration.",
+      "sourceUrl": "https://www.home-assistant.io/common-tasks/os/#configuration-check"
+    },
+    {
+      "claim": "Local Push has supported-platform and connection requirements; local alert processing does not by itself establish internet-independent phone delivery.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-local/"
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440x1000: article title fully visible over two lines; centered hero and 780px body retain Tara Avenir with regular-weight headings. Cover loads as post-local 1200px WebP. Both 918px table regions fit; document scrollWidth equals 1440. Visually inspected hero/TLDR, configuration, worked example, helper test, sources and the new library card. /blog.html card and legacy article redirect both reach the canonical local article. Verification screenshots are saved in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390x844: title wraps cleanly, byline and cover are readable, body copy remains within the viewport, and document scrollWidth equals 390. Tables use 344px viewports with 760px content; horizontal scrolling was exercised to 200px without page overflow. Code panels scroll internally. Inspected the hero, setup, example, sources and single-column library card. Required /#about was verified in the rendered homepage; no homepage edit was made. Screenshots are external to the worktree."
+  }
+}

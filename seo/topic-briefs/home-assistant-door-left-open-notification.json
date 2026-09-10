@@ -1,0 +1,112 @@
+{
+  "version": 2,
+  "slug": "home-assistant-door-left-open-notification",
+  "researchedAt": "2026-09-10",
+  "primaryQuery": "Home Assistant door left open notification",
+  "readerQuestion": "How can Home Assistant remind me when a door stays open, repeat at sensible intervals, and let me silence the reminders until that opening ends?",
+  "selectedBecause": "The September 5 homeautomation discussion asks for actionable alerts rather than every state change and explicitly gives a garage-open duration example. The July 13 Home Assistant discussion independently highlights discovery of the built-in Alert integration. Exact-query results contain Alert reference documentation and several blueprint/forum threads, leaving room for one complete single-door configuration with a household timing example, acknowledgement behavior, and honest unavailable/restart limits. No existing Tara page owns this complete reminder procedure; hardware selection and notification transport retain their existing owners. Community activity is qualitative interest, not measured search volume.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant door left open notification",
+      "evidenceSummary": "Reviewed on September 10: https://www.reddit.com/r/homeautomation/comments/1w843ru/which_smart_home_alerts_are_actually_worth_getting/ (September 5, 2026) gives garage-open duration as a useful alert; https://www.reddit.com/r/homeassistant/comments/1uvnle7/alert_integration_how_have_i_been_missing_this/ (July 13, 2026) discusses built-in repeating alerts. Exact-query search returns https://www.home-assistant.io/integrations/alert/ and https://community.home-assistant.io/t/contact-sensor-door-or-window-left-open-notification/652571 . Current primary Alert docs and Core 2026.9.1 source support a bounded setup. Google browser query hit HTTP 429; available web-search results were reviewed instead, with no claim to Google positions.",
+      "decision": "selected",
+      "reason": "Broad recurring household task, good local-automation fit, and a concrete contribution: interval arithmetic plus close/acknowledge/unavailable/restart decisions. More distinct added value than a battery tutorial already supplied by current official documentation."
+    },
+    {
+      "query": "Home Assistant low battery notification",
+      "evidenceSummary": "Exact-query search on September 10 returned https://www.home-assistant.io/docs/templating/tutorial-battery-alerts/ and https://community.home-assistant.io/t/help-troubleshooting-low-battery-alert-notification-automation/643268 . The latter contains November 2025 discussion about device names and scaling; https://www.reddit.com/r/homeassistant/comments/1ootwer/ (November 2025 search record) discusses periodic battery summaries and unreliable percentages. Primary https://www.home-assistant.io/triggers/battery.became_low/ distinguishes binary low flags from numeric battery percentages. These are current checks of dated discussions, not new September posts. Google browser results were blocked.",
+      "decision": "rejected",
+      "reason": "Useful and distinct from Tara coverage, but the current official tutorial already supplies a complete daily per-device report, location labels, test procedure, and suggestions for unavailable sensors. A new general article would add less than the selected reminder lifecycle walkthrough."
+    },
+    {
+      "query": "Home Assistant freezer temperature alert",
+      "evidenceSummary": "Exact-query search on September 10 returned https://community.home-assistant.io/t/learning-and-help-with-setup-of-automation-for-freezer-temperature-alert/985123 (February 10, 2026) and https://community.home-assistant.io/t/help-with-setting-up-automation-to-send-a-notification-when-the-freezer-temperature-goes-above-18-degrees/878220 (April 2025). The September 5 alerts discussion also mentions freezer warnings. Current primary https://www.home-assistant.io/triggers/temperature.changed/ and https://www.home-assistant.io/docs/automation/trigger/ document event/threshold choices; https://www.home-assistant.io/integrations/liebherr is a specific integrated appliance path. Google browser results were blocked.",
+      "decision": "rejected",
+      "reason": "Recurring and potentially valuable for a separate guide, but a useful freezer recommendation also requires device operating-range checks, air-versus-food-temperature limitations and defrost/door-open evidence. The selected door reminder has a clearer scope and can offer useful verified behavior without implying cold-storage testing."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeautomation/comments/1w843ru/which_smart_home_alerts_are_actually_worth_getting/",
+      "observedAt": "2026-09-10",
+      "evidence": "September 5, 2026 discussion asks which household alerts actually merit a notification. A comment specifically distinguishes prolonged garage opening from noisy state-change alerts. No engagement count or search-volume inference is used."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1uvnle7/alert_integration_how_have_i_been_missing_this/",
+      "observedAt": "2026-09-10",
+      "evidence": "July 13, 2026 discussion independently describes discovering the built-in Alert integration after extensive Home Assistant use. Reviewed now as recent historical evidence of discoverability friction, not claimed to be posted in the last fourteen days."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/how-to-set-notifications-when-door-is-left-open/520305",
+      "observedAt": "2026-09-10",
+      "evidence": "January 2023 thread still appears in current exact-query results and asks for a delayed first alert followed by repeats until closed. Used as older recurrence evidence alongside the September discussion, not fresh activity."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant door left open notification",
+    "reviewedAt": "2026-09-10",
+    "intent": "Configure a useful delayed reminder for a real door, repeat while needed, and stop without permanently disabling the next reminder.",
+    "resultGap": "Current results split among a general Alert YAML reference, configurable blueprints and departure-trigger tutorials. This guide supplies one approachable configuration, exact first/repeat timeline, deliberate silence control, and why a lost sensor must not produce a claimed door-closed message. Direct Google searches for all three candidates returned a traffic-check HTTP 429, so no Google rank ordering was observed; competing URLs below were found with the available web search tool.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/integrations/alert/",
+      "https://community.home-assistant.io/t/contact-sensor-door-or-window-left-open-notification/652571",
+      "https://www.homeautomationguy.io/blog/home-assistant-automations/notify-if-a-door-or-window-is-left-open-when-you-leave-the-house"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant Alert",
+      "url": "https://www.home-assistant.io/integrations/alert/",
+      "supports": "Built-in YAML alert, skip_first, repeat intervals, acknowledgement and legacy notifier list."
+    },
+    {
+      "name": "Home Assistant Alert entity implementation 2026.9.1",
+      "url": "https://github.com/home-assistant/core/blob/2026.9.1/homeassistant/components/alert/entity.py",
+      "supports": "State-change driven start/stop, acknowledgement lifetime, interval progression, reset on initialization, and stopping when monitored state differs from on. Reviewed via raw.githubusercontent.com because GitHub HTML failed in the web tool."
+    },
+    {
+      "name": "Home Assistant binary sensor",
+      "url": "https://www.home-assistant.io/integrations/binary_sensor/",
+      "supports": "Door contact raw on/off mapping and additional unknown/unavailable states."
+    },
+    {
+      "name": "Home Assistant configuration file",
+      "url": "https://www.home-assistant.io/docs/configuration/",
+      "supports": "Where configuration.yaml lives and how to edit it; validation UI is separately sourced to Common tasks."
+    },
+    {
+      "name": "Companion notification basics",
+      "url": "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+      "supports": "Phone notification action, message fields and notification tags."
+    },
+    {
+      "name": "Companion Local Push",
+      "url": "https://companion.home-assistant.io/docs/notifications/notification-local/",
+      "supports": "Local notification delivery requires its own supported connection setup; a local alert rule does not guarantee offline phone delivery."
+    },
+    {
+      "name": "State trigger",
+      "url": "https://www.home-assistant.io/triggers/state/",
+      "supports": "Optional single-notification alternative uses duration in the state trigger, not a bare delay action."
+    },
+    {
+      "name": "Configuration validation in Home Assistant OS",
+      "url": "https://www.home-assistant.io/common-tasks/os/#configuration-check",
+      "supports": "Current UI route Settings > Tools > YAML > Check configuration."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-notifications-delayed-not-arriving/",
+      "/blog/home-assistant-open-close-windows/",
+      "/blog/best-garage-door-opener-home-assistant-2026/",
+      "/door-window-sensors/",
+      "/blog/home-assistant-automation-manual-override/"
+    ],
+    "decision": "Existing pages address phone delivery, ventilation decisions, opener buying, sensor packages and general automation override. None supplies this complete delayed/repeating single-door reminder and its acknowledgement/failure behavior. All article titles and all existing topic-brief queries/questions were inventoried; related bodies were checked. Commercial link: /home-automation-kit/ for coordinated local routines. Separate refresh opportunities remain the Bluetooth proxy, IKEA direct pairing, IoT VLAN, Energy missing-sensor and doorbell owners; do not edit them here. The September 8 authenticated review shows the homepage, IKEA pairing, Bluetooth proxy and IoT VLAN canonicals crawled but not indexed, and the utility-bill page discovered but not indexed. These statuses do not release their topic ownership. The September 8 performance export is historical through September 6: daily Chart latest 28 days 14 clicks/1,408 impressions versus 91/10,704 before; cumulative June 7\u2013September 6 Bluetooth 17 clicks/2,910 impressions, IoT VLAN 8/1,372, notification delivery 2/248. The selected alert query has no matching visible row, which establishes neither zero demand nor live ranking. Query sums were not treated as sitewide totals and cumulative pages were not treated as recent losses. Historical PARASOLL/VALLHORN Matter-over-Thread query wording is false and must never be restored. Publication, sitemap inclusion, live availability or an accepted indexing request cannot establish indexing or recovery."
+  }
+}
