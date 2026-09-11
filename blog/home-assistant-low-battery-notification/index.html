@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Low Battery Notification: One Daily List</title>
+    <meta name="description" content="Create a Home Assistant low battery notification with one daily list, separate missing-reading warnings, and optional phone alerts." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-low-battery-notification/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-low-battery-notification/" />
+    <meta property="og:title" content="Home Assistant Low Battery Notification: One Daily List" />
+    <meta property="og:description" content="Create a Home Assistant low battery notification with one daily list, separate missing-reading warnings, and optional phone alerts." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-low-battery-notification/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Low Battery Notification: One Daily List" />
+    <meta name="twitter:description" content="Create a Home Assistant low battery notification with one daily list, separate missing-reading warnings, and optional phone alerts." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-low-battery-notification/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body pre { border: 1px solid var(--line); border-radius: 12px; background: #f5f4ec; padding: 18px; max-width: 100%; overflow-x: auto; font-size: 0.91rem; line-height: 1.6; }
+      .article-body pre code { background: none; border: 0; padding: 0; overflow-wrap: normal; white-space: pre; }
+      .article-body .comparison-table table { min-width: 620px; }
+      .article-body .table-hint { font-size: 0.94rem; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-low-battery-notification/#blogposting",
+      "headline": "Home Assistant Low Battery Notification: One Daily List",
+      "description": "Create a Home Assistant low battery notification with one daily list, separate missing-reading warnings, and optional phone alerts.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-low-battery-notification/cover.png",
+      "datePublished": "2026-09-11",
+      "dateModified": "2026-09-11",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-low-battery-notification/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/docs/templating/tutorial-battery-alerts/",
+        "https://www.home-assistant.io/docs/organizing/labels/",
+        "https://www.home-assistant.io/template-functions/label_entities/",
+        "https://www.home-assistant.io/integrations/sensor/",
+        "https://www.home-assistant.io/integrations/binary_sensor/",
+        "https://www.home-assistant.io/actions/persistent_notification.create/",
+        "https://www.home-assistant.io/actions/persistent_notification.dismiss/",
+        "https://www.home-assistant.io/docs/templating/states/",
+        "https://www.home-assistant.io/docs/templating/types/",
+        "https://www.home-assistant.io/template-functions/device_name/",
+        "https://www.home-assistant.io/triggers/numeric_state/",
+        "https://www.home-assistant.io/triggers/battery.became_low/",
+        "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+        "https://codechimp.org/HA-Battery-Notes/",
+        "https://www.home-assistant.io/template-functions/is_number/",
+        "https://companion.home-assistant.io/docs/notifications/notification-details/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Low Battery Notification: One Daily List",
+          "item": "https://tarahome.ai/blog/home-assistant-low-battery-notification/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I do this entirely in the visual editor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For a simple immediate alert, use Battery low for a binary indicator, or Battery level crossed threshold for a percentage sensor, then add a notification action. The combined daily list here uses a template to format multiple devices and separate missing readings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need Battery Notes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. This recipe uses built-in features. Battery Notes is an optional custom integration when you also want battery types, replacement history, individual thresholds or reporting-age checks. Those features need configuration; installing it does not prove every device is still working."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I rely on this for locks or smoke alarms?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use it only as an extra maintenance reminder. Keep the device’s own low-battery warnings, manufacturer maintenance schedule and routine checks. A daily check can miss a sudden failure, and a quiet list says only that the selected reported values passed the recipe’s checks."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+      <header class="hero article-hero">
+        <div>
+          <p class="article-meta"><span>Home maintenance</span><span><time datetime="2026-09-11">September 11, 2026</time></span><span>10 min read</span></p>
+          <h1>Home Assistant Low Battery Notification: One Daily List</h1>
+          <p class="lede">Collect low sensor batteries in one daily reminder, keep missing readings visible, and leave phones out unless you want them included.</p>
+          <p class="article-byline"><a href="/#about">By Tara Home</a></p>
+        </div>
+        <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-low-battery-notification/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-low-battery-notification/cover-480.webp 480w, /assets/generated/blog/home-assistant-low-battery-notification/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Batteries stored separately in a dark-green organizer on an oak console in a sunlit home" loading="eager" /></figure>
+      </header>
+      <div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Use one daily check:</strong> collect the batteries needing attention at 10 am. A battery already low yesterday stays on today’s list.</li>
+    <li><strong>Choose what gets watched:</strong> label the battery readings for your household sensors. Leave phones and tablets out unless you want charging reminders too.</li>
+    <li><strong>Recognize both battery formats:</strong> percentages at or below your chosen limit and a device’s separate “battery low” indicator both count. Missing readings go in a separate check list.</li>
+    <li><strong>Start with a Home Assistant notification:</strong> the example updates one message inside Home Assistant. Add phone push after checking the list; it is a separate delivery step.</li>
+    <li><strong>Keep checking the devices themselves:</strong> a reported percentage cannot prove a sensor still works. This is a maintenance reminder, not a replacement for alarm or lock battery warnings.</li>
+  </ul>
+</aside>
+
+<h2 id="answer">Start with a daily list of selected batteries</h2>
+<p>For a <strong>Home Assistant low battery notification</strong>, use a daily time trigger and build the message from the readings you want to monitor. Start with ordinary door, motion and temperature sensors. Include both percentage readings and separate low-battery indicators, and report missing data without calling it a flat battery.</p>
+<p>A trigger is what starts an automation. A threshold-crossing trigger reacts when a reading enters the low range; it does not send another reminder every morning just because the reading stays low. The <a href="https://www.home-assistant.io/triggers/numeric_state/">numeric-state documentation</a> explains that distinction. A scheduled check suits a recurring maintenance list.</p>
+<p>The example below uses built-in Home Assistant features. It creates one message in Home Assistant’s Notifications panel, updates that same message on later checks, and removes it when the selected readings no longer need attention. It checks the last reported values; it does not ask every device to take a fresh measurement.</p>
+<p class="research-method">Researched from current Home Assistant and project documentation on September 11, 2026. The YAML and message template were checked with simulated readings. This configuration was not run in Home Assistant or on physical devices. The cover is an AI-generated illustration of battery maintenance.</p>
+
+<h2 id="readings">1. Identify the right battery readings</h2>
+<p>An <strong>entity</strong> is one reading or control in Home Assistant. A single door sensor may have a door-open entity, a battery-percentage entity, and a battery-low entity. You want the battery entities, not the door-open reading.</p>
+<p>Open <strong>Settings → Tools → States</strong> and find one of your devices. Older versions put this under <strong>Developer tools → States</strong>. Read the state and attributes. A <code>device_class</code> identifies what a reading means; the word “battery” in its name alone is not enough.</p>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p>
+<div class="comparison-table" role="region" aria-label="Battery reading types" tabindex="0"><table>
+  <thead><tr><th scope="col">What you find</th><th scope="col">What it means</th><th scope="col">Use it this way</th></tr></thead>
+  <tbody>
+    <tr><td><code>sensor.…</code>, class <code>battery</code>, unit <code>%</code></td><td>A remaining-charge percentage.</td><td>Compare with a chosen limit; this example includes 20% and lower.</td></tr>
+    <tr><td><code>binary_sensor.…</code>, class <code>battery</code></td><td><code>on</code> means low; <code>off</code> means normal.</td><td>Use the device’s low indicator without inventing a percentage.</td></tr>
+    <tr><td><code>unknown</code> or <code>unavailable</code></td><td>Home Assistant has no usable current reading.</td><td>Show “Check readings”; investigate the device or its connection.</td></tr>
+    <tr><td>Voltage, charging state, or a text-only reading</td><td>A different kind of information.</td><td>Keep it out of this percentage/low-indicator recipe.</td></tr>
+  </tbody>
+</table></div>
+<p>These meanings come from the <a href="https://www.home-assistant.io/integrations/sensor/">Sensor</a> and <a href="https://www.home-assistant.io/integrations/binary_sensor/">Binary sensor</a> references. A charging indicator has class <code>battery_charging</code>; it is not a low-battery warning.</p>
+
+<h2 id="label">2. Give those entities one label</h2>
+<p>A label groups selected items across rooms. Create one named <strong>Battery watch</strong> under <strong>Settings → Areas, labels &amp; zones → Labels</strong>. Then open <strong>Settings → Devices &amp; services → Entities</strong>, select the battery entities, and apply that label. The <a href="https://www.home-assistant.io/docs/organizing/labels/">label instructions</a> show the selection controls.</p>
+<p><strong>Apply the label directly to the battery entities.</strong> Labeling their device or room does not include them in <code>label_entities()</code>, the function used here. That distinction is explicit in the <a href="https://www.home-assistant.io/template-functions/label_entities/">function reference</a>.</p>
+<p>For your first check, select one percentage sensor and one low-battery indicator if you have both types. If one physical battery has both readings, choose one to avoid duplicate entries. Include both only if you deliberately want to see disagreements. Give devices clear names and assign rooms so the reminder identifies where to look.</p>
+<p>Under <strong>Settings → Tools → Template</strong> (older versions: <strong>Developer tools → Template</strong>), paste this to verify the selection:</p>
+<pre tabindex="0"><code>{{ label_entities('Battery watch') | sort }}</code></pre>
+<p>The result should list your chosen entity IDs. An empty list means nothing is being watched. When you add a device later, label its battery entity too.</p>
+
+<h2 id="configuration">3. Create the daily check</h2>
+<p>Go to <strong>Settings → Automations &amp; scenes → Create automation → Create new automation</strong>. Open the three-dot menu, choose <strong>Edit in YAML</strong>, and replace the new automation’s contents with this configuration. YAML is the text version of the automation editor; keep the indentation when copying.</p>
+<p>Keep <code>threshold: 20</code> as an illustrative starting point, or change it to suit your devices. It is not a manufacturer-approved replacement limit for every battery. The time is 10 am in Home Assistant’s configured time zone.</p>
+<pre tabindex="0" aria-label="Daily battery automation YAML"><code class="language-yaml">alias: Daily battery maintenance list
+description: Check selected battery readings at 10 am
+triggers:
+  - trigger: time
+    at: &quot;10:00:00&quot;
+conditions: []
+actions:
+  - variables:
+      threshold: 20
+      watched: &quot;{{ label_entities(&#x27;Battery watch&#x27;) | sort }}&quot;
+  - variables:
+      report: |-
+        {% set ns = namespace(low=[], check=[]) %}
+        {% for e in watched %}
+          {% set value = states(e) %}
+          {% set name = device_name(e) or state_attr(e, &#x27;friendly_name&#x27;) or e %}
+          {% set area = area_name(e) %}
+          {% set name = name ~ (&#x27; in &#x27; ~ area if area else &#x27;&#x27;) %}
+          {% set kind = state_attr(e, &#x27;device_class&#x27;) %}
+          {% if value in [&#x27;unknown&#x27;, &#x27;unavailable&#x27;] %}
+            {% set ns.check = ns.check + [name ~ &#x27;: &#x27; ~ value] %}
+          {% elif e.startswith(&#x27;sensor.&#x27;) and kind == &#x27;battery&#x27;
+              and state_attr(e, &#x27;unit_of_measurement&#x27;) == &#x27;%&#x27;
+              and is_number(value) and 0 &lt;= value | float &lt;= 100 %}
+            {% if value | float &lt;= threshold %}
+              {% set ns.low = ns.low + [name ~ &#x27; (&#x27; ~ value ~ &#x27;%)&#x27;] %}
+            {% endif %}
+          {% elif e.startswith(&#x27;binary_sensor.&#x27;) and kind == &#x27;battery&#x27;
+              and value in [&#x27;on&#x27;, &#x27;off&#x27;] %}
+            {% if value == &#x27;on&#x27; %}
+              {% set ns.low = ns.low + [name ~ &#x27; (battery low)&#x27;] %}
+            {% endif %}
+          {% else %}
+            {% set ns.check = ns.check + [name ~ &#x27;: unsupported reading&#x27;] %}
+          {% endif %}
+        {% endfor %}
+        {% if watched | count == 0 %}
+          No battery entities selected. Check the Battery watch label.
+        {% else %}
+          {% if ns.low %}
+        Low batteries: {{ ns.low | join(&#x27;; &#x27;) }}.
+          {% endif %}
+          {% if ns.check %}
+        Check readings: {{ ns.check | join(&#x27;; &#x27;) }}.
+          {% endif %}
+        {% endif %}
+  - choose:
+      - conditions: &quot;{{ report | trim | length &gt; 0 }}&quot;
+        sequence:
+          - action: persistent_notification.create
+            data:
+              notification_id: daily_battery_maintenance
+              title: Battery maintenance
+              message: &quot;{{ report | trim }}&quot;
+    default:
+      - action: persistent_notification.dismiss
+        data:
+          notification_id: daily_battery_maintenance
+mode: single
+</code></pre>
+<p>The first part collects labeled entities. The template then builds separate “Low batteries” and “Check readings” lists. Valid zero-percent readings are included; missing values are never converted to zero. Unsupported values produce a check message so a mislabeled charging or voltage sensor cannot silently disappear.</p>
+<p>The final actions use one fixed <code>notification_id</code>. Home Assistant’s <a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create notification</a> action updates that message instead of stacking copies. The <a href="https://www.home-assistant.io/actions/persistent_notification.dismiss/">Dismiss notification</a> action clears only this reminder when the next check finds nothing to report. It does not clear other notifications.</p>
+
+<h2 id="worked-example">4. Check the result against this worked example</h2>
+<p>These are illustrative inputs and expected results from the recipe, not measured device readings. Assume the label includes the first five rows and the limit is 20%.</p>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p>
+<div class="comparison-table" role="region" aria-label="Worked battery reminder example" tabindex="0"><table>
+  <thead><tr><th scope="col">Selected reading at 10 am</th><th scope="col">Expected result</th><th scope="col">Next step</th></tr></thead>
+  <tbody>
+    <tr><td>Hall temperature sensor: 20%</td><td>Low batteries: included at the limit.</td><td>Check its battery instructions and arrange replacement.</td></tr>
+    <tr><td>Desk button: 0%</td><td>Low batteries: included.</td><td>Check promptly; zero is not discarded as an empty value.</td></tr>
+    <tr><td>Patio sensor battery-low indicator: <code>on</code></td><td>Low batteries: “battery low.”</td><td>Follow the device’s warning; there is no percentage to compare.</td></tr>
+    <tr><td>Shed sensor: <code>unavailable</code></td><td>Check readings: unavailable.</td><td>Check connection and device operation before blaming its battery.</td></tr>
+    <tr><td>Bedroom sensor: 76%</td><td>No entry.</td><td>The reported level passes this check; operation is not proven.</td></tr>
+    <tr><td>Phone: 12%, without the label</td><td>Not monitored.</td><td>Label it only if you want it on the same maintenance list.</td></tr>
+  </tbody>
+</table></div>
+<p>At 10 am tomorrow, the first three readings appear again if unchanged. If you dismiss the message without fixing them, the next scheduled run recreates it. After replacing batteries, wait for updated readings, then run the automation to refresh the list. Clearing the notification by hand does not reset a device’s battery value.</p>
+<p><strong>Test without changing real sensor states:</strong> save the automation and select <strong>Run actions</strong>. If your numeric batteries are all above the limit, temporarily set <code>threshold</code> to <code>100</code> and run it again. All valid labeled percentage readings should appear. Restore your chosen limit immediately and rerun. This test does not make a normal binary indicator low.</p>
+<p>Finally, set the time a few minutes ahead and let the automation start by itself, then restore 10 am. A manual run checks the actions; it does not prove the scheduled trigger. If Home Assistant is off at the scheduled time, run it manually after startup or wait for the next day. This example does not catch up automatically.</p>
+
+<h2 id="phone">5. Add a phone notification if you want one</h2>
+<p>The base example shows a message inside Home Assistant; it does not make your phone buzz. Once that message is correct, install and connect the Home Assistant Companion App, allow notifications, and find your phone’s notification action under <strong>Settings → Tools → Actions</strong>.</p>
+<p>Add this immediately after <code>persistent_notification.create</code> in the same <code>sequence</code>, at the same indentation as that action. Replace <code>notify.mobile_app_your_phone</code> with your actual action name:</p>
+<pre tabindex="0"><code>- action: notify.mobile_app_your_phone
+  data:
+    title: Battery maintenance
+    message: "{{ report | trim }}"</code></pre>
+<p>It sends only when the report is nonempty. A manual run can send another phone message. The persistent notification’s automatic clearing does not remove an already-delivered phone notification. Use the <a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion notification guide</a> for phone setup and delivery details.</p>
+<p>The list is calculated on your Home Assistant server. Its input readings may still depend on a vendor cloud, and <a href="https://companion.home-assistant.io/docs/notifications/notification-details/">normal phone push can use internet services</a>. Keep sensitive device names out of lock-screen previews. If the internal message works but phone push does not, follow our <a href="/blog/home-assistant-notifications-delayed-not-arriving/">notification delivery troubleshooting guide</a>.</p>
+
+<h2 id="troubleshooting">When the list looks wrong</h2>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p>
+<div class="comparison-table" role="region" aria-label="Battery reminder troubleshooting" tabindex="0"><table>
+  <thead><tr><th scope="col">Symptom</th><th scope="col">Check first</th></tr></thead>
+  <tbody>
+    <tr><td>“No battery entities selected”</td><td>Check the exact label name and apply it on the Entities tab, not just to devices or rooms.</td></tr>
+    <tr><td>“Unsupported reading”</td><td>Check the domain, device class, unit and value. This recipe accepts percentages from 0 to 100 and battery binary indicators.</td></tr>
+    <tr><td>The same device appears twice</td><td>Check whether both percentage and low-battery entities were labeled. Keep the indicator you intend to follow, or keep both deliberately.</td></tr>
+    <tr><td>A dead sensor still shows a good percentage</td><td>This recipe cannot recognize a stale but valid number. Check the device’s main reading and its integration’s availability/reporting behavior.</td></tr>
+    <tr><td>No scheduled message</td><td>Open the automation’s trace—the record of its last run. An empty report should clear the message; no run points to its time, enabled state or server uptime.</td></tr>
+  </tbody>
+</table></div>
+<p>For the last case, our <a href="/blog/home-assistant-automation-not-firing/">automation trigger, condition and action checklist</a> separates a missed run from a failed action.</p>
+
+<h2 id="faq">Other practical questions</h2>
+<h3>Can I do this entirely in the visual editor?</h3>
+<p>For a simple immediate alert, use <a href="https://www.home-assistant.io/triggers/battery.became_low/">Battery low</a> for a binary indicator, or Battery level crossed threshold for a percentage sensor, then add a notification action. The combined daily list here uses a template to format multiple devices and separate missing readings.</p>
+<h3>Do I need Battery Notes?</h3>
+<p>No. This recipe uses built-in features. <a href="https://codechimp.org/HA-Battery-Notes/">Battery Notes</a> is an optional custom integration when you also want battery types, replacement history, individual thresholds or reporting-age checks. Those features need configuration; installing it does not prove every device is still working.</p>
+<h3>Can I rely on this for locks or smoke alarms?</h3>
+<p>Use it only as an extra maintenance reminder. Keep the device’s own low-battery warnings, manufacturer maintenance schedule and routine checks. A daily check can miss a sudden failure, and a quiet list says only that the selected reported values passed the recipe’s checks.</p>
+<p>For a household handoff, write down who checks the message and where the correct replacement batteries are stored. Tara’s <a href="/home-automation-kit/">home automation kit with coordinated local routines</a> brings that kind of maintenance planning into the wider setup.</p>
+
+      </div>
+      <section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Battery readings and selection</h3><ul><li><a href="https://www.home-assistant.io/docs/templating/tutorial-battery-alerts/">Home Assistant battery alert tutorial</a></li><li><a href="https://www.home-assistant.io/docs/organizing/labels/">Label organization</a></li><li><a href="https://www.home-assistant.io/template-functions/label_entities/">label_entities reference</a></li><li><a href="https://www.home-assistant.io/integrations/sensor/">Sensor device classes</a></li><li><a href="https://www.home-assistant.io/integrations/binary_sensor/">Binary sensor device classes</a></li><li><a href="https://www.home-assistant.io/template-functions/device_name/">Device names</a></li><li><a href="https://codechimp.org/HA-Battery-Notes/">Battery Notes project documentation</a></li></ul></div><div><h3>Templates and notifications</h3><ul><li><a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create persistent notification</a></li><li><a href="https://www.home-assistant.io/actions/persistent_notification.dismiss/">Dismiss persistent notification</a></li><li><a href="https://www.home-assistant.io/docs/templating/states/">Template state access</a></li><li><a href="https://www.home-assistant.io/docs/templating/types/">Template numeric conversion</a></li><li><a href="https://www.home-assistant.io/template-functions/is_number/">Check numeric values before comparing them</a></li><li><a href="https://www.home-assistant.io/triggers/numeric_state/">Numeric state triggers</a></li><li><a href="https://www.home-assistant.io/triggers/battery.became_low/">Battery low trigger</a></li><li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion App notifications</a></li></ul></div></div></section>
+      <section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday maintenance easier to follow</h2><p>Plan the rooms, devices and routines your household needs.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+    </article></main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>

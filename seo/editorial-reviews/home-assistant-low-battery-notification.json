@@ -1,0 +1,55 @@
+{
+  "slug": "home-assistant-low-battery-notification",
+  "action": "new",
+  "publicationDate": "2026-09-11",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant give me one daily list of low sensor batteries without including every phone or silently treating missing readings as healthy?",
+  "directAnswer": "Label the battery entities to monitor and run one daily time-triggered check. Include valid percentages at or below the selected limit and binary battery-low indicators; put unknown, unavailable or unsupported readings in a separate check list. Update one persistent Home Assistant notification and dismiss it when the next check is clear. Validate the selected entities and list before adding phone push. Reported levels do not prove a sensor still works, and the daily trigger does not catch up after downtime.",
+  "originalContribution": "Sections 1–4 and the complete YAML under #configuration combine directly labeled scope, percentage and binary indicators, empty-selection warnings, finite numeric range validation, separate missing-reading messages, and create/dismiss behavior. The worked table under #worked-example follows 20%, 0%, a binary low flag, an unavailable sensor, a normal sensor and an excluded phone across daily checks. The troubleshooting table explains wrong labels, unsupported types, duplicate readings and stale values. The published YAML and template passed 22 automated simulated cases, including boundary values and clearing only the owned notification.",
+  "limitations": "Documentation research and simulated Jinja2/PyYAML checks only. No running Home Assistant installation, physical battery, device longevity, scheduler delivery or phone-delivery test was performed. The 20% threshold is illustrative, not universal manufacturer advice. The configuration cannot detect a stale but syntactically valid percentage or recover a missed scheduled run. Phone push and source integrations may depend on cloud services. Actual publishing, deployment and search indexing are not assessed by these local checks.",
+  "proofreadFixes": "Changed the TLDR's ambiguous 'Keep two kinds of warning' label to 'Recognize both battery formats' so the separate missing-reading category remains clear. Removed the unexplained HACS acronym from the FAQ and its matching JSON-LD question. Replaced the broad 'automated software checks' research sentence with the precise disclosure that YAML/template checks used simulated readings and the configuration was not run in Home Assistant or on physical devices. Added keyboard-focusable scrolling regions and an explicit swipe hint for each comparison table. The final reread confirmed the direct answer appears before the setup, the base notification is clearly distinguished from optional phone push, and missed runs, stale values and false all-clear limitations remain explicit. A static fragment check initially could not find /#about; browser navigation verified that the homepage renders the visible target, with no homepage edit. Automated proofreading, not a human or expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "The battery sensor device class represents remaining charge as a percentage.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/sensor/"
+    },
+    {
+      "claim": "For a battery binary sensor, on means low and off means normal; battery_charging is a different class.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/binary_sensor/"
+    },
+    {
+      "claim": "label_entities returns directly labeled entities and does not inherit labels applied to a device or area.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/label_entities/"
+    },
+    {
+      "claim": "A numeric-state trigger reacts to crossing a threshold and does not repeatedly fire while the state stays on that side.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/numeric_state/"
+    },
+    {
+      "claim": "Reusing notification_id with persistent_notification.create overwrites the existing notification.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "persistent_notification.dismiss removes the notification specified by notification_id.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.dismiss/"
+    },
+    {
+      "claim": "is_number checks finite numeric convertibility and rejects unavailable, unknown, infinity and NaN before comparison.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/is_number/"
+    },
+    {
+      "claim": "Companion notifications use the phone-specific notify.mobile_app action and require a message; persistent notification clearing is separate.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    },
+    {
+      "claim": "Ordinary phone notification delivery can involve external push services.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-details/"
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440×1000 Chromium: full title is readable on two lines, visible September 11, 2026 date and By Tara Home credit; unique WebP hero loads and batteries remain recognizable. Tara Avenir regular renders with a centered 780px article body and 918px usable table regions; document width equals 1440px, no horizontal page overflow. Both library indexes were checked across desktop/mobile, the new first card loads and links to the canonical local article, and the .html redirect resolves correctly. All 16 external source URLs returned HTTP 200 through the browser request context. All 473 unique local URL targets returned HTTP 200; /#about is present and visible after homepage rendering.",
+    "mobile": "390×844 Chromium: title wraps cleanly over three lines, byline and cover are visible, body text renders at 16.96px with 28.832px line height in Tara Avenir. Document width equals 390px with no overflowing content outside intentional scrolling regions. Tables use a 344px inner viewport over 620px content; sideways scrolling was exercised to reach the next-step column. YAML retains indentation and scrolls within its own region. The mobile library card has readable title/date, a loaded 480px WebP and a working link. Screenshots of article top/full page, worked-table scrolling and library cards are in the external TARAHOME_BLOG_ARTIFACTS directory."
+  }
+}
