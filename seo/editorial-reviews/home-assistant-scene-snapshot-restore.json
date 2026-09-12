@@ -1,0 +1,47 @@
+{
+  "slug": "home-assistant-scene-snapshot-restore",
+  "action": "new",
+  "publicationDate": "2026-09-12",
+  "verdict": "PASS",
+  "readerQuestion": "How can I temporarily change my lights in Home Assistant and then restore each light to the state it had beforehand?",
+  "directAnswer": "Capture each individual light with scene.create before changing it, then call scene.turn_on from the same single-mode script after the short delay. This preserves mixed starting on/off states without a second call overwriting the capture. Temporary scenes disappear on restart or scene reload, and an off lamp’s next-on brightness is not guaranteed. Start with the 30-second two-lamp check before extending the duration.",
+  "originalContribution": "The #setup configuration supplies a complete two-lamp script with an on/off-state guard, one active run, a reserved snapshot name and cleanup. The #worked-example table follows one lamp at about 30% and another initially off through an 80% boost, repeat call and restoration. It adds the separate next-on-brightness check that a simple save/restore recipe misses. #troubleshooting distinguishes group capture, overwrite, off-state memory, interruption and partial device response.",
+  "limitations": "Documentation and tagged Home Assistant 2026.9.2 source research; no physical lamps, Home Assistant runtime, timing measurements or integration compatibility tests. YAML parsing, target consistency and 25 combinations of the isolated initial Jinja state condition were checked locally. The timeline is an expected outcome, not a measured result. Manual changes during the delay are overwritten by the saved starting state; restarts, scene reloads and stopped scripts have no automatic recovery. The cover is an AI-generated household illustration. Local availability and these checks do not establish indexing or traffic recovery.",
+  "proofreadFixes": "Replaced the broad wording that YAML and illustrative cases were checked with precise disclosure of YAML syntax and the initial state check, and explicitly labeled expected outcomes as documentation-based. Replaced unexplained attributes with reported light settings in the worked example, troubleshooting table and FAQ. Added a nearby reminder to change the snapshot name when copying the script to another room. Reworded stopped-script behavior as a concrete consequence and added a phone code-scrolling hint. Final reread confirmed a four-bullet TLDR immediately after the hero, defined entity ID/script/YAML/trace, source-supported off-state and restart caveats, visible linked Tara Home authorship, and no internal editorial rationale. Review performed by the automated writer; no human or expert review claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "scene.create accepts snapshot_entities, creates a temporary scene and overwrites an existing dynamically created scene with the same ID; restart or scene reload removes it.",
+      "sourceUrl": "https://www.home-assistant.io/actions/scene.create/"
+    },
+    {
+      "claim": "scene.turn_on activates the saved states; scene.delete removes dynamically created scenes rather than turning lamps off.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/scene/"
+    },
+    {
+      "claim": "Script single mode rejects another run while one is active; restart stops the previous run, queued defers subsequent runs and parallel permits simultaneous runs.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/script/"
+    },
+    {
+      "claim": "A condition in the main script sequence stops execution when false; a delay suspends the sequence before later actions.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "A standard light group reports on when at least one member is on; recording that aggregate does not encode each member’s separate on/off choice.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/group/"
+    },
+    {
+      "claim": "For captured off states, current light restoration code calls turn_off without programming next-on brightness; for captured on states it uses saved supported brightness and color attributes.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/light/reproduce_state.py"
+    },
+    {
+      "claim": "The snapshot implementation copies each named entity’s current state and attributes from Home Assistant rather than requesting fresh hardware readings.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/homeassistant/scene.py"
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440x1000 Chromium: title readable beside the unique loaded WebP cover; both lamps remain recognizable. Article body is 780px wide and centered at x=330; computed Tara Avenir regular body/headings preserved. Document scrollWidth equals 1440. Worked table fully readable. Library card inspected in blog.html, new card title/date/image correct, and .html article redirect reached the canonical local route. Eight documentation/source links returned HTTP 200; 476 local file targets across article, redirect and both indexes exist. The /#about author target is client-rendered and was verified separately in the browser. Screenshots stored in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390x844 Chromium: readable wrapped title, author credit, loaded hero and immediate following four-bullet TLDR. Regular article paragraphs compute to Tara Avenir 400 at 16.96px. Page scrollWidth equals 390 with no horizontal page overflow. Both 760px tables scroll within 344px containers; the worked table reached its final column. YAML scrolls inside its own container, supports keyboard horizontal movement, and its disclosure closes/reopens. Added a scrolling hint. FAQ and Sources section inspected. /blog/ card image, title, date and navigation to the new article work. Screenshots stored in TARAHOME_BLOG_ARTIFACTS."
+  }
+}

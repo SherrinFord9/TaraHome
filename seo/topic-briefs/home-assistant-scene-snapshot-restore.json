@@ -1,0 +1,111 @@
+{
+  "version": 2,
+  "slug": "home-assistant-scene-snapshot-restore",
+  "researchedAt": "2026-09-12",
+  "primaryQuery": "Home Assistant scene snapshot restore",
+  "readerQuestion": "How can I temporarily change my lights in Home Assistant and then restore each light to the state it had beforehand?",
+  "selectedBecause": "A bounded, recurring configuration question with a useful reproducible two-lamp walkthrough: snapshot individual lights before changing them, serialize calls, and explain off-state memory and restart limits. Exact-query web results mix official scene reference pages, troubleshooting threads and whole-system backup results. Direct Google review returned HTTP 429 with a challenge; no Google ranking claim is made. The question is distinct from Tara manual override, house modes and power-on behavior. Community discussions establish recurring interest, not search volume or a recent surge. The newer thermostat discussion is credible, but a universal pause/restore recipe has equipment-specific frost and compressor caveats; irrigation is likewise more dependent on controller-side runtime enforcement. This modest lighting example offers a clearer self-contained contribution today.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant scene snapshot restore",
+      "evidenceSummary": "Reviewed on September 12: https://community.home-assistant.io/t/scene-snapshot-with-lights-and-restore-the-previous-state/780776 (2024 question, replies through October 2025) asks how cleaning brightness can return to mixed prior light states. https://www.reddit.com/r/homeassistant/comments/1l4u4w6/ asks to restore light settings after an event (June 2025). A recent adjacent discussion (search labeled it last week), https://www.reddit.com/r/homeassistant/comments/1w4u9r9/possible_to_make_my_probably_1st_gen_hue_bulbs_go/, mentions scene.create for light-state capture; seen in search, direct fetch failed, and its power-outage intent stays with the existing Tara page. Exact-query searches returned https://www.home-assistant.io/integrations/scene/ and the Community thread, plus confusing backup results. Current primary sources: scene integration, scene.create action, script syntax and script modes.",
+      "decision": "selected",
+      "reason": "Cross-surface recurrence and a precise missing walkthrough combining individual snapshots, one active run, an unavailable-state guard, and explicit failure cases. No existing Tara article owns temporary scene capture and restoration. No search-volume claim."
+    },
+    {
+      "query": "Home Assistant thermostat window open automation",
+      "evidenceSummary": "September 2, 2026 discussion https://www.reddit.com/r/homeautomation/comments/1w5fvk2/best_setup_for_automated_radiator_shutoff_when/ asks about contact sensors versus thermostat draft detection. Recurs in https://community.home-assistant.io/t/hvac-automatic-adjustment-based-on-open-doors-windows-automation-blueprint/529564. Exact-query results include that blueprint and https://www.homeautomationcookbook.com/automation/climate/thermostat-windows-open.html. Checked current https://www.home-assistant.io/integrations/window/ and https://www.home-assistant.io/integrations/climate/ for the sensor and HVAC-mode paths.",
+      "decision": "rejected",
+      "reason": "Strong viable future question, distinct from the existing open/close-window comfort reminder but adjacent to it. A good new guide must cover equipment-specific frost protection, saved mode, multiple openings and manual changes; the lighting candidate permits a smaller complete example with fewer equipment assumptions. Do not duplicate the comfort reminder URL."
+    },
+    {
+      "query": "Home Assistant irrigation skip rain automation",
+      "evidenceSummary": "May 12, 2026 Community blueprint https://community.home-assistant.io/t/gardena-6-way-mechanical-irrigation-controller/1010174 combines rain, moisture and per-zone control. Recurring pain appears in https://www.reddit.com/r/homeassistant/comments/1kxdv06/ about daily rain resetting at midnight. Exact-query results include https://github.com/altmenorg/HAsmartirrigation and https://localsmarthomeguide.com/articles/best-smart-irrigation-controllers-with-rain-skip/. Checked project documentation and https://esphome.io/components/sprinkler/ for controller run durations.",
+      "decision": "rejected",
+      "reason": "Useful future local-automation topic, but a responsible complete worked example needs a chosen controller, rain time window and independently enforced valve runtime; a generic weather condition would be thin. Current evidence is spread across different physical systems, while the light snapshot question has a common built-in implementation."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/scene-snapshot-with-lights-and-restore-the-previous-state/780776",
+      "observedAt": "2026-09-12",
+      "evidence": "Current review of an older discussion (October 2024 through October 2025): cleaning-mode users want to restore mixed on/off and brightness states, and group expansion appears in the follow-up. Age is explicit; a fresh crawl is not a new question or search-volume measurement."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1l4u4w6/",
+      "observedAt": "2026-09-12",
+      "evidence": "June 2025 discussion resurfaced in the current exact-query results: save light settings for a temporary event, then return to the prior state. Independent community surface corroborates the task, not current search volume."
+    },
+    {
+      "source": "github",
+      "url": "https://github.com/home-assistant/core/issues/102364",
+      "observedAt": "2026-09-12",
+      "evidence": "Historical issue about scene.create capturing unavailable states remains a relevant failure example in current search results. Used as problem evidence only, not as proof of an unresolved 2026 regression; the article guards for concrete on/off states."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant scene snapshot restore",
+    "reviewedAt": "2026-09-12",
+    "intent": "Save each light’s current state, perform a temporary change, then restore the same lights without replacing the original snapshot on repeat calls.",
+    "resultGap": "Exact-query web results include official API-style documentation, forum workarounds for off-state brightness and aggregate groups, and unrelated backup restore results. Tara can supply one bounded script plus a mixed-state worked example and failure table. Direct Google browser request returned HTTP 429/challenge, so its result ordering could not be inspected; web search was the available exact-query review and no Google position is asserted.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/integrations/scene/",
+      "https://community.home-assistant.io/t/scene-snapshot-with-lights-and-restore-the-previous-state/780776",
+      "https://github.com/nao-pon/ha_res_scenes"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant Scenes",
+      "url": "https://www.home-assistant.io/integrations/scene/",
+      "supports": "scene.create snapshot, temporary lifetime, overwrite behavior, scene.turn_on activation and scene.delete cleanup."
+    },
+    {
+      "name": "Home Assistant Create scene action",
+      "url": "https://www.home-assistant.io/actions/scene.create/",
+      "supports": "Lowercase scene identifiers, explicit snapshot_entities and current action fields."
+    },
+    {
+      "name": "Home Assistant Script syntax",
+      "url": "https://www.home-assistant.io/docs/scripts/",
+      "supports": "Sequential actions, template condition, delay and default error behavior."
+    },
+    {
+      "name": "Home Assistant Scripts",
+      "url": "https://www.home-assistant.io/integrations/script/",
+      "supports": "Single, restart, queued and parallel modes; scripts can be invoked from automations."
+    },
+    {
+      "name": "Home Assistant Group",
+      "url": "https://www.home-assistant.io/integrations/group/",
+      "supports": "Light groups aggregate members and on/off state, motivating snapshots of individual light entities."
+    },
+    {
+      "name": "Home Assistant Light",
+      "url": "https://www.home-assistant.io/integrations/light/",
+      "supports": "Light integration controls and available actions; actual attributes depend on supported light features."
+    },
+    {
+      "name": "Home Assistant 2026.9.2 light restoration implementation",
+      "url": "https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/light/reproduce_state.py",
+      "supports": "Captured on state reproduces supported stored brightness/color; captured off state sends turn_off without programming next-on brightness. Retrieved the matching tagged raw source over HTTP 200 after web fetch cache miss."
+    },
+    {
+      "name": "Home Assistant 2026.9.2 dynamic scene implementation",
+      "url": "https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/homeassistant/scene.py",
+      "supports": "Copies each specified entity state and attributes from the state machine without a forced hardware refresh; scene lifecycle is temporary."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-automation-manual-override/",
+      "/blog/home-assistant-house-modes/",
+      "/blog/smart-lights-turn-on-after-power-outage/",
+      "/blog/home-assistant-automation-runs-twice/"
+    ],
+    "decision": "Reviewed all existing article titles and brief intents/candidates, the ownership maps, historical opportunity CSV and selected cumulative performance rows. Manual override owns pausing automation for a human choice; house modes owns household state; power-outage guide owns device power-on behavior; runs-twice owns trigger diagnosis. None supplies temporary per-light snapshot/restore. Link to /home-automation-kit/ for the commercial local-routines intent. Historical context: September 8 Chart summary shows 14 clicks/1,408 impressions for August 10-September 6 versus 91/10,704 for July 13-August 9. June-September page rows (manual override 8 impressions, runs-twice 500) are cumulative, not recent changes. Visible queries show no evidence of a scene-snapshot cluster and omit anonymized traffic. September 8 authenticated inspection found homepage, IKEA pairing, Bluetooth proxy and IoT VLAN crawled but not indexed; no current inspection was performed here. Availability, sitemap, publication and accepted requests do not establish indexing or recovery. Separate refresh opportunities remain Bluetooth proxy setup, IKEA direct pairing, IoT VLAN, missing Energy Dashboard sensors and doorbell selection at their existing URLs; never restore PARASOLL/VALLHORN Matter-over-Thread errors. No existing article or homepage is edited by this job."
+  }
+}

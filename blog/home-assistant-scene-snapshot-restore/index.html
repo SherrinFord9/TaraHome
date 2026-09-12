@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Scene Snapshot: Restore Your Lights</title>
+    <meta name="description" content="Use a Home Assistant scene snapshot to restore lights after a temporary change, with a two-lamp script, repeat-call protection and clear restart limits." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-scene-snapshot-restore/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-scene-snapshot-restore/" />
+    <meta property="og:title" content="Home Assistant Scene Snapshot: Restore Your Lights" />
+    <meta property="og:description" content="Use a Home Assistant scene snapshot to restore lights after a temporary change, with a two-lamp script, repeat-call protection and clear restart limits." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-scene-snapshot-restore/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Scene Snapshot: Restore Your Lights" />
+    <meta name="twitter:description" content="Use a Home Assistant scene snapshot to restore lights after a temporary change, with a two-lamp script, repeat-call protection and clear restart limits." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-scene-snapshot-restore/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-scene-snapshot-restore/#blogposting",
+      "headline": "Home Assistant Scene Snapshot: Restore Your Lights",
+      "description": "Use a Home Assistant scene snapshot to restore lights after a temporary change, with a two-lamp script, repeat-call protection and clear restart limits.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-scene-snapshot-restore/cover.png",
+      "datePublished": "2026-09-12",
+      "dateModified": "2026-09-12",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-scene-snapshot-restore/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/scene/",
+        "https://www.home-assistant.io/actions/scene.create/",
+        "https://www.home-assistant.io/docs/scripts/",
+        "https://www.home-assistant.io/integrations/script/",
+        "https://www.home-assistant.io/integrations/group/",
+        "https://www.home-assistant.io/integrations/light/",
+        "https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/light/reproduce_state.py",
+        "https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/homeassistant/scene.py"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Scene Snapshot: Restore Your Lights",
+          "item": "https://tarahome.ai/blog/home-assistant-scene-snapshot-restore/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will a scene snapshot survive a Home Assistant restart?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. A scene made with scene.create is temporary and is removed by a restart or scene reload. This script has no recovery after interruption. For a long cleaning session, use an explicitly saved normal scene and a clear way to activate it again."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it restore brightness and color?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For a light that was on, Home Assistant can send the captured brightness and supported color setting back through its light integration. The device must report the relevant settings and accept those commands. A light that was off returns to off; its next-on brightness is a separate limitation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a scene know whether it is active?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. A scene’s state is not an on/off indicator of the room’s appearance. It records activation information. Another command can change the lamps afterward, so inspect the individual lights when checking restoration."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+      <header class="hero article-hero">
+        <div>
+          <p class="article-meta"><span>Practical automations</span><span><time datetime="2026-09-12">September 12, 2026</time></span><span>8 min read</span></p>
+          <h1>Home Assistant Scene Snapshot: Restore Your Lights</h1>
+          <p class="lede">Save each lamp’s settings before a temporary brightness boost, then return the room to the way it was.</p>
+          <p class="article-byline"><a href="/#about">By Tara Home</a></p>
+        </div>
+        <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-scene-snapshot-restore/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-scene-snapshot-restore/cover-480.webp 480w, /assets/generated/blog/home-assistant-scene-snapshot-restore/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A glowing table lamp and an unlit floor lamp beside a forest-green sofa in an evening reading corner" loading="eager" /></figure>
+      </header>
+      <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Save before changing:</strong> use <code>scene.create</code> with <code>snapshot_entities</code>, make the temporary change, then activate that saved scene with <code>scene.turn_on</code>.</li>
+              <li><strong>Choose individual lamps:</strong> snapshot each light separately so an initially dark lamp can return to off while another returns to its earlier brightness.</li>
+              <li><strong>Keep one run active:</strong> put the steps in one script using <code>mode: single</code>. Repeated calls during the wait will not overwrite its original snapshot.</li>
+              <li><strong>Use this for short changes:</strong> a restart or scene reload loses the snapshot. Restoring a lamp to off also does not guarantee its remembered brightness the next time someone turns it on.</li>
+            </ul>
+          </aside>
+          <h2>Capture the room before the temporary change</h2>
+          <p>To <strong>restore lights from a Home Assistant scene snapshot</strong>, capture their states first, change the lights, and then activate the captured scene. A scene is a saved set of device settings. A snapshot records the settings Home Assistant sees at that moment, so you do not have to guess what brightness the room had beforehand.</p>
+          <p>For a short task-light boost, put those steps in one <strong>script</strong>: a sequence you can run from a button or another automation. Start with two dimmable lamps you can already control from Home Assistant. The example below brightens both for 30 seconds, then restores their captured states. Once you have checked it, you can lengthen that interval.</p>
+          <p>The order matters: taking the snapshot after brightening the lights saves the brightened room. Keep the same script responsible for saving and restoring, and avoid other routines changing those lamps during the test. Home Assistant’s <a href="https://www.home-assistant.io/actions/scene.create/">Create scene documentation</a> describes the temporary capture action.</p>
+          <p class="research-method">Researched from current Home Assistant documentation and the 2026.9.2 source code on September 12, 2026. The YAML syntax and initial state check were checked locally. Expected outcomes follow the documented behavior; this script was not run in a Home Assistant installation or tested on physical lamps. The cover is an AI-generated residential illustration.</p>
+
+          <h2 id="setup">Set up a short brightness boost</h2>
+          <h3>1. Find two individual light IDs</h3>
+          <p>Open each lamp in Home Assistant and use its settings to copy the <strong>entity ID</strong>, the internal name such as <code>light.reading_lamp</code>. Check that each lamp turns on, turns off and dims from its normal controls. Keep mains power supplied to the smart lamps.</p>
+          <p>Use the individual light entries, even if you normally operate a room group. A <a href="https://www.home-assistant.io/integrations/group/">light group</a> combines its members into one control and normally reports on when any member is on. That combined state cannot describe “reading lamp on, floor lamp off.” Capturing the members preserves that distinction.</p>
+          <h3>2. Create one script</h3>
+          <ol>
+            <li>Open <strong>Settings → Automations &amp; scenes → Scripts</strong> and create a new empty script.</li>
+            <li>Open its menu and choose <strong>Edit in YAML</strong>. YAML is Home Assistant’s text configuration format. Paste the complete example below; do not add an outer <code>script:</code> line.</li>
+            <li>Replace <code>light.reading_lamp</code> and <code>light.floor_lamp</code> with your IDs <strong>everywhere they appear</strong>. Each appears in the initial check, the snapshot list and the brightness action.</li>
+            <li>Reserve <code>before_reading_corner_boost</code> for this script. If that name already belongs to a scene, choose a fresh name and change both later <code>scene.before_reading_corner_boost</code> references to match.</li>
+            <li>Save the script. Leave the delay at 30 seconds for the first checks.</li>
+          </ol>
+          <p class="table-hint">On a phone, scroll the code sideways to read full lines.</p>
+          <details class="configuration" open><summary>Copy the two-lamp script</summary><pre tabindex="0" aria-label="Temporary lamp boost YAML"><code>alias: &quot;Lamps - temporary brightness boost&quot;
+description: &quot;Save two lamps, brighten briefly, then restore&quot;
+mode: single
+sequence:
+  - alias: &quot;Require usable states for both lamps&quot;
+    condition: template
+    value_template: &gt;-
+      {{ states(&#x27;light.reading_lamp&#x27;) in [&#x27;on&#x27;, &#x27;off&#x27;]
+         and states(&#x27;light.floor_lamp&#x27;) in [&#x27;on&#x27;, &#x27;off&#x27;] }}
+  - alias: &quot;Save each lamp before changing anything&quot;
+    action: scene.create
+    data:
+      scene_id: before_reading_corner_boost
+      snapshot_entities:
+        - light.reading_lamp
+        - light.floor_lamp
+  - alias: &quot;Temporarily brighten both lamps&quot;
+    action: light.turn_on
+    target:
+      entity_id:
+        - light.reading_lamp
+        - light.floor_lamp
+    data:
+      brightness_pct: 80
+  - delay: &quot;00:00:30&quot;
+  - alias: &quot;Restore the captured states&quot;
+    action: scene.turn_on
+    target:
+      entity_id: scene.before_reading_corner_boost
+  - alias: &quot;Remove this temporary scene&quot;
+    action: scene.delete
+    target:
+      entity_id: scene.before_reading_corner_boost
+</code></pre></details>
+          <p>The opening check stops the sequence if either light has a missing, <code>unknown</code> or <code>unavailable</code> state. It does not prove the device will stay reachable. The snapshot then saves what Home Assistant currently reports; it does not force a new reading from the lamps. See <a href="https://www.home-assistant.io/docs/scripts/">script conditions and sequential actions</a>.</p>
+          <p><code>scene_id</code> is the short creation name. The later actions target the full entity ID beginning with <code>scene.</code>. Keep lowercase letters and underscores. The final delete action removes the temporary record after restoration is requested; it does not turn off the lamps. If you copy this into another room’s script, change that snapshot name as well as the light IDs.</p>
+          <h3>3. Run it while you can see both lamps</h3>
+          <p>Set the reading lamp to roughly 30% brightness and turn the floor lamp off through Home Assistant. Wait until their controls show those states, then run the saved script. A <strong>trace</strong>, the script’s record of executed steps, helps you see where it stopped if the result is wrong.</p>
+          <p>After the checks below pass on your lamps, change the delay to <code>00:05:00</code> for a five-minute task-light boost if useful. Add a dashboard button that runs this saved script, or call it from the action section of your chosen button automation. Keep the capture and restore steps together.</p>
+
+          <h2 id="worked-example">Worked example: one lamp on, one lamp off</h2>
+          <p>These are expected outcomes from the example’s logic, not measurements from hardware. Brightness values are illustrative; a bulb may round the requested percentage.</p>
+          <p class="table-hint">Scroll sideways on a phone to read all three columns.</p>
+          <div class="comparison-table" role="region" aria-label="Two-lamp snapshot worked example" tabindex="0"><table>
+            <thead><tr><th scope="col">Step</th><th scope="col">Reading lamp</th><th scope="col">Floor lamp</th></tr></thead>
+            <tbody>
+              <tr><td>Before the script</td><td>On at about 30%</td><td>Off</td></tr>
+              <tr><td>Snapshot created</td><td>Its on state and reported light settings are saved</td><td>Its off state is saved</td></tr>
+              <tr><td>Temporary change</td><td>On at about 80%</td><td>On at about 80%</td></tr>
+              <tr><td>Another call during the wait</td><td colspan="2">No new run starts. The original snapshot and original deadline stay in place.</td></tr>
+              <tr><td>Restore after the delay</td><td>Requested back to its captured on state and brightness</td><td>Requested back to off</td></tr>
+            </tbody>
+          </table></div>
+          <p>Now swap the starting states and run again. Also try both lamps off. The point is to check each lamp independently, not merely that the room looks dimmer afterward. A call made after the script has finished starts a new boost and captures a fresh snapshot.</p>
+          <p><strong>Check one more thing:</strong> after the floor lamp returns to off, turn it on normally. It may come on at the temporary 80% level. That does not mean its off state failed to restore. Home Assistant’s <a href="https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/light/reproduce_state.py">light restoration code</a> sends an off command for a captured off state; it does not also program the bulb’s next-on brightness. If next-on brightness matters, set it explicitly in the routine that normally turns that lamp on.</p>
+
+          <h2 id="repeat-calls">Why this script uses single mode</h2>
+          <p>A second press should not redefine what “before” means. In this example, <code>mode: single</code> ignores another call while the script is still running. Home Assistant may log a warning for that ignored call; it is expected. The <a href="https://www.home-assistant.io/integrations/script/">script modes documentation</a> explains the other choices.</p>
+          <p>Changing this example to <code>restart</code> would stop the first run and capture the already-bright lamps on the second run. Using <code>parallel</code> would let runs share and overwrite the same snapshot name. <code>queued</code> would perform another boost afterward. Keep single mode for this fixed-duration recipe.</p>
+          <p>Single mode only coordinates calls to <em>this script</em>. Another automation using the same scene name can still overwrite it, and another lighting routine can still change the lamps. If several triggers need this behavior, have them call this one script. Give a separate room script its own snapshot name.</p>
+
+          <h2 id="limits">Decide how interruption and manual changes should behave</h2>
+          <p>This script restores the starting settings even if somebody adjusts a lamp during the wait. Use it only where that behavior is acceptable. For longer cleaning sessions, a clearly named, saved “Normal lighting” scene and a deliberate return button are easier to recover after interruption. That returns to a chosen preset, rather than recreating an arbitrary earlier room state.</p>
+          <p>If the household needs a manual change to take priority, first design a <a href="/blog/home-assistant-automation-manual-override/">manual override for the lighting automation</a>. Simply restoring a snapshot cannot identify who changed the lamp. Keep this convenience script away from lights needed for safe movement if an unexpected return to off would be a problem.</p>
+          <p>A Home Assistant restart or a scene reload removes dynamically created scenes. Stopping this script also prevents its remaining delay and restore steps from running. Use the ordinary lamp controls to recover the room; this example provides no automatic recovery. For lights changing after a mains outage, use the separate guide to <a href="/blog/smart-lights-turn-on-after-power-outage/">smart-light power-on behavior</a>.</p>
+
+          <h2 id="troubleshooting">Troubleshoot the result you actually see</h2>
+          <p class="table-hint">Scroll sideways for the likely cause and next step.</p>
+          <div class="comparison-table" role="region" aria-label="Scene restore troubleshooting" tabindex="0"><table>
+            <thead><tr><th scope="col">What happens</th><th scope="col">Check</th><th scope="col">What to do</th></tr></thead>
+            <tbody>
+              <tr><td>Nothing brightens</td><td>The initial condition and each lamp’s reported state</td><td>Fix the IDs or unavailable light first. Run the saved script from its beginning.</td></tr>
+              <tr><td>Both lamps return to on</td><td>Was a room group captured instead of its members?</td><td>List each individual lamp in the snapshot and brightness action.</td></tr>
+              <tr><td>The restored brightness is still 80%</td><td>Was the snapshot taken after the boost, or overwritten by another run?</td><td>Capture first; keep single mode and reserve the snapshot name.</td></tr>
+              <tr><td>An initially off lamp is bright at its next switch-on</td><td>Did it correctly return to off first?</td><td>Specify brightness in its normal turn-on routine. Off-state restoration does not set next-on memory.</td></tr>
+              <tr><td>The scene is missing</td><td>Was it already deleted, or did scenes reload or Home Assistant restart?</td><td>Successful runs delete it on purpose. After interruption, recover using normal controls.</td></tr>
+              <tr><td>Only some settings return</td><td>Each lamp’s reported settings, connection and the script trace</td><td>Test the same brightness or color command directly. A scene cannot supply unsupported features or repair a connection.</td></tr>
+            </tbody>
+          </table></div>
+          <p>A command failure can stop the sequence before restoration or cleanup. Conversely, a completed trace is not proof that every bulb physically changed. Watch the lamps during the first checks, and check their reported states afterward. If the device connection itself is unreliable, resolve that before relying on a timed return.</p>
+
+          <h2 id="faq">Other practical questions</h2>
+          <h3>Will a scene snapshot survive a Home Assistant restart?</h3><p>No. A scene made with scene.create is temporary and is removed by a restart or scene reload. This script has no recovery after interruption. For a long cleaning session, use an explicitly saved normal scene and a clear way to activate it again.</p>
+<h3>Can it restore brightness and color?</h3><p>For a light that was on, Home Assistant can send the captured brightness and supported color setting back through its light integration. The device must report the relevant settings and accept those commands. A light that was off returns to off; its next-on brightness is a separate limitation.</p>
+<h3>Does a scene know whether it is active?</h3><p>No. A scene’s state is not an on/off indicator of the room’s appearance. It records activation information. Another command can change the lamps afterward, so inspect the individual lights when checking restoration.</p>
+          <p>For Tara’s <a href="/home-automation-kit/">home automation kit with coordinated local routines</a>, the useful handoff is the same: a named control, a predictable return, and a clear recovery step when the routine is interrupted.</p>
+</div>
+      <section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid">
+        <div><h3>Official documentation</h3><ul>
+          <li><a href="https://www.home-assistant.io/integrations/scene/">Scenes: capture, activation and cleanup</a></li>
+          <li><a href="https://www.home-assistant.io/actions/scene.create/">Create scene: fields and temporary lifetime</a></li>
+          <li><a href="https://www.home-assistant.io/docs/scripts/">Script syntax: conditions, delays and errors</a></li>
+          <li><a href="https://www.home-assistant.io/integrations/script/">Script modes and calling scripts</a></li>
+        </ul></div>
+        <div><h3>Light behavior and implementation</h3><ul>
+          <li><a href="https://www.home-assistant.io/integrations/group/">Group behavior and member states</a></li>
+          <li><a href="https://www.home-assistant.io/integrations/light/">Light controls and actions</a></li>
+          <li><a href="https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/light/reproduce_state.py">Light state restoration, Home Assistant 2026.9.2</a></li>
+          <li><a href="https://github.com/home-assistant/core/blob/2026.9.2/homeassistant/components/homeassistant/scene.py">Dynamic scene implementation, Home Assistant 2026.9.2</a></li>
+        </ul></div>
+      </div></section>
+      <section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday lighting easier to live with</h2><p>Choose the rooms, controls and routines you want to connect.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+    </article></main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
