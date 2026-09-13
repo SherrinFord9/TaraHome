@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Wake-Up Light: A Gradual Morning Routine</title>
+    <meta name="description" content="Set up a Home Assistant wake-up light with an editable start time, a 20-minute brightness ramp, weekday controls and a way to cancel it." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-wake-up-light/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-wake-up-light/" />
+    <meta property="og:title" content="Home Assistant Wake-Up Light: A Gradual Morning Routine" />
+    <meta property="og:description" content="Set up a Home Assistant wake-up light with an editable start time, a 20-minute brightness ramp, weekday controls and a way to cancel it." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-wake-up-light/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Wake-Up Light: A Gradual Morning Routine" />
+    <meta name="twitter:description" content="Set up a Home Assistant wake-up light with an editable start time, a 20-minute brightness ramp, weekday controls and a way to cancel it." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-wake-up-light/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-wake-up-light/#blogposting",
+      "headline": "Home Assistant Wake-Up Light: A Gradual Morning Routine",
+      "description": "Set up a Home Assistant wake-up light with an editable start time, a 20-minute brightness ramp, weekday controls and a way to cancel it.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-wake-up-light/cover.png",
+      "datePublished": "2026-09-13",
+      "dateModified": "2026-09-13",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-wake-up-light/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/input_datetime/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://www.home-assistant.io/actions/light.turn_on/",
+        "https://companion.home-assistant.io/docs/core/sensors/#next-alarm-sensor",
+        "https://www.home-assistant.io/docs/scripts/",
+        "https://www.home-assistant.io/docs/scripts/conditions/",
+        "https://www.home-assistant.io/docs/automation/modes/",
+        "https://www.home-assistant.io/docs/automation/troubleshooting/",
+        "https://www.home-assistant.io/actions/automation.reload/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Wake-Up Light: A Gradual Morning Routine",
+          "item": "https://tarahome.ai/blog/home-assistant-wake-up-light/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will this work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The time helper and automation run on your Home Assistant server. The complete routine can work without internet only if the lamp\u2019s connection also supports local control, meaning commands stay inside your home network or radio system. A cloud-controlled lamp still depends on its provider. See what stops when Home Assistant goes down for the separate server-outage case."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it change the color of the light?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The example changes brightness only. Start with a white tone you like in the lamp\u2019s controls. A changing color temperature needs a lamp that supports it and additional actions using its supported range."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will it turn the lamp off afterward?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It finishes at the requested brightness and leaves the lamp on. Turn it off normally when you leave. Turning the enable helper off also leaves the lamp at its current brightness; it prevents future scheduled runs until you enable it again."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+      <header class="hero article-hero">
+        <div>
+          <p class="article-meta"><span>Practical automations</span><span><time datetime="2026-09-13">September 13, 2026</time></span><span>9 min read</span></p>
+          <h1>Home Assistant Wake-Up Light: A Gradual Morning Routine</h1>
+          <p class="lede">Brighten a bedroom lamp before your alarm, with a start time you can change and a stop control the household can use.</p>
+          <p class="article-byline"><a href="/#about">By Tara Home</a></p>
+        </div>
+        <figure class="article-cover"><img src="/assets/generated/blog/home-assistant-wake-up-light/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-wake-up-light/cover-480.webp 480w, /assets/generated/blog/home-assistant-wake-up-light/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A warm bedside lamp and analog alarm clock beside forest-green bedding at dawn" loading="eager" /></figure>
+      </header>
+      <div class="article-body">
+          <aside class="tldr" aria-label="TLDR summary">
+            <p class="tldr-label">TLDR</p>
+            <ul>
+              <li><strong>Use a lamp you can already dim in Home Assistant.</strong> A time helper and one automation can raise its brightness before your alarm.</li>
+              <li><strong>Set the start time, not the alarm time.</strong> For a 07:00 alarm, the example starts at 06:40 and brightens in 20 small steps.</li>
+              <li><strong>Keep an easy stop control.</strong> Turning off the lamp in Home Assistant or switching off the enable toggle cancels the running routine when that change is received.</li>
+              <li><strong>Keep your normal alarm.</strong> Home Assistant and the lamp connection must stay running. This example skips weekends, needs manual disabling for holidays or trips, and does not recover an interrupted ramp.</li>
+            </ul>
+          </aside>
+          <h2>Start with a time you can change from the dashboard</h2>
+          <p>For a <strong>Home Assistant wake-up light</strong>, use an existing dimmable bedroom lamp, a time setting and an enable switch. Schedule the lamp to start dim before your normal alarm, then increase its brightness in small steps. You do not need to replace the alarm clock or install extra software for this routine.</p>
+          <p>The example below starts at 5% brightness and requests 65% about 20 minutes later, Monday to Friday. Those are starting values for you to adjust, not measured recommendations for every bedroom. Try the lamp’s low brightness first, create the two controls, then test the complete schedule while you are awake.</p>
+          <p>A <strong>helper</strong> is a setting Home Assistant stores for you, such as a time or a toggle. Its <a href="https://www.home-assistant.io/integrations/input_datetime/">Date and/or time helper</a> lets you change the start time without reopening the automation. Choose this approach when your wake-up time is predictable or you are happy to adjust it the night before.</p>
+          <p class="research-method">Researched from current Home Assistant documentation on September 13, 2026. The YAML syntax, brightness calculation and cancellation condition were checked locally; the automation was not run in a Home Assistant installation or tested on physical lamps. The cover is an AI-generated bedroom illustration.</p>
+
+          <h2 id="setup">Set up your wake-up light in four steps</h2>
+          <h3>1. Check the lamp at low brightness</h3>
+          <p>Open the lamp’s controls in Home Assistant. Confirm that you can dim it, rather than only turn it on and off. Copy its <strong>entity ID</strong>, the internal name such as <code>light.bedside_lamp</code>, from its settings.</p>
+          <p>Try 5% and 65% while you can see the lamp. A reported percentage is a control setting, not a measurement of the light reaching your eyes. If 5% is too bright, try a lower value. If the lamp flickers or stays dark, choose a stable minimum. Keep electrical power supplied to a smart bulb and use its Home Assistant off control for the test.</p>
+          <p>The <a href="https://www.home-assistant.io/actions/light.turn_on/">light action documentation</a> describes brightness and transition options. A transition is a device’s fade between settings; support depends on the lamp and its connection. This example uses separate brightness commands, so it does not depend on the lamp accepting one 20-minute transition. You may still notice the individual steps.</p>
+
+          <h3>2. Create the time and enable controls</h3>
+          <ol>
+            <li>Open <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Choose <strong>Date and/or time</strong>, name it <strong>Wake up light start</strong>, and select <strong>time only</strong>.</li>
+            <li>Set its time to <strong>06:40:00</strong> for a 07:00 alarm. Check that its entity ID is <code>input_datetime.wake_up_light_start</code>.</li>
+            <li>Create a <strong>Toggle</strong> helper named <strong>Wake up light enabled</strong>. Check for <code>input_boolean.wake_up_light_enabled</code> and turn it on. The <a href="https://www.home-assistant.io/integrations/input_boolean/">Input Boolean documentation</a> describes this toggle helper.</li>
+            <li>Add both helpers and the lamp to an <a href="https://www.home-assistant.io/dashboards/entities/">Entities card</a>, a list of controls on your dashboard. The household can then change the time, disable tomorrow’s routine or stop the lamp from one place.</li>
+          </ol>
+          <p>If Home Assistant gives either helper a different ID, use that actual ID everywhere in the example. A name already in use can produce a numbered suffix.</p>
+
+          <h3>3. Create one automation</h3>
+          <p>Open <strong>Settings → Automations &amp; scenes → Create automation → Create new automation</strong>. In the menu, select <strong>Edit in YAML</strong>, Home Assistant’s text configuration format. Replace the empty automation with the complete example below. Do not add an outer <code>automation:</code> line.</p>
+          <p>Replace <code>light.bedside_lamp</code> everywhere with your lamp’s ID, including inside the quoted state check. Check the two helper IDs too, then save. Keep the initial and final brightness values between 1 and 100, with the final value higher than the initial value.</p>
+          <p class="table-hint">On a phone, scroll the code sideways to read full lines.</p>
+          <details class="configuration" open><summary>Copy the 20-minute wake-up automation</summary><pre tabindex="0" aria-label="Wake-up light automation YAML"><code>alias: &quot;Bedroom - weekday wake-up light&quot;
+description: &quot;Start dim, brighten for 20 minutes, allow cancellation&quot;
+mode: single
+variables:
+  start_brightness: 5
+  end_brightness: 65
+triggers:
+  - trigger: time
+    at: input_datetime.wake_up_light_start
+conditions:
+  - condition: state
+    entity_id: input_boolean.wake_up_light_enabled
+    state: &quot;on&quot;
+  - condition: time
+    weekday: [mon, tue, wed, thu, fri]
+  - condition: state
+    entity_id: light.bedside_lamp
+    state: &quot;off&quot;
+actions:
+  - action: light.turn_on
+    target:
+      entity_id: light.bedside_lamp
+    data:
+      brightness_pct: &quot;{{ start_brightness }}&quot;
+  - repeat:
+      count: 20
+      sequence:
+        - wait_for_trigger:
+            - trigger: state
+              entity_id: input_boolean.wake_up_light_enabled
+              to: &quot;off&quot;
+            - trigger: state
+              entity_id: light.bedside_lamp
+              to: &quot;off&quot;
+          timeout: &quot;00:01:00&quot;
+          continue_on_timeout: true
+        - if:
+            - condition: template
+              value_template: &gt;-
+                {{ wait.completed
+                   or not is_state(&#x27;input_boolean.wake_up_light_enabled&#x27;, &#x27;on&#x27;)
+                   or not is_state(&#x27;light.bedside_lamp&#x27;, &#x27;on&#x27;) }}
+          then:
+            - stop: &quot;Wake-up light cancelled or lamp not available&quot;
+        - action: light.turn_on
+          target:
+            entity_id: light.bedside_lamp
+          data:
+            brightness_pct: &gt;-
+              {{ (start_brightness
+                  + (end_brightness - start_brightness)
+                  * repeat.index / 20) | round(0) | int }}
+</code></pre></details>
+          <p>The weekday list uses Home Assistant’s <a href="https://www.home-assistant.io/docs/scripts/conditions/#time-condition">day codes</a>. Add <code>sat</code> and <code>sun</code> for every day. This list does not know about holidays or your travel plans; switch off <strong>Wake up light enabled</strong> when you want to skip them.</p>
+          <p>The lamp must initially report <code>off</code>. If it is already on, the routine leaves it alone. <code>mode: single</code> prevents a second overlapping run, as described in <a href="https://www.home-assistant.io/docs/automation/modes/">automation modes</a>.</p>
+
+          <h3>4. Test the schedule and the stop control</h3>
+          <ol>
+            <li>Set the helper to a time two minutes ahead. Ensure today is in the weekday list; if you temporarily add a weekend day, remove it afterward. Switch the enable helper on and turn the lamp off in Home Assistant.</li>
+            <li>Let the scheduled time arrive. The lamp should start at 5%, then move to 8% about a minute later.</li>
+            <li>Turn the enable helper off during the next wait. The automation should stop increasing brightness and leave the lamp at its current setting. Turn the lamp off yourself if you want darkness.</li>
+            <li>Turn the lamp off, schedule a fresh short test and re-enable the helper. This time, turn the lamp off through Home Assistant during the ramp. Confirm it stays off after the next minute would have passed.</li>
+            <li>Run a complete 20-minute check when convenient. Restore your morning start time and intended weekdays, and leave the helper enabled only if you want the routine tomorrow.</li>
+          </ol>
+          <p>Use the automation’s <strong>trace</strong>, its record of executed steps, to inspect a failed check. The editor’s <strong>Run actions</strong> button bypasses the top-level conditions and time trigger, so it does not verify the weekday or scheduled-start behavior. See <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Home Assistant’s automation testing guide</a>.</p>
+
+          <h2 id="worked-example">Worked example: ready for a 07:00 alarm</h2>
+          <p>This timeline is calculated from the example, not measured on a lamp. Every one-minute wait is followed by another brightness request. Command and network delays can make the finish slightly later than 07:00.</p>
+          <p class="table-hint">Scroll sideways on a phone to read all columns.</p>
+          <div class="comparison-table" role="region" aria-label="Calculated wake-up brightness timeline" tabindex="0"><table>
+            <thead><tr><th scope="col">Approximate time</th><th scope="col">Requested brightness</th><th scope="col">What happens</th></tr></thead>
+            <tbody>
+              <tr><td>06:40</td><td>5%</td><td>Start only if enabled, on an allowed day, with the lamp off.</td></tr>
+              <tr><td>06:45</td><td>20%</td><td>Five increases have completed.</td></tr>
+              <tr><td>06:50</td><td>35%</td><td>Halfway through the 20 increases.</td></tr>
+              <tr><td>07:00</td><td>65%</td><td>The ramp ends; the lamp stays on. Your separate alarm handles sound.</td></tr>
+              <tr><td>Cancel at 06:47</td><td>Last requested level</td><td>Switching the enable helper off stops further increases. Turning the lamp off also stops the routine.</td></tr>
+            </tbody>
+          </table></div>
+          <p>The calculation spreads the difference between <code>start_brightness</code> and <code>end_brightness</code> over 20 increases. Change those two values to suit the room. For a different duration, change the one-minute timeout: <code>00:00:30</code> gives about 10 minutes; <code>00:01:30</code> gives about 30 minutes. Keep the repeat count and the divisor at 20, and move the start time accordingly.</p>
+          <p>During each wait, an off event cancels the run. After the wait, the routine also checks whether the helper and lamp still report on. If a command errors, Home Assistant normally stops the sequence. These controls follow the documented <a href="https://www.home-assistant.io/docs/scripts/">wait, repeat and stop behavior</a>; they cannot guarantee that a physical lamp reports its state promptly.</p>
+
+          <h2 id="troubleshooting">When the light does something unexpected</h2>
+          <p class="table-hint">Scroll sideways on a phone to compare the symptom and next step.</p>
+          <div class="comparison-table" role="region" aria-label="Wake-up light troubleshooting" tabindex="0"><table>
+            <thead><tr><th scope="col">What you see</th><th scope="col">Check first</th><th scope="col">What to change</th></tr></thead>
+            <tbody>
+              <tr><td>Nothing happens at the start time</td><td>Helper enabled, allowed weekday, lamp off and automation enabled.</td><td>Schedule a new test in the future and inspect its trace. Setting a time already passed does not start this routine now.</td></tr>
+              <tr><td>Light is too bright immediately</td><td>Its actual output at the starting percentage; another routine changing it.</td><td>Lower <code>start_brightness</code> to a stable value and pause competing light controls for the test.</td></tr>
+              <tr><td>Light only turns on, without dimming</td><td>Whether its normal Home Assistant controls include working brightness.</td><td>An on/off-only light cannot perform this ramp. Use an already supported dimmable light.</td></tr>
+              <tr><td>Manual dimming is undone a minute later</td><td>The wake-up routine is still active.</td><td>Turn the enable helper off before choosing your own brightness. A brightness change alone does not cancel this example.</td></tr>
+              <tr><td>Light stops partway through</td><td>Cancellation, an unavailable lamp or an action error in the trace.</td><td>Restore normal lamp control first, then schedule another test. Keep the independent alarm active.</td></tr>
+              <tr><td>Home Assistant restarted or automations reloaded during the ramp</td><td>The running sequence was interrupted.</td><td>This example does not resume or catch up after a missed start. Check the lamp manually and keep the phone or clock alarm.</td></tr>
+            </tbody>
+          </table></div>
+          <p>If other automations control the same lamp, use a clear <a href="/blog/home-assistant-automation-manual-override/">manual override for your lighting routines</a>. For general startup failures, follow the <a href="/blog/home-assistant-automation-not-firing/">automation-not-firing checks</a>. Give this routine control of the lamp during those 20 minutes. Avoid editing or reloading automations mid-ramp: <a href="https://www.home-assistant.io/actions/automation.reload/">reloading stops running automation actions</a>.</p>
+
+          <h2 id="phone-alarm">Should it follow your phone alarm instead?</h2>
+          <p><strong>Use the editable helper first.</strong> It works independently of the type of phone you use and does not read or change the phone’s alarm. Change both times yourself when your schedule changes.</p>
+          <p>Android’s Companion app offers a <a href="https://companion.home-assistant.io/docs/core/sensors/#next-alarm-sensor">Next Alarm sensor</a> for a later, separate automation. It can receive alarms from other apps, so check its app allow list and confirm the reported time. It becomes unavailable when there is no next alarm. The documented iOS sensor list does not provide the same native alarm sensor; keep the helper approach unless you deliberately build and verify a separate synchronization workflow.</p>
+          <p>Changing a phone alarm does not change this example. If your wake times rotate with shifts, agree on one place to manage that schedule before connecting more routines. Tara’s <a href="/home-automation-kit/">local home automation routines</a> follow the same practical principle: make the controls understandable to the people who live with them.</p>
+
+          <h2>Other practical questions</h2>
+          <h3>Will this work without internet?</h3>
+          <p>The time helper and automation run on your Home Assistant server. The complete routine can work without internet only if the lamp’s connection also supports local control, meaning commands stay inside your home network or radio system. A cloud-controlled lamp still depends on its provider. See <a href="/blog/what-happens-if-home-assistant-goes-down/">what stops when Home Assistant goes down</a> for the separate server-outage case.</p>
+          <h3>Does it change the color of the light?</h3>
+          <p>No. The example changes brightness only. Start with a white tone you like in the lamp’s controls. A changing color temperature needs a lamp that supports it and additional actions using its supported range.</p>
+          <h3>Will it turn the lamp off afterward?</h3>
+          <p>No. It finishes at the requested brightness and leaves the lamp on. Turn it off normally when you leave. Turning the enable helper off also leaves the lamp at its current brightness; it prevents future scheduled runs until you enable it again.</p>
+
+      </div>
+      <section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Helpers and lamp controls</h3><ul><li><a href="https://www.home-assistant.io/integrations/input_datetime/">Date and time helper</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a></li><li><a href="https://www.home-assistant.io/actions/light.turn_on/">Turn on a light: brightness and transition</a></li><li><a href="https://companion.home-assistant.io/docs/core/sensors/#next-alarm-sensor">Companion app: phone sensors</a></li></ul></div><div><h3>Automation behavior</h3><ul><li><a href="https://www.home-assistant.io/docs/scripts/">Script syntax: repeat, wait and stop</a></li><li><a href="https://www.home-assistant.io/docs/scripts/conditions/">State and weekday conditions</a></li><li><a href="https://www.home-assistant.io/docs/automation/modes/">Automation modes</a></li><li><a href="https://www.home-assistant.io/actions/automation.reload/">What reloading automations stops</a></li><li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Testing automations and reading traces</a></li></ul></div></div></section>
+      <section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make your morning routine easy to change</h2><p>Choose the rooms, lights and everyday controls you want to connect.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+    </article></main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>

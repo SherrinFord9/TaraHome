@@ -1,0 +1,51 @@
+{
+  "slug": "home-assistant-wake-up-light",
+  "action": "new",
+  "publicationDate": "2026-09-13",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant gradually brighten my existing bedroom lamp before my alarm, with an editable time and a way to cancel it?",
+  "directAnswer": "Use a time-only helper, an enable toggle and the native weekday automation to raise an existing dimmable lamp from a chosen starting brightness to a chosen endpoint over 20 interruptible one-minute waits. Set 06:40 for a 07:00 alarm in the example, then verify scheduling and both stop controls while awake. Keep a separate alarm: the light must be reachable, Home Assistant must keep running, and there is no catch-up or restart recovery.",
+  "originalContribution": "The complete configuration in #setup combines two editable UI helpers, an already-on lamp guard, weekday selection and cancellation. #worked-example calculates 5%, 20%, 35% and 65% requests at start, five, ten and twenty minutes. #troubleshooting maps six observable symptoms to checks and corrections, including manual dimming, unavailable lamps and interrupted runs. Local checks validated the YAML, 21 brightness requests and seven cancellation-condition cases.",
+  "limitations": "Documentation-based guide, not a Home Assistant installation test or physical lamp test. Brightness percentages and timing are illustrative control requests, not measured output or wake-up effectiveness. Device response, minimum brightness and state-reporting delay vary. Routine does not synchronize phone alarms, infer holidays or travel, turn the lamp off at completion, or recover a missed/interrupted run. The cover is an AI-generated bedroom illustration of ordinary furnishings.",
+  "proofreadFixes": "Automated self-review, followed by a second complete read of the final visible copy. Replaced custom-integration jargon with extra software; defined helper, entity ID, transition, trace, local control and Entities card. Corrected the instruction from quoted calculation check to quoted state check. Replaced vague duration edits with exact 00:00:30 and 00:01:30 timeout values. Added documentation for reload interruption and made it explicit that cancellation by the helper leaves the light on and disables subsequent mornings until re-enabled. Clarified that the second cancellation test must start with the lamp off. Retained a four-bullet direct TLDR, research disclosure and By Tara Home link. Source URLs return 200; the required /#about target was verified in the rendered homepage because it is created by JavaScript.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A time-only input_datetime helper can directly supply an automation time trigger and be edited from the interface.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_datetime/"
+    },
+    {
+      "claim": "light.turn_on accepts brightness_pct; color and fade capabilities depend on the light.",
+      "sourceUrl": "https://www.home-assistant.io/actions/light.turn_on/"
+    },
+    {
+      "claim": "Counted repeat exposes repeat.index; wait_for_trigger can time out; wait.completed distinguishes an observed event from timeout; stop halts the sequence.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "A weekday time condition supports mon through sun; the written list is a day filter rather than a holiday calendar.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/#time-condition"
+    },
+    {
+      "claim": "Single mode prevents an overlapping second run.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Run actions bypasses top-level triggers and conditions, so it cannot verify the scheduled weekday behavior.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "Reloading automations stops currently running automation actions.",
+      "sourceUrl": "https://www.home-assistant.io/actions/automation.reload/"
+    },
+    {
+      "claim": "Android Next Alarm can reflect alarms set by other apps, offers an allow list and becomes unavailable without a next alarm; the iOS sensor list does not document the equivalent native alarm sensor.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/core/sensors/#next-alarm-sensor"
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium 1440×1000: article title readable in two lines, 400-weight Tara Avenir confirmed, four TLDR bullets visible immediately below the hero, centered 780px body at x=330 and 918px table content without page overflow (scrollWidth=1440). Hero WebP loads with bedside lamp and clock visible. Library uses two columns and a readable first card; both library URLs contain the matching new post. Legacy .html redirect lands on the canonical article path.",
+    "mobile": "Chromium 390×844: readable title, byline and loaded hero; 346px body and document scrollWidth=390. Table regions are 344px wide with 760px content; horizontal scrolling to all columns was exercised (416px range). YAML stays inside its scrolling container (312px visible/664px content); its details control collapses and reopens. Library becomes one column with visible cover, title and September 13 date. No broken article images or horizontal page overflow. Screenshots are saved under the external TARAHOME_BLOG_ARTIFACTS directory."
+  }
+}
