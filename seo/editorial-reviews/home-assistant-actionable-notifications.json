@@ -1,0 +1,43 @@
+{
+  "slug": "home-assistant-actionable-notifications",
+  "action": "new",
+  "publicationDate": "2026-09-14",
+  "verdict": "PASS",
+  "readerQuestion": "How do I add Yes and No buttons to a Home Assistant phone notification so only a timely Yes runs the intended action?",
+  "directAnswer": "Use a Companion App notification and a single-run script that waits up to five minutes for that request's Yes/No event. Practice on a new Toggle helper first, then adapt its final action to a working reading lamp. No, expiry and old response IDs do not authorize a change. The phone must reach Home Assistant to answer, and a server restart ends the pending wait.",
+  "originalContribution": "Sections 1–3 provide a complete inert-helper practice script and ordered Yes/No/timeout/old-reply/busy-run checks. 'Worked example: ask before lighting the reading corner' shows the exact lamp action replacement and a five-row 8:00 pm outcome table, separating acknowledgement from command execution and physical device response.",
+  "limitations": "Documentation-based guide. Two YAML blocks parsed and four Jinja response conditions evaluated: matching Yes, matching No, timeout, and another request's Yes. No running Home Assistant integration test, physical phone test, lamp test, notification timing measurement or claimed human/expert review. Notification clearing can fail under phone platform restrictions; restart stops the pending wait. Generated cover is a conceptual illustration, not product photography.",
+  "proofreadFixes": "Replaced response-ID jargon in the TLDR with 'Tie each button to its own question' and explained IDs/context beside the script. Wrapped both YAML blocks in the existing scrollable configuration style, made them keyboard-focusable and added a sideways-scrolling/copy-whole-block instruction. Replaced 'expired event listener' and 'durable task queue' phrasing with plain explanations. Fixed two source links whose section fragments were absent by linking to their working primary documentation pages. Added Apple and Android primary links for exposing notification actions. Verified the required /#about author target after client rendering instead of treating its absence from static HTML as a broken link. Final read confirms No leaves the current state alone, timeout is not consent, and the guide distinguishes expected outcomes from hardware testing.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Companion notification buttons return mobile_app_notification_action events; identifiers should distinguish individual requests.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/actionable-notifications/"
+    },
+    {
+      "claim": "After wait_for_trigger times out, wait.trigger is none; continue_on_timeout can allow cleanup while an explicit condition prevents the protected action.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "Single script mode refuses a new overlapping execution.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/script/"
+    },
+    {
+      "claim": "A tagged notification can be cleared with clear_notification, subject to phone platform limitations.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    },
+    {
+      "claim": "A Toggle helper can be created in Helpers and set with input_boolean.turn_on.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Local Push uses a local WebSocket connection and has platform-specific connection requirements; ordinary push uses external delivery services.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-local/"
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440×1000 in Playwright: readable two-line H1, visible September 14 date and By Tara Home credit, loaded 1200px WebP hero, Tara Avenir loaded, centered 780px text column and 920px comparison table. Document scrollWidth equals 1440. Library's first card has the new title, date, loaded unique cover and correct link. Both indexes inspected; .html redirect reaches the trailing-slash canonical. Desktop hero, table and library screenshots visually inspected and saved outside the website in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "PASS at 390×844 in Playwright: readable wrapped H1 and prose, loaded 480px WebP cover, stacked centered layout and a 390px document scrollWidth. Table viewport 344px with 760px content scrolls sideways; code viewport 312px with wider content scrolls independently, both keyboard-focusable. Mobile hero, table, code and library screenshots visually inspected. Author /#about target resolves visibly after homepage client rendering. Final screenshots stored in TARAHOME_BLOG_ARTIFACTS."
+  }
+}
