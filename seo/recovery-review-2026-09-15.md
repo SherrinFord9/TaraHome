@@ -1,5 +1,23 @@
 # Search recovery follow-up, September 15, 2026
 
+## Bluetooth setup follow-up
+
+A later pass refreshed the established Bluetooth proxy guide without changing its
+title, canonical, publication date, or image. Current official documentation
+exposes a missing setup detail: Home Assistant's saved scanning mode owns the
+running choice for an already connected ESPHome proxy. The update adds that check,
+a manual IP/API connection path, exact installer board/revision boundaries, a
+three-slot capacity example, and a harmless sensor-reading check. It scopes the
+battery-saving claim to scan-related drain, not total battery life. Four comparison
+tables are keyboard-scrollable, and visible/schema FAQ answers agree.
+
+The page's latest completed-week impressions were 10 versus 4, with zero clicks.
+This is a reason to inspect an established owner, not proof of recovery or grounds
+for another keyword/title pivot. Detailed sources and verification boundaries are
+in `seo/editorial-reviews/home-assistant-bluetooth-proxy-guide.json`. Cron now
+checks setting ownership, exact board revisions, and the distinction between
+scanning and active connections. No extra daily article or hardware action ran.
+
 ## Result
 
 Indexing has improved; traffic has not meaningfully recovered. Fresh authenticated

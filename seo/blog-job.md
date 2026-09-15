@@ -111,6 +111,12 @@ fix, not just whether it sounds clear. Record the important checks in claimCheck
   without actual evidence. State documentation research as research, not testing.
 - Give a harmless verification step and expected result. Do not tell readers to
   delete historical data, unlock doors, or disable safety controls as a first test.
+- For Bluetooth proxies, distinguish scanning mode, simultaneous connections,
+  and supported-device decoding. Check which setting Home Assistant owns before
+  recommending YAML changes. Match installer firmware to the exact board/revision;
+  do not mistake a generic installer limitation for a chip-family limitation.
+  Separate the Bluetooth radio path from the private network/API path. Scope
+  battery-saving percentages to the measured component, not total battery life.
 - For backup and migration advice, verify current built-in restore support for
   both Home Assistant OS and Container. Keep host/companion-service recovery
   separate, explain matching old encryption keys and decrypted browser downloads,
