@@ -94,7 +94,8 @@ export default function PlacementPlanner({value, onChange, levels, cameraZones, 
     if (!item) return;
     commit({...value, items: value.items.map(i => i.id === item.id ? constrainItem({...i, ...patch}, value) : i)});
   }
-  function fit() {setZoom(1); setPan({x: 0, y: 0});}
+  function focusMap() {surface.current?.closest('.tp-body')?.scrollTo({top: 0});}
+  function fit() {setZoom(1); setPan({x: 0, y: 0}); focusMap();}
   function undo() {
     const previous = past.at(-1); if (!previous) return;
     setPast(past.slice(0, -1)); setFuture([value, ...future]); onChange(previous); setSelected(null);
@@ -115,7 +116,7 @@ export default function PlacementPlanner({value, onChange, levels, cameraZones, 
       y: kind === 'room' ? snap(value.depth / 2 - 5) + index : snap(value.depth * (kind === 'camera' ? 0.4 : 0.6)) + ((index - 1) % 4) * 4,
       width: 12, depth: 10, rotation: 0, range: kind === 'camera' ? 25 : 12, fov: kind === 'camera' ? 90 : 120,
       ...geometry}, value);
-    commit({...value, items: [...value.items, added]}); setSelected(added.id); setTool('select'); setError('');
+    commit({...value, items: [...value.items, added]}); setSelected(added.id); setTool('select'); setError(''); focusMap();
   }
   function point() {
     const p = stage.current?.getRelativePointerPosition();
@@ -176,10 +177,10 @@ export default function PlacementPlanner({value, onChange, levels, cameraZones, 
     <div className="tp-toolbar" aria-label="Map tools">
       <div className="tp-tools">
         <Tool label="Select and move" active={tool === 'select'} onClick={() => setTool('select')}><MousePointer2 /></Tool>
-        <Tool label="Draw room" active={tool === 'room'} onClick={() => setTool('room')}><SquarePlus /></Tool>
+        <Tool label="Draw room" active={tool === 'room'} onClick={() => {setTool('room'); focusMap();}}><SquarePlus /></Tool>
         <Tool label="Add camera" onClick={() => add('camera')}><Camera /></Tool>
         <Tool label="Add mmWave sensor" onClick={() => add('presence')}><Radar /></Tool>
-        <Tool label="Pan map" active={tool === 'pan'} onClick={() => setTool('pan')}><Hand /></Tool>
+        <Tool label="Pan map" active={tool === 'pan'} onClick={() => {setTool('pan'); focusMap();}}><Hand /></Tool>
       </div>
       <div className="tp-tools">
         <Tool label="Undo" disabled={!past.length} onClick={undo}><Undo2 /></Tool>

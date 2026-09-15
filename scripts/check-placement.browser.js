@@ -2,8 +2,8 @@
 async page => {
   const origin = await page.evaluate(() => location.origin);
   const results = [];
-  for (const width of [1440, 390, 360]) {
-    const context = await page.context().browser().newContext({viewport: {width, height: 950}, hasTouch: width < 500});
+  for (const width of [1440, 390, 360, 375]) {
+    const context = await page.context().browser().newContext({viewport: {width, height: width === 375 ? 667 : 950}, hasTouch: width < 500});
     let posts = 0;
     let payload = '';
     let phase = 'opening';
