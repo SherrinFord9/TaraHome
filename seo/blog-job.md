@@ -27,6 +27,8 @@ This is an isolated draft worktree supplied by scripts/blog-runner.py.
 Prepare exactly one useful new article per day at most. The runner owns commit,
 push, quota accounting, and live deployment verification. Do not commit, push,
 change branches, edit the runner, change the strategy, or edit other articles.
+The configurator is owned by `configurator-source/`. Do not rebuild it, replace
+its assets or HTML, or run the legacy full-site generator while publishing a post.
 When checks pass, leave the draft files for the runner to validate and publish.
 If no strong distinct question exists, explain why and stop without manufacturing
 an article to satisfy a quota. A failed attempt is retained and the retry starts
