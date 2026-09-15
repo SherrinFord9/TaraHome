@@ -71,6 +71,19 @@ were inspected, and the mobile heading was tightened without changing its text.
 The SEO ownership gate passes for all 17 protected pages and 67 keyword variants.
 This is a buyer page, not a new blog article; daily article quota is unchanged.
 
+The first post-deployment cold-browser check exposed a separate existing planner
+bug: the static placeholder home-type buttons were enabled before React attached
+the working controls. With the configurator entry bundle delayed 1.8 seconds,
+clicking Apartment left its eventual selected state false and Continue disabled.
+This is reproducible lost input, not evidence of a ranking cause. Disable the
+placeholder buttons and mark the fallback busy until the app replaces it. The
+same markup correction is applied to the local source configurator HTML, without
+rebuilding the old generator over production. A separate
+`scripts/check-configurator-loading.browser.js` test holds the bundle and checks
+disabled placeholders, then releases it and verifies the first enabled selection
+and Continue action work at desktop and mobile widths. This prevents inactive
+placeholders from accepting input; it does not queue clicks on disabled buttons.
+
 The old `tara-Website_latest` generator is not the production publishing path.
 Do not rebuild that source folder over this static production repository: its
 generator still contains an older version of this page and other manual fixes.
