@@ -115,6 +115,15 @@ fix, not just whether it sounds clear. Record the important checks in claimCheck
   enforced isolated rehearsal or planned single-controller downtime, not merely
   a different IP address. Do not claim a file listing proves a successful restore,
   or that a hypothetical recovery example is a tested Tara installation.
+- For networking advice, separate discovery, control, and device-initiated updates.
+  An mDNS reflector is not a firewall allowance or a complete Matter IPv6 path.
+  Check each integration's supported topology; distinguish Container host mode,
+  a VM adapter on one LAN, and bridging separate networks. Do not recommend two
+  Home Assistant interfaces as automatic secure segmentation. State same-segment
+  exposure, integration-specific callback direction, generation-specific ports,
+  and a reversible non-critical test. A missing discovery entry or successful
+  ping alone is not a diagnosis. Never prescribe factory resets or critical-device
+  interruptions as the first networking check.
 - When mentioning Tara pricing, distinguish the online planning estimate from a
   confirmed quote. The one-bedroom apartment example belongs to
   `/smart-home-starter-kit/`; link there rather than duplicating its changing

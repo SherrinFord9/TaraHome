@@ -1,0 +1,86 @@
+{
+  "slug": "home-assistant-main-lan-vs-iot-vlan",
+  "action": "refresh",
+  "publicationDate": "2026-06-17",
+  "reviewDate": "2026-09-15",
+  "verdict": "PASS",
+  "readerQuestion": "Should Home Assistant stay on my main network or join the IoT VLAN, and how do I keep discovery, control, and isolation working?",
+  "directAnswer": "Start with one interface. For a small new setup, keep same-network-dependent devices together. In an existing segmented home, assess each integration's routed control and update requirements before moving the server. A second interface is an advanced exposure decision, not an automatic firewall boundary. Matter needs local IPv6 and the documented border-router path.",
+  "originalContribution": "A three-layout decision table distinguishes same-segment exposure from routed rules and multi-interface access. A fictional first-generation Shelly lamp example separates commands, device-initiated CoIoT updates, phone UI access, and unrelated IoT traffic. The six-step procedure begins with a reversible plan and ends with non-critical command, physical-state and reconnect checks. It does not present a universal router ruleset.",
+  "limitations": "Documentation research and website browser checks only. No router, firewall, Home Assistant instance, device, or actual installation was reconfigured or tested. The illustrative cover is not installation evidence. The exposure consequences and staged test sequence are engineering recommendations, not measured hardware or security results. Successful rendering and indexing do not establish ranking recovery.",
+  "proofreadFixes": "Removed the automatic dual-interface recommendation and the unsupported strictest-segmentation claim. Distinguished shared-LAN exposure, host mode, a VM bridge onto one network, inter-network bridging, and discovery-interface selection. Added Matter IPv6 and Thread requirements. Replaced old forum-only control advice with generation-specific primary documentation and a worked example. Removed the claim that a missing discovery entry proves a network fault, and replaced re-pairing and broad reboot advice with a reversible non-critical test. Added honest authorship/research disclosure, short four-bullet TLDR, regular TLDR text, keyboard-focusable tables, and exact visible/schema FAQ agreement. Browser verification caught stale library summaries; only this card's description was corrected in both indexes. This was an automated editorial review, not a human expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "searchEvidence": {
+    "source": "seo/search-performance-2026-09-15.json",
+    "period": "2026-06-14/2026-09-13",
+    "cumulativeClicks": 8,
+    "cumulativeImpressions": 1374,
+    "cumulativeAveragePosition": 10.74,
+    "interpretation": "Cumulative page exposure, not last-week demand or present rank. This established guide was already a recovery priority. Its factual and safety gaps justify a refresh independently of traffic causation.",
+    "previousInspection": "September 15 authenticated inspection: indexed, last crawl August 27. No additional inspection or indexing request in this refresh.",
+    "nextMatchedTrafficReview": "2026-09-22"
+  },
+  "claimChecks": [
+    {
+      "claim": "Discovery interface selection uses the Network integration and route-based auto-detection. This setting is not itself a firewall policy.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/network/"
+    },
+    {
+      "claim": "Zeroconf browser and selected discovery interfaces reveal mDNS services; absence alone does not identify the cause of a device problem.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/zeroconf/"
+    },
+    {
+      "claim": "The SSDP browser is available under Settings, System, Network and reports a different discovery mechanism.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/ssdp/"
+    },
+    {
+      "claim": "Network HomeKit accessories across VLANs require mDNS reflection for discovery/pairing; paired-state and other prerequisites also matter.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/homekit_controller/"
+    },
+    {
+      "claim": "Cast does not recommend/support automatic discovery across subnets. It describes forwarding or known hosts as alternatives, requires Container host mode, and has a separate media playback path.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/cast/"
+    },
+    {
+      "claim": "The documented Linux Container installation uses host networking. That does not attach the host to an additional VLAN.",
+      "sourceUrl": "https://www.home-assistant.io/installation/linux/"
+    },
+    {
+      "claim": "Matter needs local IPv6 and multicast. Troubleshooting recommends a shared LAN for Home Assistant, Wi-Fi Matter devices, and the relevant Thread border-router LAN connection. A Thread radio mesh is not the same thing as the LAN VLAN.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/matter/"
+    },
+    {
+      "claim": "Generation 1 Shelly uses CoIoT, recommends unicast with the HA address and UDP 5683 default, and needs a restart after peer changes. Later generations use RPC and have different requirements; custom CoAP ports are possible.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/shelly/"
+    },
+    {
+      "claim": "pfSense interface rules filter in the inbound direction, are stateful by default, and allow matching replies through state. New device-initiated traffic must be evaluated separately. The article does not assume all routers have the same interface UI or rule ordering.",
+      "sourceUrl": "https://docs.netgate.com/pfsense/en/latest/firewall/rule-methodology.html"
+    }
+  ],
+  "preserved": {
+    "titleH1CanonicalDescription": true,
+    "originalPublicationDate": true,
+    "allExistingArticleFragmentIds": true,
+    "coverPathsAndOriginalAssets": true,
+    "otherArticlesHomepageConfigurator": true,
+    "scopeNote": "Only this article's modified date and sitemap lastmod advance. Only its card summaries change in the two library indexes. No library font/layout rewrite, new URL, new cover, or publishing-cadence change. Two unrelated whitespace-only layout-sync changes were removed."
+  },
+  "browserChecks": {
+    "script": "scripts/check-vlan-guide.browser.js",
+    "localViewports": ["1440x900", "390x900", "360x900"],
+    "verified": "Unchanged title/H1/canonical/datePublished, synchronized descriptions, five matching visible/schema FAQ answers, four TLDR bullets at 400/600 weights, regular Avenir headings, centered body, responsive image, no header overlap or document overflow, unique IDs, two keyboard-scrollable comparison regions, four example rows, and both library cards. Screenshots inspected.",
+    "imageObservation": "The first desktop screenshot captured a decoded image before its paint. Waiting for two animation frames produced the expected image with the same source and dimensions. No asset or production loading change was made to work around a screenshot timing issue.",
+    "privacy": "Separate browser contexts block Analytics, Tag Manager and Formspree. Zero form submissions and zero device actions.",
+    "liveGate": "Repeat the same script after the exact Pages deployment succeeds. Local tests alone do not establish live deployment."
+  },
+  "validation": {
+    "publicationGate": "PASS",
+    "articleIntentGate": "PASS without an exception",
+    "siteIntentGate": "PASS",
+    "typographyLayoutEditorialCoverGates": "PASS",
+    "imageUniquenessGate": "PASS",
+    "commercialImageDeliveryGate": "PASS"
+  }
+}

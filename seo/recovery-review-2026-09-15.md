@@ -269,6 +269,41 @@ claimed. Local browser checks cover the article and both cards at 1440, 390 and
 checks are in `seo/editorial-reviews/how-to-back-up-home-assistant.json` and
 `scripts/check-backup-guide.browser.js`. No real Home Assistant restore was run.
 
+## VLAN guide refresh
+
+The established main-LAN/IoT-VLAN guide still treated two Home Assistant network
+interfaces as an easy balanced default. It understated direct host exposure,
+called one layout categorically strictest, grouped Thread with non-IP radios,
+and proposed re-pairing a device as routine verification. The refresh corrects
+those recommendations without changing its title, H1, canonical, description,
+June 17 publication date, existing fragment IDs, or image paths.
+
+A three-layout decision table now separates discovery convenience from access
+control. The new Matter section explains local IPv6 and the border-router LAN
+path. A fictional first-generation Shelly lamp example distinguishes commands
+from device-initiated updates and stateful replies; it is not a tested deployment
+or a universal firewall configuration. The verification sequence uses a reversible
+non-critical test, not factory resets or interruption of safety devices.
+
+Both library cards retained an older recommendation in their summaries. Only
+this card's description was synchronized to the unchanged metadata. The guide
+now includes honest authorship/research disclosure, matching FAQ schema, regular
+TLDR text, and two keyboard-scrollable comparison tables. Original art is retained.
+Browser tests at 1440, 390, and 360px cover the article and both cards, fonts,
+images, alignment, and overflow. A decoded-but-not-yet-painted cover in the first
+screenshot was resolved by waiting for browser paint in the test, with no
+production image or loading change.
+
+The daily prompt now checks discovery versus control and callbacks, integration-
+specific topology, multi-interface exposure, IPv6, and safe verification. No new
+URL, extra daily article, or scheduler change was made. Claim checks and a
+repeatable live browser gate are in
+`seo/editorial-reviews/home-assistant-main-lan-vs-iot-vlan.json` and
+`scripts/check-vlan-guide.browser.js`. The 1,374 impressions and eight clicks are
+cumulative June 14-September 13 figures, not a current ranking. Today's earlier
+inspection reported indexed with an August 27 crawl; no repeat indexing request
+was made. There is no claimed ranking effect from this content refresh.
+
 ## Next measurement
 
 Review on September 22 with completed days, using the same sitewide windows and
