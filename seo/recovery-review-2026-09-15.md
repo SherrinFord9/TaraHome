@@ -109,8 +109,9 @@ clicks. These small samples do not justify another keyword or title pivot.
    Continue flagging existing-page refreshes separately, not letting the daily
    writer rewrite established posts or the homepage.
 
-No homepage redesign, bulk metadata migration, title change, new URL, image
-replacement, forced platform rotation, or publishing-volume increase is included.
+No homepage redesign, bulk metadata migration, title change, new URL, forced
+platform rotation, or publishing-volume increase is included. The initial two
+refreshes do not replace their images; the subsequent doorbell refresh below does.
 The two refreshes retain Tara Avenir, centered reading columns, and their unique
 responsive cover images. Hardware behavior was researched, not physically tested.
 
@@ -125,6 +126,45 @@ and correction sections, loaded responsive covers, regular-weight Tara Avenir,
 centered article bodies, and no horizontal document overflow. Screenshots remain
 outside the public repository. These checks verify presentation and publishing
 integrity, not real Home Assistant hardware, rankings, or human expert review.
+
+## Additional buyer-guide refresh
+
+A subsequent September 15 pass reviewed the existing best-doorbell guide. Fresh
+URL Inspection confirmed it indexed with a September 11 crawl, successful fetch,
+and self-selected canonical. Recent impressions were 4 versus 7 with zero clicks;
+this is too small for a CTR diagnosis. The identified issues are factual and
+practical gaps, not evidence of a crawl block or grounds for a new competing URL.
+
+The refresh adds Aqara G400 Wired and UniFi G6 options without claiming their full
+Home Assistant behavior has been tested. It separates video, physical button
+events, recording playback and two-way talk. It distinguishes UniFi connection
+modes, Tapo D230 from RTSP-capable configurations, Ring real-time alerts from
+status polling, and battery power from cloud dependence. Reolink's exact variant
+and chime restrictions, Apple recording prerequisites, a worked purchase plan,
+and non-destructive acceptance checks make the recommendation more actionable.
+
+The crowded product collage is replaced with a single attributed Reolink
+manufacturer image. It is not represented as a Tara installation or test. The
+700px source exposed an optimizer bug: it advertised a 1200w candidate even though
+the saved derivative remained 700px wide. The optimizer now uses actual encoded
+widths, avoids duplicate width candidates for small originals, and does not
+upscale. Three new regression tests cover normal and smaller source sizes, both
+library indexes, unrelated-image preservation, and idempotence. All 18 existing
+tests were rerun successfully, giving 21 passing cases for this pass.
+
+The article and both library cards were checked in Chromium at 1440, 390 and 360px.
+The product stays visible, the Avenir typography and centered layout remain,
+and the table scrolls inside its focusable container with the keyboard. The
+mobile TLDR was shortened after screenshot review. Original title, canonical and
+publication date stay unchanged; only this refreshed article's modified date and
+sitemap entry advance. Its concrete source checks and research limits are in
+`seo/editorial-reviews/best-doorbell-camera-home-assistant-2026.json`.
+
+The daily prompt now requires these feature-by-feature checks for cameras. Its
+one-new-article limit and separate-task rule for old-page refreshes are unchanged.
+No number-one ranking is claimed from a search tool listing Tara first: that is
+not a Google rank tracker. The goal of top search visibility remains unachieved
+until sustained, relevant performance provides stronger evidence.
 
 ## Next measurement
 

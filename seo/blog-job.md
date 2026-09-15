@@ -77,6 +77,14 @@ fix, not just whether it sounds clear. Record the important checks in claimCheck
 - State paid licenses and hardware prerequisites next to the recommendation,
   including Fully PLUS for the Fully Kiosk Remote Admin integration. Identify
   version-dependent settings instead of assuming every installed release matches.
+- For cameras and doorbells, verify live video, physical button events, recording
+  playback, and two-way talk separately for the exact model and integration mode.
+  Do not equate RTSP video, a supported-device listing, or a Matter bridge with
+  support for all four functions. Separate battery sleep/streaming limits from
+  cloud dependence, and check existing-chime and power-supply compatibility.
+  A polling interval for device status does not establish alert latency when a
+  separate real-time event channel exists. State uncertainty instead of inventing
+  tested compatibility, prices, or measured response times.
 - Give a harmless verification step and expected result. Do not tell readers to
   delete historical data, unlock doors, or disable safety controls as a first test.
 

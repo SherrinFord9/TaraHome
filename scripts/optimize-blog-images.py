@@ -28,11 +28,15 @@ def main():
         with Image.open(cover) as source:
             source = source.convert('RGB')
             width, height = source.size
+            variants = {}
             for size in (480, 1200):
                 derivative = source.copy()
                 derivative.thumbnail((size, round(size * height / width)), Image.Resampling.LANCZOS)
                 derivative.save(cover.with_name(f'cover-{size}.webp'), 'WEBP', quality=82, method=6)
+                variants.setdefault(derivative.width, size)
         prefix = f'/assets/generated/blog/{slug}/'
+        srcset = ', '.join(f'{prefix}cover-{size}.webp {actual_width}w'
+                           for actual_width, size in variants.items())
         pattern = r'<img\b[^>]*\bsrc=["\']' + re.escape(prefix) + r'cover(?:-\d+\.webp|\.png)["\'][^>]*>'
         for file in [article] + indexes:
             def replace(match):
@@ -41,7 +45,7 @@ def main():
                     tag = re.sub(r'\s+' + attr + r'\s*=\s*(["\']).*?\1', '', tag)
                 size = 1200 if file == article else 480
                 sizes = '(max-width: 720px) 100vw, 1120px' if file == article else '(max-width: 720px) 100vw, 560px'
-                attrs = f' src="{prefix}cover-{size}.webp" srcset="{prefix}cover-480.webp 480w, {prefix}cover-1200.webp 1200w" sizes="{sizes}" width="{width}" height="{height}" decoding="async"'
+                attrs = f' src="{prefix}cover-{size}.webp" srcset="{srcset}" sizes="{sizes}" width="{width}" height="{height}" decoding="async"'
                 return tag.replace('<img', '<img' + attrs, 1)
             markup[file] = re.sub(pattern, replace, markup[file])
         original_bytes += cover.stat().st_size
