@@ -20,11 +20,31 @@ Serve the repository root with a local HTTP server and run
 `scripts/check-placement.browser.js`, `scripts/check-analytics.browser.js`,
 `scripts/check-configurator-loading.browser.js`, and
 `scripts/check-starter-kit.browser.js` through Playwright MCP on that origin.
-Tests must block analytics and mock form delivery; never send production leads.
+Also run scripts/check-placement-usability.browser.js for the named catalogue,
+attached sensors, mouse/touch rotation handles, keyboard controls, expanded draft
+restoration and complete mocked submission. Tests must block analytics and mock
+form delivery; never send production leads.
 
 ## Placement Contract
 
 - Layout units are feet, with half-foot drag snapping and rectangular rooms.
+- The named catalogue has 21 layout/device types: rooms, doors, windows, cameras,
+  mmWave, door/window sensors, lights, switches, thermostats, doorbells, local
+  servers, speakers, voice endpoints, plugs, shades, locks, TVs, robot vacuums,
+  lawn mowers and leak sensors. Its category boundaries come from the homepage's
+  core kit and compatible-device descriptions, not a confirmed hardware SKU list.
+- Version-two placement drafts accept and migrate version-one maps. Existing
+  configurator draft storage stays at version two; the nested map has its own
+  version. A room move carries contained items; an opening move carries its
+  attached sensor. Deleting an opening removes its attached sensor in the same
+  undoable action. Duplicating an item does not duplicate attached children.
+- Rotation has explicit left/right controls and a draggable on-map handle.
+  Rooms rotate by swapping width/depth; other items rotate in 45-degree steps or
+  continuously through the handle/slider. Attached sensors inherit their opening's
+  direction. One-foot move buttons and exact fields avoid requiring dragging.
+- Doors/windows snap to nearby drawn room walls on drag release, but uploaded
+  images are not parsed into walls. Default device positions are editing starting
+  points, not professionally validated mounting recommendations.
 - Camera and mmWave wedges are illustrative. Walls, furniture, mounting height,
   model specifications, and actual detection performance are not simulated.
 - Floor plan images are decoded locally, resized and saved in the existing browser
@@ -34,6 +54,9 @@ Tests must block analytics and mock form delivery; never send production leads.
   Generic analytics ignores the entire private map workspace.
 - Drawing never changes the price. The explicit apply-counts command updates camera
   and presence planning zones, not confirmed hardware quantities or product SKUs.
+- Other placements are included in the inquiry's map for scope review, not priced
+  automatically. In particular, compatible add-ons are not represented as included
+  inventory or verified compatible products.
 - Recommending a new scope can change quote counts independently of the map. The map
   and review display both sets of counts so no synchronization is implied.
 - The canvas engine and editor styles load only when the map is opened.
@@ -41,3 +64,6 @@ Tests must block analytics and mock form delivery; never send production leads.
   build, edit, or publish this application as part of writing a post.
 
 Canvas interaction and export use [Konva](https://konvajs.org/docs/react/Drag_And_Drop.html).
+Canvas device glyphs are generated locally from the same Lucide SVG icons as the
+catalogue; imported floor-plan files are still limited to raster images. PNG export
+omits editing handles and bounds the output height without stretching the map.

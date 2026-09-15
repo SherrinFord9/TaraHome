@@ -29,14 +29,17 @@ async page => {
       await dialog.waitFor();
       await target.getByRole('button', {name: 'Add first room', exact: true}).click();
       await dialog.getByLabel('Name', {exact: true}).fill('QA_PRIVATE_ROOM_742');
+      await dialog.getByRole('tab', {name: 'Items', exact: true}).click();
       await dialog.getByRole('button', {name: 'QA_PRIVATE_ROOM_742', exact: true}).click();
       if (await target.evaluate(() => JSON.stringify({events: window.taraClickEvents, dataLayer: window.dataLayer}).includes('QA_PRIVATE_ROOM_742'))) throw new Error('Private room label leaked on selection.');
-      const editNumber = async (label, value) => {const input = dialog.getByLabel(label, {exact: true}); await input.fill(String(value)); await input.press('Tab');};
+      const editNumber = async (label, value) => {const input = dialog.getByLabel(label, {exact: true}); if (!(await input.isVisible()) && /^[XY] /.test(label)) await dialog.locator('.tp-exact summary').click(); await input.fill(String(value)); await input.press('Tab');};
       await editNumber('X (ft)', 4); await editNumber('Y (ft)', 4); await editNumber('Width (ft)', 20); await editNumber('Depth (ft)', 16);
+      await dialog.getByRole('button', {name: 'Add items', exact: true}).click();
       await dialog.getByRole('button', {name: 'Add camera', exact: true}).click();
       await editNumber('X (ft)', 42); await editNumber('Y (ft)', 10);
       await editNumber('Range (ft)', 18); await editNumber('Angle (deg)', 80);
       await dialog.getByLabel('Direction', {exact: false}).fill('45');
+      await dialog.getByRole('button', {name: 'Add items', exact: true}).click();
       await dialog.getByRole('button', {name: 'Add mmWave sensor', exact: true}).click();
       await editNumber('X (ft)', 12); await editNumber('Y (ft)', 14);
       await editNumber('Range (ft)', 9); await editNumber('Angle (deg)', 120);
@@ -45,6 +48,7 @@ async page => {
       await target.waitForFunction(() => JSON.parse(localStorage.getItem('tara-configurator-plan-v2')).draft.placement.items.length === 3);
       await target.waitForFunction(() => JSON.parse(localStorage.getItem('tara-configurator-plan-v2')).draft.placement.items.find(i => i.kind === 'presence').range === 9);
       const map = await stored();
+      await dialog.getByRole('button', {name: 'Fit map', exact: true}).click();
       await target.locator('.tp-surface').scrollIntoViewIfNeeded();
       const box = await target.locator('.tp-surface').boundingBox();
       const dimensions = await target.locator('.tp-surface').evaluate(el => ({width: el.clientWidth, height: el.clientHeight}));
@@ -101,6 +105,7 @@ async page => {
         const bytes = Uint8Array.from(atob(canvas.toDataURL('image/png').split(',')[1]), c => c.charCodeAt(0));
         const data = new DataTransfer(); data.items.add(new File([bytes], 'qa-floor.png', {type: 'image/png'})); input.files = data.files; input.dispatchEvent(new Event('change', {bubbles: true}));
       });
+      await dialog.getByRole('tab', {name: 'Items', exact: true}).click();
       await dialog.getByRole('button', {name: 'Remove floor-plan image', exact: true}).waitFor();
       const pixels = await target.locator('canvas').evaluate(el => {
         const data = el.getContext('2d').getImageData(0, 0, el.width, el.height).data;
@@ -125,6 +130,7 @@ async page => {
       phase = 'restore';
       await target.reload();
       await target.getByRole('button', {name: 'Open placement map', exact: true}).click();
+      await target.getByRole('tab', {name: 'Items', exact: true}).click();
       await target.getByRole('button', {name: 'QA_PRIVATE_ROOM_742', exact: true}).waitFor();
       await target.getByRole('button', {name: 'Remove floor-plan image', exact: true}).waitFor();
       await target.getByRole('button', {name: 'Remove floor-plan image', exact: true}).click();

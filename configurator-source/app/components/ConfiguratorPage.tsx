@@ -874,7 +874,7 @@ export function ConfiguratorPage({
                 </details>
                 <section className="tara-cfg-placement-entry" aria-labelledby="tara-placement-entry-title">
                   <div><h2 id="tara-placement-entry-title">Placement plan <small>Optional</small></h2>
-                    <p>{draft.placement.items.length ? `${mapped.rooms} rooms, ${mapped.cameras} cameras, ${mapped.presence} mmWave sensors placed.` : 'Rooms, cameras, and mmWave sensors.'}</p></div>
+                    <p>{draft.placement.items.length ? mapped.rooms + ' rooms, ' + mapped.windows + ' windows, ' + mapped.doors + ' doors, ' + mapped.devices + ' devices placed.' : 'Rooms, doors, windows, sensors, lighting, cameras, speakers, and more.'}</p></div>
                   <button type="button" className="tara-cfg-button tara-cfg-button--quiet" disabled={plannerLoading} onClick={() => void openPlanner()}><Map aria-hidden="true" />{plannerLoading ? 'Opening map' : 'Open placement map'}</button>
                   {plannerError && <p className="tara-cfg-error" role="alert">{plannerError}</p>}
                 </section>
@@ -916,7 +916,7 @@ export function ConfiguratorPage({
                   <span><strong>2</strong> Confirm products and scope</span>
                   <span><strong>3</strong> Receive a configured, room-labeled kit</span>
                 </div>
-                {draft.placement.items.length > 0 && <section className="tara-cfg-placement-entry"><div><h2>Placement plan</h2><p>{mapped.rooms} rooms, {mapped.cameras} cameras, {mapped.presence} mmWave sensors placed. Quote: {plan.cameraZones} camera zones and {draft.presenceZones} presence zones.</p></div><button type="button" className="tara-cfg-button tara-cfg-button--quiet" disabled={plannerLoading} onClick={() => void openPlanner()}><Map aria-hidden="true" /> Review map</button>{plannerError && <p role="alert">{plannerError}</p>}</section>}
+                {draft.placement.items.length > 0 && <section className="tara-cfg-placement-entry"><div><h2>Placement plan</h2><p>{mapped.rooms} rooms, {mapped.windows} windows, {mapped.doors} doors, {mapped.devices} devices placed. Quote: {plan.cameraZones} camera zones and {draft.presenceZones} presence zones. Other placements are requests for scope review, not included prices.</p></div><button type="button" className="tara-cfg-button tara-cfg-button--quiet" disabled={plannerLoading} onClick={() => void openPlanner()}><Map aria-hidden="true" /> Review map</button>{plannerError && <p role="alert">{plannerError}</p>}</section>}
                 <StageActions showBack onBack={back} onContinue={next} continueLabel="Continue to contact" />
               </>
             )}
@@ -980,7 +980,7 @@ export function ConfiguratorPage({
         </div>
       </main>
       {plannerOpen && Planner && <Planner value={draft.placement} onChange={placement => setDraft(current => ({...current, placement}))}
-        levels={draft.levels} cameraZones={plan.cameraZones} presenceZones={draft.presenceZones}
+        levels={draft.levels} cameraZones={plan.cameraZones} presenceZones={draft.presenceZones} saveState={saveState}
         onApplyCounts={(cameras, presence) => setDraft(current => ({...current, cameraCoverage: cameras ? 'custom' : 'none', cameraZones: cameras, presenceZones: presence,
           goals: cameras && current.planMode === 'selected' && !current.goals.includes('cameras') ? [...current.goals, 'cameras'] : !cameras ? current.goals.filter(goal => goal !== 'cameras') : current.goals}))}
         onClose={closePlanner} />}
