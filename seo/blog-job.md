@@ -87,6 +87,11 @@ fix, not just whether it sounds clear. Record the important checks in claimCheck
   tested compatibility, prices, or measured response times.
 - Give a harmless verification step and expected result. Do not tell readers to
   delete historical data, unlock doors, or disable safety controls as a first test.
+- When mentioning Tara pricing, distinguish the online planning estimate from a
+  confirmed quote. The one-bedroom apartment example belongs to
+  `/smart-home-starter-kit/`; link there rather than duplicating its changing
+  counts in a new article. Do not invent fixed product models, delivery dates,
+  customer testimonials, warranty terms, or free lifetime support.
 
 Link to an existing relevant guide when it genuinely answers the next reader
 question, including recent guides. Do not add a block of unrelated links or make
