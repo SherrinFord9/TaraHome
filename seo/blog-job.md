@@ -23,6 +23,13 @@ writer still must not edit existing articles or the homepage. Do not restore
 factually wrong claims to chase historical queries, including queries that
 mistakenly describe PARASOLL or VALLHORN as Matter-over-Thread products.
 
+The July decline was broad across devices, countries, and both changed and
+unchanged article HTML; see seo/search-change-review-2026-09-15.md for the dated
+comparison and causal limits. Do not blame one platform or claim a title rollback
+is proven to recover traffic. Page-row impression sums are not site totals, just
+as visible query rows are not all searches. Do not treat either as a complete
+site-total or demand measure when choosing topics.
+
 This is an isolated draft worktree supplied by scripts/blog-runner.py.
 Prepare exactly one useful new article per day at most. The runner owns commit,
 push, quota accounting, and live deployment verification. Do not commit, push,

@@ -1,5 +1,19 @@
 # Search recovery follow-up, September 15, 2026
 
+## Historical decline cross-check
+
+The [device/country and July change-cohort review](search-change-review-2026-09-15.md)
+reconciles the July comparison against daily site totals. Desktop impressions
+fell 84.92%, mobile 95.72%, and US impressions 81.99%. All 11 retitled articles
+lost impressions, but so did 42 of 46 articles whose HTML was unchanged in that
+commit. The growing Apple/HomePod guide substantially softens the unchanged
+group's aggregate decline. This is not an isolated mobile, foreign-audience, or
+retitled-page loss. Shared changes remain possible; it is not a causal experiment
+or a reason to promise recovery from a blanket rollback. The baseline itself
+includes the July 17 commit date. No announced July ranking update or matching
+Web-report anomaly appears in the checked Google records. Keep the stable
+recovery plan and compare completed weeks, starting September 22.
+
 ## Bluetooth setup follow-up
 
 A later pass refreshed the established Bluetooth proxy guide without changing its
