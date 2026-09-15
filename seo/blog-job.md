@@ -107,6 +107,14 @@ fix, not just whether it sounds clear. Record the important checks in claimCheck
   without actual evidence. State documentation research as research, not testing.
 - Give a harmless verification step and expected result. Do not tell readers to
   delete historical data, unlock doors, or disable safety controls as a first test.
+- For backup and migration advice, verify current built-in restore support for
+  both Home Assistant OS and Container. Keep host/companion-service recovery
+  separate, explain matching old encryption keys and decrypted browser downloads,
+  and check completed uploads rather than treating a scheduled attempt as success.
+  A restored copy can reconnect to real devices and cloud accounts; require an
+  enforced isolated rehearsal or planned single-controller downtime, not merely
+  a different IP address. Do not claim a file listing proves a successful restore,
+  or that a hypothetical recovery example is a tested Tara installation.
 - When mentioning Tara pricing, distinguish the online planning estimate from a
   confirmed quote. The one-bedroom apartment example belongs to
   `/smart-home-starter-kit/`; link there rather than duplicating its changing

@@ -242,6 +242,33 @@ Full evidence, limitations, deployment, and reproduction instructions are in
 `seo/commercial-loading-2026-09-15.json`. The next matched traffic comparison
 remains September 22; do not reread today's unchanged export as new evidence.
 
+## Backup and recovery refresh
+
+The established backup guide implied that Container users still needed manual
+restore workarounds, although built-in restoration has supported Container since
+2025.1. It also proposed restoring to a spare VM without warning that copied
+credentials and enabled automations could reconnect to the live home.
+
+This focused refresh corrects both issues, clarifies matching encryption keys
+and decrypted browser downloads, adds upload/status checks and a hypothetical
+household recovery checklist, and distinguishes isolated configuration inspection
+from actual device validation. Authorship and documentation-research disclosure
+are now visible; FAQ schema matches the revised visible answers.
+
+Title, H1, canonical, description, June 18 publication date, cover images and both
+library cards are unchanged. Only this article's modified date and sitemap lastmod
+advance. A browser-observed legacy TLDR weight override is corrected locally to
+regular Avenir sentences with bold labels; no global style migration was made.
+The daily prompt now requires the same backup/restore checks without expanding
+its scope or publishing quota.
+
+The page's 495 impressions and zero clicks are cumulative June 14-September 13
+data, not a recent-week result. No fresh URL Inspection or ranking improvement is
+claimed. Local browser checks cover the article and both cards at 1440, 390 and
+360px, including keyboard table scrolling. The repeatable live gate and source
+checks are in `seo/editorial-reviews/how-to-back-up-home-assistant.json` and
+`scripts/check-backup-guide.browser.js`. No real Home Assistant restore was run.
+
 ## Next measurement
 
 Review on September 22 with completed days, using the same sitewide windows and
