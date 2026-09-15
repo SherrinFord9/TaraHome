@@ -112,6 +112,13 @@ fix, not just whether it sounds clear. Record the important checks in claimCheck
 Link to an existing relevant guide when it genuinely answers the next reader
 question, including recent guides. Do not add a block of unrelated links or make
 new pages to compete with an existing unindexed topic owner.
+For a new article, record up to two genuinely relevant existing source pages in
+an `incomingLinkOpportunities` array in the editorial review, with `sourcePath`,
+`section`, and `readerReason`. Use an empty array when none is justified. These
+are suggestions for a separate reviewed navigation task, not permission to edit
+old pages. A link from the library already makes an article reachable; do not
+call it an orphan or claim extra links guarantee indexing. The navigation review
+in `seo/internal-link-review-2026-09-15.json` illustrates contextual next steps.
 
 Never put demand signals, keyword selection, competitor gaps, research notes,
 "why this question keeps coming up", "worth publishing", or similar internal
@@ -156,6 +163,7 @@ Write seo/editorial-reviews/<slug>.json with this structure using concrete findi
     {"claim": "Second important checked claim", "sourceUrl": "https://primary-source.example/page"},
     {"claim": "Third important checked claim", "sourceUrl": "https://primary-source.example/page"}
   ],
+  "incomingLinkOpportunities": [],
   "browserChecks": {
     "desktop": "Viewport, readable title, working image, and layout observations.",
     "mobile": "Viewport, readable text/table behavior, image, and overflow observations."

@@ -330,6 +330,7 @@
 <p>For Apple Home, use Home Assistant's HomeKit Bridge when the Home app should show selected Home Assistant lights, switches, covers, thermostats, scenes, or sensors. This keeps Home Assistant in charge while Apple stays a friendly family interface.</p>
 <p>For Alexa and Google Home, the supported easy path is Home Assistant Cloud from Nabu Casa. Expose a curated list of <strong>entities</strong>, which are the individual lights, switches, sensors, scenes, or helper buttons Home Assistant can show to another app. Do not expose every sensor and diagnostic object. If a routine just says "good night" and calls one Home Assistant scene, that is reasonable. If the routine contains the actual security, heating/cooling, or leak logic, move that logic back to Home Assistant.</p>
 <p>For Matter devices, use Matter multi-admin when the same physical Matter device should appear in more than one platform. That is different from exposing all of Home Assistant as Matter. It is usually fine for a Matter plug to be visible in Home Assistant and Apple Home. It is not fine for both systems to run competing motion schedules for that plug.</p>
+<p>When several rules need the same Home, Away, Sleep, or Guest context, use the <a href="/blog/home-assistant-house-modes/">shared house-mode setup</a>. Its worked priority rules help keep a routine presence update from undoing a deliberate household choice.</p>
 <h2 id="when-to-keep-routines-outside-home-assistant">When It Is Fine to Keep a Routine Outside Home Assistant</h2>
 <p>Not every rule needs to be moved. Keep a routine in Apple Home, Alexa, Google Home, or SmartThings when the action is harmless, platform-specific, and obvious to the family.</p>
 <ul>
@@ -350,6 +351,7 @@
   <li><strong>Presence and away mode:</strong> combine phones, sensors, locks, and schedules in one system so the home does not arm, disarm, or turn lights off from conflicting rules.</li>
 </ul>
 <h2 id="migration-plan">A Safe Migration Plan</h2>
+<p>Practice on a low-risk routine first, such as a <a href="/blog/home-assistant-trash-collection-reminder/">calendar-based bin collection reminder</a>. Check ordinary collection dates and holiday changes before moving routines with safety consequences.</p>
 <ol>
   <li><strong>List every routine by app.</strong> Write down Apple Home automations, Alexa routines, Google Home routines, SmartThings routines, vendor app schedules, and Home Assistant automations.</li>
   <li><strong>Mark the risky ones.</strong> Locks, garage doors, alarms, cameras, heating/cooling, water, exterior lighting, and anything that affects safety or privacy go first.</li>

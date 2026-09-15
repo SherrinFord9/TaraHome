@@ -199,6 +199,32 @@ automated proofreading review are in
 `seo/editorial-reviews/home-assistant-local-voice-assistant-no-cloud.json`.
 These corrections improve factual usefulness, not proof of a ranking recovery.
 
+## Contextual navigation
+
+A subsequent static-link audit found all 183 sitemap pages reachable, with a
+maximum shortest-link distance of three from the homepage. It did not establish a
+crawl-depth defect. Fifty-seven of 155 blog articles had no incoming body link
+outside the library and navigation/related boilerplate. Seven relevant next-step
+links were added across five guides, reducing that count to 50. All eight guides
+published September 8-15 now have at least one such incoming link. Those targets
+were already reachable from the library; they were not wholly orphaned pages.
+
+This navigation-only pass preserves titles, H1s, canonicals, descriptions, all
+dates, images, original article copy and styles. Desktop/mobile keyboard links and
+browser Back passed, including mobile without JavaScript. The scope, method,
+limitations and source-to-target links are recorded in
+`seo/internal-link-review-2026-09-15.json`. The cron now records up to two relevant
+incoming-link suggestions for a separate review, without permission to edit old
+articles. No new page or publishing-volume change is included, and no ranking or
+indexing improvement is claimed from these navigation counts.
+
+The notification-delivery guide retains a pre-existing 168-character description,
+which fails the local candidate check's 160-character editorial target. The
+navigation review records that result explicitly. Its head is unchanged, and
+the new-article checker was not weakened or presented as passing for that page.
+This is not a Google indexing limit or a justification for another snippet rewrite
+in a link-only task.
+
 ## Next measurement
 
 Review on September 22 with completed days, using the same sitewide windows and
