@@ -117,7 +117,7 @@
       "description": "Set up a Home Assistant wall tablet that stays awake using Companion app or Fully Kiosk, a dedicated user, safe charging, and a lightweight dashboard.",
       "image": "https://tarahome.ai/assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover.png",
       "datePublished": "2026-07-01",
-      "dateModified": "2026-07-17",
+      "dateModified": "2026-09-15",
       "author": {
         "@id": "https://tarahome.ai/#organization"
       },
@@ -196,7 +196,7 @@
           "name": "Should the wall tablet use my admin Home Assistant account?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Create a dedicated non-admin Home Assistant user and give it a dashboard made for that room. The tablet should not expose backups, integrations, logs, security devices, or other admin tools to anyone walking by."
+            "text": "No. A dedicated non-admin user reduces administrative access, but a room dashboard or hidden tab does not enforce room-only device permissions. Kiosk mode is a display setting, not an authorization boundary. Do not assume hiding a lock or camera removes the account's access to it."
           }
         },
         {
@@ -231,7 +231,8 @@
           <div>
             <p class="article-meta"><span>Home Assistant Wall Tablets</span><span>July 1, 2026</span><span>12 min read</span></p>
             <h1>Home Assistant Wall Tablet Setup That Stays Awake</h1>
-            <p class="lede">A good wall tablet is not just an old screen taped to the wall. It needs the right kiosk app, a simple dashboard, a safe power plan, and a login that cannot expose the rest of the house.</p>
+            <p class="lede">Use a light dashboard and an app that can keep the display awake, then test wake, reconnection, and overnight behavior before mounting it. Use a separate non-admin login, but do not mistake a hidden dashboard button for a security restriction.</p>
+            <p class="article-byline">By <a href="/#about">Tara Home</a>. Updated <time datetime="2026-09-15">September 15, 2026</time>.</p>
           </div>
           <figure class="article-cover">
             <img src="/assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover-480.webp 480w, /assets/generated/blog/home-assistant-wall-tablet-dashboard-stays-awake/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Home Assistant wall tablet dashboard mounted in a warm kitchen with a local hub and presence sensor" loading="eager" />
@@ -242,22 +243,23 @@
   <p class="tldr-label">TLDR</p>
   <ul>
     <li><strong>Best default:</strong> start with the official Home Assistant Companion app if Android launcher mode or iOS kiosk mode gives you enough control.</li>
-    <li><strong>Use Fully Kiosk when needed:</strong> pick Fully Kiosk Browser on Android if you need local screen control, motion wake, remote admin, or Home Assistant automations that turn the tablet display on and off.</li>
-    <li><strong>Do not use your admin account:</strong> create a dedicated non-admin Home Assistant user and a room-specific dashboard with only the controls that belong on the wall.</li>
+    <li><strong>Need stronger display control?</strong> Fully Kiosk Browser on Android has a local Home Assistant integration. Its Remote Admin feature requires the paid Fully PLUS license; a trial is available.</li>
+    <li><strong>Use a separate non-admin account:</strong> it reduces administrative access. Hiding controls or using kiosk mode does not restrict that account to only one room's devices.</li>
     <li><strong>Avoid slow dashboards:</strong> do not load every camera, chart, popup, and custom card on a cheap tablet; make a lighter tablet-only dashboard.</li>
     <li><strong>Main caveat:</strong> true sleep can break wake behavior or background updates. Many homes do better with a dim screensaver, dark night mode, and safe always-powered mounting.</li>
   </ul>
 </aside>
 
 <h2 id="short-answer">Short Answer: Use a Kiosk Path, Not a Normal Browser</h2>
-<p>The reliable path is: <strong>make a simple dashboard, log in with a dedicated non-admin user, then run it in a kiosk app that is allowed to keep the screen awake.</strong> For many homes, the official Home Assistant Companion app is the cleanest place to start. On Android, the app can act as the home app launcher so the tablet opens Home Assistant instead of a normal Android home screen. On iPhone and iPad, Home Assistant's Companion docs now describe an iOS kiosk mode in Labs, with requirements tied to Home Assistant frontend 2025.2 or newer and the iOS app 2026.7.0 or newer.</p>
+<p>Start with <strong>a simple dashboard, a dedicated non-admin login, and a supported keep-screen-on option</strong>. Check the Companion app on your existing tablet before buying another app or device. Android supports Home App Launcher integration; on iPad, check the installed Companion app's <a href="https://companion.home-assistant.io/docs/integrations/ios-kiosk-mode/">Kiosk mode options and requirements</a>. Kiosk display mode does not itself prevent someone leaving the app; iPad app confinement is a separate Guided Access setting.</p>
 <p>If the wall tablet needs stronger display control, use <strong>Fully Kiosk Browser</strong> on Android. Home Assistant has an official Fully Kiosk integration that talks to Fully's local Remote Admin API, so Home Assistant can see tablet sensors and control display behavior over your LAN. That does not mean every tablet is good hardware. It means you get a better control path than a normal browser tab.</p>
 <p>Matter, Thread, Zigbee, Z-Wave, and HomeKit are not the control path here. The tablet is a dashboard client. It talks to Home Assistant over Wi-Fi, and Home Assistant talks to the devices.</p>
+<p class="research-method">Researched from Home Assistant, Companion app, and vendor documentation, checked September 15, 2026. The checklist below is a proposed household acceptance test, not a claim that Tara measured wake speed, battery behavior, or security on these tablets.</p>
 
 <h2 id="why-wall-tablets-fail">Why Wall Tablets Fail in Real Homes</h2>
 <p>Recent r/homeassistant and Home Assistant Community threads keep circling the same pain: wall dashboards get slow, cheap tablets sleep at the wrong time, Fully Kiosk behaves differently after updates, and households want one screen that guests can use without seeing the whole system. The problem is rarely one magic setting. It is usually the combination of an underpowered tablet, a heavy dashboard, OS battery rules, and a login that was never designed for a shared wall display.</p>
 <p>Use plain language for the job. A <strong>dashboard</strong> is the Home Assistant page with lights, climate, locks, cameras, and room controls. <strong>Kiosk mode</strong> means the tablet hides normal browser or app chrome so the wall screen feels like a fixed control panel. <strong>Local control</strong> means the tablet is talking to Home Assistant inside the house instead of depending on a vendor cloud. A <strong>dedicated user</strong> is a separate Home Assistant login just for the tablet.</p>
-<p>That last piece matters. A wall dashboard is physically public inside your home. It should not expose admin pages, backups, add-ons, logs, camera archives, alarm controls, or remote access settings to anyone who can tap the screen.</p>
+<p>A wall dashboard is a shared, signed-in device. Decide who can touch it and what that account can access before mounting it. Removing sensitive buttons from the room view reduces accidental taps; it does not prove those devices are inaccessible elsewhere.</p>
 
 <h2 id="paths">Choose the Right Wall Tablet Path</h2>
 <div class="comparison-table">
@@ -291,7 +293,7 @@
         <td>Home Assistant has an official Fully Kiosk Browser integration; Fully provides the Android kiosk app and Remote Admin features.</td>
         <td>Home Assistant talks to Fully Kiosk's local Remote Admin API on your LAN. Do not expose it to the internet.</td>
         <td>You need motion wake, screensaver behavior, display control, and Home Assistant automations that manage the tablet.</td>
-        <td>Some features require Fully Kiosk Browser PLUS licensing, and tablet firmware can still affect wake reliability.</td>
+        <td>Remote Admin requires paid Fully PLUS (or its trial). Tablet firmware can still affect wake reliability.</td>
       </tr>
       <tr>
         <td>Plain browser tab</td>
@@ -316,22 +318,15 @@
 <p>Avoid the tempting version with every room, every camera, every history graph, and every custom card. Live camera streams, large graphs, animated cards, maps, browser popups, and complex custom cards are the first things to remove when a tablet becomes slow. A useful wall dashboard is usually dense but calm: a few big controls, clear status, and a path to more detail only when needed.</p>
 
 <h2 id="dedicated-user">Create a Dedicated Dashboard User</h2>
-<p>Do not mount a tablet that is logged in as the same admin account you use for Home Assistant maintenance. Create a separate user for the wall tablet, then set that user's default dashboard to the room dashboard. If your household has kids, guests, cleaners, renters, or real estate showings, assume the wall screen can be touched by someone who should not manage your integrations.</p>
-<p>The tablet user should usually be able to:</p>
-<ul>
-  <li>Turn room lights and scenes on and off.</li>
-  <li>Adjust climate within safe limits.</li>
-  <li>See simple house status such as doors, water leaks, weather, and presence.</li>
-  <li>Use media or routines that are safe for anyone in that room.</li>
-</ul>
-<p>The tablet user should usually not be able to:</p>
-<ul>
-  <li>Open Settings, backups, logs, add-ons, integrations, or developer tools.</li>
-  <li>Change automations or helpers.</li>
-  <li>View private camera history or microphones unless that is intentional.</li>
-  <li>Unlock exterior doors or disarm alarms without an extra household decision.</li>
-</ul>
-<p>If you put locks, garage doors, alarm panels, or cameras on a wall screen, add a family policy before you add the button. In many homes, "show state, require phone for action" is the better default for security devices.</p>
+<p>Create a separate Home Assistant user without administrator access, sign the tablet into it, and set a simple room dashboard as its default. Keep your maintenance account off the shared display. This reduces administrative privileges; <strong>it does not make the account room-only</strong>.</p>
+<p>Home Assistant's <a href="https://www.home-assistant.io/dashboards/views/#visible">view documentation</a> says hiding a view tab does not stop its URL being accessed. Kiosk settings and hidden cards change the interface, not the account's underlying permissions. A status-only lock card is not the same as a read-only account.</p>
+<p>The <a href="https://developers.home-assistant.io/docs/auth_permissions/">permission system</a> checks administrative and entity operations separately. Do not promise that a non-admin login cannot view cameras or control locks just because they are absent from its default dashboard. If an untrusted guest or tenant must only control certain devices, use an interface with verified server-enforced restrictions for that requirement, not a full Home Assistant session with hidden tabs.</p>
+<ol>
+  <li>Sign into a separate browser with the tablet account. Confirm it is not an administrator.</li>
+  <li>Try the direct URL of another dashboard you own. If it opens despite a hidden tab, that demonstrates why visibility is not access control.</li>
+  <li>Review sensitive device permissions and the signed-in account's access before enabling the display. Do not test by actually unlocking doors or disarming alarms.</li>
+  <li>Keep sensitive controls off the wall for everyday use, but treat that as accident prevention, not proof of restricted access.</li>
+</ol>
 
 <h2 id="keep-awake">Keep the Screen Awake Without Fighting the Operating System</h2>
 <p>The most common mistake is treating "screen off" as the same thing as "wall tablet is ready." On many tablets, true sleep can pause background activity, kill the browser, drop the WebSocket connection, or delay wake. The result is a black screen that looks energy-efficient but takes too long to become useful.</p>
@@ -344,6 +339,20 @@
   <li><strong>Disable aggressive battery optimization where the OS allows it.</strong> This is device-specific, especially on budget Android tablets.</li>
 </ol>
 <p>Fully Kiosk's local controls are useful because Home Assistant can automate around real household context: dim at night, brighten in the morning, turn the screen on when the hallway is occupied, and keep it off during sleep hours. The official Fully Kiosk integration depends on the Remote Admin feature, so use a strong admin password and keep that endpoint on the local network only.</p>
+<h3 id="fully-setup">Connect Fully Kiosk, Then Test One Display Control</h3>
+<ol>
+  <li>On Android, open your local Home Assistant dashboard in Fully Kiosk Browser and confirm the page works before adding motion or screen automations.</li>
+  <li>Enable Remote Admin and set a strong password. The <a href="https://www.home-assistant.io/integrations/fully_kiosk/">official integration documentation</a> requires Fully PLUS for this feature; the trial can show a watermark.</li>
+  <li>In Home Assistant, open <strong>Settings &gt; Devices &amp; services &gt; Add integration &gt; Fully Kiosk Browser</strong>. Supply the tablet's address and Remote Admin password. Keep this service on the LAN; do not port-forward it.</li>
+  <li>Open the new device and test its screen or screensaver control. Use the entity actually created on your installation, not an example name copied from someone else's tablet.</li>
+</ol>
+<h3 id="acceptance-test">Check These Cases Before Mounting the Tablet</h3>
+<ul>
+  <li><strong>After idle:</strong> leave it alone, then approach or tap it. The display should respond and show current device state, not a stale page.</li>
+  <li><strong>After a tablet restart:</strong> confirm the chosen launcher or app returns to the intended dashboard; do not assume it will bypass the device's lock screen.</li>
+  <li><strong>After Wi-Fi reconnects:</strong> briefly disconnect only the tablet, reconnect it, and check that controls work again. Do not interrupt the whole home's network for this test.</li>
+  <li><strong>Overnight:</strong> check brightness, unwanted motion wakes, and charging temperature. Adjust the screensaver and manufacturer-supported charging settings before permanent mounting.</li>
+</ul>
 
 <h2 id="power-safety">Power and Mounting Safety</h2>
 <p>A wall tablet is a permanently powered device with a lithium-ion battery. Treat it like installed electronics, not a framed picture. Use a quality charger and cable, keep the device ventilated, and leave a way to inspect or remove it. Do not bury a consumer tablet, charger, or swelling battery in a sealed wall cavity.</p>
@@ -367,7 +376,7 @@
 <p>If the tablet includes a camera or microphone, decide whether you actually need it. Motion wake by camera can be convenient, but it also means a device pointed into the room is watching for motion. Many homes can use a separate presence sensor instead, which keeps the dashboard responsive without adding a camera to the kitchen or bedroom.</p>
 
 <h2 id="tara-take">Tara's Take</h2>
-<p>The best wall dashboard is useful enough that people use it, limited enough that it does not expose the whole system, and boring enough that it survives updates. Tara's default is a dedicated dashboard user, a room-specific interface, local network access, simple controls, and a mounting plan that can be serviced later.</p>
+<p>A useful wall dashboard has simple controls, a clear recovery path after updates, and a mounting plan that can be serviced. Tara's starting point is a dedicated non-admin user, a room-specific interface, and local access. Actual security restrictions need separate verification; the dashboard layout does not provide them.</p>
 <p>For installed homes, the handoff matters as much as the screen. A homeowner should know what the wall tablet can control, what it cannot control, how to restart it, and what to do if the screen goes blank. That is the difference between a smart-home feature and another device someone has to babysit.</p>
 
 <h2 id="related-reading">Related Tara Reading</h2>
@@ -387,7 +396,7 @@
 <h3>Should I use Matter, Thread, or HomeKit for the tablet?</h3>
 <p>No. Those are device-control ecosystems and protocols, not the wall-tablet path. The tablet is a Wi-Fi dashboard client. Home Assistant is the system that talks to Matter, Thread, Zigbee, Z-Wave, HomeKit, and vendor integrations.</p>
 <h3>Should the wall tablet use my admin account?</h3>
-<p>No. Use a dedicated non-admin user and a room-specific dashboard. A shared wall screen should not expose Home Assistant settings, backups, add-ons, logs, camera archives, or security controls to anyone walking by.</p>
+<p>No. A dedicated non-admin user reduces administrative access, but a room dashboard or hidden tab does not enforce room-only device permissions. Kiosk mode is a display setting, not an authorization boundary. Do not assume hiding a lock or camera removes the account's access to it.</p>
 <h3>Why does my wall dashboard get slow?</h3>
 <p>The common causes are old tablet hardware, too many live camera feeds, large charts, heavy custom cards, popups, memory growth, weak Wi-Fi, or a browser engine that needs an update. Make a lighter tablet-only dashboard first.</p>
 <h3>Is it safe to keep a tablet plugged in all the time?</h3>
@@ -396,7 +405,7 @@
       </article>
       <section class="block article-cta">
         <h2>Want the installed version?</h2>
-        <p>Tara packages local Home Assistant hardware, dashboards, presence sensors, remote access, backup habits, and homeowner handoff so wall controls feel useful without exposing the whole system.</p>
+        <p>Plan local hardware, a room dashboard, and a serviceable mounting setup with Tara. Confirm shared-screen access requirements separately before choosing what the tablet can control.</p>
         <a class="cta" href="/configurator/">Plan your Tara kit</a>
       </section>
       <section class="block source-list">
@@ -407,6 +416,8 @@
             <h3>Home Assistant docs</h3>
             <ul>
               <li><a href="https://www.home-assistant.io/dashboards/">Home Assistant dashboard documentation</a></li>
+              <li><a href="https://www.home-assistant.io/dashboards/views/#visible">Dashboard view visibility and direct URLs</a></li>
+              <li><a href="https://developers.home-assistant.io/docs/auth_permissions/">Home Assistant permission checks</a></li>
               <li><a href="https://www.home-assistant.io/integrations/fully_kiosk/">Home Assistant Fully Kiosk Browser integration</a></li>
               <li><a href="https://www.home-assistant.io/blog/2026/05/06/release-20265/">Home Assistant 2026.5 release notes</a></li>
             </ul>

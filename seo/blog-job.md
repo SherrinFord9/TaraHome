@@ -2,19 +2,22 @@
 
 Use $tarahome-blog-research and $tarahome-grandma-proofread. Read
 seo/article-schedule.json, the files named by its
-strategyInputs.latestSearchPerformance and strategyInputs.latestSearchConsoleReview,
-seo/recovery-review-2026-09-08.md,
+strategyInputs.latestSearchPerformance, strategyInputs.latestSearchConsoleReview,
+and strategyInputs.recoveryReview,
 seo/keyword-strategy.json, seo/keyword-map.json,
 and existing article titles and topic briefs before choosing a question.
 Use a JSON parser to read the performance summary and relevant page/query rows;
 do not dump the entire export into the working context. Treat dated evidence as
 historical, not as a live ranking report, and verify present-day demand separately.
 
-The September 8 authenticated inspections show former traffic leaders crawled
-but not indexed, not merely missing keywords. A successful publication, live
-availability test, sitemap entry, or indexing request is not proof of indexing
-or traffic recovery. Keep the one-per-day maximum; do not flood new URLs to
-compensate. Preserve established topic owners even when they are not indexed.
+Fresh September 15 inspections confirm the homepage, IKEA direct-pairing,
+Bluetooth-proxy, and main-LAN/IoT-VLAN pages are indexed. Do not repeat the older
+September 8 exclusions as their current state. Traffic has not meaningfully
+recovered: September 7-13 had 3 clicks and 216 impressions, versus 2 and 231 in
+the previous week. Some newer guides remain discovered but not crawled. Neither
+successful publication nor an indexing request proves indexing or traffic
+recovery. Keep the one-per-day maximum; do not flood new URLs to compensate.
+Preserve established topic owners even when they are not indexed.
 Flag refresh opportunities in the internal brief for a separate task; the daily
 writer still must not edit existing articles or the homepage. Do not restore
 factually wrong claims to chase historical queries, including queries that
@@ -38,6 +41,11 @@ question calls for them; no calendar-driven platform rotation. Avoid another
 Thread/Matter variation already answered by a Tara page. Do not confuse cumulative
 three-month page metrics with recent performance or interpret query-row totals as
 sitewide totals. Record demand evidence in seo/topic-briefs/<slug>.json only.
+Use only completed reporting days when comparing periods. A one-click change or
+one-impression query is not enough to pivot the topic strategy. Separate lack of
+crawling, indexed-but-low-visibility pages, and low click-through rate; they are
+different observations, not interchangeable diagnoses. Cite the dated evidence
+and its reporting cutoff in the internal brief when using Search Console.
 
 Give the reader a direct answer in a useful 3-5 bullet TLDR, then an ordered
 procedure or a concrete model comparison with clear decision criteria. Add at
@@ -54,6 +62,27 @@ State that a guide is researched from documentation when that is its basis.
 Only describe hardware as tested when real evidence exists. Add a visible
 "By Tara Home" credit linked to /#about and a brief honest research-method note.
 Do not call an automated proofreading pass a human or expert review.
+
+During proofreading, check the actual behavior and prerequisites of each proposed
+fix, not just whether it sounds clear. Record the important checks in claimChecks:
+- Distinguish electrical current (A), real power (W/kW), and energy (Wh/kWh).
+  Integral alone does not convert amps to kWh. Match the target Energy Dashboard
+  field, preserve unit scaling, and do not prescribe Utility Meter merely because
+  a correctly classified increasing counter resets. Use current Energy FAQ,
+  Integral, Utility Meter, and sensor state-class documentation.
+- Distinguish UI visibility and kiosk mode from server-enforced authorization.
+  A non-admin Home Assistant account plus hidden cards or tabs does not establish
+  room-only access to cameras, locks, or other entities. Check the official view
+  visibility and permission documentation before making an access-control claim.
+- State paid licenses and hardware prerequisites next to the recommendation,
+  including Fully PLUS for the Fully Kiosk Remote Admin integration. Identify
+  version-dependent settings instead of assuming every installed release matches.
+- Give a harmless verification step and expected result. Do not tell readers to
+  delete historical data, unlock doors, or disable safety controls as a first test.
+
+Link to an existing relevant guide when it genuinely answers the next reader
+question, including recent guides. Do not add a block of unrelated links or make
+new pages to compete with an existing unindexed topic owner.
 
 Never put demand signals, keyword selection, competitor gaps, research notes,
 "why this question keeps coming up", "worth publishing", or similar internal

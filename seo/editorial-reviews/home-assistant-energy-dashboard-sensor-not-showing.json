@@ -1,0 +1,24 @@
+{
+  "slug": "home-assistant-energy-dashboard-sensor-not-showing",
+  "action": "refresh",
+  "publicationDate": "2026-06-20",
+  "reviewDate": "2026-09-15",
+  "verdict": "PASS",
+  "readerQuestion": "Why is my sensor missing from the Home Assistant Energy Dashboard, and which repair fits its actual reading?",
+  "directAnswer": "Match the target field to power or accumulated energy, then check the existing sensor's numeric reading, metadata and statistics. Use Integral only when energy is needed and suitable power is available. Current in amps cannot become kWh through Integral alone, and a correctly classified resetting energy counter does not automatically require Utility Meter.",
+  "originalContribution": "The source-type decision table includes current as a distinct case. The ordered Integral walkthrough distinguishes W with prefix k from kW with no prefix, followed by a 100 W over two hours equals 0.2 kWh calculation and a unit-scaling sanity check. Contextual links separate missing-sensor diagnosis from bill reconciliation and live-power appliance notifications.",
+  "limitations": "Documentation research and browser verification only. The numerical example is arithmetic, not a measured device test. No Home Assistant runtime or physical meter was exercised. Reporting intervals, missing samples, state-class errors and source accuracy can affect actual totals.",
+  "proofreadFixes": "Removed the blanket instruction to integrate every watts sensor, the amps-to-energy implication, and the reset-means-Utility-Meter shortcut. Replaced next-cycle accuracy guarantees with full-period coverage limits. Clarified current and power, warned against unit relabeling or premature statistics deletion, updated Settings/Tools paths with an older-version fallback, added the independent-counter sum caveat, and synchronized the affected visible and structured FAQ answers. Added honest authorship and research disclosure. Original title, URL, publication date and image assets remain unchanged. Automated editorial review, not a claimed human expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {"claim": "Energy and power fields require matching sensor types, units and state classes; manual input_number entities do not qualify directly, and independently resetting sources should not simply be summed.", "sourceUrl": "https://www.home-assistant.io/docs/energy/faq/"},
+    {"claim": "Integral accumulates power over time; W with prefix k and time h produces kWh, while a kW source needs no extra metric prefix. Integration method and update behavior affect the estimate.", "sourceUrl": "https://www.home-assistant.io/integrations/integration/"},
+    {"claim": "A correctly classified total_increasing counter supports resets in statistics; its semantics differ from a net total that legitimately falls.", "sourceUrl": "https://developers.home-assistant.io/docs/core/entity/sensor/"},
+    {"claim": "Utility Meter has separate cycle, tariff, delta, net-consumption and periodically-resetting settings, and its first cycle is incomplete.", "sourceUrl": "https://www.home-assistant.io/integrations/utility_meter/"}
+  ],
+  "browserChecks": {
+    "desktop": "Chromium 1440x1000, HTTP 200, one unchanged H1 and canonical, regular-weight Tara Avenir, article body centered at x=720, responsive 1200px WebP loaded, four TLDR bullets, visible byline and updated date, and no document overflow. Inspected setup and calculation screenshot.",
+    "mobile": "Chromium 390x844, document width 390px, article body centered at x=195, 480px WebP loaded, readable heading, byline and four-bullet TLDR. Inspected mobile hero and TLDR screenshots; no font, border or text overlap found. Existing table remains in its horizontal scroll container."
+  }
+}

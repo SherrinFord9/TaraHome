@@ -149,7 +149,7 @@
       "description": "Fix a sensor missing from Home Assistant Energy Dashboard by checking power versus energy, device class, state class, units, and long-term statistics.",
       "image": "https://tarahome.ai/assets/generated/blog/home-assistant-energy-dashboard-sensor-not-showing/cover.png",
       "datePublished": "2026-06-20",
-      "dateModified": "2026-07-17",
+      "dateModified": "2026-09-15",
       "author": {
         "@id": "https://tarahome.ai/#organization"
       },
@@ -211,7 +211,7 @@
           "name": "Why does my watts sensor not show up in Home Assistant Energy Dashboard?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Because many Energy Dashboard fields expect cumulative energy, not just live power. If your entity reports W or kW, use the Integral helper to create a kWh energy sensor first unless you are in one of the newer grid or battery power-sensor scenarios added in Home Assistant 2026.2."
+            "text": "Match the field you are configuring. A power field accepts a suitable W or kW power sensor; an accumulated-energy field needs energy such as kWh. Use Integral only when you need energy and have no suitable energy sensor. Amps measure current, not power, and cannot be converted to kWh with Integral alone."
           }
         },
         {
@@ -219,7 +219,7 @@
           "name": "Should my energy sensor use total or total_increasing?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "For energy sensors, Home Assistant's FAQ says total or total_increasing are both valid. For power sensors, the state_class should be measurement."
+            "text": "Energy supports total or total_increasing, but the choice must describe the meter. An increasing usage counter that can reset is a total_increasing case; a net total that can legitimately fall needs different handling. Do not change the class simply to make a sensor appear. Power uses measurement."
           }
         },
         {
@@ -227,7 +227,7 @@
           "name": "Can I use sensors that reset or manual readings?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Usually yes. The Utility Meter helper is designed for billing-style cycles, tariff splits, delta values, net meters, and periodically resetting sources."
+            "text": "A correctly classified total_increasing energy sensor can already handle counter resets in statistics; a reset alone does not require Utility Meter. Use Utility Meter for configured periods, tariffs or supported source conversions. A manual input_number is not itself a sensor entity and does not qualify directly."
           }
         },
         {
@@ -243,7 +243,7 @@
           "name": "Why does a new Utility Meter sensor look incomplete on day one?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Home Assistant's Utility Meter docs say the first cycle is incomplete. A daily sensor becomes accurate the next day, and a monthly sensor becomes accurate on the first full month after it was added."
+            "text": "The first cycle starts partway through the period, so it is incomplete. The next cycle can cover a full period, but accuracy still depends on the source readings and configuration."
           }
         }
       ]
@@ -262,7 +262,8 @@
           <div>
             <p class="article-meta"><span>Home Assistant Energy</span><span>June 20, 2026</span><span>10 min read</span></p>
             <h1>Home Assistant Energy Dashboard Sensor Missing? Fix It</h1>
-            <p class="lede">If a smart plug, CT clamp, solar meter, or template entity will not appear in Home Assistant Energy Dashboard, the fix is usually not magic. It is almost always energy vs power, missing metadata, statistics errors, or the wrong helper.</p>
+            <p class="lede">First check which Energy Dashboard field you are filling: live power in watts and accumulated energy in kilowatt-hours need different sensors. Then check the sensor's labels, numeric reading, and statistics before adding helpers.</p>
+            <p class="article-byline">By <a href="/#about">Tara Home</a>. Updated <time datetime="2026-09-15">September 15, 2026</time>.</p>
           </div>
           <figure class="article-cover">
             <img src="/assets/generated/blog/home-assistant-energy-dashboard-sensor-not-showing/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-energy-dashboard-sensor-not-showing/cover-480.webp 480w, /assets/generated/blog/home-assistant-energy-dashboard-sensor-not-showing/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Why Your Sensor Won&#x27;t Show Up in Home Assistant Energy Dashboard cover image" loading="eager" />
@@ -271,14 +272,15 @@
         <div class="article-body"><aside class="tldr" aria-label="TLDR summary">
   <p class="tldr-label">TLDR</p>
   <ul>
-    <li><strong>Short answer:</strong> Missing Energy Dashboard sensors are usually the wrong unit, metadata, or statistics, not a broken dashboard.</li>
-    <li><strong>Start here:</strong> Confirm the sensor reports energy in kWh or MWh with the right device class, state class, and unit, then repair statistics if needed.</li>
-    <li><strong>Keep in mind:</strong> A watts sensor is power, not energy; convert it with the Integral helper before expecting it in Energy Dashboard.</li>
+    <li><strong>Match the field:</strong> watts (W) measure power right now; kilowatt-hours (kWh) measure energy used over time. A power field and an energy field have different requirements.</li>
+    <li><strong>Check the existing sensor first:</strong> confirm its numeric reading, device class, state class, units, and statistics. If it already reports suitable energy, you may not need a helper.</li>
+    <li><strong>Only have watts?</strong> Use Integral to estimate energy for a kWh field. Amps measure current: Integral alone cannot turn amps into kWh.</li>
+    <li><strong>A reset is not automatically a problem:</strong> a correctly classified increasing counter can reset without needing Utility Meter. Add that helper when you need periods, tariffs, or supported source conversions.</li>
   </ul>
 </aside>
 <h2 id="short-answer">Short Answer: Check the Sensor Type, the Metadata, and the Statistics</h2>
-<p>If a sensor will not appear in Home Assistant Energy Dashboard, the practical checklist is short: <strong>make sure it is a <code>sensor</code> entity, make sure it has the right <code>device_class</code>, <code>state_class</code>, and unit, make sure it has no statistics errors, and make sure you are feeding Energy Dashboard energy where it expects energy instead of just instantaneous power.</strong></p>
-<p>If you only have a watts sensor, the usual fix is to create a kWh sensor with the <strong>Integral</strong> helper. If the source resets, reports deltas, or needs billing periods or tariffs, the next layer is usually <strong>Utility Meter</strong>. Most failed Energy Dashboard setups are really one of those two problems.</p>
+<p>Start with the <strong>field you are trying to fill</strong>, then inspect the sensor. Do not change its unit just to make it appear. If the field needs energy and your device already reports kWh, check that existing reading first. If you only have power in W or kW, the <a href="https://www.home-assistant.io/integrations/integration/">Integral helper</a> can estimate energy over time.</p>
+<p class="research-method">Researched from Home Assistant documentation, checked September 15, 2026. The calculation below is a worked example, not a measured smart-plug test. Hardware reporting intervals and missing readings can affect the result.</p>
 
 <div class="callout">
   <p><strong>Tara's energy rule:</strong> get one clean source working end to end before you build tariffs, summed templates, or a whole-house math project around it.</p>
@@ -286,8 +288,8 @@
 
 <span id="why-this-question-keeps-coming-up"></span>
 <h2 id="first-filter">First Filter: Energy Dashboard Is Picky on Purpose</h2>
-<p>Home Assistant's own Energy FAQ makes this explicit. If a sensor is missing from the selection list, the first thing to check is not the card, not the dashboard, and not your optimism. It is the entity itself.</p>
-<p>The official checklist is stricter than many people expect:</p>
+<p>Open <strong>Settings &gt; Tools &gt; States</strong> and find the entity ID, such as <code>sensor.desk_plug_energy</code>. Older releases place States and Statistics under <strong>Developer Tools</strong>. The labels beside the reading are its metadata: they tell Home Assistant what the number means.</p>
+<p>Compare those labels with the <a href="https://www.home-assistant.io/docs/energy/faq/">official Energy sensor checklist</a>:</p>
 <ul>
   <li>The entity must be in the <code>sensor</code> domain.</li>
   <li>The <code>device_class</code> must match the kind of source you are adding.</li>
@@ -310,7 +312,7 @@
       <tr>
         <td><code>W</code> or <code>kW</code></td>
         <td>Live power right now</td>
-        <td>Create an energy sensor with the Integral helper unless the specific grid or battery field now accepts your power format directly</td>
+        <td>Use directly in a compatible power field; use Integral if you need accumulated energy and have no native energy sensor</td>
       </tr>
       <tr>
         <td><code>Wh</code> or <code>kWh</code></td>
@@ -318,9 +320,14 @@
         <td>Verify device class, state class, units, and statistics</td>
       </tr>
       <tr>
-        <td>Per-sample increments or a counter that resets</td>
-        <td>Not a stable always-rising total</td>
-        <td>Use Utility Meter settings such as delta values, periodically resetting, or net consumption when appropriate</td>
+        <td><code>A</code></td>
+        <td>Electrical current, not power or energy</td>
+        <td>Find a real-power reading in W or kW first; do not relabel amps or integrate them as kWh</td>
+      </tr>
+      <tr>
+        <td>An increasing energy counter that resets</td>
+        <td>Usage accumulated since a restart or reset</td>
+        <td>Check that its state class correctly represents the counter; a reset alone does not require another helper</td>
       </tr>
     </tbody>
   </table>
@@ -329,36 +336,39 @@
 <h2 id="most-common-problem">The Most Common Problem: You Have Power, Not Energy</h2>
 <p>This is the trap that wastes the most time. A lot of hardware reports <strong>power</strong> in watts. Energy Dashboard often wants <strong>energy</strong> in watt-hours or kilowatt-hours. The official Energy FAQ leads with that distinction for a reason.</p>
 <p>Home Assistant's <strong>Individual devices</strong> documentation says that if a device exposes a power sensor in watts, you can use the <strong>Integration (Riemann sum integral)</strong> helper to calculate energy usage and then use that resulting sensor in Energy Dashboard. The Integral documentation adds two details that matter in practice: the helper keeps its value across Home Assistant restarts, and a source with more frequent updates produces more accurate totals.</p>
-<p>That means the right repair is usually:</p>
+<p>For a source in <strong>W</strong> and an energy field that needs <strong>kWh</strong>, use this setup:</p>
 <ol>
-  <li>Start with the original power sensor.</li>
-  <li>Create an Integral helper that outputs energy in <code>kWh</code>.</li>
-  <li>Check the new helper in Developer Tools and Statistics.</li>
-  <li>Add the new energy sensor, not the original watts sensor, to the relevant Energy Dashboard field.</li>
+  <li>Confirm that the original power sensor has a numeric reading in <code>W</code>, not <code>A</code>, <code>unknown</code>, or <code>unavailable</code>.</li>
+  <li>Open <strong>Settings &gt; Devices &amp; services &gt; Helpers &gt; Create helper &gt; Integral</strong>. Select that power sensor.</li>
+  <li>Set the metric prefix to <strong>k</strong> and time unit to <strong>h</strong>. If your source already reports <code>kW</code>, use <strong>no metric prefix</strong> with hours instead.</li>
+  <li>For a steady on/off load, consider the <strong>left</strong> method. For smoothly varying, frequently reported power, compare the documented methods before choosing.</li>
+  <li>Check the resulting energy sensor's unit and statistics, then select it in the accumulated-energy field. Leave the original watts sensor available for live-power uses.</li>
 </ol>
-<p>If the device is mostly a clean on/off load, the Integral docs note that the <strong>left</strong> method can fit rectangular power behavior better than the default trapezoidal approach. That is not mandatory, but it is a useful detail when you are trying to keep per-device tracking sane for heaters, kettles, or other steady loads.</p>
+<p><strong>Worked example:</strong> a constant 100 W load running for two hours uses <code>100 &times; 2 / 1000 = 0.2 kWh</code>. Compare the helper's increase, not its lifetime total, over that interval. A factor-of-1,000 mismatch is a reason to recheck source units and prefix; do not alter historical statistics before finding the cause.</p>
+<p>For a source that stays unchanged for long periods, Integral's maximum sub-interval can keep the estimate updating between state changes. It cannot reconstruct missing measurements. Prefer a trustworthy native energy counter when available.</p>
 
 <h2 id="five-fix-paths">Five Fix Paths That Solve Most Cases</h2>
 
 <h3 id="native-kwh-sensor">1. Your device already reports kWh, but it still does not appear</h3>
-<p>In that case, stop building extra helpers until you inspect the entity itself. Go to Developer Tools and confirm the attributes match the FAQ. Then go to Developer Tools &gt; Statistics and see whether Home Assistant is flagging the entity. A sensor can look alive in States and still be rejected because its statistics are bad.</p>
+<p>Inspect its reading in <strong>States</strong>, then open <strong>Statistics</strong> under Settings &gt; Tools (Developer Tools on older releases). Resolve any reported unit or statistics problem using the offered repair. A live number alone does not prove the historical data is usable. Do not delete statistics as a first troubleshooting step.</p>
 <p>If the integration is the thing exposing wrong metadata, Home Assistant's FAQ says to open an issue against that integration. Practically, you can still unblock yourself with a template or helper in the meantime, but that workaround should not hide the underlying integration defect.</p>
 
-<h3 id="watts-only-source">2. You only have watts, amps, or live power</h3>
-<p>This is the classic smart-plug, CT clamp, or inverter problem. Use the Integral helper. The official docs are explicit: a power sensor can be turned into an energy sensor, and the generated unit can become <code>kWh</code> when the source is <code>W</code> with the right prefix and time base.</p>
-<p>Do not assume the original live-power entity should appear everywhere just because the graph looks useful elsewhere in Home Assistant. Energy Dashboard is not a generic dashboard card; it expects specific semantics.</p>
+<h3 id="watts-only-source">2. You have power, or only current in amps</h3>
+<p>For watts, follow the Integral setup above when you need energy. For amps, first look for a meter-reported real-power sensor in W or kW. Current alone does not establish real power for an AC appliance; do not assume a fixed voltage makes the conversion accurate for every load. Integrating amps produces amp-hours, not kilowatt-hours.</p>
+<p>A different task may need the original watts reading: a <a href="/blog/home-assistant-washing-machine-finished-notification/">washing-machine finished notification</a> looks for a drop in live power, not the accumulated kWh total.</p>
 
 <h3 id="resetting-delta-source">3. The source resets, goes negative, or only gives deltas</h3>
-<p>This is where <strong>Utility Meter</strong> matters. Its docs say it can handle utility-style cycles, tariffs, net consumption, delta values, and periodically resetting sources. Those options exist because many real devices do not behave like a perfectly monotonic lifetime counter.</p>
-<p>If your source reports increments since the last reading, the Utility Meter docs say to enable <strong>delta values</strong>. If your source should be allowed to move both positive and negative, use <strong>net consumption</strong>. If a smart plug resets to zero after a reboot, <strong>periodically resetting</strong> is the relevant switch.</p>
+<p>A correctly classified <code>total_increasing</code> energy counter can reset: Home Assistant's statistics account for a new counter cycle. <strong>A reset alone does not require Utility Meter.</strong> Check the <a href="https://developers.home-assistant.io/docs/core/entity/sensor/">sensor state-class rules</a>; a net total that legitimately rises and falls is not the same as an increasing consumption counter.</p>
+<p>If you need Utility Meter, match its settings to the actual source: <strong>delta values</strong> for increments since the previous reading, <strong>net consumption</strong> for signed consumption, and <strong>periodically resetting</strong> for a source counter that resets. Do not turn every option on as a general repair. The <a href="https://www.home-assistant.io/integrations/utility_meter/">Utility Meter documentation</a> explains these separate cases.</p>
 
 <h3 id="billing-tariffs">4. You need peak, off-peak, daily, or monthly numbers</h3>
 <p>The Utility Meter helper is also the official answer for tariff and billing-cycle logic. Its docs explain that it tracks a source sensor and resets on a configured cycle, while tariffs let you split consumption across time-of-use schedules. If you are trying to force all of that into one heroic template sensor, you are usually skipping the helper that Home Assistant already built for the job.</p>
-<p>One operational detail matters here: the Utility Meter docs say the <strong>first cycle is incomplete</strong>. A new daily sensor becomes accurate the next day, and a monthly one becomes accurate on the next full month boundary. So do not panic because a fresh utility meter looks odd on day one.</p>
+<p>The <strong>first cycle is incomplete</strong> because it starts when you create the helper. The next cycle can cover a full period, but it is not automatically accurate: missing readings and incorrect configuration still matter.</p>
 
 <h3 id="template-or-summed-sensor">5. You built a template or summed sensor</h3>
 <p>Template and summed sensors can work, but they need the same metadata discipline as native entities. A 2023 forum thread about ESP-based template sensors and the Utility Meter docs themselves both reinforce the point: give the new sensor the correct device class and units, and make sure the template returns a real numeric value instead of occasional junk.</p>
 <p>The Utility Meter docs even show summed template examples that first verify values with <code>is_number()</code> before adding them together. That is the right instinct. A mathematically elegant template is not useful if it occasionally emits a non-numeric state and poisons the statistics stream.</p>
+<p>Do not simply sum counters that reset independently into one increasing counter. A single device resetting can look like the combined counter reset. The Energy FAQ recommends adding those individual energy sources separately instead.</p>
 
 <div class="callout">
   <p><strong>Do not stack helpers blindly.</strong> First decide whether you are fixing power vs energy, resets vs totals, or billing-cycle splits. Each problem points to a different helper.</p>
@@ -381,7 +391,7 @@
   <li>Verify the entity metadata in Developer Tools.</li>
   <li>Fix any statistics issues before adding more layers.</li>
   <li>If the source is only power, create an Integral helper.</li>
-  <li>If the source resets or needs billing logic, add Utility Meter after that.</li>
+  <li>Add Utility Meter only if you need periods, tariffs, or a supported source conversion.</li>
   <li>Only then add tariffs, solar, battery, and per-device summaries.</li>
 </ol>
 <p>That order matters. The people who get stuck hardest are usually the ones trying to solve import/export polarity, peak/off-peak billing, custom templates, and device hierarchies before they have one clean sensor showing up reliably.</p>
@@ -391,7 +401,7 @@
 <p>The Tara version is to keep the stack local, stable, and legible: supported hardware, one or two clean helpers where they actually matter, and no mystery templates that only one person in the household can debug.</p>
 
 <h2 id="related-reading">Related Tara Reading</h2>
-<p>If this Energy Dashboard question is really a hardware, update, or installation question underneath, these guides are the next practical step.</p>
+<p>If the sensor now appears but its totals do not match your statement, continue with <a href="/blog/home-assistant-energy-dashboard-vs-utility-bill/">why Home Assistant energy totals differ from a utility bill</a>. That is a different diagnosis from a missing sensor.</p>
 <ul>
   <li><a href="/blog/best-home-assistant-hardware-2026/">Best Home Assistant Hardware in 2026</a></li>
   <li><a href="/blog/home-assistant-os-vs-docker/">Home Assistant OS vs Docker: Which Should You Use in 2026?</a></li>
@@ -403,19 +413,19 @@
 
 <h2 id="faq">FAQ</h2>
 <h3 id="watts-sensor">Why does my watts sensor not show up in Energy Dashboard?</h3>
-<p>Because many Energy Dashboard fields expect accumulated energy, not just live power. If your entity reports <code>W</code> or <code>kW</code>, create an energy sensor with the Integral helper unless you are in one of the newer grid or battery cases that <strong>2026.2</strong> added direct support for.</p>
+<p>Match the field you are configuring. A power field accepts a suitable <code>W</code> or <code>kW</code> power sensor; an accumulated-energy field needs energy such as <code>kWh</code>. Use Integral only when you need energy and have no suitable energy sensor. Amps measure current, not power, and cannot be converted to kWh with Integral alone.</p>
 
 <h3 id="total-vs-total-increasing">Should my energy sensor use <code>total</code> or <code>total_increasing</code>?</h3>
-<p>For energy sensors, Home Assistant's FAQ says both <code>total</code> and <code>total_increasing</code> are valid. For power sensors, the state class should be <code>measurement</code>.</p>
+<p>Energy supports <code>total</code> or <code>total_increasing</code>, but the choice must describe the meter. An increasing usage counter that can reset is a <code>total_increasing</code> case; a net total that can legitimately fall needs different handling. Do not change the class simply to make a sensor appear. Power uses <code>measurement</code>.</p>
 
 <h3 id="manual-readings">Can I use manual readings or sensors that reset?</h3>
-<p>Usually yes. The Utility Meter helper is specifically built for cycles, tariffs, delta values, net meters, and periodically resetting sources.</p>
+<p>A correctly classified <code>total_increasing</code> energy sensor can already handle counter resets in statistics; a reset alone does not require Utility Meter. Use Utility Meter for configured periods, tariffs or supported source conversions. A manual <code>input_number</code> is not itself a sensor entity and does not qualify directly.</p>
 
 <h3 id="upstream-device-entity">Why does a helper entity work in one Energy screen but not as an upstream device?</h3>
 <p>Because the upstream selector is device-oriented. A valid helper sensor can still fail there if it is not attached to a device in the way that picker expects.</p>
 
 <h3 id="first-cycle">Why does my new Utility Meter sensor look wrong today?</h3>
-<p>Because the first cycle is incomplete. Home Assistant's Utility Meter docs say a new daily sensor is accurate the next day, and a monthly one is accurate on the next full monthly cycle.</p>
+<p>The first cycle starts partway through the period, so it is incomplete. The next cycle can cover a full period, but accuracy still depends on the source readings and configuration.</p>
 </div>
         <section class="block source-list">
           <p class="kicker">Sources</p>
