@@ -73,6 +73,21 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Only the runner'):
             runner.validate_scope(self.repo, self.base)
 
+    def test_commercial_image_gate_failure_blocks_validation(self):
+        self.article()
+        self.write('seo/topic-briefs/test-guide.json', json.dumps({'primaryQuery': 'test question'}))
+
+        def fail_delivery(command, *args, **kwargs):
+            if 'scripts/check-commercial-images.py' in command:
+                raise subprocess.CalledProcessError(1, command)
+
+        with patch.object(runner, 'validate_scope', return_value=('blog/test-guide/index.html', 'test-guide', [])), \
+             patch.object(runner, 'validate_review', return_value={}), \
+             patch.object(runner, 'run', side_effect=fail_delivery) as run:
+            with self.assertRaises(subprocess.CalledProcessError):
+                runner.validate(self.repo, self.base, '2026-09-15')
+            self.assertIn('scripts/check-commercial-images.py', run.call_args.args[0])
+
     def test_local_unpushed_article_does_not_satisfy_remote_quota(self):
         from datetime import datetime
         from zoneinfo import ZoneInfo

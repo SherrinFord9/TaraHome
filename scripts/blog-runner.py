@@ -101,6 +101,7 @@ def validate(worktree, base, day):
         ['bash', 'scripts/check-blog-typography.sh', '--all'],
         ['bash', 'scripts/check-blog-editorial-copy.sh'],
         ['bash', 'scripts/check-blog-cover-quality.sh'],
+        ['uv', 'run', '--with', 'pillow>=11,<13', 'scripts/check-commercial-images.py'],
         ['python3', str(Path.home() / '.codex/skills/tarahome-blog-research/scripts/check-blog-image-uniqueness.py'), '--repo', str(worktree), '--article', article],
         ['node', 'scripts/check-seo-intent.mjs', '--site'],
         ['node', 'scripts/check-seo-intent.mjs', '--article', article, '--candidate-query', brief['primaryQuery']],

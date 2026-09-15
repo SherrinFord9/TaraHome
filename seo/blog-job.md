@@ -29,6 +29,10 @@ push, quota accounting, and live deployment verification. Do not commit, push,
 change branches, edit the runner, change the strategy, or edit other articles.
 The configurator is owned by `configurator-source/`. Do not rebuild it, replace
 its assets or HTML, or run the legacy full-site generator while publishing a post.
+Commercial and guide hero delivery is protected by `seo/commercial-images.json`
+and the runner's `scripts/check-commercial-images.py` gate. Leave those pages,
+their responsive WebP attributes, and their preserved PNG source assets alone.
+Do not regenerate these pages or change their metadata for a daily article.
 When checks pass, leave the draft files for the runner to validate and publish.
 If no strong distinct question exists, explain why and stop without manufacturing
 an article to satisfy a quota. A failed attempt is retained and the retry starts
