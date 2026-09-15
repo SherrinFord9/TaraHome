@@ -12,7 +12,8 @@ import sys
 import time
 from datetime import datetime, time as day_time
 from pathlib import Path
-from urllib.request import urlopen
+from urllib.error import URLError
+from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
 ARTICLE = re.compile(r'blog/([a-z0-9-]+)/index\.html\Z')
@@ -141,27 +142,56 @@ def pending_deployment(repo, status):
 
 
 def verify_deployment(repo, commit, article):
-    # Remote main and a successful Pages run are separate publication milestones.
+    # Pages workflow head_sha can lag the commit actually checked out and built.
     if not shutil.which('gh'):
         raise ValueError('Push succeeded, but gh is unavailable to verify the Pages deployment.')
+    match = re.fullmatch(r'https://tarahome\.ai/(blog/[a-z0-9-]+/)', article)
+    if not match or not re.fullmatch(r'[0-9a-f]{40}', commit):
+        raise ValueError('Invalid article or commit for deployment verification.')
+    expected = run(['git', 'show', commit + ':' + match[1] + 'index.html'], repo,
+                   stdout=subprocess.PIPE).stdout.encode('utf-8')
     deadline = time.monotonic() + 600
+    last_reason = 'No successful build for the published commit.'
     while time.monotonic() < deadline:
-        runs = json.loads(run(['gh', 'run', 'list', '--commit', commit, '--limit', '10', '--json',
-                              'status,conclusion,url,displayTitle'], repo, stdout=subprocess.PIPE).stdout)
-        deployment = next((item for item in runs if 'pages' in item['displayTitle'].lower()), None)
-        if deployment and deployment['status'] == 'completed':
-            if deployment['conclusion'] != 'success':
-                raise ValueError('Pages deployment failed: ' + deployment['url'])
-            break
+        try:
+            runs = json.loads(run(['gh', 'run', 'list', '--commit', commit, '--limit', '10', '--json',
+                                  'status,conclusion,url,displayTitle'], repo, stdout=subprocess.PIPE).stdout)
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired, json.JSONDecodeError):
+            runs = []
+        pages_runs = [item for item in runs if 'pages' in item['displayTitle'].lower()]
+        success = next((item for item in pages_runs if item['status'] == 'completed' and
+                        item['conclusion'] == 'success'), None)
+        deployment_url = success['url'] if success else None
+        build = None
+        if not deployment_url:
+            try:
+                builds = json.loads(run(['gh', 'api', 'repos/{owner}/{repo}/pages/builds?per_page=100'],
+                                        repo, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout)
+                build = next((item for item in builds if item['commit'] == commit), None)
+            except (subprocess.CalledProcessError, subprocess.TimeoutExpired, json.JSONDecodeError):
+                last_reason = 'Pages build records are temporarily unavailable.'
+            if build and build['status'] == 'built':
+                deployment_url = build['url']
+            elif build and build['status'] == 'errored':
+                raise ValueError('Pages build failed: ' + build['url'])
+            elif not build and pages_runs and pages_runs[0]['status'] == 'completed' and \
+                    pages_runs[0]['conclusion'] not in ('success', 'cancelled'):
+                raise ValueError('Pages deployment failed: ' + pages_runs[0]['url'])
+        if deployment_url:
+            try:
+                request = Request(article + '?verify=' + commit, headers={'Cache-Control': 'no-cache'})
+                with urlopen(request, timeout=30) as response:
+                    body = response.read()
+                    canonical = re.search(
+                        r'<link\b(?=[^>]*\brel=[\"\']canonical[\"\'])(?=[^>]*\bhref=[\"\']' +
+                        re.escape(article) + r'[\"\'])[^>]*>', body.decode('utf-8'))
+                    if response.status == 200 and body == expected and canonical:
+                        return deployment_url
+                last_reason = 'Live article does not yet match the committed HTML and canonical.'
+            except (URLError, TimeoutError, UnicodeDecodeError):
+                last_reason = 'Live article is temporarily unavailable.'
         time.sleep(15)
-    else:
-        raise ValueError('Push succeeded, but Pages deployment did not complete within ten minutes.')
-    with urlopen(article + '?verify=' + commit[:8], timeout=30) as response:
-        html = response.read().decode()
-        if response.status != 200 or not re.search(
-                r'<link\b(?=[^>]*\brel=[\"\']canonical[\"\'])(?=[^>]*\bhref=[\"\']' + re.escape(article) + r'[\"\'])[^>]*>', html):
-            raise ValueError('Live article failed status/canonical verification.')
-    return deployment['url']
+    raise ValueError('Push succeeded, but deployment could not be verified within ten minutes. ' + last_reason)
 
 
 def execute(args):

@@ -7,7 +7,8 @@ import os
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
+from types import SimpleNamespace
 from pathlib import Path
 
 spec = importlib.util.spec_from_file_location('blog_runner', Path(__file__).with_name('blog-runner.py'))
@@ -167,6 +168,105 @@ class RunnerTests(unittest.TestCase):
         for key, value in status.items():
             self.assertEqual(result[key], value)
         self.assertEqual(result['quotaCheck'], 'met')
+
+
+class DeploymentVerificationTests(unittest.TestCase):
+    def setUp(self):
+        self.commit = 'a' * 40
+        self.article = 'https://tarahome.ai/blog/test-guide/'
+        self.html = '<html><link rel="canonical" href="' + self.article + '"><p>Reviewed article</p></html>\n'
+        self.runs = []
+        self.builds = [{'commit': self.commit, 'status': 'built', 'url': 'https://api.github.com/builds/1'}]
+        self.api_error = False
+
+    def command(self, command, *args, **kwargs):
+        if command[:2] == ['git', 'show']:
+            self.assertEqual(command[2], self.commit + ':blog/test-guide/index.html')
+            return SimpleNamespace(stdout=self.html)
+        if command[:3] == ['gh', 'run', 'list']:
+            self.assertIn(self.commit, command)
+            return SimpleNamespace(stdout=json.dumps(self.runs))
+        if command[:2] == ['gh', 'api']:
+            if self.api_error:
+                raise subprocess.CalledProcessError(1, command)
+            return SimpleNamespace(stdout=json.dumps(self.builds))
+        self.fail('Unexpected command: ' + repr(command))
+
+    def response(self, body=None):
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.status = 200
+        response.read.return_value = self.html.encode() if body is None else body
+        return response
+
+    def verify(self, responses=None):
+        with patch.object(runner.shutil, 'which', return_value='/usr/bin/gh'), \
+             patch.object(runner, 'run', side_effect=self.command), \
+             patch.object(runner.time, 'monotonic', side_effect=[0, 1, 2, 601]), \
+             patch.object(runner.time, 'sleep'), \
+             patch.object(runner, 'urlopen', side_effect=responses or [self.response(), self.response()]) as fetch:
+            result = runner.verify_deployment(Path('/unused'), self.commit, self.article)
+            self.assertEqual(fetch.call_args.args[0].full_url, self.article + '?verify=' + self.commit)
+            return result
+
+    def test_pages_record_handles_stale_workflow_commit_metadata(self):
+        self.assertEqual(self.verify(), 'https://api.github.com/builds/1')
+
+    def test_matching_workflow_still_works_without_pages_api(self):
+        self.runs = [{'displayTitle': 'pages build and deployment', 'status': 'completed',
+                      'conclusion': 'success', 'url': 'https://github.com/run/1'}]
+        self.api_error = True
+        self.assertEqual(self.verify(), 'https://github.com/run/1')
+
+    def test_successful_pages_build_can_follow_a_failed_workflow_attempt(self):
+        self.runs = [{'displayTitle': 'pages build and deployment', 'status': 'completed',
+                      'conclusion': 'failure', 'url': 'https://github.com/run/old'}]
+        self.assertEqual(self.verify(), 'https://api.github.com/builds/1')
+
+    def test_cancelled_workflow_does_not_abort_a_pending_build(self):
+        self.runs = [{'displayTitle': 'pages build and deployment', 'status': 'completed',
+                      'conclusion': 'cancelled', 'url': 'https://github.com/run/cancelled'}]
+        self.builds[0]['status'] = 'building'
+        with self.assertRaisesRegex(ValueError, 'could not be verified'):
+            self.verify()
+
+    def test_other_commit_cannot_satisfy_verification(self):
+        self.builds[0]['commit'] = 'b' * 40
+        with self.assertRaisesRegex(ValueError, 'could not be verified'):
+            self.verify()
+
+    def test_built_record_with_stale_html_is_not_success(self):
+        stale = self.html.replace('Reviewed article', 'Older article').encode()
+        with self.assertRaisesRegex(ValueError, 'does not yet match'):
+            self.verify([self.response(stale), self.response(stale)])
+
+    def test_matching_bytes_with_wrong_canonical_are_rejected(self):
+        self.html = self.html.replace(self.article, 'https://tarahome.ai/blog/wrong-guide/')
+        with self.assertRaisesRegex(ValueError, 'does not yet match'):
+            self.verify()
+
+    def test_cdn_propagation_retries_without_republishing(self):
+        stale = self.html.replace('Reviewed article', 'Older article').encode()
+        self.assertEqual(self.verify([self.response(stale), self.response()]), 'https://api.github.com/builds/1')
+
+    def test_temporary_live_failure_retries(self):
+        from urllib.error import URLError
+        self.assertEqual(self.verify([URLError('temporary outage'), self.response()]), 'https://api.github.com/builds/1')
+
+    def test_failed_build_is_not_success(self):
+        self.builds[0]['status'] = 'errored'
+        with self.assertRaisesRegex(ValueError, 'Pages build failed'):
+            self.verify()
+
+    def test_current_html_without_completed_build_is_not_success(self):
+        self.builds[0]['status'] = 'building'
+        with self.assertRaisesRegex(ValueError, 'could not be verified'):
+            self.verify()
+
+    def test_missing_build_access_does_not_claim_publication(self):
+        self.api_error = True
+        with self.assertRaisesRegex(ValueError, 'records are temporarily unavailable'):
+            self.verify()
 
 
 if __name__ == '__main__':
