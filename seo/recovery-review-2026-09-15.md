@@ -225,6 +225,23 @@ the new-article checker was not weakened or presented as passing for that page.
 This is not a Google indexing limit or a justification for another snippet rewrite
 in a link-only task.
 
+## Commercial image delivery follow-up
+
+Twenty-one static commercial/guide pages still loaded 1.46-2.09 MB hero PNGs.
+They now serve responsive WebP versions of the same artwork, with no text,
+metadata, layout, font, publication-date, homepage, or configurator changes.
+The daily runner and prompt protect the optimized delivery attributes.
+Seventy-two local and seventy-two live browser checks passed.
+
+Three representative live cold-load comparisons showed median hero download
+completion falling from 9.54-11.01s to 0.59-0.70s under identical throttling.
+These are synthetic image-loading results, not field Core Web Vitals or ranking
+recovery: the heading was the LCP element and its timings were materially unchanged.
+Full evidence, limitations, deployment, and reproduction instructions are in
+`seo/commercial-delivery-review-2026-09-15.md` and
+`seo/commercial-loading-2026-09-15.json`. The next matched traffic comparison
+remains September 22; do not reread today's unchanged export as new evidence.
+
 ## Next measurement
 
 Review on September 22 with completed days, using the same sitewide windows and
