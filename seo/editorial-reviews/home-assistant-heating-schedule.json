@@ -1,0 +1,55 @@
+{
+  "slug": "home-assistant-heating-schedule",
+  "action": "new",
+  "publicationDate": "2026-09-15",
+  "verdict": "PASS",
+  "readerQuestion": "How can I give an existing Home Assistant thermostat a simple weekly heating schedule with two temperatures, a manual pause, and predictable behavior after a restart?",
+  "directAnswer": "Use a built-in Schedule helper plus one guarded automation to send a comfort target during selected blocks and a lower target outside them. This example operates only on a single-target thermostat already in Heat mode. Create a visible schedule-enabled toggle, check entity IDs and temperature units, then test a short block and pause/resume before using the full week. Keep the existing thermostat timetable if it already meets household needs.",
+  "originalContribution": "Sections #week, #automation and #worked-example contain a complete weekday/weekend plan, one automation with guards inside the action list, explicit manual pause/resume and current-period startup handling, plus seven expected-outcome rows. The example distinguishes schedule off from heating off, resumes the current period at noon, catches an evening block after downtime, and refuses to act on invalid schedule data or a thermostat outside Heat mode. Local verification parsed the published YAML and checked 13 state/target cases plus eight Monday time boundaries.",
+  "limitations": "Documentation research and local YAML/Jinja/time-boundary checks only. No Home Assistant runtime, integration-schema or physical thermostat testing; no energy savings or warm-up performance measured. Does not coordinate boiler demand, pumps, zones or heat/cool ranges; it has no timed retry for failed temperature commands. Native scheduling and manual-hold behavior depend on the installed equipment. AI-generated cover depicts a residential heating context and is not a product photograph.",
+  "proofreadFixes": "The initial mobile browser pass measured 555px document width at a 390px viewport because the YAML block overflowed. Added a constrained horizontal scroll container, keyboard focus and a visible scrolling explanation; the final viewport has no page overflow. Clarified that an unpaused manual target can be replaced at a schedule boundary, restart or return to Heat. Added dashboard placement steps for the pause toggle. Defined attribute in the multi-temperature FAQ and kept its JSON-LD answer aligned. Replaced schedule-owner terminology with one timetable and temperature setbacks with lower overnight targets. Checked that all five TLDR bullets give a recommendation, scope, action or caveat and that the opening identifies the thermostat prerequisite and setup order. Automated proofreading only; no human or expert review claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A Schedule helper supplies weekly active/inactive time blocks. An automation must use that state to send thermostat commands; touching blocks can remain on while additional data changes.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/schedule/"
+    },
+    {
+      "claim": "climate.set_temperature supports one target or a high/low range as appropriate; omitting hvac_mode keeps the current operating mode. The example additionally requires the thermostat state to be heat.",
+      "sourceUrl": "https://www.home-assistant.io/actions/climate.set_temperature/"
+    },
+    {
+      "claim": "Heat is a thermostat operating mode, while current heating/cooling/idle activity is a separate attribute where supported.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/climate/"
+    },
+    {
+      "claim": "An input_boolean helper is a user-facing on/off setting and restores its prior state unless an initial value overrides restoration.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Specifying to states on a state trigger excludes attribute-only changes, so target temperature changes alone do not retrigger the heat-state listener.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "The Home Assistant start trigger runs after startup and can initiate a current-state check.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/homeassistant/"
+    },
+    {
+      "claim": "A failed condition inside the action list stops subsequent actions, supporting the example’s checks before a thermostat command.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/action/"
+    },
+    {
+      "claim": "Run actions skips triggers and top-level conditions and does not establish that clock boundaries work; traces show the executed path.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "An Entities card on an editable dashboard can present the schedule toggle for household use.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/entities/"
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440x1000: article, /blog/ and /blog.html returned 200; title and September 15 date were readable, the unique responsive WebP cover and first library card loaded, centered layout and Tara Avenir regular-weight headings were preserved, and document width remained 1440px. Inspected hero, TLDR, code and worked table screenshots. Legacy .html redirected to the canonical path. The By Tara Home link resolves to the rendered homepage #about section; its anchor is added by the existing homepage script.",
+    "mobile": "Chromium at 390x844: title, byline, image and five TLDR bullets were readable; 480px cover delivery loaded and the final document width was 390px. Both library versions fit the viewport and the new card was inspected. Code and comparison tables scroll within their own containers; keyboard focus and actual horizontal scrolling were checked and screenshots saved. Fixed the first-pass code overflow before PASS."
+  }
+}
