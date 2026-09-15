@@ -6,6 +6,7 @@ async (page) => {
   for (const [width, height] of [[390, 844], [1440, 900], [412, 12000], [1440, 12000]]) {
     const context = await page.context().browser().newContext({viewport: {width, height}});
     try {
+      await context.route(/google-analytics|googletagmanager|formspree/, route => route.abort());
       const target = await context.newPage();
       await target.goto(origin, {waitUntil: 'load'});
       await target.locator('.tara-rx-hero').waitFor({timeout: 15000});

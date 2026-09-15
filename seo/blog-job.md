@@ -29,6 +29,10 @@ push, quota accounting, and live deployment verification. Do not commit, push,
 change branches, edit the runner, change the strategy, or edit other articles.
 The configurator is owned by `configurator-source/`. Do not rebuild it, replace
 its assets or HTML, or run the legacy full-site generator while publishing a post.
+The homepage is owned by `homepage-source/`. Do not build or edit it, its static
+HTML, stylesheet, or client assets when drafting an article. Its first-paint HTML
+and hydrated component must stay identical; do not restore an interaction-gated
+fallback or patch its generated head to publish a post.
 Commercial and guide hero delivery is protected by `seo/commercial-images.json`
 and the runner's `scripts/check-commercial-images.py` gate. Leave those pages,
 their responsive WebP attributes, and their preserved PNG source assets alone.

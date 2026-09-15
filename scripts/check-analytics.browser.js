@@ -12,7 +12,7 @@ async (page) => {
     let acceptForm = false;
     try {
       await context.route(/google-analytics\.com|googletagmanager\.com/, route => route.abort());
-      await context.route(/\/assets\/main-[^/]+\.js$/, async route => {
+      await context.route(/\/assets\/(?:main|homepage)-[^/]+\.js$/, async route => {
         appHeld = true;
         await gate;
         await route.continue();
@@ -25,17 +25,17 @@ async (page) => {
       });
       const target = await context.newPage();
       await target.goto(origin, {waitUntil: 'commit'});
-      await target.locator('.seo-static-fallback').waitFor();
+      await target.locator('.seo-static-fallback, [data-tara-ready="false"]').waitFor();
       const clickCount = () => target.evaluate(() =>
         window.dataLayer.filter(row => row[0] === 'event' && row[1] === 'site_click').length);
-      await target.locator('.seo-secondary').click();
+      await target.locator('.seo-secondary, a[data-analytics="hero_see_how_it_works"]').click();
       const beforeApp = await clickCount();
       if (beforeApp !== 1) throw new Error(`Fallback click count: ${beforeApp}`);
       releaseApp();
       await target.locator('.tara-rx-hero').waitFor();
       await target.waitForFunction(() => window.__taraAnalyticsReady === true);
       const beforeClick = await clickCount();
-      await target.getByRole('button', {name: 'See how it works', exact: true}).click();
+      await target.locator('.tara-rx-hero').getByText('See how it works', {exact: true}).click();
       const afterClick = await clickCount();
       if (!appHeld || afterClick - beforeClick !== 1) {
         throw new Error(`Duplicate/missing app click: ${JSON.stringify({appHeld, beforeClick, afterClick})}`);
