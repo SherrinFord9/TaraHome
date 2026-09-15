@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const keywordMapPath = path.join(repo, 'seo', 'keyword-map.json');
@@ -45,7 +46,10 @@ function attribute(tag, name) {
 }
 
 function readPage(file) {
-  const html = fs.readFileSync(file, 'utf8');
+  return parsePage(file, fs.readFileSync(file, 'utf8'));
+}
+
+function parsePage(file, html) {
   const descriptionTag = (html.match(/<meta\b[^>]*\bname=["']description["'][^>]*>/i) || [])[0] || '';
   const canonicalTag = (html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/i) || [])[0] || '';
   return {
@@ -187,6 +191,7 @@ function checkCandidate({title, query, articleFile = ''}) {
   const maxDescription = keywordMap.rules.recommendedDescriptionMax;
   let description = '';
   let candidatePath = valueAfter('--candidate-slug');
+  let preservedTitle = false;
 
   if (articleFile) {
     const article = readPage(articleFile);
@@ -196,11 +201,30 @@ function checkCandidate({title, query, articleFile = ''}) {
     candidatePath = pagePathFromFile(articleFile);
     if (article.h1Count !== 1) errors.push(`Article must contain exactly one H1; found ${article.h1Count}.`);
     if (!article.canonical) errors.push('Article is missing a canonical URL.');
+    if (args.includes('--refresh-from-ref')) {
+      const reference = valueAfter('--refresh-from-ref');
+      if (!/^[a-f0-9]{40}$/i.test(reference)) {
+        errors.push('Refresh baseline must be a full Git commit SHA.');
+      } else {
+        try {
+          const relative = path.relative(repo, articleFile).replaceAll(path.sep, '/');
+          const baseline = parsePage(articleFile, execFileSync('git', ['show', `${reference}:${relative}`],
+            {cwd: repo, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']}));
+          preservedTitle = article.title === baseline.title && article.h1 === baseline.h1 &&
+            article.canonical === baseline.canonical;
+          if (!preservedTitle) errors.push('Refresh must preserve the baseline title, H1, and canonical.');
+        } catch {
+          errors.push('Cannot read this existing article from the refresh baseline.');
+        }
+      }
+    }
+  } else if (args.includes('--refresh-from-ref')) {
+    errors.push('Refresh mode requires --article for an existing page.');
   }
 
   if (!title) errors.push('Candidate title is required.');
   if (!query) errors.push('Candidate primary query is required.');
-  if (title && title.length > maxTitle) errors.push(`Candidate title is ${title.length} characters; target is ${maxTitle} or fewer.`);
+  if (title && title.length > maxTitle && !preservedTitle) errors.push(`Candidate title is ${title.length} characters; target is ${maxTitle} or fewer.`);
   if (description && description.length > maxDescription) errors.push(`Article description is ${description.length} characters; target is ${maxDescription} or fewer.`);
 
   const candidateText = `${query} ${title}`;
@@ -238,7 +262,10 @@ function checkCandidate({title, query, articleFile = ''}) {
     process.exit(1);
   }
 
-  console.log(`SEO candidate check PASS: "${title}" has a distinct search intent and concise metadata.`);
+  const metadataResult = preservedTitle && title.length > maxTitle
+    ? 'a verified unchanged legacy title; description and intent checks still apply'
+    : 'concise metadata';
+  console.log(`SEO candidate check PASS: "${title}" has a distinct search intent and ${metadataResult}.`);
 }
 
 if (args.includes('--site') || args.length === 0) {

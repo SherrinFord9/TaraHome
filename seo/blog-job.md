@@ -92,6 +92,15 @@ fix, not just whether it sounds clear. Record the important checks in claimCheck
   A polling interval for device status does not establish alert latency when a
   separate real-time event channel exists. State uncertainty instead of inventing
   tested compatibility, prices, or measured response times.
+- For local voice, distinguish on-device wake-word detection from a server-side
+  audio stream. Voice Preview Edition's standard microWakeWord setup does not
+  require a separate openWakeWord app. Check current project maintenance status,
+  supported installation methods, and Apps naming before copying older tutorials.
+  Local processing does not imply no recordings or logs; check optional audio
+  debugging, the conversation agent, and the controlled device's data path.
+  Separate transcription, command handling, and reply playback when diagnosing
+  failures. Do not promise latency, pickup distance, or hardware performance
+  without actual evidence. State documentation research as research, not testing.
 - Give a harmless verification step and expected result. Do not tell readers to
   delete historical data, unlock doors, or disable safety controls as a first test.
 - When mentioning Tara pricing, distinguish the online planning estimate from a

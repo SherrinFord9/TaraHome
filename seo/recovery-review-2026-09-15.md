@@ -166,6 +166,39 @@ No number-one ranking is claimed from a search tool listing Tara first: that is
 not a Google rank tracker. The goal of top search visibility remains unachieved
 until sustained, relevant performance provides stronger evidence.
 
+## Local-voice factual refresh
+
+The existing local-voice guide incorrectly made openWakeWord mandatory for Voice
+Preview Edition, treated every pipeline link as Wyoming, recommended unsupported
+installation methods, and promised that audio was never stored. Current primary
+documentation contradicts those statements. The refreshed guide distinguishes
+on-device microWakeWord, ESPHome endpoints, Wyoming speech services, optional
+debug recording, and cloud-dependent agents or device actions. It adds a staged
+one-lamp test and explains the maintained satellite-software path.
+
+This is a refresh of `/blog/home-assistant-local-voice-assistant-no-cloud/`, not a
+new daily article. Its title, H1, canonical, March 11 publication date and image
+paths remain unchanged. The updated description is synchronized with both library
+cards and schema, and only this article's sitemap lastmod advances. Its cumulative
+165 impressions and zero clicks cover June 14-September 13, not the last week;
+there was no fresh URL Inspection for this page in this pass.
+
+The daily prompt now requires the same local-voice factual checks. The runner still
+fetches the prompt from main and retains one new article per day. No scheduler
+restart or additional daily publication is needed. The manual intent checker can
+preserve a long existing title using `--refresh-from-ref <full-commit-SHA>` only
+when the article's title, H1 and canonical match that historical page. It does not
+waive description or collision checks, and daily new-article validation stays
+strict. Thirteen regression cases cover this path; publishing and runner tests
+also pass.
+
+Chromium checks cover the article and both library cards at 1440, 390 and 360px,
+including loaded images, Avenir, centered text, non-overlapping header text and
+keyboard scrolling of the comparison table. Source checks, limitations and the
+automated proofreading review are in
+`seo/editorial-reviews/home-assistant-local-voice-assistant-no-cloud.json`.
+These corrections improve factual usefulness, not proof of a ranking recovery.
+
 ## Next measurement
 
 Review on September 22 with completed days, using the same sitewide windows and
