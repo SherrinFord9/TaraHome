@@ -12,7 +12,7 @@ historical, not as a live ranking report, and verify present-day demand separate
 
 Fresh September 15 inspections confirm the homepage, IKEA direct-pairing,
 Bluetooth-proxy, and main-LAN/IoT-VLAN pages are indexed. Do not repeat the older
-September 8 exclusions as their current state. Traffic has not meaningfully
+September 8 exclusions as their current state. Google Search traffic has not meaningfully
 recovered: September 7-13 had 3 clicks and 216 impressions, versus 2 and 231 in
 the previous week. Some newer guides remain discovered but not crawled. Neither
 successful publication nor an indexing request proves indexing or traffic
@@ -46,6 +46,11 @@ one-impression query is not enough to pivot the topic strategy. Separate lack of
 crawling, indexed-but-low-visibility pages, and low click-through rate; they are
 different observations, not interchangeable diagnoses. Cite the dated evidence
 and its reporting cutoff in the internal brief when using Search Console.
+Read `seo/analytics-measurement-contract.md` when using analytics evidence.
+GA4 on-site clicks are not Search Console clicks, and all-engine organic sessions
+are not Google-only traffic. A planning request is not a confirmed sale. Keep
+private analytics exports and customer inquiry records out of articles and the
+public repository; do not use unverified event totals as keyword demand evidence.
 
 Give the reader a direct answer in a useful 3-5 bullet TLDR, then an ordered
 procedure or a concrete model comparison with clear decision criteria. Add at

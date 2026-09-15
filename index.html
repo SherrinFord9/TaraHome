@@ -238,6 +238,8 @@
     </script>
     <script>
       document.addEventListener('click', function (event) {
+        // React owns click tracking after initialization; this covers only the fallback.
+        if (window.__taraAnalyticsReady) return;
         var target = event.target && event.target.closest ? event.target.closest('a, button, [role="button"]') : null;
         if (!target || !window.gtag) return;
         var text = (target.getAttribute('data-analytics') || target.getAttribute('aria-label') || target.textContent || target.getAttribute('href') || '').replace(/\s+/g, ' ').trim().slice(0, 120);
