@@ -1,0 +1,79 @@
+{
+  "slug": "home-assistant-vacation-lighting",
+  "action": "new",
+  "publicationDate": "2026-09-16",
+  "verdict": "PASS",
+  "readerQuestion": "How can I make Home Assistant vary a few lights while I am away, stop at bedtime, and hand control back when someone returns?",
+  "directAnswer": "Use two non-essential light entities, a visible Vacation lighting Toggle helper, and one bounded evening automation. The example chooses one lamp after a zero-to-five-minute delay at each half-hour, requests both off at 23:00, and cancels a pending run plus requests both off when the helper is switched off. It does not detect arrivals or guarantee device delivery. First confirm ordinary lamp control and rehearse cancellation and the actual cutoff while home.",
+  "originalContribution": "Sections 3-5 contain a complete native two-lamp automation, a seven-row worked example covering activation, repeated random choices, cancellation, cutoff, startup and disarmed behavior, and a harmless rehearsal. The design separates a new random choice from old waits, retains a stop path with no top-level condition, and documents daytime off enforcement and missed commands. A three-column decision table explains when a fixed schedule, this small routine, a community blueprint or history replay is appropriate. A separate troubleshooting table connects observable symptoms to the next check.",
+  "limitations": "Documentation research and isolated software checks only. Home Assistant 2026.9.2 validated the complete automation configuration; its native Script engine ran 11 state/time cases, a pending-wait cancellation case and a post-delay cutoff case with simulated light services and clock. The original random-delay template was also rendered and checked for integer bounds 0 through 5. Waits were shortened in engine tests. No real Home Assistant installation, physical lamp, live trigger scheduling, network reliability, history-replay integration or security effectiveness was tested. This routine cannot control devices while its server or device path is unavailable, does not restore earlier brightness/color, and needs a deliberate visitor/return handoff. Community blueprint settings can change with version. Generated cover art illustrates a room rather than documenting an installation.",
+  "proofreadFixes": "Automated tarahome-grandma-proofread pass: changed the TLDR's unconditional lights-off wording to describe sending the command; added the explicit distinction between switching off the helper and disabling the automation (which does not execute lamp cleanup); linked the current automation reload behavior; expanded the daytime rehearsal window to at least ten minutes so the permitted five-minute delay fits; replaced a vague local-check disclosure with the exact simulated Home Assistant engine scope and its live-trigger/hardware limits. Mobile screenshots showed the right-hand comparison column wider than the viewport, so the new article's tables now use equal fixed columns inside keyboard-focusable scroll containers. Rechecked the four-bullet direct answer, explained entity/helper/YAML/blueprint/integration/HACS language, full lamp-ID replacement instructions, all five editable time values, repeatable cancellation test, stop-versus-restore behavior, and matching visible/schema FAQ answers. Final verdict PASS; this was not human or expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A Toggle helper restores its previous state unless an explicit initial value overrides it; it does not itself operate lights. The setup uses Settings > Devices & services > Helpers and starts with the helper off.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "minutes: /30 uses clock minutes divisible by 30. Separate state, startup and bedtime triggers wake the same automation; the reader is not told this means 30 minutes after activation.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "Restart mode stops the previous run before starting the next and top-level conditions can prevent restarting. The recipe therefore has conditions: [] and checks the helper/time inside actions, keeping the off-event cleanup reachable. Isolated native-engine tests confirmed pending-delay cancellation without a late turn-on.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "The 18:00 start is inclusive and 23:00 end exclusive. At the cutoff the choose branch fails and cleanup requests both off while the helper is on; a second internal time check rejects an overrun delay.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/"
+    },
+    {
+      "claim": "Delays accept templates; choose/default and if/then implement separate start and cleanup paths. Choosing a lamp once in a variable makes the on and off targets complementary. The actions were validated and exercised against mocked light services, not real lamps.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "The random filter makes a new selection when evaluated, and two evaluations are independent. The recipe saves its choice instead of randomly picking the on and off targets separately. The same lamp can be picked again.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/random/"
+    },
+    {
+      "claim": "range(0, 6) excludes 6 and supplies integer delays from 0 through 5. The original expression rendered within these bounds in the isolated check.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/range/"
+    },
+    {
+      "claim": "Disabling an automation stops listening for triggers and normally stops its running actions; it does not undo an earlier lamp command or execute this recipe's cleanup branch. The helper is the documented trip-stop control.",
+      "sourceUrl": "https://www.home-assistant.io/actions/automation.turn_off/"
+    },
+    {
+      "claim": "Reloading automations stops active actions without restarting Home Assistant. The recipe relies on its next half-hour check after reload and does not promise to resume a discarded delay.",
+      "sourceUrl": "https://www.home-assistant.io/actions/automation.reload/"
+    },
+    {
+      "claim": "Run actions skips triggers and top-level conditions and supplies no real trigger ID. Verification uses actual helper changes and an actual temporary cutoff; it never asks readers to modify safety systems or critical equipment.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "Presence Simulation is an optional custom integration. Its history requirement is longer than the configured look-back, and the selected entities need usable retained history. It is not described as a built-in app or automatically available past data.",
+      "sourceUrl": "https://github.com/slashback100/presence_simulation"
+    },
+    {
+      "claim": "Locally executed Home Assistant logic does not remove the internet requirement of a cloud-dependent lamp integration. The article makes server, network/radio and device availability prerequisites explicit.",
+      "sourceUrl": "https://www.home-assistant.io/faq/works-without-internet/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-house-modes/",
+      "section": "Use the mode as a condition, not a master off switch",
+      "readerReason": "A reader who has chosen a deliberate Vacation state can use this concrete two-lamp example to implement one behavior that follows it, with an explicit stop and visitor handoff. This is a separate navigation-review suggestion, not an edit to that guide."
+    },
+    {
+      "sourcePath": "/blog/how-to-set-up-smart-lighting/",
+      "section": "Step 4: Set Up Automations",
+      "readerReason": "After basic light control and ordinary schedules work, a reader may want a bounded away-lighting routine using those existing lamps. The new guide provides configuration and stop testing without reopening hardware selection."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440x1000: centered Tara layout, two-line readable title, visible By Tara Home credit, unique decoded responsive cover, four-bullet TLDR directly after the hero, regular Tara Avenir and no horizontal document overflow. Both /blog/ and /blog.html show the new first card with loaded cover and September 16 date; their Blog and ItemList schemas put it first. The .html redirect reaches the canonical article. All 684 checked local links/assets/anchors in the article and both indexes resolved. Source HTTP checks passed. Screenshots and check files are under TARAHOME_BLOG_ARTIFACTS, not the website root.",
+    "mobile": "Chromium at 390x844 and 360x844, with final table checks at 390x1000 and 360x1000: title and nav wrap cleanly, room/lamp image loads, byline and TLDR remain readable, and document scrollWidth matches viewport width. All three comparison tables stay inside focusable horizontal scrollers; fixed columns are about 253px so an entire column fits at 360px. ArrowRight changes table and YAML scroll positions, focus outline is visible, and expanded YAML stays inside its container. Both library cards checked at 390px; final top/table screenshots saved externally. Browser checks blocked Google analytics requests and submitted no forms."
+  }
+}
