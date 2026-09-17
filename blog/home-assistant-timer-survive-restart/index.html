@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Timers After Restart: Restore and Catch Up</title>
+    <meta name="description" content="Make a Home Assistant timer survive a restart, understand missed finish events, and use a saved deadline when a reminder must catch up. Includes YAML." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-timer-survive-restart/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-timer-survive-restart/" />
+    <meta property="og:title" content="Home Assistant Timers After Restart: Restore and Catch Up" />
+    <meta property="og:description" content="Make a Home Assistant timer survive a restart, understand missed finish events, and use a saved deadline when a reminder must catch up. Includes YAML." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-timer-survive-restart/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Timers After Restart: Restore and Catch Up" />
+    <meta name="twitter:description" content="Make a Home Assistant timer survive a restart, understand missed finish events, and use a saved deadline when a reminder must catch up. Includes YAML." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-timer-survive-restart/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .article-body .comparison-table table { table-layout: fixed; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarahome.ai/assets/logo/tara-star.svg"
+      }
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-timer-survive-restart/#blogposting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-timer-survive-restart/"
+      },
+      "headline": "Home Assistant Timers After Restart: Restore and Catch Up",
+      "description": "Make a Home Assistant timer survive a restart, understand missed finish events, and use a saved deadline when a reminder must catch up. Includes YAML.",
+      "image": [
+        "https://tarahome.ai/assets/generated/blog/home-assistant-timer-survive-restart/cover.png"
+      ],
+      "datePublished": "2026-09-17",
+      "dateModified": "2026-09-17",
+      "author": {
+        "@type": "Organization",
+        "@id": "https://tarahome.ai/#organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "articleSection": "Practical automations",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Timers After Restart: Restore and Catch Up",
+          "item": "https://tarahome.ai/blog/home-assistant-timer-survive-restart/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does mode: restart make an automation survive a reboot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. That mode stops a running action sequence and starts a new run when another trigger arrives. It does not save a running delay across a Home Assistant restart."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the saved-deadline example pause while Home Assistant is off?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The deadline is a date and time, so time away still counts. If it is overdue and Reminder pending restores on, the next successful check creates the reminder. A pausable countdown is a different requirement."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will this send a notification to my phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The example creates a notification inside the Home Assistant interface. Phone push needs a separate notification action and its delivery path must work. A reminder shown in Home Assistant does not prove a phone received it."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+  </head>
+<body>
+<nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+<main class="article"><article><header class="hero article-hero"><div><p class="article-meta"><span>Practical automations</span><span><time datetime="2026-09-17">September 17, 2026</time></span><span>10 min read</span></p><h1>Home Assistant Timers After Restart: Restore and Catch Up</h1><p class="lede">Choose a restored timer or a saved deadline, then make missed reminders behave predictably.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-timer-survive-restart/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-timer-survive-restart/cover-480.webp 480w, /assets/generated/blog/home-assistant-timer-survive-restart/cover-1200.webp 1199w" sizes="(max-width: 720px) 100vw, 1120px" width="1672" height="941" decoding="async" alt="A glass hourglass on an oak table beside a warm reading lamp and a dark-green armchair" loading="eager" /></figure></header><div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>For a normal countdown:</strong> create a Timer helper and enable Restore so an active countdown can recover after a restart.</li>
+<li><strong>Check the missed-deadline case:</strong> a timer that finishes while Home Assistant is off does not replay its finished event at startup.</li>
+<li><strong>For a reminder that should catch up:</strong> save its due date and time, then check for overdue work after startup. The example below does that.</li>
+<li><strong>Test with a message first:</strong> use a notification inside Home Assistant. No automation can act while the server is down.</li>
+</ul></aside>
+<h2>Restore the countdown—or check a saved deadline</h2>
+<p>To make a <strong>Home Assistant timer survive a restart</strong>, enable <strong>Restore</strong> on its Timer helper. A helper is a saved setting or virtual control inside Home Assistant. Put the completion action in its own automation, listening for <code>timer.finished</code>.</p>
+<p>There is one crucial limit: <a href="https://www.home-assistant.io/integrations/timer/">Home Assistant does not replay that event if the timer expires while the server is off</a>. Restoring the countdown and carrying out missed work are separate jobs.</p>
+<p>If a late reminder is still useful, store an absolute deadline—such as today at 6:10 pm—and check it after startup. The worked example below keeps that deadline and a “still wanted” toggle, then creates a local notification when the deadline has passed. It never switches appliances or locks.</p>
+<p>Choose that catch-up behavior deliberately. A reminder to check laundry can arrive late; turning a bedroom lamp on hours after its intended time may be unwelcome. For anything safety-critical, use the device’s own appropriate controls and safeguards. This recipe is a convenience reminder.</p>
+<p class="research-method">Researched from current Home Assistant documentation on September 17, 2026. The examples are illustrative configurations, not a tested household installation. Software verification and its limits are noted below. The cover is an AI-generated residential illustration.</p>
+<h2>1. Choose what should happen after an interruption</h2>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p><div class="comparison-table" role="region" aria-label="Countdown recovery choices" tabindex="0"><table><thead><tr><th scope="col">Need</th><th scope="col">Use</th><th scope="col">Interruption behavior</th></tr></thead><tbody><tr><td>A short wait during one running routine</td><td>A delay or wait action</td><td>Do not treat an in-progress action sequence as saved work.</td></tr><tr><td>React after a state stays unchanged</td><td>A trigger with <code>for:</code></td><td>Its waiting period resets on restart or automation reload.</td></tr><tr><td>A countdown you can view, pause and resume</td><td>Timer helper with Restore</td><td>Restores its state; a finish during downtime does not replay the completion event.</td></tr><tr><td>A reminder that remains due even after downtime</td><td>Saved date/time plus pending toggle</td><td>Check the current time after startup and periodically; decide whether late completion is appropriate.</td></tr></tbody></table></div><p>The <a href="https://www.home-assistant.io/docs/automation/trigger/">trigger documentation</a> explicitly distinguishes <code>for:</code> from a saved date/time. Likewise, <a href="https://www.home-assistant.io/docs/automation/modes/"><code>mode: restart</code></a> describes how overlapping runs behave; it is not a reboot-recovery setting.</p>
+<h2>2. Use Timer Restore when missed completion is acceptable</h2>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Helpers → Create helper → Timer</strong>. Name it <strong>Reminder</strong>, set a duration, and enable <strong>Restore</strong>. Confirm its entity ID is <code>timer.reminder</code>. An entity ID is Home Assistant’s exact name for one control or reading.</li>
+<li>Create a new automation under <strong>Settings → Automations &amp; scenes</strong>. Choose <strong>Edit in YAML</strong> from its menu and paste the example below. YAML is the editor’s text format; keep the indentation.</li>
+<li>Start the timer from its control, or use <code>timer.start</code> in the Actions tool. Current documentation calls this <strong>Settings → Tools → Actions</strong>; older releases may show <strong>Developer tools → Actions</strong>.</li>
+</ol>
+<details class="configuration"><summary>Timer completion automation</summary><pre tabindex="0"><code>alias: Reminder timer finished
+triggers:
+  - trigger: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.reminder
+actions:
+  - action: persistent_notification.create
+    data:
+      title: Reminder
+      message: The countdown finished while Home Assistant was running.
+      notification_id: timer_reminder
+mode: single</code></pre></details>
+<p>Replace the entity ID if yours differs. This automation is separate from whatever starts the timer: it is not an old action sequence waiting in the background. Do not use <code>idle</code> alone as proof of completion; a timer is also idle after cancellation or before its first start.</p>
+<p>For the alternative that catches up after downtime, use the next example. You do not need to create the Timer helper above as well.</p>
+<h2>3. Build a ten-minute reminder with a saved deadline</h2>
+<p>This example has one start/cancel toggle, one stored deadline and one automation. Switching the toggle on starts ten minutes. Switching it off cancels a reminder that has not begun completing. After completion, the automation switches it off for you.</p>
+<ol>
+<li>In <strong>Helpers → Create helper</strong>, choose <strong>Date and/or time</strong>. Name it <strong>Reminder due</strong> and select <strong>both date and time</strong>. Confirm <code>input_datetime.reminder_due</code>. A time-only helper is unsuitable for this one-off deadline. The helper uses Home Assistant’s configured time zone; check that the displayed date and time are right.</li>
+<li>Create a <strong>Toggle</strong> named <strong>Reminder pending</strong>, with ID <code>input_boolean.reminder_pending</code>. Leave it <strong>off</strong> while setting up. Put both helpers on a dashboard so you can see the due time and cancel the reminder.</li>
+<li>Create a new automation, open <strong>Edit in YAML</strong>, and paste the complete configuration below. Save it and keep it enabled. If your helper IDs differ, replace them everywhere, including inside the template. On a narrow screen, scroll the code sideways; copy the whole block, including <code>mode</code> and <code>max</code> at the end.</li>
+</ol>
+<details class="configuration"><summary>Complete saved-deadline automation</summary><pre tabindex="0"><code>alias: Reminder with a saved deadline
+triggers:
+  - trigger: state
+    entity_id: input_boolean.reminder_pending
+    from: &quot;off&quot;
+    to: &quot;on&quot;
+    id: start
+  - trigger: time
+    at: input_datetime.reminder_due
+    id: deadline
+  - trigger: homeassistant
+    event: start
+    id: startup
+  - trigger: time_pattern
+    minutes: &quot;/1&quot;
+    id: check
+conditions: []
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: start
+        sequence:
+          - action: input_datetime.set_datetime
+            target:
+              entity_id: input_datetime.reminder_due
+            data:
+              timestamp: &quot;{{ now().timestamp() + 600 }}&quot;
+    default:
+      - condition: state
+        entity_id: input_boolean.reminder_pending
+        state: &quot;on&quot;
+      - condition: template
+        value_template: &gt;-
+          {% set due = state_attr(&#x27;input_datetime.reminder_due&#x27;,
+                                  &#x27;timestamp&#x27;) | float(0) %}
+          {{ has_value(&#x27;input_datetime.reminder_due&#x27;)
+             and due &gt; 0 and now().timestamp() &gt;= due }}
+      - action: persistent_notification.create
+        data:
+          title: Reminder due
+          message: &gt;-
+            Your saved reminder is due. If Home Assistant was off,
+            this message may be late.
+          notification_id: saved_deadline_reminder
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.reminder_pending
+mode: queued
+max: 5</code></pre></details>
+<p>Turn <strong>Reminder pending</strong> on to begin. The automation writes a deadline 600 seconds ahead; <a href="https://www.home-assistant.io/actions/input_datetime.set_datetime/">the timestamp field sets both the date and time</a>. Change <code>600</code> to your desired number of seconds. To start a fresh countdown before the old one completes, turn the toggle off, then on again. This is cancellation and a new start, not pause/resume.</p>
+<p>The <a href="https://www.home-assistant.io/integrations/input_datetime/">date/time helper</a> and <a href="https://www.home-assistant.io/integrations/input_boolean/">toggle helper</a> normally restore their prior values. If you define them in YAML instead of the UI, an explicit <code>initial</code> value overrides that restoration. Restored state is not a guarantee that the very last change before sudden power loss reached storage.</p>
+<p>The start branch requires an actual <code>off</code>-to-<code>on</code> change. The separate startup trigger checks the stored deadline instead of adding another ten minutes. The minute check also catches an overdue reminder after the automation is re-enabled or reloaded. Keep the automation enabled and use Reminder pending to start or cancel: switching the helper on while the automation is disabled will not write a new deadline. An invalid or unavailable deadline is skipped; it is not treated as already due.</p>
+<p>The action sequence uses <a href="https://www.home-assistant.io/docs/scripts/">conditions inside its completion branch</a>, so a check only continues while a valid reminder is pending and overdue. Queued mode processes runs in order. The notification is created before the toggle is cleared. Its <a href="https://www.home-assistant.io/integrations/persistent_notification/">fixed notification ID</a> updates the same message if the action repeats; this is not an exactly-once delivery guarantee across crashes.</p>
+<h2>4. Read the timeline before using it</h2>
+<p>Suppose you start the saved-deadline reminder at 6 pm, making it due at 6:10. These are expected outcomes from the configuration, not measured restart times.</p>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p><div class="comparison-table" role="region" aria-label="Worked deadline timeline" tabindex="0"><table><thead><tr><th scope="col">Situation</th><th scope="col">Expected result</th><th scope="col">Reason</th></tr></thead><tbody><tr><td>Server restarts and returns at 6:07</td><td>Still due at 6:10.</td><td>Startup does not create a new ten-minute countdown.</td></tr><tr><td>Server returns at 6:12, with pending restored on</td><td>Creates the overdue notification on a successful startup or later minute check.</td><td>The saved time has passed; late reminders are allowed.</td></tr><tr><td>You cancel at 6:05, before completion starts</td><td>No new reminder at 6:10.</td><td>The pending toggle is off even though the old deadline remains visible.</td></tr><tr><td>Automation is disabled at 6:09, then enabled at 6:12</td><td>A subsequent minute check finds the overdue reminder.</td><td>No completion event must be replayed.</td></tr><tr><td>Reminder completes; another minute passes</td><td>No new completion action.</td><td>The successful run cleared pending.</td></tr><tr><td>Deadline is missing or unavailable</td><td>No reminder from that check.</td><td>The guard requires a usable date/time and positive timestamp.</td></tr></tbody></table></div><p>The recipe deliberately has no expiry limit: a reminder can arrive after a long outage. Do not replace the message with a lock, heater, garage-door or other consequential action and assume late execution is safe. For a daily household schedule, reconcile the desired state for the <em>current</em> time instead; the recent <a href="/blog/home-assistant-heating-schedule/">heating-schedule guide</a> explains that different pattern.</p>
+<h2>5. Verify it without interrupting devices</h2>
+<ol>
+<li><strong>Shorten the demonstration.</strong> With Reminder pending off, temporarily change <code>600</code> to <code>30</code> and save. Switch the toggle on. Its due time should move about 30 seconds ahead. After that deadline, expect a notification inside Home Assistant and the toggle to turn off.</li>
+<li><strong>Check cancellation.</strong> Dismiss the previous message, start again, then switch the toggle off before the deadline. Let the deadline and the next minute check pass. No new message should appear. Cancellation does not remove a message already created.</li>
+<li><strong>Check missed processing.</strong> Start again and confirm the new due time. Disable only this new reminder automation before it is due. After the deadline passes, re-enable it and wait for a minute check. Expect the late reminder and pending to clear. This tests catch-up logic; it does not test a server restart.</li>
+<li><strong>Restore the real duration.</strong> Put <code>600</code> back and leave pending off. During your next planned maintenance restart, try one deadline beyond the restart and, separately, a reminder that becomes overdue. Confirm the stored deadline and pending state actually restore on your installation.</li>
+</ol>
+<p>Inspect <strong>Traces</strong>, the automation’s record of each run, if a step differs. <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Run actions does not test the triggers</a>. In this recipe it also does not supply the start trigger ID, so it is not a substitute for switching the helper on. Keep these tests limited to the new reminder; no real sensor states or historical data need changing.</p>
+<p class="research-method" id="software-checks">Software checks used Home Assistant 2026.9.2 to validate both complete automations and run their action logic in an isolated engine with simulated helper states, service calls and time. Fourteen cases covered starting, early and overdue checks, cancellation, invalid values and notification actions. These checks did not test live trigger scheduling, saved-state restoration from disk, a household restart, power-loss recovery or phone delivery.</p>
+<h2>If the result is unexpected</h2>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p><div class="comparison-table" role="region" aria-label="Reminder troubleshooting" tabindex="0"><table><thead><tr><th scope="col">Symptom</th><th scope="col">Check</th><th scope="col">Next step</th></tr></thead><tbody><tr><td>The deadline does not change when you start</td><td>Exact helper IDs, enabled automation and start-branch trace.</td><td>Switch pending off and then on. Confirm both date and time are enabled on Reminder due.</td></tr><tr><td>The deadline changes at startup</td><td>Which trigger appears in the trace; other routines writing the helper.</td><td>Keep the explicit start ID and off-to-on trigger. Do not recalculate the deadline in the startup branch.</td></tr><tr><td>No overdue reminder</td><td>Pending state, valid deadline, clock/time zone and completion trace.</td><td>Correct the helper configuration; repeat the harmless 30-second test. See the <a href="/blog/home-assistant-automation-not-firing/">automation troubleshooting checklist</a> for a missing run.</td></tr><tr><td>Message inside Home Assistant, nothing on the phone</td><td>The example uses persistent_notification.create.</td><td>That is expected. Phone push is a separate action; use the <a href="/blog/home-assistant-notifications-delayed-not-arriving/">notification delivery guide</a> if you add it.</td></tr></tbody></table></div><p>For a repeating door warning rather than a single saved deadline, use the <a href="/blog/home-assistant-door-left-open-notification/">door-left-open reminder guide</a>. That needs its own rules for closing the door, repeating and silencing alerts.</p>
+<p>Tara’s <a href="/home-automation-kit/">home automation kit with coordinated local routines</a> is the relevant planning path when you want start, stop and recovery behavior documented for the household.</p>
+<h2>Common questions</h2>
+<h3>Does mode: restart make an automation survive a reboot?</h3><p>No. That mode stops a running action sequence and starts a new run when another trigger arrives. It does not save a running delay across a Home Assistant restart.</p><h3>Does the saved-deadline example pause while Home Assistant is off?</h3><p>No. The deadline is a date and time, so time away still counts. If it is overdue and Reminder pending restores on, the next successful check creates the reminder. A pausable countdown is a different requirement.</p><h3>Will this send a notification to my phone?</h3><p>No. The example creates a notification inside the Home Assistant interface. Phone push needs a separate notification action and its delivery path must work. A reminder shown in Home Assistant does not prove a phone received it.</p></div><section class="source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Countdowns and saved state</h3><ul><li><a href="https://www.home-assistant.io/integrations/timer/">Timer Restore and completion events</a></li><li><a href="https://www.home-assistant.io/integrations/input_datetime/">Date/time helper and restored state</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper and initial values</a></li><li><a href="https://www.home-assistant.io/actions/input_datetime.set_datetime/">Set a date/time using a timestamp</a></li></ul></div><div><h3>Automation behavior and verification</h3><ul><li><a href="https://www.home-assistant.io/docs/automation/trigger/">Triggers and for-duration limits</a></li><li><a href="https://www.home-assistant.io/docs/automation/modes/">Run modes</a></li><li><a href="https://www.home-assistant.io/docs/scripts/">Conditions and action sequences</a></li><li><a href="https://www.home-assistant.io/integrations/persistent_notification/">Persistent notifications</a></li><li><a href="https://www.home-assistant.io/template-functions/state_attr/">State attribute templates</a></li><li><a href="https://www.home-assistant.io/template-functions/has_value/">Reject unknown or unavailable states</a></li><li><a href="https://www.home-assistant.io/template-functions/now/">Current time in templates</a></li><li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Traces and testing automations</a></li></ul></div></div></section><section class="article-cta"><p class="kicker">Plan your home</p><h2>Make routine recovery part of the plan</h2><p>Plan the controls and practical exceptions your household needs.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>

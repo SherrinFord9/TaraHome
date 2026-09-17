@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-timer-survive-restart",
+  "action": "new",
+  "publicationDate": "2026-09-17",
+  "verdict": "PASS",
+  "readerQuestion": "How can a Home Assistant countdown survive a restart, including when its deadline passes while the server is off?",
+  "directAnswer": "Enable Restore on a Timer helper for an ordinary recoverable countdown, with a separate timer.finished automation. That event does not replay when a timer finishes during downtime. When late completion is wanted, store a full date/time plus pending status and check at the deadline, startup and each minute. Begin with the local-notification demonstration and explicitly choose whether late action is appropriate.",
+  "originalContribution": "Sections 1-5 provide a recovery decision table, two complete configurations, a six-case 6 pm/6:10 pm worked timeline, cancellation behavior and a harmless rehearsal. The saved-deadline example distinguishes starting from checking so startup does not move the deadline; uses a pending toggle and invalid-state guard; and catches overdue work after missed processing. The verification procedure separates simulated catch-up from a real planned restart.",
+  "limitations": "Documentation research plus isolated software checks. Home Assistant 2026.9.2 validated both complete configurations and its native Script engine passed 14 cases using simulated helper states, service calls and clock. No live trigger scheduling, restoration from disk, household restart, abrupt power-loss recovery, physical device or phone delivery was tested. The reminder has no expiry limit and can be late after a long outage. The pending toggle and deadline are not a crash-proof transaction, and a fixed notification ID is not exactly-once delivery. A timer restored after downtime does not prove its missed completion action ran. Generated art is an illustration, not installation evidence.",
+  "proofreadFixes": "Automated tarahome-grandma-proofread PASS after concrete corrections: fixed a mistyped internal notification-guide URL; clarified that an active countdown can recover rather than implying a paused timer resumes automatically; added that the saved-deadline automation must remain enabled because toggling pending on while disabled does not write a new deadline; distinguished cancellation from pausing and from deleting a delivered message; added both-date-and-time and configured-time-zone prerequisites; added narrow-screen code scrolling/copy-all instructions; replaced a generic verification note with the exact Home Assistant version, 14 simulated cases and untested scheduling/restoration boundaries. Verified the four-bullet direct answer, plain explanations of helper/entity ID/YAML, safe notification-only rehearsal, correct from off-to-on start branch, separate startup branch, pending and valid-deadline conditions, order of create-before-clear, current source labels, visible authorship, documentation-research disclosure and FAQ/schema agreement. Layout sync removed blank lines in three older articles; those incidental changes were restored byte-for-byte and none remains. Final record is an automated editorial check, not human or expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Timer Restore recovers active/paused state, but expiry while Home Assistant is stopped does not replay timer.finished at startup. Idle also covers canceled and never-started timers. The guide does not equate idle with successful completion.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/timer/"
+    },
+    {
+      "claim": "A for-duration waiting period resets on restart or automation reload. The example uses an explicit off-to-on trigger for new work and distinct deadline/startup/minute triggers for checking; current complete trigger schemas validated in Home Assistant 2026.9.2.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "A date-and-time helper can store an absolute deadline, expose its timestamp and restore prior state; explicit initial overrides restored state. A time-only helper is not used for this one-off deadline.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_datetime/"
+    },
+    {
+      "claim": "input_datetime.set_datetime accepts a UNIX timestamp to set a helper with both date and time; the 600-second value is converted to a future timestamp instead of a long blocking wait. The isolated engine confirmed the start branch writes exactly now+600.",
+      "sourceUrl": "https://www.home-assistant.io/actions/input_datetime.set_datetime/"
+    },
+    {
+      "claim": "Input Boolean restores prior state unless initial overrides it; pending stores whether completion is still wanted. Turning it off cancels future completion checks, not a message already delivered.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "has_value rejects missing, unknown and unavailable states. The recipe additionally requires a positive timestamp with float(0) fallback; simulated missing/invalid/unknown/unavailable cases caused no notification.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/has_value/"
+    },
+    {
+      "claim": "mode: restart means restarting a run on another trigger, not reboot persistence. Queued mode processes the example action runs in order; it is not represented as durable transactional storage.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Conditions inside the default sequence stop completion when pending is off or the deadline is not due. Native Script engine cases confirmed early/canceled checks skip actions, while due/overdue checks create the message before clearing pending and do not repeat after success.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "persistent_notification.create writes a notification inside the Home Assistant interface; fixed notification_id updates the same message. This does not make a phone buzz or establish exactly-once delivery across crashes.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Run actions does not validate trigger scheduling. The safe test uses the real helper transition and a harmless overdue-processing rehearsal, with actual restoration deferred to planned maintenance. The guide accurately limits its own isolated software checks.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-automation-not-firing/",
+      "section": "If the Automation Runs at the Wrong Time",
+      "readerReason": "After identifying a deadline missed during a restart, the reader can choose a restored timer or implement explicit overdue handling. Suggest for a separate navigation review; the established diagnostic guide remains its owner."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-door-left-open-notification/",
+      "section": "When the result is wrong",
+      "readerReason": "A reader investigating reminder timing through downtime may need the separate fixed-deadline pattern and its cancellation limits. The existing door guide continues to own repeating/acknowledged door warnings."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440x1000: readable two-line title, visible September 17 date and By Tara Home link, decoded unique hourglass cover, four-bullet TLDR directly after the hero, centered 780px reading column, regular-weight Tara Avenir and no horizontal document overflow. Both library URLs show the new first card with working responsive image and publication date. The .html redirect reaches the canonical path. Static checks resolved 1319 local references including assets and anchors across the article and indexes; all 12 primary-source links returned HTTP 200. Screenshot files are in TARAHOME_BLOG_ARTIFACTS. Analytics requests were blocked for the browser checks.",
+    "mobile": "Chromium at 390x844 and 360x844: title and byline fit, warm residential cover loads with subject visible, TLDR and body text remain readable, and document scrollWidth equals viewport width. Three tables stay in focusable horizontal scroll containers; the code disclosure opens and scrolls within its own focusable pre element. ArrowRight moved both table and code scrollLeft to 40px at 390px. Both library indexes show the new first card without overflow at 390/360px. Screenshots of the title, TLDR, code, table and library were visually inspected; no screenshots or test files were added to the website root."
+  }
+}
