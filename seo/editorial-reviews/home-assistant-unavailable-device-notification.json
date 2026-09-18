@@ -1,0 +1,79 @@
+{
+  "slug": "home-assistant-unavailable-device-notification",
+  "action": "new",
+  "publicationDate": "2026-09-18",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant notify me when selected devices remain unavailable without duplicate messages, restart noise, or mistaking an unchanged reading for a dead device?",
+  "directAnswer": "Choose one main entity per device and use the complete five-minute checker with an Uptime-based 15-minute startup grace and a 15-minute stable unknown/unavailable filter. It updates one Home Assistant notification, reports missing selections and clears when nothing qualifies. This is reported-state monitoring, not proof of hardware health or phone delivery. Begin with a short list and the harmless missing-ID test.",
+  "originalContribution": "Sections 3–5 provide a complete guarded configuration, a worked 10:01–10:35 timeline showing delayed inclusion, addition of a second fault while the first persists and separate recoveries, plus a reversible test that never changes real device states. Selection and troubleshooting tables explain missing entities, groups, optional diagnostics, stale valid readings and startup behavior. The final published YAML was parsed and ten simulated template/action scenarios passed; the harness is stored outside the website.",
+  "limitations": "Documentation research and simulated configuration checks only; no live Home Assistant instance, hardware outage, integration polling latency or real phone delivery was tested. The rule cannot detect every stale valid value, briefly unavailable devices or Home Assistant failing itself. Changing between unknown and unavailable restarts the filter. Timing begins when Home Assistant reports the state and may be much later than physical failure. Existing notifications remain unchanged during startup grace. Generated cover is an illustration, not product imagery or a Tara installation. Browser tests verify presentation only; no deployment or indexing conclusion is made.",
+  "proofreadFixes": "Automated tarahome-grandma-proofread PASS after corrections. Changed notification output to real Markdown list items with a separating blank line so multiple faults do not collapse into one paragraph. Split long Jinja statements so the code fits the desktop reading column while remaining keyboard-scrollable on phones. Corrected the verification selector to measure ordinary body text rather than the deliberately emphasized TLDR label: body, TLDR text and headings are weight 400. Checked actual prerequisites and behavior: Uptime is a startup timestamp; bad-state age is distinct from integration detection time; the startup condition is inside actions; missing/disabled IDs are setup issues rather than confirmed dead devices; the safe test proves the report and schedule but not physical detection. Confirmed FAQ text matches schema. Reverted the layout synchronizer's whitespace-only changes to three existing articles and kept only new-article publication files. No human or expert review is claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Uptime is added through Devices & services and reports the startup date/time, not elapsed seconds. The recipe converts it to elapsed time and reports an invalid timestamp instead of silently passing.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/uptime/"
+    },
+    {
+      "claim": "minutes: /5 fires at five-minute clock boundaries; the periodic rule evaluates current states and can add a later fault while an earlier one remains. Worked timing is calculated, not measured latency.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/time_pattern/"
+    },
+    {
+      "claim": "unknown and unavailable are missing-value states, not diagnoses of a flat battery; state reads for nonexistent entities also need explicit handling.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/states/"
+    },
+    {
+      "claim": "last_changed changes when the state string changes, not on attribute-only updates. The recipe uses it only to time a currently bad state and never calls an unchanged valid number a dead device. Switching between bad strings resets this filter.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/state_object/"
+    },
+    {
+      "claim": "expand returns state objects and silently drops nonexistent IDs. Checking each requested ID individually makes missing entries visible; expanded groups are rejected rather than silently monitoring only one member.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/expand/"
+    },
+    {
+      "claim": "as_timestamp accepts a fallback; using none for an invalid Uptime timestamp enables a visible configuration warning without treating missing time as zero.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/as_timestamp/"
+    },
+    {
+      "claim": "A fixed notification_id updates the same frontend notification, and the final recipe formats entries as Markdown bullets. This does not itself generate phone push.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "The clear branch dismisses only selected_device_availability, not all Home Assistant notifications.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.dismiss/"
+    },
+    {
+      "claim": "Conditions inside an action sequence stop later actions when false. Placing startup grace there preserves it during Run actions.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/action/"
+    },
+    {
+      "claim": "A manual Run actions invocation does not prove a scheduled trigger. The harmless test adds a deliberately nonexistent ID, checks the next time-pattern trace, then removes it without modifying sensor states or disconnecting devices.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "Zigbee2MQTT availability is optional. Documented active and passive defaults are different: 10 minutes then ping for active devices and 25 hours for passive battery devices, which cannot be pinged. These precede the added recipe delay.",
+      "sourceUrl": "https://www.zigbee2mqtt.io/guide/configuration/device-availability.html"
+    },
+    {
+      "claim": "A Companion App mobile notification requires a configured notification action; adding one unconditionally to the recurring report would produce repeated sends. The guide explicitly limits this recipe to Home Assistant frontend notifications.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-devices-unavailable-after-restart/",
+      "section": "Make Dashboards and Automations Handle Unavailable Gracefully",
+      "readerReason": "After recovering a connection, a reader can implement the suggested calm notification using the new bounded configuration. This is a separate navigation suggestion, not a recovery replacement or permission to edit the existing guide."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-low-battery-notification/",
+      "section": "When the list looks wrong",
+      "readerReason": "Readers who need availability monitoring beyond battery values can watch powered devices and main readings more frequently. The link must preserve the caveat that this rule also cannot detect a stale valid value."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium 1440×1000: title, visible September 18 date, byline, four-bullet TLDR and cover readable; loaded cover-1200.webp; Tara Avenir and heading/body weight 400; reading column centered at x=720; all three tables fit; final code fits without horizontal scrolling; no document overflow or page-script errors. Both library cards load, appear first and open the article; .html redirect reaches the canonical path.",
+    "mobile": "Chromium 390×844 and 360×800: title and byline readable; cover-480.webp loads; body centered at x=195 and x=180; no document overflow. Three focusable tables and the code block scroll internally by keyboard; tested 40px ArrowRight movement. Both library routes show a readable first card with the unique image. Screenshots saved in TARAHOME_BLOG_ARTIFACTS and visually inspected."
+  }
+}

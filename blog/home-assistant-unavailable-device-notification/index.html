@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Unavailable Device Notifications</title>
+    <meta name="description" content="Build a Home Assistant unavailable device notification with startup grace, a short watch list, one updating message, and a harmless test." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-unavailable-device-notification/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-unavailable-device-notification/" />
+    <meta property="og:title" content="Home Assistant Unavailable Device Notifications" />
+    <meta property="og:description" content="Build a Home Assistant unavailable device notification with startup grace, a short watch list, one updating message, and a harmless test." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-unavailable-device-notification/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Unavailable Device Notifications" />
+    <meta name="twitter:description" content="Build a Home Assistant unavailable device notification with startup grace, a short watch list, one updating message, and a harmless test." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-unavailable-device-notification/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarahome.ai/assets/logo/tara-star.svg"
+      }
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-unavailable-device-notification/#blogposting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-unavailable-device-notification/"
+      },
+      "headline": "Home Assistant Unavailable Device Notifications",
+      "description": "Build a Home Assistant unavailable device notification with startup grace, a short watch list, one updating message, and a harmless test.",
+      "image": [
+        "https://tarahome.ai/assets/generated/blog/home-assistant-unavailable-device-notification/cover.png"
+      ],
+      "datePublished": "2026-09-18",
+      "dateModified": "2026-09-18",
+      "author": {
+        "@type": "Organization",
+        "@id": "https://tarahome.ai/#organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "articleSection": "Home maintenance",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Unavailable Device Notifications",
+          "item": "https://tarahome.ai/blog/home-assistant-unavailable-device-notification/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will this make my phone buzz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. This recipe updates the Home Assistant Notifications panel. Phone push needs a configured delivery action, such as the Companion App’s notify.mobile_app_… action. Avoid putting that action directly into this five-minute loop: an unresolved issue would generate repeated pushes. Decide on a daily summary or explicit repeat limit before adding phone delivery. The Companion notification documentation covers that separate channel."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a cleared message mean every device works?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It means the selected current readings did not meet this rule’s bad-state or setup checks at the displayed run. It does not test unselected entities, physical controls or stale values that still look valid."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need a custom integration?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No custom integration is required for this configuration. Built-in Uptime, automation templates and persistent notifications are enough. Larger monitoring systems can add reporting-age rules, but those still need per-integration knowledge."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head><body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Home maintenance</span><span><time datetime="2026-09-18">September 18, 2026</time></span><span>10 min read</span></p>
+<h1>Home Assistant Unavailable Device Notifications</h1><p class="lede">Watch selected readings, allow time for brief interruptions, and keep one clear list of devices that need checking.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-unavailable-device-notification/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-unavailable-device-notification/cover-480.webp 480w, /assets/generated/blog/home-assistant-unavailable-device-notification/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="An unlit dark-green desk lamp with its unplugged cord resting on an oak console" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Watch a short list:</strong> choose one useful reading or control per device, including powered devices. Leave intentionally disconnected equipment out.</li>
+    <li><strong>Allow brief interruptions:</strong> the example waits 15 minutes after startup and checks every five minutes for readings stuck unavailable or unknown for 15 minutes.</li>
+    <li><strong>Keep one message:</strong> the list updates inside Home Assistant and clears when nothing qualifies. Phone push is a separate delivery choice.</li>
+    <li><strong>Know the limit:</strong> an old but valid reading can hide a failed device. This checks reported availability; it cannot prove the hardware is healthy.</li>
+  </ul>
+</aside>
+<h2 id="short-answer">Start with one updating availability list</h2>
+<p>For a <strong>Home Assistant unavailable device notification</strong>, start with a small list of entities—the individual readings and controls shown in Home Assistant. Check their current states on a repeating schedule, allow a short settling period, and replace the same notification instead of adding another copy each time.</p>
+<p>The walkthrough below uses built-in features and creates a message in Home Assistant’s Notifications panel. It covers selected lights, switches and sensors without checking every diagnostic reading in the house. You need an existing Home Assistant installation, permission to edit automations, and the free built-in Uptime integration.</p>
+<p>A state of <code>unavailable</code> tells you Home Assistant cannot currently supply that entity’s value. <code>unknown</code> means it has no known value. Either can justify investigation, but neither identifies a flat battery or a broken physical device by itself. The <a href="https://www.home-assistant.io/docs/templating/states/">state documentation</a> explains these values.</p>
+<p class="research-method">Researched from current Home Assistant and Zigbee2MQTT documentation on September 18, 2026. The configuration was parsed and its templates checked with simulated states; it was not run in a Home Assistant installation or tested on hardware. The cover is an AI-generated household illustration.</p>
+
+<h2 id="choose-entities">1. Choose the readings that matter</h2>
+<p>Open <strong>Settings → Tools → States</strong>. Older releases put this under <strong>Developer tools → States</strong>. Find a few devices you expect to stay connected, and copy one main entity ID for each—for example, a lamp’s control or a room’s temperature reading.</p>
+<p>Use individual entities, not a room, device ID or group. One device can expose many readings; including all of them can turn one problem into a long list. This example deliberately requires you to maintain a short selection when devices are added or renamed.</p>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p><div class="comparison-table" role="region" aria-label="Choose an availability reading" tabindex="0"><table><thead><tr><th scope="col">Candidate</th><th scope="col">Use it?</th><th scope="col">Reason</th></tr></thead><tbody><tr><td>A study lamp that normally stays powered</td><td>Yes: its individual light entity.</td><td>A prolonged missing control is worth checking.</td></tr><tr><td>A room temperature sensor</td><td>Yes, after checking its normal reporting behavior.</td><td>Its integration must actually mark missing data unavailable for this rule to notice it.</td></tr><tr><td>A seasonal plug stored in a drawer</td><td>Leave it out.</td><td>It is disconnected deliberately.</td></tr><tr><td>A button’s last-press event or an optional diagnostic</td><td>Usually leave it out.</td><td>A value can remain unknown until an event occurs; that alone does not establish a fault.</td></tr><tr><td>A whole light group</td><td>Choose its members individually.</td><td>A group can conceal a problem affecting only one member.</td></tr></tbody></table></div>
+<p>For battery replacement reminders, use the separate <a href="/blog/home-assistant-low-battery-notification/">daily low-battery list</a>. A good battery percentage and a working connection are different observations.</p>
+
+<h2 id="startup-grace">2. Add a startup grace period</h2>
+<p>Go to <strong>Settings → Devices &amp; services → Add integration</strong>, search for <strong>Uptime</strong>, and add it. Open its sensor and copy the entity ID. The example uses <code>sensor.uptime</code>; replace that if yours differs.</p>
+<p><a href="https://www.home-assistant.io/integrations/uptime/">Uptime</a> stores when Home Assistant last started, as a date and time. It is not a running count of seconds. The recipe calculates elapsed time from that timestamp and waits 15 minutes before checking your list.</p>
+<p>Fifteen minutes is a starting choice for this maintenance reminder, not a manufacturer’s guarantee. Increase it if your integrations normally need longer to settle. A missing or invalid Uptime reading produces a setup message instead of silently approving the check.</p>
+
+<h2 id="configuration">3. Create the availability check</h2>
+<p>Open <strong>Settings → Automations &amp; scenes → Create automation → Create new automation</strong>. In the three-dot menu, choose <strong>Edit in YAML</strong>. Replace the new automation’s contents with this example. YAML is the text form of the automation; keep its indentation.</p>
+<p>Replace the three entries under <code>watched</code> with your own entity IDs. You can use fewer or add more. Set <code>uptime_entity</code> to your Uptime sensor. Leave the two 15-minute values unchanged for the first check.</p>
+<pre tabindex="0" aria-label="Availability check automation YAML"><code>alias: Check selected device availability
+description: One quiet Home Assistant message for sustained missing readings
+triggers:
+  - trigger: time_pattern
+    minutes: &quot;/5&quot;
+conditions: []
+actions:
+  - variables:
+      watched:
+        - light.study_lamp
+        - sensor.hall_temperature
+        - binary_sensor.patio_door
+      uptime_entity: sensor.uptime
+      startup_minutes: 15
+      bad_state_minutes: 15
+  - variables:
+      started: &quot;{{ as_timestamp(states(uptime_entity), none) }}&quot;
+  - choose:
+      - conditions: &quot;{{ started is none }}&quot;
+        sequence:
+          - action: persistent_notification.create
+            data:
+              notification_id: selected_device_availability
+              title: Check availability monitor setup
+              message: &quot;No startup timestamp. Check {{ uptime_entity }}.&quot;
+          - stop: Uptime timestamp is missing or invalid
+  - condition: template
+    value_template: &gt;-
+      {{ as_timestamp(now()) - started &gt;= startup_minutes * 60 }}
+  - variables:
+      report: |-
+        {% set ns = namespace(items=[]) %}
+        {% for e in watched | unique | sort %}
+          {% set found = expand(e) | list %}
+          {% if found | count == 0 %}
+            {% set ns.items = ns.items +
+                [e ~ &#x27;: no state; check entity ID or disabled entity&#x27;] %}
+          {% elif found | count != 1 or found[0].entity_id != e %}
+            {% set ns.items = ns.items +
+                [e ~ &#x27;: choose an individual entity, not a group&#x27;] %}
+          {% else %}
+            {% set s = found[0] %}
+            {% if s.state in [&#x27;unavailable&#x27;, &#x27;unknown&#x27;]
+                and as_timestamp(now()) - as_timestamp(s.last_changed)
+                    &gt;= bad_state_minutes * 60 %}
+              {% set ns.items = ns.items +
+                  [s.name ~ &#x27; (&#x27; ~ e ~ &#x27;): &#x27; ~ s.state] %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if watched | count == 0 %}
+          No entities selected. Fill in the watched list.
+        {% else %}
+          {{ &#x27;- &#x27; ~ (ns.items | join(&#x27;\n- &#x27;)) if ns.items else &#x27;&#x27; }}
+        {% endif %}
+  - choose:
+      - conditions: &quot;{{ report | trim | length &gt; 0 }}&quot;
+        sequence:
+          - action: persistent_notification.create
+            data:
+              notification_id: selected_device_availability
+              title: Check selected devices
+              message: |-
+                Checked {{ now().strftime(&#x27;%Y-%m-%d %H:%M&#x27;) }}.
+
+                {{ report | trim }}
+    default:
+      - action: persistent_notification.dismiss
+        data:
+          notification_id: selected_device_availability
+mode: single
+</code></pre>
+<p>The <a href="https://www.home-assistant.io/triggers/time_pattern/">time-pattern trigger</a> runs on clock minutes 00, 05, 10, and so on. It checks the states Home Assistant already has; it does not poll every physical device for a fresh response.</p>
+<p>The <code>bad_state_minutes</code> filter measures how long the entity has stayed in its current <code>unknown</code> or <code>unavailable</code> state. Changing between those two states starts that wait again. The code does not use an old <code>last_changed</code> timestamp to declare an otherwise valid reading dead.</p>
+<p>A fixed <code>notification_id</code> makes <a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create notification</a> replace the same message. When the next check finds no qualifying entries, <a href="https://www.home-assistant.io/actions/persistent_notification.dismiss/">Dismiss notification</a> removes only this message. An empty selection or a missing entity is reported as a setup problem. If you dismiss an unresolved warning yourself, the next check recreates it.</p>
+<p>The startup guard sits inside the action sequence, so it also applies when you select <strong>Run actions</strong>. During the grace period, the automation leaves any existing message unchanged. After a restart or reload, it checks current states again; it does not reconstruct an outage timeline from before the restart.</p>
+
+<h2 id="worked-example">4. Check the timing against this example</h2>
+<p>This is an illustrative timeline, not a measured installation. Assume Home Assistant has been running since 9 am, the scheduled checks succeed, and both selected entities really change to <code>unavailable</code> at the times shown.</p>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p><div class="comparison-table" role="region" aria-label="Expected notification timing" tabindex="0"><table><thead><tr><th scope="col">Time and event</th><th scope="col">Expected result</th></tr></thead><tbody><tr><td>10:01 — the study lamp becomes unavailable.</td><td>No immediate notification. The rule waits for a sustained bad state.</td></tr><tr><td>10:15 — scheduled check.</td><td>No lamp entry yet: only 14 minutes have elapsed.</td></tr><tr><td>10:20 — scheduled check.</td><td>The lamp appears in the one notification. It has been unavailable for 19 minutes.</td></tr><tr><td>A second sensor became unavailable at 10:08. At 10:25, it still is.</td><td>The same message now lists both. The first fault does not prevent later faults being added.</td></tr><tr><td>10:27 — the lamp reports a valid state again.</td><td>At 10:30, the lamp disappears from the list; the second sensor remains.</td></tr><tr><td>10:31 — the second sensor recovers.</td><td>At 10:35, the message clears if there are no other qualifying or setup entries.</td></tr></tbody></table></div>
+<p>Under this schedule, a stable bad state normally reaches the list 15 to under 20 minutes <em>after Home Assistant reports it</em>, subject to startup grace and successful runs. The integration may take much longer to notice the original physical failure. These are calculated timings for the example, not measured alert latency.</p>
+
+<h2 id="safe-test">5. Verify it without disconnecting anything</h2>
+<ol>
+  <li><strong>Confirm startup is old enough.</strong> Check the Uptime timestamp. Allow at least 15 minutes from that time before testing the list.</li>
+  <li><strong>Add one harmless missing ID.</strong> First confirm <code>sensor.tara_availability_test_missing</code> does not exist in States. Add that text as an extra entry under <code>watched</code>. Do not create it or change any real sensor’s state.</li>
+  <li><strong>Save and select Run actions.</strong> The Notifications panel should show “Check selected devices” with the test ID and “no state; check entity ID or disabled entity.” Missing IDs are setup errors, so they do not wait through the bad-state delay.</li>
+  <li><strong>Let the next five-minute boundary pass.</strong> Open the automation’s <strong>Traces</strong>, its record of recent runs. Check for a time-pattern run and a new “Checked” time in the same notification. A manual run alone does not prove the schedule works.</li>
+  <li><strong>Remove the test ID, save, and run again.</strong> The test entry should disappear. The message clears only if all your real selections also pass; otherwise their entries remain.</li>
+</ol>
+<p>This safely checks selection, message delivery, replacement, clearing and the scheduled trigger. It does not prove how quickly a physical device’s integration detects a failure, or exercise a real 15-minute outage. Use the <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">automation testing documentation</a> to inspect each step.</p>
+
+<h2 id="limitations">What an availability alert can miss</h2>
+<p><strong>A valid-looking old value is outside this recipe’s scope.</strong> A temperature of 21°C might genuinely stay unchanged. Home Assistant’s <a href="https://www.home-assistant.io/docs/configuration/state_object/">state-object reference</a> distinguishes state changes, attribute changes and reports. None is automatically a hardware heartbeat. Check the specific integration’s documented availability behavior before relying on a timestamp.</p>
+<p>For example, <a href="https://www.zigbee2mqtt.io/guide/configuration/device-availability.html">Zigbee2MQTT’s availability feature</a> is optional. Its documented defaults differ for powered and battery devices: active devices use a 10-minute check-in timeout followed by a ping, while passive battery devices have a 25-hour check-in timeout and cannot be pinged. Those are integration rules, separate from this guide’s added 15-minute filter. Review your installed settings and device behavior before changing them.</p>
+<p>Repeatedly switching between unknown and unavailable can keep restarting this filter. A short outage that recovers between checks may never appear. Use the device’s own warnings and normal maintenance checks for alarms, locks and other important equipment. The automation only reports; it performs no device-control actions.</p>
+<p>The check and its on-screen message run in Home Assistant. A selected entity may still rely on a vendor cloud. And if Home Assistant itself stops, this automation stops too: see <a href="/blog/what-happens-if-home-assistant-goes-down/">what keeps working during a Home Assistant outage</a> when planning essential controls.</p>
+
+<h2 id="troubleshooting">When the result looks wrong</h2>
+<p class="table-hint">On a small screen, swipe the table sideways to read every column.</p><div class="comparison-table" role="region" aria-label="Availability checker troubleshooting" tabindex="0"><table><thead><tr><th scope="col">What you see</th><th scope="col">What to check next</th></tr></thead><tbody><tr><td>“No startup timestamp”</td><td>Check the Uptime integration and exact sensor ID. Its state must be a date/time, not an elapsed-seconds sensor.</td></tr><tr><td>A run stops at the startup condition</td><td>Compare the startup timestamp with the current time. The 15-minute grace period may still be active.</td></tr><tr><td>A missing entity or group warning</td><td>Correct the ID, check whether the entity is disabled, or replace the group with individual members. Do not treat this message as a confirmed dead device.</td></tr><tr><td>An unavailable entity is absent from the list</td><td>Confirm it is selected and has stayed in the same bad state for 15 minutes. Check the latest trace for errors or a skipped run.</td></tr><tr><td>A device stopped responding but still shows a number</td><td>Review its integration’s availability/check-in behavior. This rule cannot detect a stale valid value.</td></tr><tr><td>No scheduled trace</td><td>Check that the automation is enabled and Home Assistant is running. A manual run is a different test.</td></tr></tbody></table></div>
+<p>If several devices became unavailable after a reboot, use the existing <a href="/blog/home-assistant-devices-unavailable-after-restart/">restart-unavailability troubleshooting guide</a> to investigate their connection paths. A notification tells you where to look; it does not justify deleting devices or rebuilding their networks.</p>
+
+<h2 id="faq">Other practical questions</h2>
+<h3>Will this make my phone buzz?</h3>
+<p>No. This recipe updates the Home Assistant Notifications panel. Phone push needs a configured delivery action, such as the Companion App’s <code>notify.mobile_app_…</code> action. Avoid putting that action directly into this five-minute loop: an unresolved issue would generate repeated pushes. Decide on a daily summary or explicit repeat limit before adding phone delivery. The <a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion notification documentation</a> covers that separate channel.</p>
+<h3>Does a cleared message mean every device works?</h3>
+<p>No. It means the selected current readings did not meet this rule’s bad-state or setup checks at the displayed run. It does not test unselected entities, physical controls or stale values that still look valid.</p>
+<h3>Do I need a custom integration?</h3>
+<p>No custom integration is required for this configuration. Built-in Uptime, automation templates and persistent notifications are enough. Larger monitoring systems can add reporting-age rules, but those still need per-integration knowledge.</p>
+<p>For a household handoff, agree who checks the list and which devices belong on it. Tara’s <a href="/home-automation-kit/">home automation kit with coordinated local routines</a> connects that maintenance planning with the rest of the home.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>States and timing</h3><ul>
+<li><a href="https://www.home-assistant.io/docs/templating/states/">Reading entity states</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/state_object/">State objects and timestamps</a></li>
+<li><a href="https://www.home-assistant.io/integrations/uptime/">Uptime and startup grace</a></li>
+<li><a href="https://www.home-assistant.io/template-functions/expand/">Expand: state objects and missing entities</a></li>
+<li><a href="https://www.home-assistant.io/template-functions/as_timestamp/">Timestamp conversion and fallback values</a></li>
+<li><a href="https://www.home-assistant.io/triggers/time_pattern/">Time-pattern triggers</a></li>
+</ul></div><div><h3>Notifications and verification</h3><ul>
+<li><a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create or replace a notification</a></li>
+<li><a href="https://www.home-assistant.io/actions/persistent_notification.dismiss/">Dismiss one notification</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/action/">Conditions inside action sequences</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Testing automations and reading traces</a></li>
+<li><a href="https://www.zigbee2mqtt.io/guide/configuration/device-availability.html">Zigbee2MQTT availability behavior</a></li>
+<li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion App notification delivery</a></li>
+</ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make household routines easier to maintain</h2><p>Plan the rooms, devices and everyday checks your household needs.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
