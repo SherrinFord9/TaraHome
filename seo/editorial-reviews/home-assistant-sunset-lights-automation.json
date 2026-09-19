@@ -1,0 +1,66 @@
+{
+  "slug": "home-assistant-sunset-lights-automation",
+  "action": "new",
+  "publicationDate": "2026-09-19",
+  "verdict": "PASS",
+  "readerQuestion": "How can I turn a lamp on before sunset and off at bedtime in Home Assistant, pause it for manual use, and recover after a missed event?",
+  "directAnswer": "Use the built-in Sun integration with a matching 20-minute early offset in the trigger and condition, a 23:00 cutoff, and one visible schedule toggle. Startup and five-minute checks apply the current window when reported states are usable. Pause before manual control because the enabled routine enforces off outside the evening window too. First check Home information, the Sun integration and one visible lamp.",
+  "originalContribution": "Sections 3 and 4 provide one complete lamp automation and a seven-row worked 18:40-sunset example covering the 18:20 start, startup recovery, manual pause, bedtime, midnight, a summer sunset after bedtime and device unavailability. A three-option timing comparison distinguishes solar schedules, elevation and measured lux; an ordered harmless rehearsal checks real lamp behavior. Fifteen source-level decision cases passed using the published YAML and Home Assistant 2026.9.3 sun() function with controlled time/state inputs; this is not an installed Home Assistant test.",
+  "limitations": "No physical lamp, Home Assistant installation, restart, internet outage, latency or brightness measurement was tested. Code checks used controlled state and solar-time fixtures with an extracted upstream function; device transport and full automation-engine behavior remain untested. Before-midnight bedtime and ordinary daily sunsets are explicit prerequisites. Polar-circle/highly skewed time-zone cases need another design. Five-minute evaluation cannot guarantee a device command succeeds or detect a stale reported state. The cover is an AI-generated residential illustration, not installation evidence. Automated proofreading is not human or expert review.",
+  "proofreadFixes": "Corrected Settings → System → General to current Home information, retaining General only as an older-version label. Added the missing prerequisite to confirm/re-add Sun if it was removed. Clarified that restoring the original bedtime after a temporary test may turn the lamp back on at the next check. Verified matching negative offsets and matching cutoff values, action-list pause guards, unknown/unavailable no-command behavior, daytime off enforcement, late-sunset rejection, midnight handling and the difference between Run actions and a real scheduled trigger. Confirmed 15 source-level cases, 1336 local references and 12 external source URLs/anchors; the source checker was corrected to recognize valid named anchors. Visually inspected the unique cover, title, byline, four-bullet TLDR, code block, tables and both cards. The global layout sync touched whitespace in three old articles; restored those files byte-for-byte, leaving no existing-article changes.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Current location/time-zone controls are Settings → System → Home information; General is the former name. The walkthrough now uses the current path with an older-version note.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/basic/"
+    },
+    {
+      "claim": "Sun is normally configured by default, uses the home location, and supplies above_horizon/below_horizon state. The code checks that the integration state is known; the setup now checks that Sun is present.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/sun/"
+    },
+    {
+      "claim": "The general sun trigger accepts a negative HH:MM:SS offset. The same -00:20:00 is applied to after_offset in the condition; an early trigger alone would not shift the current-window decision. Sun elevation is a better basis for a chosen twilight stage than assuming a fixed offset measures brightness.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "An after-sunset-only condition ends at midnight; a before-only time condition is exclusive at the cutoff. The combination enforces an evening-only window, rejects an early-start time later than bedtime, and must not be changed to an after-midnight bedtime by editing the clock alone. Polar-circle and skewed-time-zone limitations are visible.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/"
+    },
+    {
+      "claim": "The upstream 2026.9.3 sun condition implementation calculates today’s solar events and compares the offset boundary. Extracted-function tests with controlled inputs confirmed the example’s exact-start, after-midnight and late-sunset cases; no physical device or complete HA runtime was tested.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.3/homeassistant/components/sun/condition.py"
+    },
+    {
+      "claim": "The UI Toggle helper supplies a visible schedule pause and normally restores its prior state. Pausing blocks both on and off requests; it does not itself turn the lamp off.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "minutes: /5 evaluates at clock minutes divisible by five. It rechecks reported state and may retry a mismatched available lamp; it is not a measured latency or forced device refresh guarantee.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/time_pattern/"
+    },
+    {
+      "claim": "A Home Assistant start trigger is available for current-window reevaluation. A start event alone is not a guarantee that every device is ready; periodic checks handle a later usable reported state.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/homeassistant/"
+    },
+    {
+      "claim": "Choose selects the matching branch or default. Conditions within a branch stop that sequence, so a lamp already reporting the requested state receives no redundant command. The pause and known-state guards are in the action list.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "Run actions bypasses triggers and top-level conditions; whole-sequence action-list guards still apply. Testing one action in isolation can bypass earlier guards. The rehearsal begins with a paused non-essential lamp, then checks an actual temporary cutoff, traces and the visible physical lamp.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/how-to-set-up-smart-lighting/",
+      "section": "Step 4: Set Up Automations",
+      "readerReason": "After choosing room controls, the reader can follow a complete sunset-to-bedtime example with a pause switch and missed-event recovery. Suggested for a separate reviewed navigation task only; the new page is already reachable from both library indexes."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium 1440×1000: readable two-line title, loaded responsive cover, visible linked Tara Home byline and complete TLDR, centered 780px body, regular-weight Tara Avenir, no horizontal page overflow. Both library indexes show the new first card with loaded imagery and working canonical target. Legacy .html redirect resolves to the canonical trailing-slash page. Screenshots are in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "Chromium 390×844 and 360×844: title and byline fit, cover remains legible, four TLDR bullets are readable, body widths are 346px and 316px, and the document does not overflow. Worked table scrolls with keyboard arrows inside its focusable region; YAML scrolls inside its own focusable block. Both library cards checked at 390px. Rechecked final corrected prerequisites at 390px; screenshots remain external."
+  }
+}

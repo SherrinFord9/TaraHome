@@ -1,0 +1,117 @@
+{
+  "version": 2,
+  "slug": "home-assistant-sunset-lights-automation",
+  "researchedAt": "2026-09-19",
+  "primaryQuery": "Home Assistant sunset lights automation",
+  "readerQuestion": "How can I turn a lamp on before sunset and off at bedtime in Home Assistant, pause it for manual use, and recover after a missed event?",
+  "selectedBecause": "Current September 11 and September 14 Reddit discussions independently describe sunset lighting and manual control as practical household needs; a 2026 Home Assistant Community discussion identifies missed sunset-to-bedtime events after downtime. The exact-query results split basic sunset actions from older recovery examples. A bounded one-lamp walkthrough combining matching offsets, a bedtime cutoff, manual pause, recovery and late-sunset/after-midnight decisions fills a distinct gap in Tara coverage. Community interest establishes recurrence, not search volume. Direct Google results were attempted on September 19 but returned HTTP 429; current exact-query web search results were reviewed instead, without claiming Google rank positions.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant sunset lights automation",
+      "evidenceSummary": "September 11, 2026: https://www.reddit.com/r/homeassistant/comments/1wd34ih/looking_for_a_simple_automated_lighting_setup/ asks for sunset schedules plus ordinary manual switches. September 14: https://www.reddit.com/r/homeassistant/comments/1wggk3r/what_automations_have_a_high_wife_approval_factor/ includes independent evening-lighting use cases. https://community.home-assistant.io/t/how-do-i-recover-all-automations-after-a-power-outage/959712?page=2 describes sunset-to-23:00 catch-up on January 14, 2026. Exact-query results include official Sunset documentation and an older evolution-of-an-automation tutorial; current primary references are https://www.home-assistant.io/docs/automation/trigger/ and https://www.home-assistant.io/docs/scripts/conditions/.",
+      "decision": "selected",
+      "reason": "Broad everyday local-automation use with two recent independent discussions, a clear setup intent, safe one-lamp verification, and no existing Tara page implementing a regular solar evening window. Adds offset consistency and explicit recovery/manual-control behavior rather than another hardware or holiday-lighting article."
+    },
+    {
+      "query": "Home Assistant motion lights stay on",
+      "evidenceSummary": "Current search finds https://www.reddit.com/r/homeassistant/comments/1w8cxik/is_there_a_way_to_turn_off_the_light_that_should/ (September 5, 2026) and https://www.reddit.com/r/homeassistant/comments/1s2adjv/motion_lights/ (March 24, 2026). Exact-query results also include https://community.home-assistant.io/t/how-do-you-guys-reliably-detect-presence-in-a-bathroom/197458 and https://www.homeautomationcookbook.com/automation/lighting/lights-off-after-motion.html. Primary documentation https://www.home-assistant.io/integrations/group/ distinguishes any-sensor versus all-sensor binary groups; https://www.home-assistant.io/docs/automation/trigger/ documents duration and state boundaries.",
+      "decision": "rejected",
+      "reason": "Real recurring problem, but the exact phrase mixes unwanted stuck-on lights with desired occupancy holds. Existing presence, manual-override, and automation-diagnosis owners cover much of the answer. A separate sensor-specific investigation would be needed before producing a distinct general guide."
+    },
+    {
+      "query": "Home Assistant irrigation skip rain",
+      "evidenceSummary": "Reviewed https://community.home-assistant.io/t/please-check-my-sprinkler-automation-for-a-sonoff-zigbee-hydro-one/1013944 (June 14, 2026), https://community.home-assistant.io/t/my-garden-irrigation/99686?page=94 (May 29, 2026 forecast discussion), and the September 11, 2026 project https://community.home-assistant.io/t/rain-bird-scheduler-real-irrigation-scheduling-on-top-of-the-core-rainbird-integration/1024774. Exact-query results show https://github.com/altmenorg/HAsmartirrigation and https://www.sprinqua.com/; primary https://www.home-assistant.io/integrations/rachio/ and the Smart Irrigation project distinguish controller/integration behavior from weather decisions.",
+      "decision": "rejected",
+      "reason": "Useful distinct candidate, but results fragment into controller-specific safety, physical valve timeouts, forecast providers and custom projects. Current strongest examples are project announcements or narrower controller questions. Sunset setup has clearer broad household intent and a more defensible short worked example without untested watering safety claims."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1wd34ih/looking_for_a_simple_automated_lighting_setup/",
+      "observedAt": "2026-09-19",
+      "evidence": "Posted September 11, 2026. Asks for reliable grouped outdoor sunset/sunrise or fixed-time lighting while retaining manual controls, alongside table-lamp scheduling. No volume or engagement inference."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1wggk3r/what_automations_have_a_high_wife_approval_factor/",
+      "observedAt": "2026-09-19",
+      "evidence": "Posted September 14, 2026. Separate commenters describe automatic evening accent lighting and lamps turning on 20 minutes before sunset as useful daily routines. Used as qualitative recurrence, not a population statistic."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/how-do-i-recover-all-automations-after-a-power-outage/959712?page=2",
+      "observedAt": "2026-09-19",
+      "evidence": "January 14, 2026 reply asks to reapply a sunset-to-23:00 lighting period after power returns before bedtime. Older than the recent discussions; used as recurring failure-mode context."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant sunset lights automation",
+    "reviewedAt": "2026-09-19",
+    "intent": "Set up an evening lamp or porch light that follows changing sunset times and turns off at a household bedtime.",
+    "resultGap": "Exact-query web search returned official single-trigger setup, older forum snippets and missed-event tutorials. These offer sound building blocks but require a novice to combine a consistent before-sunset offset, current-window recovery, a pause switch and midnight/late-sunset behavior. This guide will make those decisions explicit in one documented example. Direct Google browser request returned HTTP 429; no Google-specific ordering, ranking or search-volume claim is available.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/triggers/sun.sunset/",
+      "https://community.home-assistant.io/t/turn-lights-on-at-sunset-turn-off-at-midnight/356252",
+      "https://community.home-assistant.io/t/evolution-of-an-automation-turn-a-light-on-off-at-sunset-sunrise/302465/1"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Sun integration",
+      "url": "https://www.home-assistant.io/integrations/sun/",
+      "supports": "Configured location and calculated solar events; above/below-horizon state."
+    },
+    {
+      "name": "Home information",
+      "url": "https://www.home-assistant.io/docs/configuration/basic/",
+      "supports": "Home location and time-zone prerequisites."
+    },
+    {
+      "name": "Automation triggers",
+      "url": "https://www.home-assistant.io/docs/automation/trigger/",
+      "supports": "Documented sun event trigger and negative HH:MM:SS offset; elevation versus a fixed twilight offset."
+    },
+    {
+      "name": "Conditions",
+      "url": "https://www.home-assistant.io/docs/scripts/conditions/",
+      "supports": "After-sunset condition ends at midnight; before-only time condition ends at the cutoff; matching sun offset; polar/skewed-zone limitations."
+    },
+    {
+      "name": "Input boolean",
+      "url": "https://www.home-assistant.io/integrations/input_boolean/",
+      "supports": "UI Toggle helper and restored state for a persistent manual pause."
+    },
+    {
+      "name": "Time pattern",
+      "url": "https://www.home-assistant.io/triggers/time_pattern/",
+      "supports": "Five-minute clock checks, not a device-status polling guarantee."
+    },
+    {
+      "name": "Home Assistant start trigger",
+      "url": "https://www.home-assistant.io/triggers/homeassistant/",
+      "supports": "Startup reevaluation; no hardware-availability guarantee."
+    },
+    {
+      "name": "Script syntax",
+      "url": "https://www.home-assistant.io/docs/scripts/",
+      "supports": "Choose/default branches and action-list conditions."
+    },
+    {
+      "name": "Automation testing",
+      "url": "https://www.home-assistant.io/docs/automation/troubleshooting/",
+      "supports": "Traces and the limitation of Run actions as a trigger test."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/how-to-set-up-smart-lighting/",
+      "/blog/home-assistant-vacation-lighting/",
+      "/blog/home-assistant-automation-manual-override/",
+      "/blog/home-assistant-timer-survive-restart/",
+      "/blog/home-assistant-automation-not-firing/"
+    ],
+    "decision": "Read every canonical article title and parsed all available brief queries/questions and closest ownership explanations before selection. Room planning, randomized absence lighting, general manual override, persisted countdowns, and generic trigger diagnosis remain with their established URLs. This article owns a regular sunset-to-bedtime lighting schedule, not a vacation routine or a timer recovery replacement. The pre-draft intent gate passed. Commercial next step: /home-automation-kit/. Historical context: seo/search-performance-2026-09-15.json was parsed, with completed reporting through September 13. September 7-13 Chart totals are 3 clicks/216 impressions versus August 31-September 6 at 2/231; no meaningful traffic recovery. Selected cumulative June 14-September 13 page rows: automation-not-firing 2 clicks/559 impressions; runs-twice 0/506; manual-override 0/9; general smart-lighting 0/3. These are not recent performance or site totals. Filtered query rows contain existing diagnosis/brand intents and incorrect IKEA VALLHORN Matter phrases, not verified demand for this candidate; do not republish those false claims. seo/search-console-review-2026-09-15.json records homepage, IKEA pairing, Bluetooth proxy and main-LAN/IoT-VLAN as indexed on September 15. Some newer guides were discovered but not crawled; preserve them as owners. Neither deployment nor an accepted request proves indexing or traffic. Read seo/recovery-review-2026-09-15.md, seo/search-change-review-2026-09-15.md and seo/analytics-measurement-contract.md: July losses span devices, countries and edited/unedited pages; no platform blame or title-rollback causal claim. Page-row and query-row sums are incomplete/differently aggregated and are not site totals. No GA4 events or private inquiry data used. Separate refresh opportunities: the general smart-lighting owner could benefit from a reviewed next-step link to this bounded setup; existing automation-not-firing retains all general debugging intent and merits a separate factual/usability review, not a new replacement URL. No existing pages are edited by this job."
+  }
+}
