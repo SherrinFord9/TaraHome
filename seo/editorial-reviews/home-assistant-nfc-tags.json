@@ -1,0 +1,79 @@
+{
+  "slug": "home-assistant-nfc-tags",
+  "action": "new",
+  "publicationDate": "2026-09-20",
+  "verdict": "PASS",
+  "readerQuestion": "How do I use one NFC tag to start a Home Assistant routine from Android or iPhone, and what should I check when scanning only opens a prompt?",
+  "directAnswer": "Write a shared Home Assistant tag through the Companion app, attach a Tag trigger, and verify it with a persistent on-screen notification before adding one lamp. Both phones need working server access and applicable approvals. A tag is a convenience control, not an access credential.",
+  "originalContribution": "The worked example in #worked-example starts with a message-only automation and then adds a reading lamp with an explicit on action. #acceptance supplies five observable pass/fail outcomes for two phones, repeated scans, declined approvals and ordinary lamp controls. #troubleshooting isolates reading, OS handoff, app approval, server receipt, automation and lamp control.",
+  "limitations": "Documentation research and local publishing/browser checks only. No NFC tags, Android phones, iPhones, locks or Home Assistant installation were physically tested. The YAML is a documented configuration example, not a hardware benchmark. Exact phone lock-screen behavior, prompts, app labels and light integration capabilities vary. The generated cover is clearly disclosed as an illustration.",
+  "proofreadFixes": "Qualified the generic Companion page's immediate-Android-scan wording with current Android and iOS approval advisories. Distinguished OS Open link/notification prompts from app Allow Once/Always, and minimum patched app versions from current recommended updates. Added the 2026.9 Connectivity > Tags menu move and older-layout fallback. Removed an Apple execution-options link after it redirected to the general Shortcuts guide; retained independently verified NFC-trigger and App Intents sources. Kept the first automation message-only; explained persistent notifications are inside Home Assistant, fixed IDs replace messages, Run actions does not test the trigger, Turn on avoids the repeated-toggle reversal, and other automations can still turn the lamp off. Explained the iPhone direct-action shortcut does not send tag_scanned and should not duplicate the shared-tag route. Added mobile table-scroll instructions and verified keyboard scrolling. Rechecked title/H1/description alignment, four TLDR bullets, visible byline, research disclosure, visible/schema FAQ agreement, and professional source labels. The automated review makes no human/expert-review claim. All 11 source-section links returned HTTP 200 in the browser request check.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Home Assistant tags use a shared tag URL; the Companion app sends the identifier to the configured server. Read-only media cannot be written as a new tag.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/integrations/universal-links/"
+    },
+    {
+      "claim": "The Tags integration documents phone writing, tag last-scan information, event fields and background NFC reading on iPhone XS/XR and iPhone 11 or later.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/tag/"
+    },
+    {
+      "claim": "Home Assistant 2026.9 moved Tags under Settings > Connectivity; older Settings > Tags instructions need qualification.",
+      "sourceUrl": "https://www.home-assistant.io/blog/2026/09/02/release-20269/"
+    },
+    {
+      "claim": "Android tag-forwarding protection was fixed in Companion 2026.5.3. The approval UI supports Allow Once/Always and revoking stored approvals; dismissing it forwards nothing.",
+      "sourceUrl": "https://github.com/home-assistant/core/security/advisories/GHSA-2xqv-hwrf-983f"
+    },
+    {
+      "claim": "iOS tag-forwarding protection was fixed in Companion 2026.5.0; unknown tags require approval, with allowed-tag management. A link can arrive from another app, so matching tag/scanner data is not proof of physical presence.",
+      "sourceUrl": "https://github.com/home-assistant/core/security/advisories/GHSA-j23v-9672-677j"
+    },
+    {
+      "claim": "Tag triggers match tag_id and optionally scanner device_id; Events can listen for tag_scanned. This trigger filter is not represented as server authorization.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/tag/"
+    },
+    {
+      "claim": "persistent_notification.create displays a message in Home Assistant's frontend. Reusing notification_id replaces the existing notification; it is not a mobile push notification.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Light turn_on and toggle are separate actions. The example selects turn_on to keep repeated accepted scans from intentionally reversing the lamp state.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/light/"
+    },
+    {
+      "claim": "A lamp exposed as a switch requires the switch action domain rather than assuming it is a light entity.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/switch/"
+    },
+    {
+      "claim": "Run actions bypasses triggers and top-level conditions, so physical scanning and Traces are required to verify the end-to-end tag path.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "Apple Shortcuts NFC triggers register a physical tag identifier and ignore other tag contents, unlike dispatching the Home Assistant tag URL.",
+      "sourceUrl": "https://support.apple.com/guide/shortcuts/setting-triggers-apde31e9638b/ios"
+    },
+    {
+      "claim": "The current Companion Perform action App Intent requires iOS 17 or later, uses an explicitly selected server and JSON action data; older Call Service actions are deprecated.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/integrations/siri-shortcuts/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-house-modes/",
+      "section": "Build only three mode-changing rules — Good night and morning",
+      "readerReason": "A reader choosing a deliberate bedside input can use an NFC tag to request a mode, after reviewing all effects of that mode."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-automation-manual-override/",
+      "section": "Let the normal control request the override (#control-path)",
+      "readerReason": "Readers who want a physical marker beside a lamp can learn the phone prerequisites and verify a tag before using it as a manual-override input."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium 1440x1000: readable two-line title, visible September 20 date/byline and four-bullet TLDR; source image decoded and delivered through cover-1200.webp. Centered body x=330, width=780 in a 1440px viewport; Tara Avenir with H1 weight 400. Desktop library card inspected. Earlier screenshot captured before image decoding was replaced after awaiting decode. Canonical .html redirect reached the trailing-slash article.",
+    "mobile": "Chromium 390x844 and 360x844: no horizontal document overflow, readable wrapping, loaded cover and library cover-480.webp. All three comparison regions retained their 760px contents inside 344px/314px viewports and moved about 40px with ArrowRight after focus. Added visible swipe/keyboard guidance. Article/acceptance/library screenshots visually inspected; both library paths show the new first card. Screenshots are stored only in TARAHOME_BLOG_ARTIFACTS."
+  }
+}
