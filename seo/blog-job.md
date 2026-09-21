@@ -10,12 +10,21 @@ Use a JSON parser to read the performance summary and relevant page/query rows;
 do not dump the entire export into the working context. Treat dated evidence as
 historical, not as a live ranking report, and verify present-day demand separately.
 
-Fresh September 15 inspections confirm the homepage, IKEA direct-pairing,
-Bluetooth-proxy, and main-LAN/IoT-VLAN pages are indexed. Do not repeat the older
-September 8 exclusions as their current state. Google Search traffic has not meaningfully
-recovered: September 7-13 had 3 clicks and 216 impressions, versus 2 and 231 in
-the previous week. Some newer guides remain discovered but not crawled. Neither
-successful publication nor an indexing request proves indexing or traffic
+The September 21 review still finds no meaningful Google Search recovery.
+Completed export days September 13-19 had 3 clicks and 212 impressions, versus
+2 and 205 for September 6-12. All three current clicks are accounted for by the
+"tarahome" query and homepage; the blog received zero clicks. US impressions
+fell from 111 to 72. Do not describe this as non-brand acquisition or recovery.
+September 20-21 are not in the export and must not be treated as zero days.
+Fresh inspections confirm IKEA direct-pairing, the laundry notification guide,
+and Spokane indexed; trash reminders and vacation lighting remain discovered
+but not indexed. Do not repeat September 15 exclusions as current facts.
+Use seo/search-comparison-2026-09-21.json for recent page/query/device/country
+comparisons, not the cumulative three-month dimension tables. Those recent
+page rows sum to 375 impressions while the property chart has 212: they are
+different aggregations, not a recovery or an importer error. Tiny query samples
+do not establish search volume, and query rows still omit anonymized searches.
+Neither successful publication nor an indexing request proves indexing or traffic
 recovery. Keep the one-per-day maximum; do not flood new URLs to compensate.
 Preserve established topic owners even when they are not indexed.
 Flag refresh opportunities in the internal brief for a separate task; the daily
