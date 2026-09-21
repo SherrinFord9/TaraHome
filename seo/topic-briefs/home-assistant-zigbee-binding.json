@@ -1,0 +1,103 @@
+{
+  "version": 2,
+  "slug": "home-assistant-zigbee-binding",
+  "researchedAt": "2026-09-21",
+  "primaryQuery": "Home Assistant Zigbee binding",
+  "readerQuestion": "How can I bind a Zigbee switch or remote directly to my lights in ZHA or Zigbee2MQTT, and check that basic control no longer depends on a Home Assistant automation?",
+  "selectedBecause": "Current exact-query results and independent discussions show a durable setup question about direct light control, group targets, and coexistence with software automations. A September 10, 2026 Community blueprint explicitly combines bound on/off and brightness with an automated color function, while July and May Reddit questions ask about outages and mismatched switch behavior. The strongest contribution is a two-lamp setup plan and an observation-based test that distinguishes a binding, duplicate software actions, and stale dashboard reports. Existing Tara coverage explains outages and software choice but does not walk through Zigbee binding. This is a practical local automation choice, not another Matter/Thread variation. Discussion recurrence is qualitative interest, not search volume. No platform, title, or cadence strategy pivot is inferred.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant Zigbee binding",
+      "evidenceSummary": "Exact query searched September 21. Results include official ZHA, Zigbee2MQTT binding, Inovelli ZHA instructions and https://community.home-assistant.io/t/how-to-bind-zigbee-devices/614591. Current discussion: https://community.home-assistant.io/t/philips-hue-dimmer-gen-2-rwl022-hue-button-temperature-cycle/1024655 (September 10, 2026). Independent outage question: https://www.reddit.com/r/homeassistant/comments/1ukksyn/can_i_bind_a_zigbee_button_directly_to_philips/ (July 1, 2026). Current primary sources are the ZHA integration and Zigbee2MQTT binding/groups documentation.",
+      "decision": "selected",
+      "reason": "Useful full setup path with a bounded two-lamp example and verification criteria; distinct from existing outage overview, Zigbee software comparison and Matter binding owner. Current documentation supports the workflow."
+    },
+    {
+      "query": "Home Assistant adaptive lighting manual control",
+      "evidenceSummary": "Exact query searched September 21. Results include https://github.com/basnijholt/adaptive-lighting and https://community.home-assistant.io/t/adaptive-lighting-automatically-adapts-the-brightness-and-color-of-your-lights-based-on-the-suns-temperature-but-stops-when-you-manually-make-a-change/257416. August 24, 2026 discussion https://www.reddit.com/r/homeassistant/comments/1vxffhr/adaptive_lighting_is_great_but_my_evenings_dont/ raises schedule-versus-real-activity conflict; June 16 thread https://www.reddit.com/r/homeassistant/comments/1u6zs2s/how_to_fix_adaptive_lighting/ asks about unexpected adaptation. Current project README documents takeover modes and manual-control flags.",
+      "decision": "rejected",
+      "reason": "Valid future integration-specific topic, but today's manual-override framing overlaps /blog/home-assistant-automation-manual-override/ and the evening behavior partly meets the house-modes and wake-up-light owners. Project documentation already directly explains many settings; binding has a cleaner distinct setup scope."
+    },
+    {
+      "query": "Home Assistant dehumidifier automation humidity",
+      "evidenceSummary": "Exact query searched September 21. Results include https://community.home-assistant.io/t/dehumidifier-automation/644064 and https://jonathas.com/automating-winter-humidity-control-with-home-assistant-and-dehumidifiers/. Current primary https://www.home-assistant.io/integrations/generic_hygrostat/ supports humidity-based switching and cycle controls. April 4, 2026 https://www.reddit.com/r/homeassistant/comments/1scnt4x/i_just_want_a_simple_automation_when_humidity_is/ asks about threshold triggering; July 19 https://www.reddit.com/r/homeassistant/comments/1v0pxf0/suggest_dehumidifiers_that_restore_power/ raises exact-appliance restart prerequisites.",
+      "decision": "rejected",
+      "reason": "Useful distinct future appliance-control guide, but a responsible practical recommendation needs exact dehumidifier restart behavior and switching ratings researched by model. A generic humidity recipe would substantially repeat the bathroom-fan guide and omit the main hardware decision. Binding offers a better supported complete answer today."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/philips-hue-dimmer-gen-2-rwl022-hue-button-temperature-cycle/1024655",
+      "observedAt": "2026-09-21",
+      "evidence": "September 10, 2026 author describes combining remote-to-light binding for on/off and brightness with a Zigbee2MQTT blueprint for temperature cycling. Shows a current need to understand which button functions use binding and which still require software; not used as proof of compatibility or measured latency."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1ukksyn/can_i_bind_a_zigbee_button_directly_to_philips/",
+      "observedAt": "2026-09-21",
+      "evidence": "July 1, 2026 reader asks for button-to-light control that survives Home Assistant or dongle failure and is confused about Hue versus a shared Zigbee network. Rechecked today as qualitative recurrence; no voting counts, volumes or universal outage promise inferred."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1tb5tub/problem_controlling_zigbee_bound_lights_to_a/",
+      "observedAt": "2026-09-21",
+      "evidence": "May 2026 reader describes needing a second switch press after changing a light group from Home Assistant. This is demand for staged verification of physical behavior and app state, not evidence that one specific fix works for every switch."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant Zigbee binding",
+    "reviewedAt": "2026-09-21",
+    "intent": "Set up direct switch-to-light Zigbee control and understand binding support, group targets, automation overlap and outage limits.",
+    "resultGap": "Official documentation is capable but split between ZHA menus, Zigbee2MQTT command/reference pages and manufacturer-specific endpoint instructions. Tara can combine a software-path choice, a two-lamp configuration worksheet and a troubleshooting table without claiming broad device compatibility. Exact queries for all three candidates were reviewed with the web search tool. Direct Google browser requests returned HTTP 429/unusual-traffic pages; no Google-specific ordering, People Also Ask, rank, or volume is claimed. The competing URLs here are from the accessible exact-query results, and the Google access limitation is retained rather than represented as a successful live Google SERP inspection.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/integrations/zha/",
+      "https://www.zigbee2mqtt.io/guide/usage/binding.html",
+      "https://help.inovelli.com/en/articles/8467174-setting-up-zigbee-bindings-home-assistant-zha",
+      "https://community.home-assistant.io/t/how-to-bind-zigbee-devices/614591"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant ZHA",
+      "url": "https://www.home-assistant.io/integrations/zha/",
+      "supports": "Current binding and native group controls; same-network membership; remote wake-up, supported target types, coordinator binding limits. Current menus use Settings > Connectivity > Zigbee."
+    },
+    {
+      "name": "Zigbee2MQTT binding",
+      "url": "https://www.zigbee2mqtt.io/guide/usage/binding.html",
+      "supports": "Bind tab, source/target direction, supported clusters, group friendly names, reporting and device-specific limitations."
+    },
+    {
+      "name": "Zigbee2MQTT groups",
+      "url": "https://www.zigbee2mqtt.io/guide/usage/groups.html",
+      "supports": "Native Zigbee group creation and membership, distinct from a Home Assistant helper; state reporting/optimistic group display limitations."
+    },
+    {
+      "name": "Inovelli ZHA binding instructions",
+      "url": "https://help.inovelli.com/en/articles/8467174-setting-up-zigbee-bindings-home-assistant-zha",
+      "supports": "Manufacturer example of direct versus group binding, model-specific smart-bulb mode and endpoints; not generalized to all switches or treated as Tara testing."
+    },
+    {
+      "name": "Zigbee2MQTT network topology",
+      "url": "https://www.zigbee2mqtt.io/advanced/zigbee/01_zigbee_network.html",
+      "supports": "Coordinator, router and end-device roles; battery-device parent paths explain why software bypass is not a blanket promise after removing a radio."
+    },
+    {
+      "name": "Home Assistant 2026.9 release notes",
+      "url": "https://www.home-assistant.io/blog/2026/09/02/release-20269/",
+      "supports": "Connectivity settings introduced in 2026.9; earlier UI paths can differ."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/what-happens-if-home-assistant-goes-down/",
+      "/blog/zha-vs-zigbee2mqtt-home-assistant/",
+      "/blog/can-you-mix-zigbee-brands-one-hub/",
+      "/blog/matter-binding-home-assistant-switch-light-offline/",
+      "/blog/home-assistant-automation-manual-override/"
+    ],
+    "decision": "Inventoried all existing canonical titles and all topic-brief primary queries/reader questions, plus keyword strategy/map and historical search-opportunities CSV. Outage overview only introduces Zigbee binding, software comparison only lists the feature, and mixed-brand guide addresses compatibility rather than configuring a direct command relationship. Matter binding remains owned by its existing page; this article uses Zigbee-specific groups, clusters and UI, with no Matter/Thread setup. Candidate SEO intent gate passed before drafting. Historical evidence parsed from seo/search-performance-2026-09-15.json: Chart cutoff September 13; September 7-13 3 clicks/216 impressions versus August 31-September 6 2/231. June 14-September 13 cumulative ZHA-vs-Zigbee2MQTT page: 0 clicks/173 impressions; visible query 'zha vs zigbee2mqtt 2026': 0/39. These are not recent page results, query totals, or site-total demand measurements. No visible binding/adaptive/dehumidifier query row supplies a new volume estimate. seo/search-console-review-2026-09-15.json freshly confirms homepage, IKEA direct-pairing, Bluetooth proxy and VLAN indexed on September 15; newer laundry/trash/energy-bill owners were discovered but not indexed. Preserve their ownership. Tiny recent page samples do not justify a CTR diagnosis. seo/recovery-review-2026-09-15.md and seo/search-change-review-2026-09-15.md describe broad July losses across devices, countries and edited/unedited cohorts with causal limits; no platform blame or rollback promise. Read seo/analytics-measurement-contract.md; no GA4 or inquiry evidence is used. Separate refresh opportunity: review version-sensitive ZHA navigation in /blog/zha-vs-zigbee2mqtt-home-assistant/ against the 2026.9 Connectivity change while retaining title/URL. This daily task does not edit that page. The one-article maximum stays unchanged; publishing is not proof of indexing or recovery."
+  }
+}

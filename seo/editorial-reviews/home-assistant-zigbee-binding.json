@@ -1,0 +1,67 @@
+{
+  "slug": "home-assistant-zigbee-binding",
+  "action": "new",
+  "publicationDate": "2026-09-21",
+  "verdict": "PASS",
+  "readerQuestion": "How can I bind a Zigbee switch or remote directly to my lights in ZHA or Zigbee2MQTT, and check that basic control no longer depends on a Home Assistant automation?",
+  "directAnswer": "Use a supported Zigbee binding for the remote's ordinary on/off and dimming commands; use a native Zigbee group for the two-lamp example when supported. Keep separate software routines for bedtime and special actions, check exact model/firmware and network membership first, then test with only the competing lamp automation paused.",
+  "originalContribution": "Sections 2 and 4 provide an original two-lamp control worksheet and staged verification procedure. The first table assigns each household action to its intended path and expected result; the troubleshooting table separates group membership, command support, duplicate automation, and stale state reports. The example names and expected outcomes are illustrative, not reported hardware results.",
+  "limitations": "Documentation research and automated editorial/browser review only. No physical switches, lamps, dimming response, latency, radio outage or cross-brand compatibility were tested. Exact model/firmware, command endpoints, special button events and behavior after parent/coordinator removal remain installation-specific. The cover is a generated room illustration with no asserted product identity. Presentation checks are not device tests.",
+  "proofreadFixes": "Moved recording of existing bindings and modes ahead of configuration so rollback is possible. Changed the later test step to compare against those notes. Added that Zigbee2MQTT unbinding can remove reporting and that dashboard updates must be checked after rollback. Explained firmware and replaced unexplained control-entity phrasing with dashboard/group controls. Kept current 2026.9 Connectivity navigation alongside the older Devices & services route; did not copy the manufacturer's outdated Configuration menus or its misplaced SmartThings wording into ZHA instructions. Verified source-to-target direction, two light members rather than adding the remote as a light, device-specific dimmer mode, limited coordinator unbinding, and software downtime versus radio-parent removal. Confirmed four direct TLDR bullets, matching visible/schema FAQs, visible linked Tara Home byline and honest method note. Final reread PASS; no invented measurements or expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "ZHA supports device and native group bindings; commands bypass ZHA. Not every remote supports every target type, and some have one-target limits. The guide scopes basic control to supported devices rather than a Zigbee logo.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/zha/#binding"
+    },
+    {
+      "claim": "ZHA's current menu is Connectivity > Zigbee > Devices > Manage Zigbee device > Bindings; battery remotes should be awake for binding. Coordinator unbinding can remove click events and is not a first troubleshooting step.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/zha/#binding"
+    },
+    {
+      "claim": "Home Assistant 2026.9 added Connectivity settings. Version-dependent menus are identified; the guide does not imply an upgrade is needed solely to find binding controls.",
+      "sourceUrl": "https://www.home-assistant.io/blog/2026/09/02/release-20269/"
+    },
+    {
+      "claim": "A native Zigbee group stores membership on devices and differs from a Home Assistant helper. The example group contains the two bulbs, with the remote bound to the group as the source.",
+      "sourceUrl": "https://www.zigbee2mqtt.io/guide/usage/groups.html"
+    },
+    {
+      "claim": "Zigbee2MQTT exposes the Bind tab and genOnOff/genLevelCtrl command choices; requests targeting a group use its friendly name. The reader must check failed clusters and actual lamp behavior.",
+      "sourceUrl": "https://www.zigbee2mqtt.io/guide/usage/binding.html"
+    },
+    {
+      "claim": "Binding can configure target reporting, but support varies by device; unbinding can remove reporting. A physically responding lamp and stale dashboard icon require separate checks, including after rollback.",
+      "sourceUrl": "https://www.zigbee2mqtt.io/guide/usage/binding.html"
+    },
+    {
+      "claim": "Clusters describe functions and endpoints identify device functions. Router/end-device/coordinator roles mean bypassing software is not a universal promise after removing a battery device's radio parent.",
+      "sourceUrl": "https://www.zigbee2mqtt.io/advanced/zigbee/01_zigbee_network.html"
+    },
+    {
+      "claim": "Smart-bulb mode and dimmer mode are manufacturer/model-specific. Inovelli's guide distinguishes powered smart bulbs and switching configurations; its endpoint numbers and old menu wording are not generalized to other products.",
+      "sourceUrl": "https://help.inovelli.com/en/articles/8467174-setting-up-zigbee-bindings-home-assistant-zha"
+    },
+    {
+      "claim": "Automation traces show software triggers/actions, while Run actions skips the physical trigger. A non-critical lamp test with only duplicate rules paused is useful evidence but does not prove every outage mode.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/what-happens-if-home-assistant-goes-down/",
+      "section": "Direct Zigbee and Z-Wave control",
+      "readerReason": "Readers who choose the Zigbee fallback introduced here can follow the new article's specific ZHA/Zigbee2MQTT setup and staged lamp test. Separate reviewed navigation task; the source page was not edited."
+    },
+    {
+      "sourcePath": "/blog/zha-vs-zigbee2mqtt-home-assistant/",
+      "section": "Does ZHA support OTA updates, groups, binding, and coordinator migration?",
+      "readerReason": "After learning that binding is available, a reader can use a concrete same-network two-lamp procedure in either software path. This is a contextual next step, not a competing software-choice page; no existing article was edited."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium 1440x1000: readable two-line H1 and linked byline; post-local WebP loaded with both lamps visible; centered 780px body (x330–1110); Tara Avenir with heading weight 400; document width 1440 with no overflow; both tables fit. Both library paths show one new card with a working image and canonical link. Legacy .html redirect reaches the canonical page. Screenshots visually inspected and saved outside the worktree.",
+    "mobile": "Chromium 390x844 and 360x844: readable wrapped title, stacked hero and four-bullet TLDR; loaded cover with both lamps visible; body margins 22px; no horizontal document overflow. Both focusable table containers scroll with ArrowRight (0 to 40px) while the document stays fixed. At 390px both library cards load their 480px derivative and open the canonical article. Mobile title, table and card screenshots visually inspected."
+  }
+}
