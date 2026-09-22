@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-motion-lights-multiple-sensors",
+  "action": "new",
+  "publicationDate": "2026-09-22",
+  "verdict": "PASS",
+  "readerQuestion": "How do I turn one room's lights on when either sensor detects someone, but turn them off only after every selected sensor has been clear for five minutes?",
+  "directAnswer": "Use one room automation: either on report requests light, while an explicit template requires both sensors off and automatic lighting enabled continuously for five minutes before shutoff. Unknown/unavailable blocks shutoff. Create the visible Toggle helper and test one nonessential lamp with real sensor transitions; the pending wait does not survive restart or automation reload.",
+  "originalContribution": "Sections 2 and 4 compare the five relevant sensor-state combinations and give a complete two-sensor YAML automation with explicit availability handling, pause and resume, and a final all-off check. The worked example at #worked-example follows an 8:15 deadline canceled by fresh motion, a new 8:19 deadline, and the alternate missing-data case. Section 5 gives harmless verification steps and expected results.",
+  "limitations": "Documentation research and automated proofreading, not human/expert review, a Home Assistant runtime test or a physical installation test. The YAML was parsed from the published HTML; its actual Jinja expression passed 64 input-state combinations and the illustrative timeline. These checks do not establish integration compatibility, sensor coverage or response latency. A stale but plausible off report can still lead to shutoff. Restart persistence, automatic manual-change detection and a complete darkness-trigger extension are outside this example.",
+  "proofreadFixes": "Shortened the 161-character description to 152 characters after the metadata gate finding. Added direct documentation links for light versus switch actions and raw binary sensor states. Explained unknown/unavailable as no usable state in the TLDR. Added a nearby mobile and keyboard scrolling instruction for the long YAML. Clarified that putting a darkness condition in the on branch avoids blocking off, but the condition itself does not trigger at dusk. Checked that enabling the helper with an active sensor requests on, enabling with both clear starts a fresh wait, and pausing cancels the expression's pending wait. Confirmed the final wording says reported clearance, labels the timeline hypothetical, and does not promise restored deadlines or hardware testing. Final automated plain-English review PASS.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A default binary sensor group can be off with one off member and one unavailable member; All entities requires all members on and does not implement the desired any-on light rule.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/group/"
+    },
+    {
+      "claim": "Motion and occupancy binary sensors use raw on/off states even when the interface displays Detected/Clear, and can also be unknown/unavailable. The example needs those sensor entities, not a numeric distance or illuminance reading.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/binary_sensor/"
+    },
+    {
+      "claim": "The State trigger's entity list matches an individual entity transition. It is not an all-members-clear condition; the turn-on trigger uses to on and exact entity IDs.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "The template trigger requires its expression to remain true for the for duration; for waits reset on restart/reload. The published expression includes enable plus both explicit off states, so missing data or pause makes it false. No restart catch-up is promised.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/#template-trigger"
+    },
+    {
+      "claim": "A state condition with an entity list requires all to match by default; match any is explicit only on the on branch. The final all-off condition and trigger-ID branches agree with the YAML.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/#state-condition"
+    },
+    {
+      "claim": "The Toggle helper is a user-visible on/off input. It is used as an explicit enable control, not evidence that Home Assistant can universally infer who changed the light.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Restart mode replaces an unfinished eligible action run; it does not persist a trigger's for wait or undo a lamp command already sent.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Run actions skips triggers and top-level conditions and lacks this automation's trigger ID. Verification therefore uses a nonessential lamp, actual sensor transitions and Traces with expected results, without interrupting safety devices.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "A switch-only plug requires switch.turn_on/switch.turn_off and a switch target. A light target uses the light actions; the guide places this prerequisite next to the example setup.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/switch/"
+    },
+    {
+      "claim": "A condition limits a triggered run but does not itself start a new run. The optional darkness restriction belongs inside the on branch; separate dusk triggering needs additional design.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-automation-manual-override/",
+      "section": "Motion and presence lighting",
+      "readerReason": "A reader who understands the pause helper can use this complete two-sensor lighting example to apply the pause to both on and off decisions."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-unavailable-device-notification/",
+      "section": "What an availability alert can miss",
+      "readerReason": "A reader monitoring a room sensor can see how unavailable input should affect the actual lighting rule, while preserving the distinction between unavailable and stale-but-plausible readings."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440x1000: inspected the title, byline, 16:10 cover, four-bullet TLDR, worked timeline and both library cards. Article body is centered at 780px; tables widen to 920px within the page. Tara Avenir is active and normal paragraphs are weight 400. New responsive image loads. No page-level horizontal overflow. The .html redirect reaches the canonical URL. Screenshots are stored in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390x844: title and byline wrap cleanly, the hero and 480px library card image load, and body text remains about 17px. The 760px tables and long YAML scroll inside focusable containers; ArrowRight moved the table and all columns were reachable. No page-level overflow at 390px or the additional 320x740 check. Inspected mobile hero, card, table, code and FAQ screenshots in TARAHOME_BLOG_ARTIFACTS."
+  }
+}

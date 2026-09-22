@@ -1,0 +1,81 @@
+{
+  "version": 2,
+  "slug": "home-assistant-motion-lights-multiple-sensors",
+  "researchedAt": "2026-09-22",
+  "primaryQuery": "Home Assistant motion lights multiple sensors",
+  "readerQuestion": "How do I turn one room's lights on when either sensor detects someone, but turn them off only after every selected sensor has been clear for five minutes?",
+  "selectedBecause": "The exact-query results and independently revisited 2026 Reddit and Home Assistant Community discussions show a recurring, concrete coordination problem. An April discussion combines motion and presence but gets immediate shutoff or lights stuck on; a May discussion explicitly wants all sensors clear before a delayed shutoff. This supports practical usefulness, not search volume or a claim of rising demand. Tara has sensor introductions, manual overrides and general automation debugging, but no complete multiple-sensor lighting procedure. The original contribution is one explicit-state automation, a worked timing example and an unavailable-sensor decision table. It deliberately requires every sensor to report off instead of assuming a group's off state proves that. Google's direct results pages returned an unusual-traffic challenge, so the competing-page review uses the current search tool's exact-query results, without claiming Google result order or volume.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant motion lights multiple sensors",
+      "evidenceSummary": "Reviewed September 22: https://community.home-assistant.io/t/setting-up-a-motion-and-presence-sensors/1002287 (April 6, 2026) and https://www.reddit.com/r/homeassistant/comments/1tcoj80/best_way_to_manage_light_automations/ (May 14, 2026) independently ask about combining sensors and waiting for all to clear. Exact-query results include a 2024 group-helper tutorial, advanced GitHub blueprints and fragmented forum examples. Current Group, State, template-trigger and condition documentation establish the implementation and missing-data boundary. These discussions are dated evidence observed today, not September posting activity or a volume estimate.",
+      "decision": "selected",
+      "reason": "A bounded household outcome, clear local-automation fit and a meaningful missing-data/timing example distinguish it from the existing sensor overview and generic debugging pages. It uses readers' existing entities rather than requiring new hardware or another custom integration. The other candidates have stronger existing coverage or less room to improve on current primary explanations."
+    },
+    {
+      "query": "Home Assistant automation modes single restart queued parallel",
+      "evidenceSummary": "Current exact-query results include https://www.home-assistant.io/docs/automation/modes/ and the maintainer's June 14, 2026 explanation at https://frenck.dev/automation-modes-in-home-assistant-why-the-default-isnt-your-friend/. Recurring questions are visible at https://community.home-assistant.io/t/parallel-restart-queued/824726 and https://www.reddit.com/r/homeassistant/comments/10yzztk/. Those community discussions are historical, rechecked today. The official mode reference is current; no search-volume evidence was available.",
+      "decision": "rejected",
+      "reason": "Tara's existing automation-runs-twice page already compares all four modes, and the current maintainer explanation directly addresses the beginner gap. A new generic modes comparison would add less distinct value than a complete room-lighting example."
+    },
+    {
+      "query": "Home Assistant calendar automation",
+      "evidenceSummary": "Current exact-query results include https://homeautocentral.com/calendar-trigger-home-assistant/ (September 2026) and https://tecnoyfoto.com/en/home-assistant-calendar-automations-guide-2026. Discussion at https://community.home-assistant.io/t/local-calendar-events-didnt-trigger-any-actions/876872 documents trigger confusion; the current September discussion https://community.home-assistant.io/t/custom-integration-calendar-bridge-native-reminders-and-recurring-google-caldav-events/1024874 addresses reminders and recurrence. Primary checks used https://www.home-assistant.io/integrations/calendar/ and https://www.home-assistant.io/integrations/google. Search-result availability and community questions do not establish volume.",
+      "decision": "rejected",
+      "reason": "The existing trash-collection reminder owns a practical calendar setup and event-timing walkthrough. That owner remains protected despite its September 21 discovered-not-indexed inspection. A broad calendar tutorial risks repackaging the same procedure; no stronger distinct homeowner use case emerged."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/setting-up-a-motion-and-presence-sensors/1002287",
+      "observedAt": "2026-09-22",
+      "evidence": "An April 6, 2026 question combines living-room motion and presence sensors but gets immediate shutoff or no shutoff. The live discussion was revisited today. It establishes a concrete coordination problem, not search volume or measured prevalence."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1tcoj80/best_way_to_manage_light_automations/",
+      "observedAt": "2026-09-22",
+      "evidence": "A May 14, 2026 question asks to turn lights on from multiple inputs and delay shutoff until all presence sensors are clear and contacts closed. This guide handles the binary occupancy subset, not the thread's requested dimming warning or forced closet timeout. Independently revisited today; no engagement counts used as demand estimates."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/how-to-turn-off-lights-when-all-pir-sensors-are-not-occupied-or-unavailable-for-5-minutes/870343",
+      "observedAt": "2026-09-22",
+      "evidence": "The older discussion explicitly raises all-sensor timing and unavailable readings. It is historical corroboration, not a new September trend. The guide makes its own conservative convenience-lighting choice: missing data blocks automatic shutoff rather than counting as a clear room."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant motion lights multiple sensors",
+    "reviewedAt": "2026-09-22",
+    "intent": "Build one understandable light routine for a room with more than one motion or presence sensor, including delayed shutoff and a way to keep manual control.",
+    "resultGap": "Current exact-query search results return a concise group-helper recipe, broad blueprints and separate forum cases. A default binary group can be off when one member is off and another is unavailable; the short group recipe does not provide a strict all-sensors-known-clear walkthrough. Tara can add a complete small example, hypothetical timing table, explicit unknown/unavailable behavior, pause semantics, restart limitation and a harmless test. Direct Google pages were blocked by an unusual-traffic challenge on September 22; search-tool results were reviewed instead. No Google ordering, search-volume or recent ranking assertion is made.",
+    "resultsReviewed": [
+      "https://saeedesmaili.com/notes/control-a-smart-light-with-multiple-motion-sensors-in-home-assistant/",
+      "https://github.com/iainsmacleod/Home-Assistant-Blueprints",
+      "https://community.home-assistant.io/t/trying-to-create-an-automation-with-three-motion-sensors/697980"
+    ]
+  },
+  "officialSources": [
+    {"name": "Home Assistant Group integration", "url": "https://www.home-assistant.io/integrations/group/", "supports": "Default any-on behavior, All entities semantics, and off/unknown/unavailable combinations explain why a group alone does not prove every member is clear."},
+    {"name": "Home Assistant State trigger", "url": "https://www.home-assistant.io/triggers/state/", "supports": "A list of entity IDs triggers for individual matching transitions; exact raw on/off states and to filtering avoid treating UI labels or attribute-only updates as motion."},
+    {"name": "Home Assistant automation triggers", "url": "https://www.home-assistant.io/docs/automation/trigger/", "supports": "Template triggers fire on false-to-true expressions with a continuous for duration. Pending for durations do not survive restart or automation reload."},
+    {"name": "Home Assistant conditions", "url": "https://www.home-assistant.io/docs/scripts/conditions/", "supports": "State conditions and trigger IDs select the action; an entity list in a state condition requires all members by default, allowing a last-moment all-off check."},
+    {"name": "Home Assistant script syntax", "url": "https://www.home-assistant.io/docs/scripts/", "supports": "Choose branches and ordered conditions/actions used in the original worked automation."},
+    {"name": "Home Assistant Input boolean", "url": "https://www.home-assistant.io/integrations/input_boolean/", "supports": "Create a Toggle helper to pause both branches, with explicit manual resume rather than unreliable source-of-change inference."},
+    {"name": "Home Assistant automation modes", "url": "https://www.home-assistant.io/docs/automation/modes/", "supports": "Restart mode replaces an in-progress run when a newer eligible trigger arrives; it does not make a five-minute trigger timer persistent."},
+    {"name": "Home Assistant automation troubleshooting", "url": "https://www.home-assistant.io/docs/automation/troubleshooting/", "supports": "Traces, Developer tools and the limitations of Run actions for verifying real trigger and condition behavior."}
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/presence-detection-smart-home/",
+      "/blog/home-assistant-automation-manual-override/",
+      "/blog/home-assistant-automation-runs-twice/",
+      "/blog/home-assistant-timer-survive-restart/",
+      "/blog/home-assistant-trash-collection-reminder/",
+      "/smart-lighting-kit/"
+    ],
+    "decision": "Read every existing canonical article title and every topic brief's query/question, the ownership strategy and protected map. This new intent is a specific multiple-sensor light routine, not sensor selection, general presence, modes, a manual-override replacement or timer recovery. The smart-lighting-kit commercial owner receives a contextual link. Separate refresh opportunities: the old presence overview incorrectly describes Aqara FP2 as Zigbee and overgeneralizes radar capabilities/privacy; verify exact vendor support and revise that owner in a dedicated task. Do not edit it in this job. The September 21 recovery review also calls for separately reviewed firsthand improvements to established IKEA, Bluetooth, leak-sensor and doorbell owners. Historical Search Console context was read via JSON parsing from the schedule's September 21 performance and inspection files and seo/search-comparison-2026-09-21.json: completed September 13-19 has 3 clicks/212 property impressions versus 2/205 for September 6-12; all three current clicks are branded tarahome/homepage, with zero blog clicks. US impressions fell 111 to 72. September 20-21 are absent, not zero. Recent page rows total 375 impressions under a different aggregation; visible queries omit anonymized searches. Tiny query samples are not volume. Fresh inspections show IKEA direct pairing, laundry and Spokane indexed, while trash and vacation remain discovered-not-indexed. No topic ownership changes follow from that. The July decline was broad across devices, countries and changed/unchanged HTML per seo/search-change-review-2026-09-15.md; no platform or title rollback is a proven cause or remedy. Read the analytics measurement contract; no private exports, GA4 events or inquiry data are used for selection. One useful draft does not establish indexing, non-brand acquisition or recovery."
+  }
+}
