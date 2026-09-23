@@ -17,9 +17,11 @@ import {
   CheckCircle2,
   ChevronDown,
   DoorOpen,
+  Download,
   House,
   LampDesk,
   Map,
+  Mail,
   Lightbulb,
   Minus,
   Moon,
@@ -37,6 +39,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import {trackEvent} from './analytics';
+import {deliverPlan, preparePlanRequest, planRequestCopy, PlanDeliveryError, type PlanRequest, type DeliveryFailure} from './plan-delivery';
 import {emptyPlacement, readPlacement, placementCounts, placementSubmission, type PlacementPlan} from './placement-plan';
 import type PlacementPlanner from './PlacementPlanner';
 import '../../styles/configurator.css';
@@ -95,8 +98,11 @@ type StoredPlan = {
   furthestStep: number;
 };
 
-const WAITLIST_FORM_URL = 'https://formspree.io/f/mqelrgbl';
 const PLAN_STORAGE_KEY = 'tara-configurator-plan-v2';
+
+function trackDelivery(event: string, props: Record<string, string | number>) {
+  try {trackEvent(event, props);} catch { /* Measurement must never block or reverse form delivery. */ }
+}
 const steps: Array<{id: StepId; shortLabel: string; label: string}> = [
   {id: 'home', shortLabel: 'Home', label: 'Your home'},
   {id: 'goals', shortLabel: 'Goals', label: 'What matters'},
@@ -410,6 +416,11 @@ export function ConfiguratorPage({
   const [furthestStep, setFurthestStep] = useState(storedPlan?.furthestStep || 0);
   const [contact, setContact] = useState<ContactInput>(initialContact);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [deliveryFailure, setDeliveryFailure] = useState<DeliveryFailure>('network');
+  const [requestRecord, setRequestRecord] = useState<PlanRequest>();
+  const [providerSubmissionId, setProviderSubmissionId] = useState<string>();
+  const requestRef = useRef<PlanRequest | undefined>(undefined);
+  const submittingRef = useRef(false);
   const [showRestored, setShowRestored] = useState(Boolean(storedPlan));
   const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved'>(storedPlan ? 'saved' : 'idle');
   const [resetArmed, setResetArmed] = useState(false);
@@ -656,8 +667,10 @@ export function ConfiguratorPage({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (submittingRef.current || submitStatus === 'success') return;
+    submittingRef.current = true;
     setSubmitStatus('submitting');
-    trackEvent('configurator_submit_started', {
+    trackDelivery('configurator_submit_started', {
       category: 'configurator',
       packagePath: plan.packageName,
       plannedDevices: plan.plannedDevices,
@@ -674,7 +687,7 @@ export function ConfiguratorPage({
       phone: contact.phone,
       zipCode: contact.zipCode,
       formType: 'Tara configurator v2',
-      _gotcha: '',
+      _gotcha: String(new FormData(event.currentTarget).get('_gotcha') || ''),
       homeownerMessage: contact.message,
       message: `${plan.packageName} request for ${homeLabel}, ${draft.bedrooms} bedrooms, ${draft.levels} levels. Planning estimate: ${plan.price}. Priorities: ${goals}. Planned scope: ${plan.plannedDevices} devices including ${draft.windows} window sensors, ${draft.exteriorDoors} door sensors, ${draft.smartLights} smart lights or zones, ${draft.thermostats} thermostats, ${draft.doorbells} doorbells, ${draft.presenceZones} presence zones, and ${plan.cameraZones} camera zones. Home notes: ${draft.notes || 'None provided.'} Homeowner message: ${contact.message || 'None provided.'}`,
       homeType: homeLabel,
@@ -697,29 +710,52 @@ export function ConfiguratorPage({
       planningEstimate: plan.price,
       ...(draft.placement.items.length ? {placementPlan: placementSubmission(draft.placement)} : {}),
     };
-    const formData = new FormData();
-    Object.entries(payload).forEach(([key, value]) => formData.append(key, String(value)));
-
     try {
-      const response = await fetch(WAITLIST_FORM_URL, {
-        method: 'POST',
-        headers: {Accept: 'application/json'},
-        body: formData,
-      });
-      if (!response.ok) throw new Error('Form submission failed');
+      const request = preparePlanRequest(payload, requestRef.current);
+      requestRef.current = request;
+      setRequestRecord(request);
+      setProviderSubmissionId(undefined);
+      const result = await deliverPlan(request);
+      setProviderSubmissionId(result.providerSubmissionId);
       setSubmitStatus('success');
-      try {window.localStorage.removeItem(PLAN_STORAGE_KEY);} catch { /* A delivered inquiry must not appear to have failed. */ }
-      trackEvent('configurator_submit_success', {
+      try {window.localStorage.removeItem(PLAN_STORAGE_KEY);} catch { /* An accepted inquiry must not appear to have failed. */ }
+      trackDelivery('configurator_submit_success', {
         category: 'conversion',
         packagePath: plan.packageName,
         plannedDevices: plan.plannedDevices,
         planningEstimate: plan.estimatedPrice,
       });
-    } catch {
+    } catch (error) {
       setSubmitStatus('error');
-      trackEvent('configurator_submit_error', {category: 'configurator', packagePath: plan.packageName});
+      const reason = error instanceof PlanDeliveryError ? error.reason : 'network';
+      setDeliveryFailure(reason);
+      trackDelivery('configurator_submit_error', {category: 'configurator', packagePath: plan.packageName, reason});
+    } finally {
+      submittingRef.current = false;
     }
   };
+
+  const downloadRequest = () => {
+    if (!requestRecord) return;
+    const url = URL.createObjectURL(new Blob([planRequestCopy(requestRecord, submitStatus === 'success', providerSubmissionId)], {type: 'application/json'}));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${requestRecord.reference}.json`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const requestActions = requestRecord && (
+    <div className="tara-cfg-request-record" data-analytics-private>
+      <p>Request reference: <strong>{requestRecord.reference}</strong></p>
+      <div className="tara-cfg-request-actions">
+        <button type="button" className="tara-cfg-button tara-cfg-button--quiet" onClick={downloadRequest}><Download aria-hidden="true" /> Download request</button>
+        <a className="tara-cfg-button tara-cfg-button--quiet" href={`mailto:hello@tarahome.ai?subject=${encodeURIComponent(`Home plan ${requestRecord.reference}`)}&body=${encodeURIComponent(`Please check my home-plan request ${requestRecord.reference}, submitted ${requestRecord.submittedAt}.\n\nName: ${requestRecord.payload.name}\nEmail: ${requestRecord.payload.email}\nPlan: ${requestRecord.payload.packagePath}\nPlanning estimate: ${requestRecord.payload.planningEstimate}`)}`}><Mail aria-hidden="true" /> Email Tara</a>
+      </div>
+    </div>
+  );
 
   const homeReady = Boolean(draft.homeType);
   const goalsReady = draft.planMode === 'guided' || (draft.planMode === 'selected' && draft.goals.length > 0);
@@ -937,7 +973,10 @@ export function ConfiguratorPage({
                     <Check aria-hidden="true" /><span>No checkout or commitment. Read the <a href="/privacy/">Privacy Policy</a>.</span>
                   </div>
                   {draft.placement.items.length > 0 && <p className="tara-cfg-placement-privacy">Room names, dimensions, and device placements will be sent with this plan. Uploaded floor-plan images stay on this device.</p>}
-                  {submitStatus === 'error' && <p className="tara-cfg-error" role="alert">The plan could not be sent. Check your connection and try again.</p>}
+                  {submitStatus === 'error' && <>
+                    <p className="tara-cfg-error" role="alert">{deliveryFailure === 'rate_limit' ? 'The form service is limiting requests. Please wait before trying again, or email Tara.' : 'We could not confirm receipt. Your plan is still here. The request may have reached us; keep the reference below when retrying or emailing Tara.'}</p>
+                    {requestActions}
+                  </>}
                   <div className="tara-cfg-stage-actions">
                     <button type="button" className="tara-cfg-button tara-cfg-button--quiet" onClick={back}><ArrowLeft aria-hidden="true" /> Back</button>
                     <button type="submit" className="tara-cfg-button tara-cfg-button--primary" disabled={submitStatus === 'submitting'}>
@@ -953,7 +992,8 @@ export function ConfiguratorPage({
                 <span><CheckCircle2 aria-hidden="true" /></span>
                 <p>Plan sent</p>
                 <h1 id="tara-configurator-heading" ref={headingRef} tabIndex={-1}>Tara has a useful starting point.</h1>
-                <div>We will review the home, priorities, and device counts before following up about exact products and scope.</div>
+                <div>Your planning request was accepted. We will review the scope before following up. No payment has been taken.</div>
+                {requestActions}
                 <a href="/" className="tara-cfg-button tara-cfg-button--primary">Return to Tara <ArrowRight aria-hidden="true" /></a>
               </section>
             )}

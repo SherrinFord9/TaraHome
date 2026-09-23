@@ -8,9 +8,11 @@
   when discussing Google specifically, rather than all organic sessions.
 - A planner view is interest, not an inquiry. A submit-button click or form
   submission attempt is not confirmation that the form service accepted it.
-- `configurator_submit_success` is emitted after an HTTP-success response from
-  the form endpoint. It represents a submitted planning request, not a qualified
+- `configurator_submit_success` is emitted after an HTTP-success response and
+  recognized JSON acknowledgement from the form endpoint. It represents a submitted planning request, not a qualified
   lead, an order, revenue, or proof that the follow-up email was delivered.
+  Formspree may also filter accepted submissions into its spam inbox. Reconcile
+  both provider inboxes and delivery status before counting confirmed leads.
 - Test and staff activity can appear in historical analytics. Confirm a real
   inquiry in the business inbox before treating a submission as a customer lead.
 - Average engagement is not a stopwatch for every visitor or proof of intent.

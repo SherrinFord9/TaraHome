@@ -25,6 +25,17 @@ attached sensors, mouse/touch rotation handles, keyboard controls, expanded draf
 restoration and complete mocked submission. Tests must block analytics and mock
 form delivery; never send production leads.
 
+Run scripts/check-plan-delivery.browser.js for malformed/HTML acknowledgements,
+provider errors, rate limits, timeout, network failure, broken analytics,
+same-tick duplicate submissions and private downloadable request copies.
+Submission acceptance is not email delivery or a paid order. The Formspree
+workflow recipient and spam inbox must be checked separately in the account.
+The client does not automatically retry an ambiguous response. An unchanged
+in-page retry reuses its reference for manual reconciliation, not server-side
+idempotency. References and contact details are never sent to analytics.
+Request copies are downloaded only on a visitor's action; they remain in memory
+until then and are not a server-side backup or cross-browser recovery mechanism.
+
 ## Placement Contract
 
 - Layout units are feet, with half-foot drag snapping and rectangular rooms.
