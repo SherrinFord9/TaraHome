@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-freezer-temperature-alert",
+  "action": "new",
+  "publicationDate": "2026-09-23",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant warn me when the freezer gets too warm, repeat the warning sensibly, and let me test it without warming food?",
+  "directAnswer": "Use the actual temperature sensor, an upper-only Threshold helper with a deliberate hysteresis band, and the built-in YAML Alert integration for delayed repeating reminders. Verify phone delivery with a temporary Toggle helper, then restore the real input. Missing readings and restarts can interrupt monitoring, so keep an independent appliance warning and monitor availability separately.",
+  "originalContribution": "Sections 2 and 3 provide a Celsius/Fahrenheit settings worksheet and complete alert configuration. The worked-example table follows a hypothetical warming/cooling sequence through the hysteresis band and the ten-, thirty- and sixty-minute delays. Section 4 tests cancellation, repetition and acknowledgement using only a virtual switch; section 5 distinguishes sensor, notifier and restart faults.",
+  "limitations": "Researched from current primary documentation and Home Assistant 2026.9.3 source; no physical freezer, sensor accuracy, battery life, RF range, installed Home Assistant instance or phone latency was tested. Notification thresholds are hypothetical settings, not safe storage limits. An isolated run of the upstream Threshold method verified nine boundary and missing-input cases, and the published YAML was parsed; these are not hardware or end-to-end installation tests. Alert timers/acknowledgement and the threshold state inside the band do not persist as a guaranteed recovery system. Phone delivery may need internet services.",
+  "proofreadFixes": "Automated skill-guided proofreading, not human/expert review. Corrected the temperature explanation to use upper=-14 and hysteresis=2 for strictly above -12 / below -16 C; distinguished temperature differences from absolute Fahrenheit conversion. Made explicit that the delay follows the latched helper state, not ten minutes continuously above the start threshold. Checked missing-input behavior in current source and omitted a misleading all-clear message. Added the current Settings > Tools > Actions location and version caveat, a YAML indentation/horizontal-reading hint, an explicit requirement to remove the test-switch input before commissioning, and an immediate appliance check when an alert is idle after restart. Distinguished local sensor processing from phone delivery and linked Local Push prerequisites. Restored four whitespace-only changes made by the layout synchronizer to older articles. Re-read final title, four TLDR bullets, procedure, worked example, limitations, authorship, source labels and CTA: PASS.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Upper-only Threshold uses strict upper+hysteresis for on and upper-hysteresis for off. Upper -14 C and hysteresis 2 C therefore starts above -12 C and clears below -16 C; lower must stay empty. Equivalent Fahrenheit settings are upper 6.8 and hysteresis 3.6.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/threshold/"
+    },
+    {
+      "claim": "The current Threshold implementation makes nonnumeric input unknown and does not restore its previous in-band state; the guide explicitly treats this as missing monitoring and documents the -13 C restart example. Nine isolated upstream-method cases checked equality, warming, cooling and missing data.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.3/homeassistant/components/threshold/binary_sensor.py"
+    },
+    {
+      "claim": "Alert repeat values are minutes; skip_first true plus [10,30,60] delays the first message ten minutes, the second thirty more minutes and later messages sixty minutes apart. It requires a configured notifier and configuration.yaml.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/alert/"
+    },
+    {
+      "claim": "Alert stops when the watched state ceases to match on, so unknown is not a recovery verdict. Acknowledgement silences the episode; scheduled timing and acknowledgement are in-memory, not guaranteed restart catch-up.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.3/homeassistant/components/alert/entity.py"
+    },
+    {
+      "claim": "Companion phone delivery must be configured and independently tested; notifier entries in Alert use mobile_app names without the notify prefix. No measured latency is promised.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    },
+    {
+      "claim": "Local Push has its own connection prerequisites. A local temperature sensor alone does not establish local phone delivery.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-local/"
+    },
+    {
+      "claim": "A Toggle helper is a virtual on/off entity, so the proposed alert-delay test need not warm food, open a freezer or switch appliance power. The test is explicitly limited to the alert and notification path.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Home Assistant OS supports editor apps; Container uses its mounted config directory. Validate configuration and restart to apply Alert YAML, preserving an existing top-level alert section.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/"
+    },
+    {
+      "claim": "Current Tools documentation locates Actions and YAML validation under Settings > Tools; old releases may use Developer Tools.",
+      "sourceUrl": "https://www.home-assistant.io/docs/tools/dev-tools/"
+    },
+    {
+      "claim": "FDA freezer storage recommendation is 0 F / -18 C; the example warmer notification thresholds and a cleared software warning do not establish food safety.",
+      "sourceUrl": "https://www.fda.gov/consumers/consumer-updates/are-you-storing-food-safely"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-door-left-open-notification/",
+      "section": "Other practical questions",
+      "readerReason": "A reader monitoring a freezer door can next add measured-temperature warnings to catch cooling problems even while the door is shut. Suggestion only; existing page unchanged."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-unavailable-device-notification/",
+      "section": "What an availability alert can miss",
+      "readerReason": "Availability confirms that a reading is present, not that a freezer is cold enough. A temperature-warning example is a concrete next step for an available sensor reporting an abnormal value. Suggestion only; existing page unchanged."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440x1000 Chromium: full title readable, centered established layout, Tara Avenir loaded, hero decoded from post-local cover-1200.webp. All three tables fit at 918px. Document width equals viewport width. Inspected the hero and library card visually, followed its article link and verified .html redirect. Screenshots saved under TARAHOME_BLOG_ARTIFACTS; an initial screenshot taken before async image decode was replaced after awaiting decode.",
+    "mobile": "390x844 and 320x844 Chromium: title wraps cleanly, body and TLDR remain readable, post-local cover-480.webp loads and freezer remains clear. Document widths match 390 and 320 with no page-wide overflow. Tables and YAML scroll within focusable containers; table scrolling verified. Inspected 390px hero, threshold section and library card. Screenshots stored only in the external artifacts directory."
+  }
+}
