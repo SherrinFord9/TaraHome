@@ -1,0 +1,83 @@
+{
+  "slug": "home-assistant-recurring-chores",
+  "action": "new",
+  "publicationDate": "2026-09-24",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant keep a household chore overdue until I do it, then remind me again a set number of days after completion?",
+  "directAnswer": "For a few completion-relative chores, save a date-only due date, use a completion button to set today plus the interval, and check for overdue work daily, on startup and when the date changes. Keep fixed appointments on a calendar. The worked routine creates one notification inside Home Assistant, not mobile push; first test with the bookshelf helpers and restore the real due date.",
+  "originalContribution": "Sections 2-6 supply two helpers, two complete automation-editor YAML blocks and an Entities card. The Worked example table calculates on-time, late and early completion, distinguishes dismissal from completion, and explains overdue recovery. The harmless verification procedure exercises date changes, duplicate prevention, completion, future-date dismissal and the time trigger. Troubleshooting connects symptoms to exact entities/actions. The interval is a household example, not equipment-maintenance advice.",
+  "limitations": "Documentation research as of September 24, 2026; no live Home Assistant installation or hardware was tested. Published YAML was parsed and its Jinja date/condition expressions checked against 12 cases, including leap year, year rollover, DST boundaries, due/future dates and unavailable states; this is not integration-runtime validation. Button pressed syntax was checked in Core 2026.9.3 source and may not work on older versions. The example has no assignments, full completion history, phone push or safety-critical guarantees. The cover is generated editorial illustration. Publication, deployment and indexing remain runner/external outcomes.",
+  "proofreadFixes": "Clarified that a routine due-day reminder appears at 09:00, while startup or a date edit can show it earlier; no midnight trigger is claimed. Explained that ISO string comparison requires the date-only helper and matching year-month-day format. Added direct primary links for local dates and has_value. Distinguished closing a persistent notification from completing a chore, and in-app reminders from phone push. Specified current button.pressed release support, entity-ID replacement and unique notification IDs when duplicating chores. The test changes the date away and back if needed so a genuine state change occurs; the scheduled test uses the actual time trigger instead of claiming Run actions proves it. Removed an unnecessary dashboard-permission tangent. Final automated proofreading passed; no human/expert review is claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A date-only Input Datetime helper can store the next due date and restores its prior state unless a YAML initial value overrides it. The example tells readers to set the first due date explicitly.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_datetime/"
+    },
+    {
+      "claim": "The completion helper is an on-screen input_button; button.pressed supports this helper, and unknown/unavailable destination states do not count as presses.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/button.pressed/"
+    },
+    {
+      "claim": "button.pressed exists in Home Assistant Core 2026.9.3 and includes input_button in its supported domains; older release compatibility is not assumed.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.3/homeassistant/components/button/trigger.py"
+    },
+    {
+      "claim": "The entity trigger ignores state creation without an old state, supporting the distinction between restoring a helper and pressing it; no restart completion action is prescribed.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.3/homeassistant/helpers/trigger.py"
+    },
+    {
+      "claim": "input_datetime.set_datetime accepts a YYYY-MM-DD date value. The completion template takes the local date before adding 14 days, then sends that ISO date.",
+      "sourceUrl": "https://www.home-assistant.io/actions/input_datetime.set_datetime/"
+    },
+    {
+      "claim": "now() uses the configured local time zone. The example uses date arithmetic, not a 14-day second counter or a promise that 30 days is a calendar month. Worked dates and daylight-saving boundary cases were calculated separately.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/dates-and-times/"
+    },
+    {
+      "claim": "has_value rejects unknown and unavailable states before the saved due date is compared; a missing helper is not treated as a healthy future date.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/states/"
+    },
+    {
+      "claim": "Time, Home Assistant start and date-state triggers let the example reevaluate the saved date. The rule includes overdue dates instead of relying on a one-time exact-date trigger.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "Reusing notification_id overwrites one persistent notification; unique IDs are needed for different chores.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "Persistent notifications appear in the Home Assistant frontend and can be dismissed by ID. They do not themselves send mobile push or change the chore due date.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "An Entities card can display the helper controls. This article makes no room-restricted authorization or hidden-card security claim.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/entities/"
+    },
+    {
+      "claim": "Local to-do is a separate local checklist feature. Ticking a checklist item is not connected to the article completion helper without an explicit automation.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/local_todo/"
+    },
+    {
+      "claim": "Run actions is not a test of the real automation trigger. The article tests the actual completion button, date changes and scheduled trigger, with expected results and restoration steps.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-trash-collection-reminder/",
+      "section": "Will it keep reminding me until I take the bins out?",
+      "readerReason": "A short contextual distinction could send readers with flexible chores to completion-relative intervals while preserving collection dates in the calendar. This is a separate navigation suggestion, not a proposal to move trash pickup dates."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-nfc-tags/",
+      "section": "4. Build a notification-first reading-lamp routine",
+      "readerReason": "After the harmless tag test, chore completion is another concrete use of a deliberate tag scan. Link to the due-date routine for readers choosing that next task, without adding its full configuration to the NFC guide."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440x1000 in Chrome. Visually inspected article hero and four-bullet TLDR, readable regular Tara Avenir title/body, centered 780px article body, loaded 1200px WebP and useful cover crop. Tables and code remain within their containers. Both library indexes show the new card first and the card navigates correctly; the .html redirect reaches the canonical path. Screenshots stored in the runner artifacts directory.",
+    "mobile": "PASS at 390x844 in Chrome. Visually inspected wrapped title, byline, 480px WebP crop, new library card and worked example. Document scroll width equals viewport width (390px). Tables scroll inside 344px focusable regions, and code blocks scroll horizontally inside their own containers. Both library indexes fit the viewport; no content outside the table/code regions extends beyond it. Screenshots stored externally."
+  }
+}

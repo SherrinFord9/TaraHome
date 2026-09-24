@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Recurring Chores: Reset After Completion</title>
+    <meta name="description" content="Set up Home Assistant recurring chore reminders with a saved due date, a Done button, and a new interval that starts when the task is actually finished." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-recurring-chores/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-recurring-chores/" />
+    <meta property="og:title" content="Home Assistant Recurring Chores: Reset After Completion" />
+    <meta property="og:description" content="Set up Home Assistant recurring chore reminders with a saved due date, a Done button, and a new interval that starts when the task is actually finished." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-recurring-chores/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Recurring Chores: Reset After Completion" />
+    <meta name="twitter:description" content="Set up Home Assistant recurring chore reminders with a saved due date, a Done button, and a new interval that starts when the task is actually finished." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-recurring-chores/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body .comparison-table:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+      .article-body pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); line-height: 1.6; }
+      .article-body pre code { border: 0; padding: 0; background: transparent; }
+      .article-body > * { min-width: 0; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarahome.ai/assets/logo/tara-star.svg"
+      }
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-recurring-chores/#blogposting",
+      "headline": "Home Assistant Recurring Chores: Reset After Completion",
+      "description": "Set up Home Assistant recurring chore reminders with a saved due date, a Done button, and a new interval that starts when the task is actually finished.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-recurring-chores/cover.png",
+      "datePublished": "2026-09-24",
+      "dateModified": "2026-09-24",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-recurring-chores/"
+      },
+      "url": "https://tarahome.ai/blog/home-assistant-recurring-chores/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Recurring Chores: Reset After Completion",
+          "item": "https://tarahome.ai/blog/home-assistant-recurring-chores/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will closing the reminder mark the chore done?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Dismissing the notification does not change the due date. If the chore is still due, the next scheduled check, restart or date change can show the reminder again. Use the completion button only after doing the task."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this require a cloud service or paid subscription?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The helpers, automations and notification shown here run inside Home Assistant. They need a running server and a way to open its interface. This example does not send a phone push notification; adding remote access or another notification channel has its own requirements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use a to-do checkbox instead of the Done button?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not with this example as written. A Local to-do checklist is a separate feature, and checking one of its items does not press this button. Keep one completion control, or build and test an explicit connection before using both."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can this track who did the chore?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The example keeps a next due date and a button-press timestamp, not an assignment system or a reliable completion history. For many tasks, household rotation or an audit trail, use a task manager that explicitly supports those features."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body><nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><header class="hero article-hero"><div><p class="article-meta"><span>Household routines</span><span><time datetime="2026-09-24">September 24, 2026</time></span><span>10 min read</span></p><h1>Home Assistant Recurring Chores: Reset After Completion</h1><p class="lede">Keep unfinished chores visible, then start the next interval from the day you actually finish.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-recurring-chores/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-recurring-chores/cover-480.webp 480w, /assets/generated/blog/home-assistant-recurring-chores/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A green dusting cloth and wooden brush on an oak bookshelf, with a phone resting face down nearby" fetchpriority="high" /></figure></header><div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>For “again two weeks after I do it,” save the next due date.</strong> Move that date forward only when you press a completion button.</li>
+<li><strong>Keep fixed dates on a calendar.</strong> Bin collection and other appointments should not drift because you finished a task late.</li>
+<li><strong>Check for overdue work, not just an exact date match.</strong> The example checks daily, after Home Assistant starts, and when the date changes.</li>
+<li><strong>Start with a harmless chore.</strong> This local example leaves one reminder inside Home Assistant; it does not send a phone push or track who completed the work.</li>
+</ul></aside>
+<h2 id="answer">Make the next reminder follow the work</h2>
+<p>For Home Assistant recurring chore reminders, use a saved due date and a “Done” button when the next interval should start from actual completion. If bookshelf dusting is due on September 24 but you do it on September 27, a 14-day interval should make the next due date October 11.</p>
+<p>Start with one date helper, one button helper and two small automations. A <strong>helper</strong> is a value or control stored inside Home Assistant, without a physical device. An <strong>automation</strong> is a rule that reacts to an event. Here, pressing the button changes the date; a separate rule checks whether that date has arrived and shows a reminder.</p>
+<p>This suits a few flexible chores, such as dusting shelves or cleaning a desk. It does not replace a shared task manager with assignments, completion history and dozens of checkboxes. For externally fixed dates, keep using a calendar: the <a href="/blog/home-assistant-trash-collection-reminder/">trash collection reminder guide</a> handles that different job.</p>
+<p class="research-method">By Tara Home. Researched from current Home Assistant documentation on September 24, 2026. The configuration and date examples below are an illustrative design, not a tested Tara household installation. The cover is an editorial illustration.</p>
+<h2 id="choose">1. Choose what “repeat” means</h2>
+<p>Write the rule in an ordinary sentence before creating anything. These three requests need different behavior.</p>
+<p class="table-hint">On a narrow screen, swipe the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Chore recurrence choices" tabindex="0"><table><thead><tr><th>Your rule</th><th>Use</th><th>What happens if you finish late?</th></tr></thead><tbody>
+<tr><td>“Put the recycling out before Tuesday’s collection.”</td><td>A calendar with the actual collection dates.</td><td>The next collection stays on its published date.</td></tr>
+<tr><td>“Dust these shelves again 14 days after I finish.”</td><td>The date helper and completion button below.</td><td>The next due date moves to 14 days after completion.</td></tr>
+<tr><td>“Keep a checklist of jobs I can tick off.”</td><td>A <a href="https://www.home-assistant.io/integrations/local_todo/">Local to-do list</a>, with separate recurrence logic if needed.</td><td>A checkbox alone does not run the helper routine below.</td></tr>
+</tbody></table></div>
+<p>The 14-day interval is an example household preference, not maintenance advice. Follow the manufacturer’s schedule for equipment servicing. Keep medication, alarms and other safety-critical checks outside this demonstration.</p>
+<h2 id="helpers">2. Create the date and completion controls</h2>
+<p>You need permission to manage Home Assistant helpers and automations. The example uses the <a href="https://www.home-assistant.io/triggers/button.pressed/">Button pressed trigger</a> available in the current documentation and Home Assistant Core 2026.9.3. An older installation may not recognize that syntax.</p>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Select <strong>Date and/or time</strong>, name it “Bookshelf dusting due,” and choose <strong>date only</strong>.</li>
+<li>Create a second helper of type <strong>Button</strong>, named “Bookshelf dusting done.” This is an on-screen control; no physical button is required.</li>
+<li>Open each helper’s settings and check its <strong>entity ID</strong>, the name used by automations. The examples use <code>input_datetime.bookshelf_dusting_due</code> and <code>input_button.bookshelf_dusting_done</code>. Replace those names everywhere below if yours differ.</li>
+<li>Set an explicit first due date. If you know the last completion date, use that date plus your chosen interval. Otherwise choose an honest first due date; do not press “Done” merely to hide overdue work.</li>
+</ol>
+<p>The <a href="https://www.home-assistant.io/integrations/input_datetime/">date helper restores its saved value</a> when Home Assistant starts again. If you create it in YAML instead, do not set a fixed <code>initial</code> date that would overwrite the saved value at startup.</p>
+<h2 id="completion">3. Move the date only when the chore is done</h2>
+<p>Go to <strong>Settings → Automations &amp; scenes → Create automation</strong>, start an empty automation, and open <strong>Edit in YAML</strong> from its menu. Paste this as one complete automation and save it. These blocks belong in the editor for individual automations, not directly at the top of <code>configuration.yaml</code>.</p>
+<pre tabindex="0"><code>alias: &quot;Chore - bookshelf dusting completed&quot;
+triggers:
+  - trigger: button.pressed
+    target:
+      entity_id: input_button.bookshelf_dusting_done
+conditions: []
+actions:
+  - action: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.bookshelf_dusting_due
+    data:
+      date: &quot;{{ (now().date() + timedelta(days=14)).isoformat() }}&quot;
+mode: single</code></pre>
+<p>The calculation uses the <a href="https://www.home-assistant.io/docs/templating/dates-and-times/">local calendar date</a> when the button is pressed, then adds 14 days. Change <code>days=14</code> for a different interval. Fourteen days means two calendar weeks; 30 days does not mean “the same date next month.” The <a href="https://www.home-assistant.io/actions/input_datetime.set_datetime/">date-setting action</a> receives a date in year-month-day format.</p>
+<h2 id="reminder">4. Keep one reminder while the chore is overdue</h2>
+<p>Create a second empty automation and paste this block into its YAML editor. It checks at 9 a.m. in Home Assistant’s configured time zone, after startup, and whenever the saved date changes. On an ordinary due day the reminder therefore appears at 9 a.m.; a restart or date edit can make it appear earlier. There is no midnight trigger.</p>
+<pre tabindex="0"><code>alias: &quot;Chore - check bookshelf dusting due date&quot;
+triggers:
+  - trigger: time
+    at: &quot;09:00:00&quot;
+  - trigger: homeassistant
+    event: start
+  - trigger: state
+    entity_id: input_datetime.bookshelf_dusting_due
+    to: null
+conditions:
+  - condition: template
+    value_template: &quot;{{ has_value(&#x27;input_datetime.bookshelf_dusting_due&#x27;) }}&quot;
+actions:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: &gt;-
+              {{ states(&#x27;input_datetime.bookshelf_dusting_due&#x27;)
+                 &lt;= now().date().isoformat() }}
+        sequence:
+          - action: persistent_notification.create
+            data:
+              notification_id: chore_bookshelf_dusting
+              title: &quot;Bookshelf dusting is due&quot;
+              message: &gt;-
+                Due since {{ states(&#x27;input_datetime.bookshelf_dusting_due&#x27;) }}.
+                When you finish, press Bookshelf dusting done
+                on your dashboard to set the next due date.
+    default:
+      - action: persistent_notification.dismiss
+        data:
+          notification_id: chore_bookshelf_dusting
+mode: restart</code></pre>
+<p>The date comparison includes <strong>today and every earlier date</strong>. It compares matching year-month-day strings from a date-only helper; do not substitute a time-only helper or a differently formatted text field. If Home Assistant is off at 9 a.m., the startup check can still find overdue work later. If the helper is temporarily <code>unknown</code> or <code>unavailable</code>, the <a href="https://www.home-assistant.io/docs/templating/states/">usable-state check</a> stops the run; a later valid date change or daily check gives it another chance.</p>
+<p>The notification appears inside Home Assistant. Reusing one <a href="https://www.home-assistant.io/actions/persistent_notification.create/">notification ID updates the existing reminder</a>. It does not create a stack of reminders. When the completion button sets a future date, the date-change trigger makes this rule dismiss that reminder.</p>
+<p>Closing the notification yourself does not finish the chore. It can reappear at the next check while the due date remains in the past. This is deliberate: “I saw the message” and “I did the work” mean different things.</p>
+<h2 id="dashboard">5. Put both controls together</h2>
+<p>On a dashboard you can edit, add an <strong>Entities</strong> card containing the two helpers. You can select them visually, or paste this into the card’s code editor:</p>
+<pre tabindex="0"><code>type: entities
+title: Bookshelf dusting
+show_header_toggle: false
+entities:
+  - entity: input_datetime.bookshelf_dusting_due
+    name: Next due date
+  - entity: input_button.bookshelf_dusting_done
+    name: Bookshelf dusting done</code></pre>
+<p>This displays the next due date beside the completion control. The <a href="https://www.home-assistant.io/dashboards/entities/">Entities card documentation</a> explains the card settings. Choose a dashboard your household already uses, so the completion control is easy to find.</p>
+<h2 id="worked-example">Worked example: early, late and missed completion</h2>
+<p>Suppose the last dusting was September 10, 2026, and the saved due date is September 24. These are calculated examples of the rules above.</p>
+<div class="comparison-table" role="region" aria-label="Worked examples of completion dates" tabindex="0"><table><thead><tr><th>What happens</th><th>Next due date</th><th>Why</th></tr></thead><tbody>
+<tr><td>You press Done on September 24.</td><td>October 8</td><td>Fourteen days from completion.</td></tr>
+<tr><td>You finish late, on September 27.</td><td>October 11</td><td>The old overdue date does not shorten the new interval.</td></tr>
+<tr><td>You finish early, on September 22.</td><td>October 6</td><td>Early completion also starts a fresh interval.</td></tr>
+<tr><td>You close the reminder without doing the work.</td><td>Still September 24</td><td>Dismissal does not press the completion button.</td></tr>
+<tr><td>Home Assistant starts on September 27 after missing the due day.</td><td>Still September 24</td><td>The startup check shows overdue work; it does not claim completion.</td></tr>
+</tbody></table></div>
+<p>Pressing Done twice on the same day calculates the same next date. Pressing it again tomorrow moves the date again. If you tapped it by mistake, edit the date back to the previous due date. This small setup does not provide a full undo history.</p>
+<h2 id="test">6. Test without waiting two weeks</h2>
+<p>Use only the new bookshelf helpers for this check. Nothing in the example operates household equipment.</p>
+<ol>
+<li>Confirm both automations are enabled. Note the real due date so you can put it back afterward.</li>
+<li>Change the due date to yesterday. If it already says yesterday, first set tomorrow, then yesterday. <strong>Expected:</strong> one “Bookshelf dusting is due” notification appears inside Home Assistant.</li>
+<li>Change the due date to another past day. <strong>Expected:</strong> the same notification is updated, with no extra copy.</li>
+<li>Press “Bookshelf dusting done.” <strong>Expected:</strong> the date becomes today plus 14 days and the notification disappears.</li>
+<li>Restore the real due date using the date control. <strong>Expected:</strong> a future date leaves no reminder; a due or overdue date shows one.</li>
+</ol>
+<p>To check the scheduled trigger too, temporarily change <code>09:00:00</code> to a few minutes ahead, set the helper to yesterday, dismiss its notification, and wait. It should reappear at that time. Restore both the schedule and real due date afterward. The automation editor’s <strong>Run actions</strong> command does not prove that a trigger works; use the real button and date changes, then inspect the automation’s <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">trace</a> if the result differs.</p>
+<h2 id="troubleshooting">If the result is different</h2>
+<div class="comparison-table" role="region" aria-label="Recurring chore troubleshooting" tabindex="0"><table><thead><tr><th>Symptom</th><th>Check first</th><th>Expected correction</th></tr></thead><tbody>
+<tr><td>Pressing Done does not move the date.</td><td>The completion automation is enabled, its button entity matches, and the editor accepts <code>button.pressed</code>.</td><td>A real button press produces a trace and sets a future date. On older versions, consult the trigger syntax supported by that release.</td></tr>
+<tr><td>The date moved but the reminder stayed.</td><td>The second automation watches the same date helper and uses the same notification ID in create and dismiss.</td><td>A future date selects the dismiss action.</td></tr>
+<tr><td>There is no phone alert.</td><td>Open Home Assistant’s notification panel.</td><td>This example creates an in-app reminder, not a phone push.</td></tr>
+<tr><td>The reminder returns after you dismiss it.</td><td>Check whether the date is still due.</td><td>Complete the chore, or deliberately edit the date to postpone it.</td></tr>
+<tr><td>The date resets after every restart.</td><td>Check for a YAML <code>initial</code> value or another automation writing the date.</td><td>Keep the saved date instead of overwriting it at startup.</td></tr>
+</tbody></table></div>
+<p>For a second chore, duplicate the helpers and both automations, then change both entity IDs, the interval, the wording and <strong>every occurrence of the notification ID</strong>. Two chores sharing an ID would overwrite or dismiss each other’s reminders. If copying this several times becomes awkward, that is a good point to choose a dedicated chore manager with completion-relative recurrence.</p>
+<p>Once the button works reliably, a label near the shelf can make completion easier. Our <a href="/blog/home-assistant-nfc-tags/">Home Assistant NFC tag guide</a> covers phone and tag setup. An NFC routine would need to press this same helper explicitly; attaching a sticker alone does not connect it.</p>
+<h2 id="faq">Frequently asked questions</h2>
+<h3>Will closing the reminder mark the chore done?</h3><p>No. Dismissing the notification does not change the due date. If the chore is still due, the next scheduled check, restart or date change can show the reminder again. Use the completion button only after doing the task.</p>
+<h3>Does this require a cloud service or paid subscription?</h3><p>The helpers, automations and notification shown here run inside Home Assistant. They need a running server and a way to open its interface. This example does not send a phone push notification; adding remote access or another notification channel has its own requirements.</p>
+<h3>Can I use a to-do checkbox instead of the Done button?</h3><p>Not with this example as written. A Local to-do checklist is a separate feature, and checking one of its items does not press this button. Keep one completion control, or build and test an explicit connection before using both.</p>
+<h3>Can this track who did the chore?</h3><p>The example keeps a next due date and a button-press timestamp, not an assignment system or a reliable completion history. For many tasks, household rotation or an audit trail, use a task manager that explicitly supports those features.</p>
+<p>If you want help making everyday controls and routines understandable for the household, see Tara’s <a href="/home-automation-kit/">home automation kit for local routines</a>.</p></div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Helpers and dates</h3><ul><li><a href="https://www.home-assistant.io/integrations/input_datetime/">Date helpers and saved-state restoration</a></li><li><a href="https://www.home-assistant.io/integrations/input_button/">Button helpers</a></li><li><a href="https://www.home-assistant.io/triggers/button.pressed/">Button pressed trigger</a></li><li><a href="https://www.home-assistant.io/actions/input_datetime.set_datetime/">Set a date helper</a></li><li><a href="https://www.home-assistant.io/docs/templating/">Templates and date calculations</a></li></ul></div><div><h3>Reminders and verification</h3><ul><li><a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create or update one persistent notification</a></li><li><a href="https://www.home-assistant.io/integrations/persistent_notification/">Persistent notifications and dismissal</a></li><li><a href="https://www.home-assistant.io/docs/automation/trigger/">Time, startup and state triggers</a></li><li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Automation traces and testing</a></li><li><a href="https://www.home-assistant.io/dashboards/entities/">Entities dashboard card</a></li><li><a href="https://www.home-assistant.io/integrations/local_todo/">Local to-do lists</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make household routines easy to follow</h2><p>Plan the rooms, controls and everyday routines your household needs.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
