@@ -1,0 +1,75 @@
+{
+  "slug": "home-assistant-scenes-vs-scripts",
+  "action": "new",
+  "publicationDate": "2026-09-26",
+  "verdict": "PASS",
+  "readerQuestion": "Should I use a scene, script, or automation for a Home Assistant routine, and how can a dashboard button and a schedule share settings and an allow check?",
+  "directAnswer": "Use a scene for a saved device preset, a script for reusable checks or action sequences, and an automation when an event should start the work. Keep simple one-off actions in their automation. In the worked example, both entry points call one script, which checks a Toggle helper before activating a two-light scene. A direct scene call bypasses that check; the helper is not an undo command or a continuous override.",
+  "originalContribution": "The worked-example section provides five ordered steps, complete script/button/automation YAML, and a five-row acceptance matrix. It shows exactly where to put a shared condition, how a direct scene shortcut bypasses it, how one preset edit reaches both callers, and why Run actions is separate from verifying the time trigger. The opening decision table also identifies when a light group or a simpler automation is enough.",
+  "limitations": "Documentation research and automated editorial review, not hardware testing or human/expert review. Three YAML blocks parse and their entity/action references agree, but they were not executed on a running Home Assistant instance. Exact dimming support, response, brightness rounding and installed menu labels depend on the reader's devices/version. No physical synchronization, outage behavior or latency was measured. The optional fixed-time automation has no missed-event catch-up. Cover is conceptual AI-generated editorial art, not a Tara installation.",
+  "proofreadFixes": "Automated grandma-proofread PASS after edits: replaced the awkward exact-query opening with natural wording; added the missing instruction to expose the allow helper next to the routine button; added a mobile code-scrolling hint after inspecting the narrow viewport; simplified the entity explanation so brightness is not implied to be a separate light entity. Technical proofreading confirmed the condition stays inside the called script when Run actions skips the automation-level checks, explained direct scene bypass, distinguished single mode from a cooldown, retained review-versus-edit mode and fade support, and kept scene/stop behavior separate from restoring prior settings. All 13 unique source URLs returned HTTP 200, all 10 unique internal link routes returned local HTTP 200, the .html redirect resolved correctly, and both library aliases link to the new canonical. Existing library cards and Blog post IDs remain unchanged apart from insertion/order. The layout sync's unrelated blank-line removals on four older articles were restored; all applicable gates pass with those files unchanged.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A scene stores desired device states, while scripts contain reusable sequences and automations add triggers and optional conditions; automation actions can use script syntax, so a separate script is not compulsory.",
+      "sourceUrl": "https://www.home-assistant.io/getting-started/concepts-terminology/"
+    },
+    {
+      "claim": "A condition action at the start of the script stops the sequence when the helper is not on. The script, rather than only its scheduled caller, owns the check in the example.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "Toggle helpers are created under Devices & services > Helpers and store an adjustable on/off state. This example checks that value at entry rather than treating a toggle change as a trigger or reversal.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Run actions skips automation triggers and top-level conditions. The example's separately called script still executes its own condition; a later future-time check is required to verify the real time trigger.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "Dashboard actions support action: perform-action and perform_action naming a script action. The button and automation target the same script.dinner_lighting entry point.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/actions/"
+    },
+    {
+      "claim": "Since 2024.12 existing scenes open in review mode without being applied; switching to edit mode applies them. The article warns about actual device changes and version-dependent labels instead of claiming every editor opening actuates a scene.",
+      "sourceUrl": "https://www.home-assistant.io/blog/2024/12/04/release-202412/"
+    },
+    {
+      "claim": "Single mode declines another run only while the script is executing. Direct script.NAME calls wait for the called sequence; script.turn_on starts it without waiting. Neither proves physical lights completed a transition.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/script/"
+    },
+    {
+      "claim": "scene.turn_on and scene.apply support a transition for lights that support it. This does not add delays, loops or a sequence of later actions to the scene.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scene/"
+    },
+    {
+      "claim": "Scenes have no ordinary on/off state and no scene.turn_off action. The last activation timestamp does not prove that the room continues to match the preset.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/scene/"
+    },
+    {
+      "claim": "script.turn_off stops remaining actions without undoing commands already executed. Readers are sent to explicit light controls or a saved preset for recovery.",
+      "sourceUrl": "https://www.home-assistant.io/actions/script.turn_off/"
+    },
+    {
+      "claim": "The time trigger accepts at: '18:30:00'. The article supplies a future-time verification and states that this simple fixed-time recipe does not catch up after Home Assistant misses the event.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-scene-snapshot-restore/",
+      "section": "Decide how interruption and manual changes should behave",
+      "readerReason": "Readers choosing a saved Normal lighting preset for longer sessions can learn when to keep it as a scene and when to add a reusable script or schedule."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-house-modes/",
+      "section": "Keep mode-change actions short and reversible",
+      "readerReason": "Readers deciding how to implement short actions after a mode change can use the scene/script comparison without turning a persistent house mode into a scene."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440x1000 Chromium: visually inspected the readable two-line title, centered body, four-bullet TLDR directly after the hero, visible linked byline, decoded post-local WebP image, comparison table and library card. Tara Avenir computed at regular 400. Document scrollWidth equals 1440. Table width is 918px with no table overflow at desktop. Library card retains the lit dining pendant, sideboard lamp and green bench; both /blog/ and /blog.html route to the new article. Screenshots saved in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390x844 Chromium: visually inspected title wrapping, byline, hero, TLDR placement, code, table, FAQ, professional Sources heading and first library card. Document scrollWidth equals 390. Tables are contained in 344px focusable regions around 760px content; horizontal scrolling was exercised. Long code lines also scroll within their own region with a visible hint. Optional code panels expand. No page overflow, overlapping text or broken image. The .html redirect reaches the canonical URL. Screenshots saved outside the website in TARAHOME_BLOG_ARTIFACTS."
+  }
+}

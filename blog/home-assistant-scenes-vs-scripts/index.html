@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Scenes vs Scripts: Which Should You Use?</title>
+    <meta name="description" content="Choose Home Assistant scenes, scripts, or automations with a two-light example, one shared pause switch, and safe checks for a button and schedule." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-scenes-vs-scripts/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-scenes-vs-scripts/" />
+    <meta property="og:title" content="Home Assistant Scenes vs Scripts: Which Should You Use?" />
+    <meta property="og:description" content="Choose Home Assistant scenes, scripts, or automations with a two-light example, one shared pause switch, and safe checks for a button and schedule." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-scenes-vs-scripts/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Scene Snapshot: Restore Your Lights" />
+    <meta name="twitter:description" content="Use a Home Assistant scene snapshot to restore lights after a temporary change, with a two-lamp script, repeat-call protection and clear restart limits." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-scenes-vs-scripts/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-scenes-vs-scripts/#blogposting",
+      "headline": "Home Assistant Scenes vs Scripts: Which Should You Use?",
+      "description": "Choose Home Assistant scenes, scripts, or automations with a two-light example, one shared pause switch, and safe checks for a button and schedule.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-scenes-vs-scripts/cover.png",
+      "datePublished": "2026-09-26",
+      "dateModified": "2026-09-26",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-scenes-vs-scripts/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/getting-started/concepts-terminology/",
+        "https://www.home-assistant.io/docs/automation/basics/",
+        "https://www.home-assistant.io/docs/scene/editor/",
+        "https://www.home-assistant.io/blog/2024/12/04/release-202412/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://www.home-assistant.io/docs/scripts/",
+        "https://www.home-assistant.io/integrations/script/",
+        "https://www.home-assistant.io/dashboards/actions/",
+        "https://www.home-assistant.io/docs/automation/trigger/",
+        "https://www.home-assistant.io/docs/automation/troubleshooting/",
+        "https://www.home-assistant.io/integrations/scene/",
+        "https://www.home-assistant.io/docs/scene/",
+        "https://www.home-assistant.io/actions/script.turn_off/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Scenes vs Scripts: Which Should You Use?",
+          "item": "https://tarahome.ai/blog/home-assistant-scenes-vs-scripts/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a Home Assistant scene fade the lights?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The scene.turn_on and scene.apply actions support a transition duration for lights that support fading. A fade is different from waiting and then running another action; use a script or automation for that sequence."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I turn off a scene?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "There is no scene.turn_off action. Use the light controls or activate another saved preset. A scene records when it was called; it does not continuously track whether the room still matches."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does stopping a script restore the room?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Stopping a running script skips its remaining steps. It does not undo commands already sent. Use ordinary light controls or a saved return preset; capturing and restoring an arbitrary earlier state is a separate setup."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+      <header class="hero article-hero"><div>
+        <p class="article-meta"><span>Practical automations</span><span><time datetime="2026-09-26">September 26, 2026</time></span><span>9 min read</span></p>
+        <h1>Home Assistant Scenes vs Scripts: Which Should You Use?</h1>
+        <p class="lede">Choose the right building block, then let a button and a schedule share one lighting preset and one pause check.</p>
+        <p class="article-byline"><a href="/#about">By Tara Home</a></p>
+      </div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-scenes-vs-scripts/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-scenes-vs-scripts/cover-480.webp 480w, /assets/generated/blog/home-assistant-scenes-vs-scripts/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Warm pendant and sideboard lighting around a dining table beside a forest-green bench" loading="eager" /></figure></header>
+
+      <div class="article-body">
+        <aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+          <li><strong>Choose a scene for a preset:</strong> save which lights should be on and their brightness, then recall those settings together.</li>
+          <li><strong>Choose a script for reusable behavior:</strong> use it when a button and a schedule need the same checks or steps. Scripts can include conditions and delays.</li>
+          <li><strong>Add an automation for a trigger:</strong> it starts the work at a time or when something happens. A simple one-off rule can keep its actions inside the automation.</li>
+          <li><strong>Start with two nonessential lights:</strong> verify the preset and every way of starting it. Applying a scene does not lock the settings in place, and stopping a script does not restore them.</li>
+        </ul></aside>
+        <p class="research-method">Researched from current Home Assistant documentation on September 26, 2026. The configuration below is an illustrative worked example, not a Tara hardware test. Menu wording can differ by installed version. The cover is an AI-generated editorial illustration.</p>
+
+        <h2 id="choose">Scenes vs scripts: start with what the routine must do</h2>
+        <p>When choosing between <strong>Home Assistant scenes and scripts</strong>, decide whether you need a saved setting or a reusable procedure. If you only want “dining light at 40%, sideboard lamp at 15%,” create a scene. If you also need “only when this routine is allowed,” or a sequence with waiting between steps, use a script. Add an automation when a clock, sensor or other event should start it.</p>
+        <p>You do not need all three for every job. One automation can check a condition and turn on a light directly. Introduce a script when you want to call the same behavior from several places, and a scene when a named preset makes the settings easier to maintain. Home Assistant’s <a href="https://www.home-assistant.io/getting-started/concepts-terminology/">concepts guide</a> and <a href="https://www.home-assistant.io/docs/automation/basics/">automation basics</a> explain these building blocks.</p>
+        <p>An <strong>entity</strong> is a particular control or reading inside Home Assistant, such as one lamp’s control. An <strong>action</strong> is a command, such as applying a scene. In the example below, two light entities keep their settings in one scene, while two ways of starting dinner lighting share one script.</p>
+        <p class="table-hint">On a phone, scroll the table sideways.</p>
+        <div class="comparison-table" role="region" aria-label="Choose a scene script or automation" tabindex="0"><table><thead><tr><th scope="col">What you want</th><th scope="col">Start with</th><th scope="col">Why</th></tr></thead><tbody>
+          <tr><td>Recall different brightness settings for several lights</td><td>Scene</td><td>One named preset holds the desired settings.</td></tr>
+          <tr><td>Run the same checks and actions from more than one place</td><td>Script</td><td>Change the shared procedure once.</td></tr>
+          <tr><td>Wait, choose between outcomes, or repeat steps</td><td>Script, or actions inside one automation</td><td>Both use Home Assistant’s action-sequence syntax.</td></tr>
+          <tr><td>Start something at 18:30 or on a sensor change</td><td>Automation</td><td>The trigger supplies the starting event.</td></tr>
+          <tr><td>Control several lamps with one on/off or brightness control</td><td>Light group</td><td>A shared control is a different job from recalling a preset.</td></tr>
+        </tbody></table></div>
+        <p>For that last case, see <a href="/blog/home-assistant-light-group-vs-area/">light groups versus whole-room targets</a>. You do not need to rebuild a working group as a scene.</p>
+
+        <h2 id="worked-example">Worked example: dinner lighting from a button and a schedule</h2>
+        <p>Suppose you want the same dinner lighting from a dashboard button and an optional daily schedule. One “Dinner lighting allowed” switch should block both. The scene stores the look; the script checks the switch; the automation supplies the time.</p>
+        <p>Use two dimmable lights already controllable in Home Assistant. Confirm each responds through its normal control first. Select lamps that can safely change while you watch; leave stair, exit and other essential lighting out. These brightness values are examples to adjust for your room.</p>
+
+        <h3>1. Save the lighting preset</h3>
+        <p>Under <strong>Settings → Automations &amp; scenes → Scenes</strong>, create a scene named <strong>Dinner preset</strong>. Include only the two intended light entities. Set the dining light to about 40% and the sideboard lamp to about 15%, then save. Note its entity ID; the examples use <code>scene.dinner_preset</code>. Check the actual ID rather than assuming the name produced it.</p>
+        <p>Scene creation and live editing can change real lights. Since Home Assistant 2024.12, opening an existing scene starts in <strong>review mode</strong>; switching to edit mode applies it. Check the mode shown on your version before adjusting anything. See the <a href="https://www.home-assistant.io/docs/scene/editor/">scene editor instructions</a> and the <a href="https://www.home-assistant.io/blog/2024/12/04/release-202412/">review-mode release explanation</a>.</p>
+
+        <h3>2. Create one shared allow switch</h3>
+        <p>Go to <strong>Settings → Devices &amp; services → Helpers → Create helper → Toggle</strong>. Name it <strong>Dinner lighting allowed</strong>. A helper is a value stored in Home Assistant, without a physical switch attached. Record its entity ID; here it is <code>input_boolean.dinner_lighting_allowed</code>. Add this helper to your dashboard alongside the routine button so the household can find the pause control. Leave it off while setting up.</p>
+        <p>This switch will be checked when the routine starts. Turning it on does not itself run dinner lighting. Turning it off afterward does not reverse an earlier change. The <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper documentation</a> describes how this shared on/off setting works.</p>
+
+        <h3>3. Put the check inside the reusable script</h3>
+        <p>Under <strong>Settings → Automations &amp; scenes → Scripts</strong>, create a new script. In its menu, choose <strong>Edit in YAML</strong>, the text form of the same configuration. Paste this complete script, substitute your helper and scene IDs, and save. It belongs in the script editor, not in <code>configuration.yaml</code>.</p>
+        <p class="table-hint">On a phone, scroll long code lines sideways.</p>
+        <details class="configuration" open><summary>Script: Dinner lighting</summary><pre tabindex="0"><code>alias: Dinner lighting
+mode: single
+sequence:
+  - alias: Check the shared allow switch
+    condition: state
+    entity_id: input_boolean.dinner_lighting_allowed
+    state: "on"
+  - alias: Apply the saved lighting settings
+    action: scene.turn_on
+    target:
+      entity_id: scene.dinner_preset
+</code></pre></details>
+        <p>The first step stops the sequence unless the helper is on. Put this check <strong>inside the script</strong> so every caller uses it. A condition placed only in the scheduled automation would not protect a separate dashboard call. This follows Home Assistant’s <a href="https://www.home-assistant.io/docs/scripts/">script condition behavior</a>.</p>
+        <p>Confirm the saved script’s entity ID; below it is <code>script.dinner_lighting</code>. Its <code>single</code> mode declines another call while that script is still executing. Because this example is short, it is not a lasting cooldown or a lock against other routines. The <a href="https://www.home-assistant.io/integrations/script/">script documentation</a> explains execution modes.</p>
+
+        <h3>4. Have both entry points call the script</h3>
+        <p>Add a dashboard Button card. Set its tap action to perform the saved <strong>Dinner lighting</strong> script. This optional card configuration goes in the card’s code editor:</p>
+        <details class="configuration"><summary>Dashboard button configuration</summary><pre tabindex="0"><code>type: button
+name: Dinner lighting
+icon: mdi:lightbulb-group
+tap_action:
+  action: perform-action
+  perform_action: script.dinner_lighting
+</code></pre></details>
+        <p>For an optional schedule, create a new empty automation and open its YAML editor. This example requests the routine daily at 18:30 in Home Assistant’s configured time zone:</p>
+        <details class="configuration"><summary>Optional scheduled automation</summary><pre tabindex="0"><code>alias: Dinner lighting at 18:30
+triggers:
+  - trigger: time
+    at: "18:30:00"
+conditions: []
+actions:
+  - action: script.dinner_lighting
+mode: single
+</code></pre></details>
+        <p>Replace the script ID in both places if yours differs. Save the automation, then disable it until you finish testing. The <a href="https://www.home-assistant.io/dashboards/actions/">dashboard action documentation</a> and <a href="https://www.home-assistant.io/docs/automation/trigger/">time-trigger reference</a> describe these settings.</p>
+        <p><strong>Both routes must call the script.</strong> A button that activates <code>scene.dinner_preset</code> directly skips the allow check. The scene remains available separately; the helper only governs callers that use this script. If you want an intentional “apply anyway” button, label that behavior clearly.</p>
+
+        <h3>5. Verify the two routes without waiting until dinner</h3>
+        <p>Set the lamps to visibly different starting settings, such as both at 70%. Watch them while testing. Use the dashboard button, then the automation’s <strong>Run actions</strong> command. That command bypasses the automation’s trigger and top-level conditions, but the called script still executes its own condition. It does not prove that the time trigger works. See <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Home Assistant’s testing guidance</a>.</p>
+        <p class="table-hint">Expected results from the example’s logic, not measured hardware results.</p>
+        <div class="comparison-table" role="region" aria-label="Dinner lighting verification matrix" tabindex="0"><table><thead><tr><th scope="col">Test</th><th scope="col">Expected result</th><th scope="col">If it differs</th></tr></thead><tbody>
+          <tr><td>Allow switch off; press the dashboard button</td><td>Both lamps keep their starting settings.</td><td>Check that the button calls the script, not the scene.</td></tr>
+          <tr><td>Allow switch off; use the automation’s Run actions</td><td>The script stops at its condition. Lamps stay unchanged.</td><td>Confirm the automation calls the same script and the condition is inside it.</td></tr>
+          <tr><td>Allow switch on; try each route separately, resetting the lamps between tests</td><td>Both routes request the saved 40% and 15% settings.</td><td>Check the helper ID, scene ID, script trace and individual lamp controls.</td></tr>
+          <tr><td>After a successful run, turn the allow switch off</td><td>The existing light settings remain.</td><td>The helper is an entry check, not an undo command.</td></tr>
+          <tr><td>Change the saved sideboard preset to 25%; repeat both allowed tests</td><td>Both routes use the new setting without changing their actions.</td><td>Check for an old scene ID or duplicated light commands.</td></tr>
+        </tbody></table></div>
+        <p>Finally, temporarily set the automation’s time a few minutes ahead, enable it, and leave the allow switch on. Confirm it starts at that time; then restore 18:30 or disable the schedule if you only want a button. This simple schedule has no catch-up action if Home Assistant is off at the trigger time.</p>
+        <p>A <strong>trace</strong> is a record of the steps Home Assistant ran. Use it to find a failed condition or action, but also watch the lamps: a completed action is not proof that both physical devices reached the requested brightness. Device rounding can also make reported percentages differ slightly.</p>
+
+        <h2 id="keep-simple">Keep the boundaries clear as you add more routines</h2>
+        <p>If all you need is a manual lighting preset, keep just the scene and a button. If only one timed rule needs the allow check, its automation can check the helper and apply the scene directly. The extra script earns its place in this example because two entry points share a rule.</p>
+        <p>The script uses a direct call, <code>action: script.dinner_lighting</code>. If you later add actions after that call, Home Assistant waits for the script to finish. The generic <code>script.turn_on</code> action starts a script without waiting. Neither is a promise that physical lights have finished fading; the <a href="https://www.home-assistant.io/integrations/script/#waiting-for-a-script-to-complete">calling behavior</a> concerns the sequence running in Home Assistant.</p>
+        <p>Other routines can still change these lamps after the scene is applied. For a person’s adjustment to take priority over later automatic changes, use an explicit <a href="/blog/home-assistant-automation-manual-override/">manual-override design</a>. To restore whatever settings existed before a temporary change, use the separate <a href="/blog/home-assistant-scene-snapshot-restore/">scene snapshot and restore walkthrough</a>. A fixed dinner preset does neither automatically.</p>
+
+        <h2 id="faq">Common questions</h2>
+        <h3>Can a Home Assistant scene fade the lights?</h3><p>Yes. The scene.turn_on and scene.apply actions support a transition duration for lights that support fading. A fade is different from waiting and then running another action; use a script or automation for that sequence.</p>
+        <h3>How do I turn off a scene?</h3><p>There is no scene.turn_off action. Use the light controls or activate another saved preset. A scene records when it was called; it does not continuously track whether the room still matches.</p>
+        <h3>Does stopping a script restore the room?</h3><p>No. Stopping a running script skips its remaining steps. It does not undo commands already sent. Use ordinary light controls or a saved return preset; capturing and restoring an arbitrary earlier state is a separate setup.</p>
+        <p>The official <a href="https://www.home-assistant.io/docs/scene/">scene transition instructions</a>, <a href="https://www.home-assistant.io/integrations/scene/">scene state reference</a> and <a href="https://www.home-assistant.io/actions/script.turn_off/">stop-script action</a> describe those limits.</p>
+        <p>When planning a <a href="/home-automation-kit/">home automation kit with coordinated local routines</a>, name the everyday controls and agree on what pauses them. A small routine everyone understands is easier to hand over and maintain.</p>
+      </div>
+      <section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid">
+<div><h3>Choosing and creating the routine</h3><ul><li><a href="https://www.home-assistant.io/getting-started/concepts-terminology/">Concepts and terminology</a></li><li><a href="https://www.home-assistant.io/docs/automation/basics/">Understanding automations</a></li><li><a href="https://www.home-assistant.io/docs/scene/editor/">Scene editor</a></li><li><a href="https://www.home-assistant.io/blog/2024/12/04/release-202412/">Scene review and edit modes</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li><li><a href="https://www.home-assistant.io/docs/scripts/">Script syntax and conditions</a></li></ul></div>
+<div><h3>Execution and verification</h3><ul><li><a href="https://www.home-assistant.io/integrations/script/">Script modes and calling behavior</a></li><li><a href="https://www.home-assistant.io/dashboards/actions/">Dashboard actions</a></li><li><a href="https://www.home-assistant.io/docs/automation/trigger/">Automation triggers</a></li><li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Testing and traces</a></li><li><a href="https://www.home-assistant.io/integrations/scene/">Scene state and activation</a></li><li><a href="https://www.home-assistant.io/docs/scene/">Scene transitions</a></li><li><a href="https://www.home-assistant.io/actions/script.turn_off/">Stopping a script</a></li></ul></div>
+</div></section>
+      <section class="block article-cta"><p class="kicker">Plan your home</p><h2>Give each room a clear routine</h2><p>Choose the rooms and everyday controls you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+    </article></main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
