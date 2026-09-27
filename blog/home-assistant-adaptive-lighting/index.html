@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Adaptive Lighting: Setup and Manual Control</title>
+    <meta name="description" content="Set up Home Assistant Adaptive Lighting for one lamp, preserve manual dimming and scenes, and verify bedtime settings with a safe hold-and-resume test." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-adaptive-lighting/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-adaptive-lighting/" />
+    <meta property="og:title" content="Home Assistant Adaptive Lighting: Setup and Manual Control" />
+    <meta property="og:description" content="Set up Home Assistant Adaptive Lighting for one lamp, preserve manual dimming and scenes, and verify bedtime settings with a safe hold-and-resume test." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-adaptive-lighting/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Adaptive Lighting: Setup and Manual Control" />
+    <meta name="twitter:description" content="Set up Home Assistant Adaptive Lighting for one lamp, preserve manual dimming and scenes, and verify bedtime settings with a safe hold-and-resume test." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-adaptive-lighting/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { table-layout: fixed; border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body pre { background: #fffaf0; border: 1px solid var(--line); border-radius: 14px; padding: 20px; overflow-x: auto; max-width: 100%; font-size: .94rem; line-height: 1.6; }
+.article-body code { overflow-wrap: anywhere; }
+.article-body pre code { overflow-wrap: normal; white-space: pre; }
+.article-body pre:focus-visible, .comparison-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.method-note { border-left: 3px solid var(--accent); padding-left: 16px; }
+.article-byline { margin-top: 18px; font-size: 1rem; }
+
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-adaptive-lighting/#blogposting",
+      "headline": "Home Assistant Adaptive Lighting: Setup and Manual Control",
+      "description": "Set up Home Assistant Adaptive Lighting for one lamp, preserve manual dimming and scenes, and verify bedtime settings with a safe hold-and-resume test.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-adaptive-lighting/cover.png",
+      "datePublished": "2026-09-27",
+      "dateModified": "2026-09-27",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-adaptive-lighting/"
+      },
+      "citation": [
+        "https://github.com/basnijholt/adaptive-lighting",
+        "https://github.com/basnijholt/adaptive-lighting/releases/tag/v1.32.0",
+        "https://adaptive-lighting.nijho.lt/getting-started/",
+        "https://adaptive-lighting.nijho.lt/configuration/",
+        "https://adaptive-lighting.nijho.lt/advanced/manual-control/",
+        "https://adaptive-lighting.nijho.lt/advanced/sleep-mode/",
+        "https://adaptive-lighting.nijho.lt/services/",
+        "https://github.com/basnijholt/adaptive-lighting/blob/v1.32.0/custom_components/adaptive_lighting/switch.py",
+        "https://adaptive-lighting.nijho.lt/troubleshooting/",
+        "https://www.home-assistant.io/integrations/light/",
+        "https://www.home-assistant.io/integrations/script/",
+        "https://www.hacs.xyz/docs/use/download/download/",
+        "https://www.hacs.xyz/docs/use/repositories/type/integration/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Adaptive Lighting: Setup and Manual Control",
+          "item": "https://tarahome.ai/blog/home-assistant-adaptive-lighting/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is Adaptive Lighting built into Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. This guide uses Bas Nijholt’s community-maintained custom integration, commonly installed through HACS. Plan to maintain it alongside Home Assistant and check compatibility before updates."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will it make a cloud-connected bulb local?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It changes the commands Home Assistant sends through the bulb’s existing integration. The bulb’s control path still determines whether internet access or a vendor account is needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it need to turn on every light at sunset?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Keep your existing on/off routine separate. The setup here selects adaptive values when you request light and adjusts an on lamp; it is not a sunset turn-on schedule."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body><nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><header class="hero article-hero"><div>
+<p class="article-meta"><span>Lighting setup</span><span><time datetime="2026-09-27">September 27, 2026</time></span><span>10 min read</span></p>
+<h1>Home Assistant Adaptive Lighting: Setup and Manual Control</h1><p class="lede">Start with one lamp, give manual choices priority, and make bedtime settings predictable.</p>
+<p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-adaptive-lighting/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-adaptive-lighting/cover-480.webp 480w, /assets/generated/blog/home-assistant-adaptive-lighting/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A warm reading lamp beside an open book and forest-green armchair at dusk" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Start with one lamp:</strong> install the Adaptive Lighting custom integration, select an existing dimmable, tunable-white light, and let it adjust that light’s brightness and white tone through the day.</li>
+<li><strong>Keep your choices:</strong> enable manual takeover and respect explicit brightness/color commands. A normal on command can use adaptive settings; your reading or movie preset should keep its own values.</li>
+<li><strong>Set bedtime separately:</strong> sleep mode is a switch. It stays enabled until you turn it off; sunrise does not automatically end it.</li>
+<li><strong>Know the limits:</strong> this is community software, not a built-in Home Assistant integration. It needs compatible light controls, and it does not replace your motion/on-off routine or guarantee cloud-free bulb control.</li>
+</ul></aside>
+
+<h2>Use Adaptive Lighting for the settings, then choose when the light comes on</h2>
+<p><strong>For Home Assistant adaptive lighting, start with the Adaptive Lighting custom integration by Bas Nijholt and a single lamp you already control reliably.</strong> It calculates changing brightness and white-color settings. Your wall control, dashboard or separate automation still decides when you want light. The <a href="https://github.com/basnijholt/adaptive-lighting">project overview</a> describes this division and its separate brightness, color and sleep controls.</p>
+<p>Choose this approach when you want the same lamp to feel brighter and cooler during the day, then softer and warmer later. If you only want two fixed looks, a pair of <a href="/blog/home-assistant-scenes-vs-scripts/">saved scenes may be enough</a>. If you want a lamp to wake you at a particular time, use the separate <a href="/blog/home-assistant-wake-up-light/">wake-up-light walkthrough</a>.</p>
+<p>Tara’s recommendation is to get one lamp’s manual controls right before adding a room. A gradual color change is less useful if somebody’s reading light keeps dimming against their wishes.</p>
+<p class="research-method method-note"><strong>How this guide was prepared:</strong> researched from documentation by Home Assistant, HACS and Adaptive Lighting, checked September 27, 2026, including the stable Adaptive Lighting v1.32.0 release. The configuration and household example below were not tested on physical bulbs. The cover is an AI-generated room illustration.</p>
+
+<h2>1. Check the lamp and the software first</h2>
+<p>This walkthrough assumes the lamp’s Home Assistant controls already offer <strong>brightness and adjustable white color temperature</strong>. An entity is Home Assistant’s named control for something in the house, such as <code>light.reading_lamp</code>. Confirm that both sliders visibly work before installing anything.</p>
+<p>Color temperature uses kelvin, written <strong>K</strong>: lower values look warmer; higher values look cooler. It does not describe how hot the lamp becomes. Stay within the lamp’s supported range. A dimmable light with fixed white color can use brightness adaptation alone; an on/off-only light cannot provide these adjustments. Supported controls and fades depend on the light and its connection, as explained in <a href="https://www.home-assistant.io/integrations/light/">Home Assistant’s light documentation</a>.</p>
+<p><a href="https://github.com/basnijholt/adaptive-lighting/releases/tag/v1.32.0">Adaptive Lighting v1.32.0 requires Home Assistant 2025.9 or newer</a>. The settings below use that release as their reference. An older installed release may lack an option or arrange its settings differently; check its release notes before updating.</p>
+<p>Use a non-essential reading or table lamp, with other lighting available. Temporarily pause other routines that change this lamp’s brightness or color. Keep its ordinary on/off control available throughout the check.</p>
+
+<h2>2. Install the integration and select one light</h2>
+<ol>
+<li><strong>Make a current backup before adding custom software.</strong> If you need the process, follow the existing <a href="/blog/how-to-back-up-home-assistant/">backup and restore guide</a>.</li>
+<li><strong>Open HACS, the Home Assistant Community Store.</strong> If it is not installed, follow the <a href="https://www.hacs.xyz/docs/use/download/download/">official HACS installation instructions</a> for your Home Assistant installation type.</li>
+<li><strong>Find “Adaptive Lighting” by Bas Nijholt in HACS and download it.</strong> Follow its restart prompt. HACS supplies community integrations; downloading one is separate from configuring it in Home Assistant. See <a href="https://www.hacs.xyz/docs/use/repositories/type/integration/">HACS’s integration guide</a>.</li>
+<li><strong>Open Settings → Devices &amp; services → Add integration → Adaptive Lighting.</strong> Name the configuration <em>Reading lamp</em>, open its configuration/options control and select just the lamp. Do not also create a YAML configuration for the same setup. The <a href="https://adaptive-lighting.nijho.lt/getting-started/">project’s installation guide</a> covers both routes.</li>
+<li><strong>Find the four new switches.</strong> They enable Adaptive Lighting itself, brightness adaptation, color adaptation and sleep mode. Add them and the lamp to an ordinary dashboard Entities card so you can see them during the test.</li>
+</ol>
+<p>For this example, turn the main, brightness and color switches on, and sleep mode off. Copy the actual entity IDs from their settings; names may acquire a numbered suffix. The examples below assume <code>switch.adaptive_lighting_reading_lamp</code> and <code>light.reading_lamp</code>.</p>
+
+<h2>3. Give the lamp a modest starting range</h2>
+<p>These are <strong>example preferences, not calibrated output or universal recommendations</strong>. Assume a lamp that supports 2700–4000 K and dims comfortably to 10%. If yours does not, choose supported values. Save them in the integration’s configuration/options, where they survive a restart.</p>
+<p class="table-hint">On a phone, scroll the table sideways to compare the settings.</p>
+<div class="comparison-table" role="region" aria-label="Example reading lamp settings" tabindex="0"><table><thead><tr><th>Setting</th><th>Example value</th><th>Reason for this example</th></tr></thead><tbody>
+<tr><td><code>min_brightness</code> / <code>max_brightness</code></td><td>20 / 70</td><td>A moderate daily range; choose what works at the chair.</td></tr>
+<tr><td><code>min_color_temp</code> / <code>max_color_temp</code></td><td>2700 / 4000</td><td>Warm evenings and a cooler daytime white within the assumed lamp range.</td></tr>
+<tr><td><code>sleep_brightness</code> / <code>sleep_color_temp</code></td><td>10 / 2700</td><td>A separate, dimmer bedtime setting. Raise 10 if it is uncomfortable or unstable.</td></tr>
+<tr><td><code>only_once</code></td><td>Off / false</td><td>Allow ongoing adjustment while the lamp is on.</td></tr>
+</tbody></table></div>
+<p>The <a href="https://adaptive-lighting.nijho.lt/configuration/">configuration reference</a> explains these options. Keep the normal update interval initially; faster updates are not automatically smoother. The example brightness percentages are commands, not measurements of room illumination.</p>
+<p>Start with the sun-based timing. If winter sunset makes the lamp too dim before dinner, the integration also offers fixed or bounded sunrise/sunset times. Adjust that after the basic test, one setting at a time. An earlier sunset and your preferred bedtime are different inputs.</p>
+
+<h2>4. Make manual changes and scenes keep their settings</h2>
+<p>In the options, enable <code>take_over_control</code>. Despite its name, this allows another control to take over from Adaptive Lighting. Keep <code>take_over_control_mode</code> at <code>pause_all</code> so a manual choice pauses both brightness and color. Also enable <code>adapt_only_on_bare_turn_on</code>: a turn-on command with an explicit brightness or color can then keep that choice. Leave <code>autoreset_control_seconds</code> at <code>0</code> for the first test, so a timeout does not silently end the hold.</p>
+<p>With these choices, use a plain on command when you want adaptive settings. Use an explicit reading/movie preset when you want a fixed look. The <a href="https://adaptive-lighting.nijho.lt/advanced/manual-control/">manual-control documentation</a> explains how a light is marked as manually controlled and how turning it off and back on, or clearing that mark, resumes adaptation.</p>
+<p>For a predictable first setup, leave <code>detect_non_ha_changes</code> off. Dimming through a manufacturer app or a directly connected remote may then go undetected; verify those control paths separately. Do not assume every wall control behaves like a Home Assistant command.</p>
+<p><strong>Preserve the reading hold at bedtime:</strong> in v1.32.0, set <code>reset_manual_control_on_sleep_mode_change</code> to <code>false</code>. Its default is true, which clears manual control when sleep mode changes. The <a href="https://github.com/basnijholt/adaptive-lighting/releases/tag/v1.32.0">release notes document this option</a>. If your version lacks it, leave the main adaptation switch off during a manual hold until you can verify an equivalent policy.</p>
+<p>Existing routines can still send their own light commands. For a pause that covers those routines too, use the broader <a href="/blog/home-assistant-automation-manual-override/">manual-override pattern</a>.</p>
+
+<h2>5. Test one evening before expanding the setup</h2>
+<p>This is a <strong>hypothetical acceptance test</strong> for the profile above. It gives you observable pass/fail behavior without requiring a whole house of lights.</p>
+<ol>
+<li><strong>Start with the lamp off in Home Assistant.</strong> Keep electrical power supplied. In Developer tools → Actions, select <code>light.turn_on</code>, target only the reading lamp and leave brightness and color fields unset. The lamp should turn on with the current adaptive values.</li>
+<li><strong>Choose your reading level.</strong> While it is on, use Home Assistant’s brightness slider to set a noticeably different level, such as 60%. In Developer tools → States, inspect the main Adaptive Lighting switch’s <code>manual_control</code> attribute. It should include the lamp. Do not edit its state there.</li>
+<li><strong>Allow time for several updates.</strong> With the documented default 90-second interval and 45-second transition, allow about four minutes. Your manual brightness should remain. If it changes, inspect other routines and the manual-control options before adding more lamps.</li>
+<li><strong>Turn the sleep-mode switch on.</strong> With the sleep-reset option set to false, the manually held reading lamp should retain your choice. After you explicitly resume adaptation, it should use the example sleep settings: 10% and 2700 K, subject to the lamp’s limits.</li>
+<li><strong>Turn sleep mode off when the sleep period ends.</strong> Then use a plain off/on cycle or the resume script below. Confirm normal adaptive settings return. Restore any paused routines one at a time and repeat the manual-choice check.</li>
+</ol>
+<p><a href="https://adaptive-lighting.nijho.lt/advanced/sleep-mode/">Sleep mode remains on until its switch is turned off</a>, and its state is restored after a Home Assistant restart. If you automate bedtime later, provide both an on rule and an off rule. This switch chooses bedtime light settings; it is not a command to switch the physical lamp off.</p>
+
+<h3>A “resume adaptation” script that leaves an off lamp off</h3>
+<p>Open Settings → Automations &amp; scenes → Scripts, create a new script and choose <strong>Edit in YAML</strong>. Replace its contents with this example, then replace both entity IDs with yours. This is a complete UI-script definition: do not add an outer <code>script:</code> line. The <a href="https://www.home-assistant.io/integrations/script/">Home Assistant script guide</a> explains this reusable sequence.</p>
+<p class="table-hint">On a phone, scroll the code sideways to read full lines.</p>
+<pre tabindex="0" aria-label="Resume Adaptive Lighting script"><code>alias: "Reading lamp - resume adaptation"
+mode: single
+sequence:
+  - action: switch.turn_on
+    target:
+      entity_id: switch.adaptive_lighting_reading_lamp
+  - action: adaptive_lighting.set_manual_control
+    data:
+      entity_id: switch.adaptive_lighting_reading_lamp
+      lights:
+        - light.reading_lamp
+      manual_control: false</code></pre>
+<p>Run it while the lamp is manually held on: the hold should clear and the current adaptive settings should apply. Turn the lamp off in Home Assistant, run it again, and confirm it stays off. The brightness and color adaptation switches must remain enabled, with <code>only_once</code> false, for continued adjustment.</p>
+<p><strong>Applying values once and resuming ongoing adjustment are different actions.</strong> The <a href="https://adaptive-lighting.nijho.lt/services/">project’s service documentation</a> separates them. The script enables the profile and clears the manual mark. In <a href="https://github.com/basnijholt/adaptive-lighting/blob/v1.32.0/custom_components/adaptive_lighting/switch.py">v1.32.0’s implementation</a>, clearing that mark already reapplies settings to lights reported on, so a separate apply step is unnecessary. It skips lights reported off; an incorrect device state can still produce an unexpected result. It deliberately leaves sleep mode unchanged. Keep this profile limited to the test lamp; enabling a shared profile can affect its other lights.</p>
+
+<h2>If the result is wrong, check the matching cause</h2>
+<p class="table-hint">Scroll sideways on a phone to read the next step.</p>
+<div class="comparison-table" role="region" aria-label="Adaptive Lighting troubleshooting decisions" tabindex="0"><table><thead><tr><th>What you see</th><th>Check first</th><th>Next step</th></tr></thead><tbody>
+<tr><td>Nothing adapts</td><td>Main/brightness/color switches, selected lamp, manual-control mark.</td><td>Try the resume script on the one on lamp. If normal light controls fail too, fix that connection first.</td></tr>
+<tr><td>The lamp stays dim in daytime</td><td>Sleep-mode switch and manual hold.</td><td>Turn sleep mode off, then resume. Do not increase every brightness limit to hide a stuck mode.</td></tr>
+<tr><td>A movie or reading preset is overwritten</td><td>Manual takeover, explicit-value turn-ons, competing routines.</td><td>Repeat the manual-choice test. Pause the profile while locating the conflicting command.</td></tr>
+<tr><td>The lamp flashes, ignores off, or comes back on</td><td>Reported state versus the physical lamp; transition support.</td><td>Turn the main adaptation switch off and test ordinary controls. Consult the exact bulb’s documented limitations before changing transition options.</td></tr>
+</tbody></table></div>
+<p>The <a href="https://adaptive-lighting.nijho.lt/troubleshooting/">project’s troubleshooting guide</a> documents state-reporting, transition and device-specific limitations. Adding more frequent commands can expose an unreliable connection. A light group also changes which control is tracked; keep the first check on an individual lamp, and review the project’s grouping guidance before expanding.</p>
+
+<h2>Common questions</h2>
+<h3>Is Adaptive Lighting built into Home Assistant?</h3>
+<p>No. This guide uses Bas Nijholt’s community-maintained custom integration, commonly installed through HACS. Plan to maintain it alongside Home Assistant and check compatibility before updates.</p>
+<h3>Will it make a cloud-connected bulb local?</h3>
+<p>No. It changes the commands Home Assistant sends through the bulb’s existing integration. The bulb’s control path still determines whether internet access or a vendor account is needed.</p>
+<h3>Does it need to turn on every light at sunset?</h3>
+<p>No. Keep your existing on/off routine separate. The setup here selects adaptive values when you request light and adjusts an on lamp; it is not a sunset turn-on schedule.</p>
+<p>For a new room, plan its light controls and manual fallback together. Tara’s <a href="/smart-lighting-kit/">smart lighting kit page</a> explains that planning path.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Adaptive Lighting documentation</h3><ul><li><a href="https://github.com/basnijholt/adaptive-lighting">Adaptive Lighting project</a></li><li><a href="https://github.com/basnijholt/adaptive-lighting/releases/tag/v1.32.0">Version 1.32.0 release notes</a></li><li><a href="https://adaptive-lighting.nijho.lt/getting-started/">Installation</a></li><li><a href="https://adaptive-lighting.nijho.lt/configuration/">Configuration options</a></li><li><a href="https://adaptive-lighting.nijho.lt/advanced/manual-control/">Manual control</a></li><li><a href="https://adaptive-lighting.nijho.lt/advanced/sleep-mode/">Sleep mode</a></li><li><a href="https://adaptive-lighting.nijho.lt/services/">Apply and manual-control actions</a></li><li><a href="https://adaptive-lighting.nijho.lt/troubleshooting/">Troubleshooting</a></li></ul></div><div><h3>Home Assistant and HACS</h3><ul><li><a href="https://www.home-assistant.io/integrations/light/">Home Assistant light controls</a></li><li><a href="https://www.home-assistant.io/integrations/script/">Home Assistant scripts</a></li><li><a href="https://www.hacs.xyz/docs/use/download/download/">Installing HACS</a></li><li><a href="https://www.hacs.xyz/docs/use/repositories/type/integration/">HACS custom integrations</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Plan lighting around the people using it</h2><p>Choose rooms, everyday controls and the routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body>
+</html>

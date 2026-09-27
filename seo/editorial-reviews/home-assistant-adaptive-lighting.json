@@ -1,0 +1,75 @@
+{
+  "slug": "home-assistant-adaptive-lighting",
+  "action": "new",
+  "publicationDate": "2026-09-27",
+  "verdict": "PASS",
+  "readerQuestion": "How do I configure Home Assistant Adaptive Lighting so an existing lamp follows the day without overriding reading presets or behaving unexpectedly at bedtime?",
+  "directAnswer": "Install the community Adaptive Lighting integration, configure one existing dimmable tunable-white lamp, keep manual takeover and explicit-value turn-on protection enabled, and test manual hold/resume before expanding. Sleep mode needs its own on/off policy; v1.32.0 sleep-reset settings must be changed if bedtime should preserve a manual hold. The light integration still determines local/cloud control.",
+  "originalContribution": "Sections 3-5 provide a bounded reading-lamp profile (20-70% daily brightness, 2700-4000 K, 10%/2700 K sleep settings), a five-step household acceptance test, and a two-action resume script. The troubleshooting table maps outcomes to the next reversible check. The configuration assumes a supporting lamp; the numbers are example preferences, not measurements. Release-code review showed manual-control reset already reapplies to on lights, so the final script avoids a redundant apply command.",
+  "limitations": "Documentation and released-code research only; no physical bulb, Home Assistant runtime, latency, illumination, or cloud-outage test. YAML parsed and field names checked against v1.32.0 service definitions, which does not establish runtime or hardware compatibility. Device states, fades and external-control reporting can vary. Custom-integration settings are version dependent. Cover is an AI-generated editorial room illustration, not an installed or tested product.",
+  "proofreadFixes": "Added explicit pause_all behavior so a brightness hold also preserves color; explained the counterintuitive take_over_control name; scoped reset_manual_control_on_sleep_mode_change to v1.32.0 and changed the example to false so sleep mode does not clear the reading hold. Kept detect_non_ha_changes off and stated that vendor-app/direct-remote changes may be missed. Removed the unnecessary adaptive_lighting.apply call after verifying that manual_control=false already reapplies settings to reported-on lights. Added the reported-state caveat and shared-profile warning. Defined kelvin and stated example brightness is a command, not a light-output measurement. Added a sideways-scroll hint and keyboard focus for the YAML block. The visible method note initially lacked the publish gate\u2019s research-method class; corrected it without hiding the disclosure. Verified all new metadata, including Twitter, matches this article and September 27 date. Final automated grandma proofreading: PASS; no human or expert review claimed. Final mobile inspection found a wide explanation column required panning within a single cell; changed both tables to fixed equal-width columns so each cell fits inside the mobile scroll viewport.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Adaptive Lighting is community custom software; installing its files through HACS is separate from adding/configuring it in Home Assistant.",
+      "sourceUrl": "https://www.hacs.xyz/docs/use/repositories/type/integration/"
+    },
+    {
+      "claim": "Adaptive Lighting v1.32.0 requires Home Assistant 2025.9 or newer and supplies the option to preserve manual control across sleep-mode changes.",
+      "sourceUrl": "https://github.com/basnijholt/adaptive-lighting/releases/tag/v1.32.0"
+    },
+    {
+      "claim": "The UI configuration route selects the lights and creates the main, brightness, color and sleep switches; a duplicate YAML profile is not required.",
+      "sourceUrl": "https://adaptive-lighting.nijho.lt/getting-started/"
+    },
+    {
+      "claim": "The example is contingent on working brightness and color-temperature controls; on/off-only hardware cannot acquire those capabilities through an automation.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/light/"
+    },
+    {
+      "claim": "only_once=false enables continued adaptation. The documented defaults are interval 90 seconds and transition 45 seconds; the four-minute check is an allowance for multiple updates, not a measured performance claim.",
+      "sourceUrl": "https://adaptive-lighting.nijho.lt/configuration/"
+    },
+    {
+      "claim": "take_over_control allows manual takeover; pause_all pauses both attributes; explicit brightness/color on commands are respected with adapt_only_on_bare_turn_on. External changes need separate verification.",
+      "sourceUrl": "https://adaptive-lighting.nijho.lt/advanced/manual-control/"
+    },
+    {
+      "claim": "Sleep mode remains active until switched off, is restored across restart and does not automatically clear at sunrise.",
+      "sourceUrl": "https://adaptive-lighting.nijho.lt/advanced/sleep-mode/"
+    },
+    {
+      "claim": "Released v1.32.0 handle_set_manual_control_service resets the mark and immediately updates when the profile is on; _update_attrs_and_maybe_adapt_lights filters to reported-on lights. The final two-action resume script therefore does not need a separate apply and does not request lights reported off to turn on. Incorrect state reporting remains a stated caveat.",
+      "sourceUrl": "https://github.com/basnijholt/adaptive-lighting/blob/v1.32.0/custom_components/adaptive_lighting/switch.py"
+    },
+    {
+      "claim": "The resume script data keys entity_id, lights and manual_control match the released service definition. Its YAML was parsed locally, not executed on hardware.",
+      "sourceUrl": "https://github.com/basnijholt/adaptive-lighting/blob/v1.32.0/custom_components/adaptive_lighting/services.yaml"
+    },
+    {
+      "claim": "A one-shot apply and a manual-control reset serve different purposes; ongoing adjustment also depends on the enabled profile and adaptation settings.",
+      "sourceUrl": "https://adaptive-lighting.nijho.lt/services/"
+    },
+    {
+      "claim": "State-reporting errors and unsupported transitions can cause unexpected bulb behavior; the first diagnostic is a reversible one-lamp check with adaptation off, without factory resets or critical lighting interruptions.",
+      "sourceUrl": "https://adaptive-lighting.nijho.lt/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-scenes-vs-scripts/",
+      "section": "Keep the boundaries clear as you add more routines",
+      "readerReason": "A reader whose saved scene is overwritten may want a continuously adapting alternative with explicit manual holds; link only after explaining which routine owns the light."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-wake-up-light/",
+      "section": "Other practical questions \u2014 Does it change the color of the light?",
+      "readerReason": "The existing example changes brightness during a morning ramp. Readers asking about white-tone changes throughout the day can follow this separate custom-integration setup, with a caution to avoid competing control of the same lamp."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium 1440x1000: title, visible September 27 date, By Tara Home credit, hero and 4-bullet TLDR readable; centered 780px body and wider contained comparison tables. Tara Avenir font family loaded; responsive cover decoded. Library displayed two columns with new card first; card click and .html redirect reached the canonical path. Source and local link checks passed. Screenshots stored in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "Chromium 390x844: title and body wrap without page overflow; hero subject remains visible. Tables use a 344px scroll container around 760px content, and the code block scrolls internally with an explicit hint and keyboard focus. Library is one column, first card uses 480px WebP, date and summary visible. Article/library screenshots inspected. Only console error was the deliberately blocked Google tag during local validation."
+  }
+}
