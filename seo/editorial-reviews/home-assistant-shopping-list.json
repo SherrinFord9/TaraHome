@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-shopping-list",
+  "action": "new",
+  "publicationDate": "2026-09-28",
+  "verdict": "PASS",
+  "readerQuestion": "How can my household share a Home Assistant shopping list across phones, and what happens when the shopper has no internet connection?",
+  "directAnswer": "Use the built-in Shopping list and select the same todo entity on both household phones. Verify a shared edit and completion at home, then test mobile-data access. Remote access still requires connectivity; use a complete screenshot as a read-only fallback or verify a separate phone app workflow. Optional iOS Reminders sync is experimental and depends on phone permissions and scheduled execution.",
+  "originalContribution": "Section 3 supplies an original Alex/Sam grocery-trip rehearsal with two items, a quantity edit, a completion and a mobile-data addition, each paired with an expected result. Section 4 separates local server storage, remote connectivity and offline copies, with a harmless disconnected-use check. The final decision table maps five disagreements to specific first checks. These are illustrative procedures, not reported deployment measurements.",
+  "limitations": "No Home Assistant installation, iOS device, OurGroceries app or grocery trip was tested. The browser checks verify website presentation only. Reminders Sync documentation remains a maintainer draft, so key behavior was cross-checked in released iOS 2026.9.2 source; installed app versions may differ and iOS does not guarantee background scheduling. No unsupported offline-sync claim is made for OurGroceries. Screenshots cannot sync purchases. The illustration is generated and does not depict a real Tara installation.",
+  "proofreadFixes": "Automated grandma proofreading PASS after final edits. Clarified that the version prerequisite belongs to the iOS Companion app, defined LABS as experimental, explained Companion app and VPN in ordinary language, and replaced cloud-polling jargon with checks for updates. Kept local storage distinct from offline phone use, preserved full Reminders permission and two-way deletion cautions, and identified the documentation as draft rather than an established tested tutorial. Added a swipe hint beside each wide table. Visual inspection found the worked-example result column could exceed the mobile table viewport; fixed new-article column proportions to keep each column narrower than the 344px scroll region. Rechecked mobile scrolling and desktop layout. Confirmed four actionable TLDR bullets, direct opening answer, visible linked Tara Home credit, honest research note, no claimed hands-on testing, and professional Sources labels.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Shopping list is built in and supports Assist add-item commands; using the list does not itself set up microphones or speech processing.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/shopping_list/"
+    },
+    {
+      "claim": "A To-do list card targets one entity; hide_completed hides the completed section, while its false setting leaves completions visible for verification. The supplied four-line configuration belongs to a dashboard card.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/todo-list/"
+    },
+    {
+      "claim": "Local to-do creates separate local lists; a todo entity state counts incomplete items rather than containing their text.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/todo/"
+    },
+    {
+      "claim": "The Companion app must reach its Home Assistant address; remote access and no-signal phone use are different prerequisites. The suggested test changes only a phone connection and harmless grocery entries, then restores connectivity.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/troubleshooting/networking/"
+    },
+    {
+      "claim": "View visibility hides the tab but not URL access, so a grocery-only dashboard is not a list-only security boundary.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/views/"
+    },
+    {
+      "claim": "A non-admin account does not by itself define per-list authorization; use separate trusted household logins and do not promise restricted guest access from hidden cards.",
+      "sourceUrl": "https://developers.home-assistant.io/docs/auth_permissions/"
+    },
+    {
+      "claim": "Reminders Sync is iOS-only LABS from app 2026.8.0, pairs existing lists, needs full Reminders permission and can propagate deletions in two-way mode. The linked maintainer setup document is still a draft, explicitly disclosed.",
+      "sourceUrl": "https://github.com/home-assistant/companion.home-assistant/pull/1411"
+    },
+    {
+      "claim": "Released iOS 2026.9.2 RemindersSyncSettings defaults foreground/background intervals to zero; RemindersSyncBackgroundRefresher treats an interval as an earliest requested execution, with iOS deciding whether to run. No immediate-sync guarantee is made.",
+      "sourceUrl": "https://github.com/home-assistant/iOS/tree/release/2026.9.2/2026.2995/Sources/App/Utilities/RemindersSync"
+    },
+    {
+      "claim": "OurGroceries connects an account and exposes its own lists through Cloud Polling; installing it is not automatic synchronization of the separate built-in Shopping list.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/ourgroceries/"
+    },
+    {
+      "claim": "OurGroceries supports iPhone and Android; its basic app is free with ads and paid ad removal is optional. No price or unverified offline behavior is asserted.",
+      "sourceUrl": "https://www.ourgroceries.com/faq"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-recurring-chores/",
+      "section": "Choose what repeat means: the Local to-do checklist row",
+      "readerReason": "A reader who wants shared checkboxes rather than completion-relative recurrence can continue to the two-phone list setup."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-wall-tablet-dashboard-stays-awake/",
+      "section": "Dashboard content and everyday household use",
+      "readerReason": "A kitchen-tablet reader can add the same grocery list used by the shopping phone, with explicit access and connectivity limits."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440\u00d71000: visually inspected title, byline, loaded 1200px WebP hero, four-bullet TLDR, centered 780px body and 920px tables. Tara Avenir loaded. Library card is first, readable, and opens the canonical article; legacy .html redirects. Both library variants include the new entry. No page-wide overflow. Source-link HTTP checks: all 12 unique source URLs returned 200; edited-page local links and fragments all resolve.",
+    "mobile": "390\u00d7844: readable three-line title and body, working 480px WebP hero/card, no document overflow (390px scrollWidth). All tables remain inside 344px horizontally scrollable keyboard-focusable regions with nearby instructions. Fixed table columns now fit individually within that region; scrolled to the result column and visually inspected it. Library card and Reminders instructions are readable. Screenshots and link-check output saved only to TARAHOME_BLOG_ARTIFACTS."
+  }
+}

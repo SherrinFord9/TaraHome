@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Shopping List: Share It Across Phones</title>
+    <meta name="description" content="Set up a shared Home Assistant shopping list on two phones, check remote access, and choose a fallback for supermarkets with no signal." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-shopping-list/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-shopping-list/" />
+    <meta property="og:title" content="Home Assistant Shopping List: Share It Across Phones" />
+    <meta property="og:description" content="Set up a shared Home Assistant shopping list on two phones, check remote access, and choose a fallback for supermarkets with no signal." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-shopping-list/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Shopping List: Share It Across Phones" />
+    <meta name="twitter:description" content="Set up a shared Home Assistant shopping list on two phones, check remote access, and choose a fallback for supermarkets with no signal." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-shopping-list/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body .comparison-table:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+      .article-body pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); line-height: 1.6; }
+      .article-body pre code { border: 0; padding: 0; background: transparent; }
+      .article-body > * { min-width: 0; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body table { table-layout: fixed; }
+      .article-body th:first-child { width: 24%; }
+      .article-body th:not(:first-child) { width: 38%; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarahome.ai/assets/logo/tara-star.svg"
+      }
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-shopping-list/#blogposting",
+      "headline": "Home Assistant Shopping List: Share It Across Phones",
+      "description": "Set up a shared Home Assistant shopping list on two phones, check remote access, and choose a fallback for supermarkets with no signal.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-shopping-list/cover.png",
+      "datePublished": "2026-09-28",
+      "dateModified": "2026-09-28",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-shopping-list/"
+      },
+      "url": "https://tarahome.ai/blog/home-assistant-shopping-list/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Shopping List: Share It Across Phones",
+          "item": "https://tarahome.ai/blog/home-assistant-shopping-list/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I add groceries by voice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The built-in Shopping list supports Assist commands such as \u201cAdd eggs to my shopping list.\u201d First check the destination using Assist\u2019s text input. A working grocery list does not by itself configure microphones or speech processing; our local voice setup guide covers those separate parts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does sharing the built-in list require a subscription?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The list itself does not. Both phones need access to the running Home Assistant server. Remote access may have a separate cost, depending on the route you choose."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use this for recurring household chores?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A checklist and a recurring schedule are different jobs. For \u201cremind me again two weeks after I finish,\u201d use our completion-based chore reminder guide. A grocery checkbox alone does not create that schedule."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body><nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><header class="hero article-hero"><div><p class="article-meta"><span>Household routines</span><span><time datetime="2026-09-28">September 28, 2026</time></span><span>9 min read</span></p><h1>Home Assistant Shopping List: Share It Across Phones</h1><p class="lede">One grocery list for the kitchen and both phones, with a clear plan for the supermarket’s dead spots.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-shopping-list/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-shopping-list/cover-480.webp 480w, /assets/generated/blog/home-assistant-shopping-list/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Two phones beside a green grocery bag, apples, milk and bread on a warm oak kitchen island" fetchpriority="high" /></figure></header><div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Start with the built-in Shopping list.</strong> Put the same list on both phones and your kitchen dashboard; you do not need a custom card.</li>
+<li><strong>Test away from home before shopping.</strong> The Home Assistant app needs a working connection to your server. A local list is not automatically an offline phone list.</li>
+<li><strong>Plan for no signal.</strong> Save a screenshot before leaving, or use a separate phone list app with a verified offline workflow. A screenshot will not sync purchases.</li>
+<li><strong>On iPhone, Reminders Sync is an optional bridge.</strong> It needs a compatible Companion app and Reminders permission; background updates are not guaranteed to run immediately.</li>
+</ul></aside>
+<h2 id="answer">Use one list, then check how each phone reaches it</h2>
+<p>For a shared Home Assistant shopping list, start with the built-in <a href="https://www.home-assistant.io/integrations/shopping_list/">Shopping list integration</a>. An integration is a connection or feature added to Home Assistant. Both household members should open the same list on the same Home Assistant server. Creating two lists with the same display name does not connect them.</p>
+<p>First add a harmless test item at home and check it off from the other phone. Next test with the shopper’s Wi-Fi off and mobile data on. Only after that should you decide whether the supermarket needs an offline fallback.</p>
+<p>The list can live on your own Home Assistant server, but your phone still has to reach that server to read current items and save changes. <strong>Local storage describes where the list lives; offline access describes what the phone can do without a connection.</strong> These are separate choices.</p>
+<p class="research-method">Researched by Tara Home from current Home Assistant documentation and released iOS app source on September 28, 2026. The household walkthrough is an illustrative setup and verification plan, not a tested Tara installation. The cover is an AI-generated editorial illustration.</p>
+<h2 id="choose">1. Choose where the household list will live</h2>
+<p>Keep the first version simple. Pick one list to maintain rather than copying groceries between several apps by hand.</p>
+<p class="table-hint">On a narrow screen, swipe the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Shopping list setup choices" tabindex="0"><table><thead><tr><th>Your priority</th><th>Start here</th><th>Main requirement or limit</th></tr></thead><tbody>
+<tr><td>One grocery list in Home Assistant</td><td>Built-in Shopping list, shown on a To-do list card.</td><td>A running Home Assistant server and a phone connection to it.</td></tr>
+<tr><td>Separate groceries, hardware-store and packing lists</td><td><a href="https://www.home-assistant.io/integrations/local_todo/">Local to-do</a>, with a separately named list for each job.</td><td>Each list has its own entity. More lists do not add offline phone sync.</td></tr>
+<tr><td>Keep using Apple Reminders</td><td>The iOS Companion app’s Reminders Sync, described below.</td><td>iOS Companion app version 2026.8.0 or later; an experimental LABS feature with permission and sync-timing caveats.</td></tr>
+<tr><td>Use a dedicated grocery app across iPhone and Android</td><td>Consider <a href="https://www.home-assistant.io/integrations/ourgroceries/">OurGroceries</a> and its built-in Home Assistant integration.</td><td>Requires an OurGroceries account; Home Assistant checks its cloud service for updates. The app is free with ads, with optional paid ad removal. Verify disconnected use before relying on it.</td></tr>
+</tbody></table></div>
+<p>OurGroceries is an alternative storage choice, not an automatic copy of the built-in Shopping list. Its integration creates entities for its own lists. <a href="https://www.ourgroceries.com/faq">The vendor’s FAQ</a> covers phone support, sharing and payment options. This guide does not claim a tested offline experience for that app.</p>
+<h2 id="setup">2. Open the same list on both phones</h2>
+<ol>
+<li><strong>Find the existing list.</strong> Open <strong>To-do lists</strong> in Home Assistant’s sidebar and look for Shopping list. If missing, an administrator can add <strong>Shopping list</strong> under <strong>Settings → Devices &amp; services → Add integration</strong>.</li>
+<li><strong>Use separate household logins.</strong> Have an administrator create a login for each trusted household member, then connect each Home Assistant phone app (the Companion app) to this server. Everyday use normally does not need administrator status. Follow the <a href="https://www.home-assistant.io/docs/authentication/">account documentation</a>.</li>
+<li><strong>Add one visible card.</strong> On an editable dashboard, select <strong>Edit dashboard → Add card → To-do list</strong>. Choose the actual Shopping list entity and save. An <strong>entity</strong> is Home Assistant’s identifier for one list or device function.</li>
+<li><strong>Check the second phone.</strong> Open that dashboard or the sidebar’s To-do lists page and select the same list. Different dashboard layouts are fine; the selected entity must match.</li>
+</ol>
+<p>A typical list identifier is <code>todo.shopping_list</code>, but check yours instead of assuming the name. The <a href="https://www.home-assistant.io/dashboards/todo-list/">standard card</a> supports adding, editing and checking off items. If you prefer its code editor, this is the complete card configuration; it belongs in a dashboard card, not <code>configuration.yaml</code>:</p>
+<pre><code>type: todo-list
+entity: todo.shopping_list
+title: Groceries
+hide_completed: false</code></pre>
+<p>Leave completed items visible during setup so you can see where a checked item went. Later, <code>hide_completed: true</code> hides that section without deleting its items.</p>
+<div class="callout"><p><strong>A grocery dashboard is not a grocery-only account.</strong> Hiding other tabs does not prevent access to their URLs, and a non-admin login does not establish list-only authorization. Give Home Assistant accounts only to people you trust with the access they actually receive. For a guest who needs just groceries, use a list-sharing service rather than assuming dashboard visibility creates a security boundary. See the <a href="https://www.home-assistant.io/dashboards/views/">official view-visibility note</a> and our <a href="/blog/limit-home-assistant-users-to-certain-devices/">guide to Home Assistant user restrictions</a>.</p></div>
+<h2 id="walkthrough">3. Rehearse one shopping trip with two people</h2>
+<p>Here is an example for Alex at home and Sam doing the shopping. Use ordinary test entries, with no purchases or device actions attached. The expected outcomes below are a checklist for your installation, not results from a Tara test.</p>
+<p class="table-hint">On a narrow screen, swipe the table sideways to read the expected results.</p>
+<div class="comparison-table" role="region" aria-label="Two-person shopping list worked example" tabindex="0"><table><thead><tr><th>Step</th><th>What to do</th><th>Expected result</th></tr></thead><tbody>
+<tr><td>Build the list</td><td>Alex adds “TEST milk — 2 cartons” and “TEST bread” from the kitchen dashboard.</td><td>Sam sees both entries in the selected list. No separate copy or share link is needed between these two Home Assistant views.</td></tr>
+<tr><td>Change the plan</td><td>Sam edits the milk entry to “TEST milk — 1 carton.”</td><td>Alex sees the edited entry. If the old text remains, check the list identifier and connection before adding another copy.</td></tr>
+<tr><td>Mark an item bought</td><td>Sam checks off the bread entry.</td><td>It moves to Completed on both views. With completed items hidden, it disappears from the active display.</td></tr>
+<tr><td>Leave home</td><td>Sam disables phone Wi-Fi, keeps mobile data on, and adds “TEST apples.”</td><td>Alex sees the new entry through the configured remote connection. If it fails, return to the connection checks below.</td></tr>
+</tbody></table></div>
+<p>Restore the phone’s normal Wi-Fi setting afterward. You can leave the test entries completed while learning the interface. There is no need to clear the household’s entire list.</p>
+<p>If you inspect the entity in Home Assistant’s state tools, its state is the <a href="https://www.home-assistant.io/integrations/todo/">number of incomplete items</a>, not the shopping text. With two unfinished entries, a state of <code>2</code> is expected. Use the To-do lists page to read the items.</p>
+<h2 id="away">4. Separate remote access from no-signal shopping</h2>
+<p><strong>If it works on home Wi-Fi but fails on mobile data, fix the remote connection first.</strong> The <a href="https://companion.home-assistant.io/docs/troubleshooting/networking/">Companion app networking guide</a> explains why a private home address is not enough from outside the house. Home Assistant Cloud provides a paid remote-access option; a correctly configured VPN—a private connection back to your home network—is another route. Our <a href="/blog/home-assistant-remote-access-without-port-forwarding/">remote-access guide</a> compares those choices.</p>
+<p>Neither route creates a connection in a supermarket dead spot. For an occasional trip, open the current list before leaving and save a screenshot that includes every active item. Treat it as a dated copy: it cannot receive Alex’s last-minute additions or record Sam’s purchases back to Home Assistant.</p>
+<p>For regular disconnected shopping, choose a phone app that keeps a usable local copy and verify its return-to-online behavior. Test only grocery entries: temporarily turn off that phone’s Wi-Fi and mobile data, open the list again, and check whether you can read and complete a test item. Restore connectivity and check the other person’s list. A cached screen by itself does not prove that changes will sync.</p>
+<h3 id="reminders">Optional on iPhone: connect Apple Reminders</h3>
+<p>The iOS Companion app includes <strong>Reminders Sync from version 2026.8.0</strong>, marked LABS (experimental). The maintainer’s <a href="https://github.com/home-assistant/companion.home-assistant/pull/1411">setup documentation is still a draft</a>; the feature is present in the <a href="https://github.com/home-assistant/iOS/tree/release/2026.9.2/2026.2995/Sources/App/Utilities/RemindersSync">released 2026.9.2 app source</a>. Settings can change between versions.</p>
+<ol>
+<li>Start with an empty test list in Apple Reminders and a separate <strong>Local to-do</strong> test list in Home Assistant.</li>
+<li>In the iPhone’s Home Assistant app, open <strong>Companion app settings → Reminders Sync</strong> and grant the requested <strong>full Reminders access</strong>.</li>
+<li>Add a pairing, select those two lists, and choose <strong>Two-way</strong> if both sides should accept edits. Save, then use <strong>Sync now</strong>.</li>
+<li>Add one test item in each app and complete one. Confirm the other side agrees before connecting a real household list. Two-way sync can also propagate deletions.</li>
+</ol>
+<p>This connection runs through the phone. In the checked release, scheduled foreground checks and background refresh are off by default; opening the app or choosing Sync now can fetch updates. If background refresh is enabled, iOS still decides when it runs. Open the app and verify the list before leaving and after reconnecting. Do not assume every Reminders feature, such as recurrence or location alerts, transfers.</p>
+<p>Pairing Reminders with Home Assistant also does not share an Apple list with another person. Set up household sharing in the chosen app separately, and repeat the two-person and disconnected checks. This optional path is not needed for two connected Home Assistant phones.</p>
+<h2 id="troubleshooting">If the two lists disagree</h2>
+<p class="table-hint">On a narrow screen, swipe the table sideways to read the next action.</p>
+<div class="comparison-table" role="region" aria-label="Shopping list troubleshooting" tabindex="0"><table><thead><tr><th>What you see</th><th>First check</th><th>Useful next action</th></tr></thead><tbody>
+<tr><td>Both screens say “Groceries,” but items differ.</td><td>Server and <code>todo.</code> identifier on each card.</td><td>Select the same entity; a card title is only a label.</td></tr>
+<tr><td>Items vanish when checked.</td><td>The Completed section and the card’s hide-completed setting.</td><td>Show completed items before assuming data was lost.</td></tr>
+<tr><td>Works at home, fails outside.</td><td>Whether any Home Assistant dashboard loads over mobile data.</td><td>Repair remote access before replacing the list or card.</td></tr>
+<tr><td>Works outside, fails inside one shop.</td><td>Phone connectivity at that location.</td><td>Use the prepared offline copy; a new dashboard will not restore reception.</td></tr>
+<tr><td>Reminders edits arrive late or get undone.</td><td>Connectivity, sync direction and conflict preference.</td><td>Open the Companion app, use Sync now and inspect sync history. A one-way pairing can overwrite edits on its destination.</td></tr>
+</tbody></table></div>
+<h2 id="faq">Frequently asked questions</h2>
+<h3>Can I add groceries by voice?</h3><p>Yes. The built-in Shopping list supports Assist commands such as “Add eggs to my shopping list.” First check the destination using Assist’s text input. A working grocery list does not by itself configure microphones or speech processing; our <a href="/blog/home-assistant-local-voice-assistant-no-cloud/">local voice setup guide</a> covers those separate parts.</p>
+<h3>Does sharing the built-in list require a subscription?</h3><p>The list itself does not. Both phones need access to the running Home Assistant server. Remote access may have a separate cost, depending on the route you choose.</p>
+<h3>Can I use this for recurring household chores?</h3><p>A checklist and a recurring schedule are different jobs. For “remind me again two weeks after I finish,” use our <a href="/blog/home-assistant-recurring-chores/">completion-based chore reminder guide</a>. A grocery checkbox alone does not create that schedule.</p>
+<p>For help bringing shared controls and everyday routines together, see Tara’s <a href="/home-automation-kit/">home automation kit for local routines</a>.</p></div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Home Assistant lists and access</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/shopping_list/">Shopping list and Assist commands</a></li>
+<li><a href="https://www.home-assistant.io/integrations/local_todo/">Local to-do lists</a></li>
+<li><a href="https://www.home-assistant.io/dashboards/todo-list/">To-do list card options</a></li>
+<li><a href="https://www.home-assistant.io/integrations/todo/">To-do entities and item counts</a></li>
+<li><a href="https://companion.home-assistant.io/docs/troubleshooting/networking/">Companion app connectivity</a></li>
+<li><a href="https://developers.home-assistant.io/docs/auth_permissions/">Home Assistant permissions</a></li>
+</ul></div><div><h3>Phone list integrations</h3><ul>
+<li><a href="https://github.com/home-assistant/companion.home-assistant/pull/1411">iOS Reminders Sync: maintainer’s draft documentation</a></li>
+<li><a href="https://github.com/home-assistant/iOS/tree/release/2026.9.2/2026.2995/Sources/App/Utilities/RemindersSync">iOS 2026.9.2: released sync implementation</a></li>
+<li><a href="https://www.home-assistant.io/integrations/ourgroceries/">OurGroceries integration and cloud connection</a></li>
+<li><a href="https://www.ourgroceries.com/faq">OurGroceries phone support and sharing FAQ</a></li>
+</ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday routines easy to share</h2><p>Plan the rooms, controls and household routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
