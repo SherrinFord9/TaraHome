@@ -1,0 +1,99 @@
+{
+  "slug": "home-assistant-tts-announcements",
+  "action": "new",
+  "publicationDate": "2026-09-29",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant speak a household announcement through my existing speaker, respect quiet hours, and avoid unexpectedly stopping music?",
+  "directAnswer": "Configure a TTS provider such as local Piper and test one compatible speaker first. Start with the dinner script that requires the household toggle, daytime hours and an idle/off player. For speech during music, verify a supported Sonos overlay or the Music Assistant-managed player path before removing the busy-player check. State reports and a completed action do not prove successful listening or universal playback recovery.",
+  "originalContribution": "The worked example at #dinner-script combines a household pause toggle, 08:00\u201321:00 conditions, an explicit idle/off allowlist and a single-mode repeat guard. Its five-row expected-outcome matrix gives a harmless verification procedure, including a temporary excluded time window instead of changing the system clock. #music compares four existing playback paths, with a Sonos action that preserves volume-unit distinctions and the Music Assistant child-player exception. #troubleshooting separates provider, delivery and routine failures.",
+  "limitations": "Documentation research and Home Assistant 2026.9.4 source inspection; no running Home Assistant, physical speaker, voice latency, room pickup or firmware compatibility tests. Three YAML examples parsed, eight Jinja player states checked and the Sonos media URL decoded locally. The idle/off guard relies on state reporting and is not atomic with playback; a ten-second delay is not measured clip duration and does not coordinate other scripts or survive restart. Speaker music recovery and group behavior remain integration-specific. Local synthesis does not establish offline speaker behavior or absence of cached audio. Cover is an explicitly disclosed generated household illustration with no asserted product identity.",
+  "proofreadFixes": "Final automated plain-English and technical pass: defined TTS, integration, entity ID, Wyoming, YAML and script trace; corrected installation order to configure Piper before starting; separated Home Assistant OS Apps from Container companion services; kept Cloud subscription next to that option; clarified that the starter script sends no explicit volume change rather than promising unchanged volume; retained paused/buffering/unknown/unavailable skips and explained the stale-state/race limit; distinguished repeat suppression from completed audio and documented that the helper cannot retract sent speech. Added the specific native Google Cast/Sync/Universal group exception, Sonos 0\u2013100 versus ordinary 0\u20131 volume and Sonos minimum clip-level limits. Removed an unnecessary buying-shortlist aside and added code/table scrolling guidance. Replaced the bot-blocked Nabu Casa support link with the accessible official Cloud overview. Corrected an early verification screenshot taken before asynchronous image decoding; decoded-image captures confirm delivery. Layout sync removed whitespace in five old articles; those incidental changes were restored byte-for-byte. Final scope contains only the new publish files and required library metadata.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Speak targets the TTS entity; media_player_entity_id identifies the destination. A provider entity and compatible media player are prerequisites; the three YAML blocks use the documented action fields.",
+      "sourceUrl": "https://www.home-assistant.io/actions/tts.speak/"
+    },
+    {
+      "claim": "An announcement request cannot guarantee music restoration on an unsupported player; unsupported players may play the new audio without resuming the interrupted item.",
+      "sourceUrl": "https://www.home-assistant.io/actions/media_player.play_media/"
+    },
+    {
+      "claim": "Home Assistant 2026.9.4 tts.speak internally requests announce playback, but that cannot supply missing hardware/integration capability. No undocumented announce field is added to tts.speak YAML.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/tts/entity.py"
+    },
+    {
+      "claim": "Piper runs locally and is connected through Wyoming. A fixed tts.speak message does not require speech recognition or wake-word detection; no openWakeWord or microphone prerequisite is introduced.",
+      "sourceUrl": "https://www.home-assistant.io/voice_control/voice_remote_local_assistant/"
+    },
+    {
+      "claim": "Home Assistant OS includes Apps, while Container does not; Container users must run companion services separately. Current Apps naming is used with an explicit older Add-ons label caveat.",
+      "sourceUrl": "https://www.home-assistant.io/installation/"
+    },
+    {
+      "claim": "Home Assistant Cloud is an optional subscription service offering TTS. Its subscription/internet condition is adjacent to the recommendation, without invented pricing.",
+      "sourceUrl": "https://www.home-assistant.io/cloud/"
+    },
+    {
+      "claim": "A failed condition in the script sequence stops later steps. The helper-off and excluded-time-window checks are harmless and have clear expected outcomes.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "Single mode prevents a new run only while the current script remains active. The ten-second delay is repeat suppression, not a claim that playback has completed; queued execution alone does not prove non-overlapping audio.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/script/"
+    },
+    {
+      "claim": "Player states are distinct; the tested Jinja allowlist accepts idle/off and rejects paused, playing, buffering, unavailable, unknown and on. Resting paused players will intentionally be skipped; off-state playback requires device support.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/media_player/"
+    },
+    {
+      "claim": "Sonos announce playback supports music ducking and volume restoration on supported hardware, with older/S1 caveats. UPnP is the Sonos app prerequisite; TCP 1443 is from Home Assistant to the speaker, separate from audio retrieval.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/sonos/"
+    },
+    {
+      "claim": "Sonos audioClip volume is 0\u2013100 with internal minimum and maximum bounds. The guide uses the helper, not volume zero, to suppress announcements.",
+      "sourceUrl": "https://docs.sonos.com/reference/audioclip-loadaudioclip-playerid"
+    },
+    {
+      "claim": "Ordinary media_player.volume_set uses 0\u20131, so Sonos extra.volume: 20 must not be pasted as volume_level: 20.",
+      "sourceUrl": "https://www.home-assistant.io/actions/media_player.volume_set/"
+    },
+    {
+      "claim": "The Sonos TTS media-source address carries tts.piper as the engine and a URL-encoded message. Local URL parsing recovers Dinner is ready.; this checks syntax rather than playback.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/tts/media_source.py"
+    },
+    {
+      "claim": "Music Assistant requires a running server before adding its Home Assistant integration and exposes its own player entities.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/music_assistant/"
+    },
+    {
+      "claim": "Music Assistant restores MA-managed playback subject to accurate state/progress reports; native Google Cast, Sync and Universal group announcements can interrupt independently playing child speakers without resumption. No arbitrary external-app recovery is promised.",
+      "sourceUrl": "https://www.music-assistant.io/integration/announcements/"
+    },
+    {
+      "claim": "Assist satellite announce uses the configured assistant TTS, supports disabling the default preannouncement chime, and is separate from starting a listening conversation.",
+      "sourceUrl": "https://www.home-assistant.io/actions/assist_satellite.announce/"
+    },
+    {
+      "claim": "TTS local media URLs, Cast hostname/certificate requirements and audio-format compatibility are separate from successful action execution. TTS caches generated audio by default, so local synthesis is not a no-storage promise.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/tts/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-scenes-vs-scripts/",
+      "section": "Keep the boundaries clear as you add more routines",
+      "readerReason": "The existing dinner-lighting example already teaches one shared script called by a button and schedule. A contextual next step can show how to add a spoken dinner message with its own quiet-hours and music checks."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-washing-machine-finished-notification/",
+      "section": "1. Test the phone message first",
+      "readerReason": "After phone delivery works, a reader may want an optional spoken completion message in one room. This guide supplies the playback test and quiet-hours caveats without replacing the laundry-completion signal or competing with that owner."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440\u00d71000: readable two-line title, Tara Avenir at regular 400, 780px centered body, four TLDR bullets immediately after the hero, decoded post-local 1200 WebP visible with the speaker and dinner setting. Wide tables remain centered. /blog/ shows the first card in the existing two-column library; card navigation and legacy redirect reach the canonical article. No horizontal document overflow. Full and viewport screenshots saved outside the worktree in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "Chromium at 390\u00d7844: readable wrapped title, byline/date, 480 WebP, normal body text and a single-column /blog.html card. Document width equals 390px; all three tables and three code blocks scroll internally. Manually moved the first table to its final column (416px scroll). FAQ disclosure opens. Speaker remains recognizable in the card crop. Screenshots are external artifacts; browser checks do not claim hardware testing."
+  }
+}

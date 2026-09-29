@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant TTS Announcements: Setup and Music Playback</title>
+    <meta name="description" content="Set up Home Assistant TTS announcements with Piper, quiet hours and a dinner script. Choose when to skip music or use supported announcement playback." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-tts-announcements/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-tts-announcements/" />
+    <meta property="og:title" content="Home Assistant TTS Announcements: Setup and Music Playback" />
+    <meta property="og:description" content="Set up Home Assistant TTS announcements with Piper, quiet hours and a dinner script. Choose when to skip music or use supported announcement playback." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-tts-announcements/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant TTS Announcements: Setup and Music Playback" />
+    <meta name="twitter:description" content="Set up Home Assistant TTS announcements with Piper, quiet hours and a dinner script. Choose when to skip music or use supported announcement playback." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-tts-announcements/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-tts-announcements/#blogposting",
+      "headline": "Home Assistant TTS Announcements: Setup and Music Playback",
+      "description": "Set up Home Assistant TTS announcements with Piper, quiet hours and a dinner script. Choose when to skip music or use supported announcement playback.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-tts-announcements/cover.png",
+      "datePublished": "2026-09-29",
+      "dateModified": "2026-09-29",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-tts-announcements/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/tts/",
+        "https://www.home-assistant.io/actions/tts.speak/",
+        "https://www.home-assistant.io/voice_control/voice_remote_local_assistant/",
+        "https://www.home-assistant.io/integrations/wyoming/",
+        "https://www.home-assistant.io/integrations/sonos/",
+        "https://www.home-assistant.io/integrations/music_assistant/",
+        "https://www.music-assistant.io/integration/announcements/",
+        "https://www.home-assistant.io/actions/assist_satellite.announce/",
+        "https://www.home-assistant.io/docs/scripts/",
+        "https://www.home-assistant.io/integrations/script/",
+        "https://www.home-assistant.io/docs/scripts/conditions/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/tts/media_source.py",
+        "https://www.home-assistant.io/integrations/media_player/",
+        "https://www.home-assistant.io/actions/media_player.play_media/",
+        "https://www.home-assistant.io/actions/media_player.volume_set/",
+        "https://www.home-assistant.io/cloud/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant TTS Announcements: Setup and Music Playback",
+          "item": "https://tarahome.ai/blog/home-assistant-tts-announcements/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need a microphone or an AI conversation agent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. A fixed text announcement only needs a speech provider and a supported playback destination. Recognizing a spoken command is a separate feature."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can one script control every speaker brand?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The basic speech action can serve compatible players, but announcement volume, music recovery and group behavior depend on the integration. Verify each destination before sending a whole-house message."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will queued mode stop spoken messages overlapping?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not by itself. Queued mode orders script runs, but a playback action may return before the audio finishes. Use a documented announcement queue or a playback-aware wait; the example here only suppresses repeated calls during its short active period."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div><p class="article-meta"><span>Household announcements</span><span><time datetime="2026-09-29">September 29, 2026</time></span><span>10 min read</span></p><h1>Home Assistant TTS Announcements: Setup and Music Playback</h1><p class="lede">Make a room speaker say a useful message, keep bedtime quiet, and choose what should happen to music that is already playing.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-tts-announcements/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-tts-announcements/cover-480.webp 480w, /assets/generated/blog/home-assistant-tts-announcements/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A compact dark speaker on an oak sideboard beside a dinner table with forest-green chairs" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Start with one speaker:</strong> use the Speak action with a configured text-to-speech provider such as Piper. Test a harmless sentence at low volume before adding a trigger.</li>
+<li><strong>Protect music deliberately:</strong> the starter script below skips a busy player. For announcements during music, use a supported Sonos overlay or a verified Music Assistant playback path.</li>
+<li><strong>Keep household control:</strong> add a spoken-message switch, quiet hours and a short repeat guard. Start with one room rather than broadcasting everywhere.</li>
+<li><strong>Check the whole path:</strong> a local voice engine does not make every speaker local, and a successful action does not prove anyone heard it. Keep important alerts on another channel too.</li>
+</ul></aside>
+<h2>Start with speech, then decide how music should behave</h2>
+<p>For <strong>Home Assistant TTS announcements</strong>, first connect a speech provider and a compatible speaker, then run <code>tts.speak</code> with a short test message. TTS means <strong>text-to-speech</strong>: turning written words into audio. Piper is a local option that generates that audio on your own hardware.</p>
+<p>Choose a room speaker you already own. It must be able to play the generated audio through its Home Assistant integration, the connection that exposes its controls. An entry called <code>media_player</code> is not by itself proof of that capability. Test speech before building the household routine.</p>
+<p>For a first version, skip announcements while that speaker is busy. If you want speech over music, use the separate playback paths below. The <a href="https://www.home-assistant.io/actions/media_player.play_media/">Play specified media documentation</a> warns that an unsupported announcement request can play the new audio without resuming the interrupted media.</p>
+<p class="research-method">Researched from current Home Assistant and Music Assistant documentation and Home Assistant 2026.9.4 source code on September 29, 2026. YAML syntax, the player-state condition and the media address were checked locally. This guide was not tested on physical speakers or in a running Home Assistant installation. The cover is an AI-generated household illustration, not a product photograph.</p>
+
+<h2 id="setup">Set up one working announcement</h2>
+<h3>1. Connect the speaker and choose a voice</h3>
+<p>Under <strong>Settings → Devices &amp; services</strong>, check that the speaker’s integration is configured. Copy its <strong>entity ID</strong>, the internal name used by actions, such as <code>media_player.dining_room</code>. Use one player rather than a speaker group for the first test.</p>
+<p>On <strong>Home Assistant OS</strong>, install the <strong>Piper app</strong>, select a voice in its configuration and start it, then add the discovered <strong>Wyoming Protocol</strong> integration. Wyoming connects Home Assistant to the speech service. Older installations may label Apps as Add-ons. The <a href="https://www.home-assistant.io/voice_control/voice_remote_local_assistant/">official local-voice setup</a> includes this installation path. For a fixed spoken message, you do not need Whisper, wake-word detection or a microphone.</p>
+<p><strong><a href="https://www.home-assistant.io/installation/">Home Assistant Container has no built-in Apps store</a>.</strong> Run a compatible Piper service separately and connect it through <a href="https://www.home-assistant.io/integrations/wyoming/">Wyoming</a>, or use a TTS provider you already configured. Copy the resulting <code>tts.</code> entity ID; the examples assume <code>tts.piper</code>, but your name may differ. Home Assistant Cloud TTS is another option with a <a href="https://www.home-assistant.io/cloud/">Home Assistant Cloud subscription</a> and internet dependence.</p>
+<h3>2. Speak a harmless test sentence</h3>
+<p>Set a comfortable low volume using the speaker’s normal control and stop any music. Open <strong>Settings → Tools → Actions</strong>; older releases use <strong>Developer tools → Actions</strong>. Select <strong>Speak</strong>. Its target is the <em>TTS provider</em>; the <strong>Media player entity</strong> field selects the speaker. This distinction is shown in the <a href="https://www.home-assistant.io/actions/tts.speak/">Speak action reference</a>.</p>
+<p>YAML is Home Assistant’s text configuration format. In YAML mode, use the following with your two IDs. On a phone, scroll code blocks sideways to read each complete line.</p>
+<details class="configuration" open><summary>One-sentence speech test</summary><pre tabindex="0" aria-label="One-sentence speech test"><code>action: tts.speak
+target:
+  entity_id: tts.piper
+data:
+  media_player_entity_id: media_player.dining_room
+  message: &quot;This is an announcement test.&quot;
+</code></pre></details>
+<p><strong>Expected result:</strong> the selected speaker says the sentence once. If it stays silent, use the troubleshooting table before adding quiet hours or button logic. An action completing without an error is only one part of this check.</p>
+
+<h2 id="dinner-script">Worked example: a considerate dinner announcement</h2>
+<p>This version speaks only between 8 am and 9 pm, while a household switch is on and the player reports <code>idle</code> or <code>off</code>. A script is a saved sequence you can call from a dashboard or automation. Here, skipping speech is intentional whenever the room’s player appears busy.</p>
+<ol>
+<li>Go to <strong>Settings → Devices &amp; services → Helpers → Create helper → Toggle</strong>. Name it <strong>Spoken announcements</strong>, confirm its ID, and turn it on. A <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a> gives the household a simple pause switch.</li>
+<li>Open <strong>Settings → Automations &amp; scenes → Scripts</strong>, create a new empty script and choose <strong>Edit in YAML</strong> from its menu. Paste the complete script below without an outer <code>script:</code> line.</li>
+<li>Replace the helper, TTS and speaker IDs. The speaker appears twice: in the condition and the speech action. Keep the indentation, then save.</li>
+<li>Run the <em>whole saved script</em> during the allowed hours with the speaker idle. Keep its volume at the level you checked. This version sends no explicit volume change; the playback integration’s announcement behavior still applies.</li>
+</ol>
+<details class="configuration" open><summary>Dinner announcement script</summary><pre tabindex="0" aria-label="Dinner announcement script"><code>alias: &quot;Dinner announcement&quot;
+description: &quot;Speak during daytime, only on an idle or off player&quot;
+mode: single
+sequence:
+  - condition: state
+    entity_id: input_boolean.spoken_announcements
+    state: &quot;on&quot;
+  - condition: time
+    after: &quot;08:00:00&quot;
+    before: &quot;21:00:00&quot;
+  - condition: template
+    value_template: &gt;-
+      {{ states(&#x27;media_player.dining_room&#x27;) in [&#x27;idle&#x27;, &#x27;off&#x27;] }}
+  - action: tts.speak
+    target:
+      entity_id: tts.piper
+    data:
+      media_player_entity_id: media_player.dining_room
+      message: &quot;Dinner is ready. Please come to the table.&quot;
+  - delay: &quot;00:00:10&quot;
+</code></pre></details>
+<p>The <a href="https://www.home-assistant.io/docs/scripts/">conditions stop the sequence</a> when a check fails. <a href="https://www.home-assistant.io/integrations/script/#script-modes">Single mode</a> rejects another call while this script is still running. The ten-second delay is a repeat guard after sending the message, <strong>not a measurement of speech duration</strong>. It does not coordinate other scripts or survive a Home Assistant restart.</p>
+<p>The <a href="https://www.home-assistant.io/integrations/media_player/">player’s reported state</a> matters: <code>paused</code>, <code>playing</code>, <code>buffering</code>, <code>unavailable</code> and <code>unknown</code> all skip speech here. Some resting speakers report paused rather than idle. Do not broaden the condition until you decide whether interrupting that paused session is acceptable. An off player also needs to support starting playback from that state.</p>
+<p><strong>This is a check, not a lock on the speaker.</strong> Someone could start music immediately afterward, or the integration could report an old state. Use a dedicated announcement speaker or a verified native announcement path if preserving playback is essential.</p>
+<p class="table-hint">Illustrative checks, not reported hardware test results. Scroll the table sideways on a phone.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Dinner script expected outcomes"><table><thead><tr><th>Situation</th><th>Expected result</th><th>Reason</th></tr></thead><tbody>
+<tr><td>6:30 pm, helper on, player idle</td><td>One dinner message</td><td>All three conditions pass.</td></tr>
+<tr><td>10 pm, otherwise the same</td><td>No message</td><td>The quiet-hours condition stops the script.</td></tr>
+<tr><td>Helper switched off before running</td><td>No message</td><td>The household pause takes priority.</td></tr>
+<tr><td>Music playing or paused</td><td>No message</td><td>This version leaves an existing session alone.</td></tr>
+<tr><td>A second call during the delay</td><td>No second run</td><td>Single mode is still active.</td></tr>
+</tbody></table></div>
+<p>For a harmless check now, turn the helper off and run the script: it should remain silent, with its trace—the saved record of the steps that ran—showing the first failed condition. Turn the helper back on afterward. To check quiet hours without changing the system clock, temporarily choose an allowed time window that excludes now, run the whole script, inspect the trace and restore the intended hours.</p>
+<p>Once this behaves as expected, call the saved script from a dashboard button or a physical button automation. The <a href="/blog/home-assistant-scenes-vs-scripts/">scenes versus scripts guide</a> explains how a button and an automation can share one sequence. Turning the helper off blocks future runs; it does not retract audio already sent.</p>
+
+<h2 id="music">Choose what happens while music is playing</h2>
+<p class="table-hint">Choose the row matching how your speaker plays music. Scroll sideways on a phone.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Announcement playback choices"><table><thead><tr><th>Your situation</th><th>Choose</th><th>Check before relying on it</th></tr></thead><tbody>
+<tr><td>You want the smallest initial setup</td><td>The guarded Speak script above</td><td>It skips a busy player; accurate state reporting is required.</td></tr>
+<tr><td>You already use supported Sonos hardware</td><td>The Sonos announcement overlay</td><td>Older hardware and S1 firmware may lack full support.</td></tr>
+<tr><td>Music is managed by Music Assistant</td><td>Send speech to the MA player entity</td><td>Install the Music Assistant server and its Home Assistant integration; verify restoration with your music source.</td></tr>
+<tr><td>You have a compatible Assist satellite</td><td>Announce on satellite</td><td>Use its configured assistant’s TTS and check announcement support.</td></tr>
+</tbody></table></div>
+<h3>Sonos: use its announcement path</h3>
+<p>The <a href="https://www.home-assistant.io/integrations/sonos/#playing-media">Sonos integration</a> documents an overlay that lowers music during the message and restores its volume. It requires the UPnP device discovery and control setting enabled <em>in the Sonos app</em>; this is not a recommendation to enable internet port mapping on your router. Older hardware and S1 support vary.</p>
+<p>After the basic test, try this action on one supported speaker with nonessential music. Replace the Sonos ID and <code>tts.piper</code> inside the media address. The spaces in the message are encoded as <code>%20</code>.</p>
+<details class="configuration" open><summary>Sonos announcement action</summary><pre tabindex="0" aria-label="Sonos announcement action"><code>action: media_player.play_media
+target:
+  entity_id: media_player.dining_room_sonos
+data:
+  announce: true
+  media_content_type: music
+  media_content_id: &gt;-
+    media-source://tts/tts.piper?message=Dinner%20is%20ready.
+  extra:
+    volume: 20
+</code></pre></details>
+<p>Here <code>extra.volume: 20</code> sets the Sonos announcement level. It uses the <a href="https://docs.sonos.com/reference/audioclip-loadaudioclip-playerid">Sonos audio-clip 0–100 scale</a>, unlike the ordinary <a href="https://www.home-assistant.io/actions/media_player.volume_set/">volume_set action’s 0–1 scale</a>. Sonos applies minimum and maximum clip-level limits, so use the helper to suppress announcements rather than relying on volume zero. Verify a comfortable level in the room. Only after the overlay test succeeds should you replace the dinner script’s Speak step and remove its idle/off condition; keep the time and helper checks.</p>
+<h3>Music Assistant: keep the playback path consistent</h3>
+<p><a href="https://www.home-assistant.io/integrations/music_assistant/">Music Assistant needs its own running server</a> plus the Home Assistant integration. Target the <strong>MA player entity</strong> with Speak, rather than a separate native Cast or Sonos entry for the same hardware.</p>
+<p>MA documents restoring music that <em>MA was managing</em> after an announcement. This depends on correct player state and playback-position reports. Do not assume it can recover arbitrary music started by another app. Its <a href="https://www.music-assistant.io/integration/announcements/">group guidance</a> warns that announcements to native Google Cast, Sync and Universal groups can interrupt an independently playing child speaker without resuming it. Test a single player first, then each real group scenario before removing the starter script’s busy-player guard.</p>
+<h3>Assist satellites: select the satellite action</h3>
+<p>For a compatible <code>assist_satellite</code> entity, use <a href="https://www.home-assistant.io/actions/assist_satellite.announce/">Announce on satellite</a> with your message. It uses the TTS configured for that satellite’s assistant and normally plays a chime first; <code>preannounce: false</code> disables the chime. An announcement is separate from starting a listening conversation. If you still need the underlying assistant, follow the <a href="/blog/home-assistant-local-voice-assistant-no-cloud/">local voice setup guide</a>.</p>
+
+<h2 id="troubleshooting">Find the failed step before changing the routine</h2>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Announcement troubleshooting"><table><thead><tr><th>What you observe</th><th>Check next</th><th>Useful result</th></tr></thead><tbody>
+<tr><td>The plain Speak action fails</td><td>Provider ID, provider availability and chosen language</td><td>A short message generates without a provider error.</td></tr>
+<tr><td>Audio is generated, but a Cast speaker stays silent</td><td>The media URL the speaker must fetch</td><td>The speaker can reach Home Assistant; a working browser page alone is insufficient.</td></tr>
+<tr><td>The plain test works; the dinner script is silent</td><td>The script trace, helper, time and player state</td><td>You identify which condition intentionally stopped it.</td></tr>
+<tr><td>Music stops and stays stopped</td><td>Exact integration and announcement support</td><td>Keep the busy-player guard or use a verified playback path.</td></tr>
+<tr><td>Speech starts halfway through or is distorted</td><td>Audio format and sample-rate compatibility</td><td>The complete test sentence plays clearly before further automation.</td></tr>
+</tbody></table></div>
+<p>Home Assistant’s <a href="https://www.home-assistant.io/integrations/tts/#troubleshooting">TTS troubleshooting</a> recommends automatic local-URL configuration under <strong>Settings → System → Network</strong>. Cast devices can fail on local-only hostnames and self-signed certificates. Preserve a custom network configuration until you understand why it exists; changing a hostname does not create a firewall allowance.</p>
+<p>Separate device discovery, HA-to-speaker control and <strong>speaker-to-HA audio retrieval</strong>. The <a href="https://www.home-assistant.io/integrations/sonos/#network-requirements">Sonos network requirements</a> additionally require HA to reach TCP 1443 on the speaker for announcements. Check the integration’s directions and existing rules rather than opening everything between networks. Test with one harmless message; no factory reset or router outage is needed.</p>
+
+<h2>Keep spoken messages useful and private</h2>
+<p>Use short, ordinary messages such as “Dinner is ready.” Avoid announcing private calendar details or security codes in shared rooms. Piper keeps synthesis local, but the selected speaker, music service and any cloud TTS provider have their own data paths. TTS also caches generated audio by default; local processing does not mean nothing is stored.</p>
+<p>Keep spoken reminders supplementary to important phone alerts or purpose-built alarms. For a coordinated household setup, Tara’s <a href="/home-automation-kit/">home automation kit and shared routines</a> page explains the broader planning path.</p>
+<h2>Common questions</h2>
+<div class="faq">
+<details><summary>Do I need a microphone or an AI conversation agent?</summary><p>No. A fixed text announcement only needs a speech provider and a supported playback destination. Recognizing a spoken command is a separate feature.</p></details>
+<details><summary>Can one script control every speaker brand?</summary><p>The basic speech action can serve compatible players, but announcement volume, music recovery and group behavior depend on the integration. Verify each destination before sending a whole-house message.</p></details>
+<details><summary>Will queued mode stop spoken messages overlapping?</summary><p>Not by itself. Queued mode orders script runs, but a playback action may return before the audio finishes. Use a documented announcement queue or a playback-aware wait; the example here only suppresses repeated calls during its short active period.</p></details>
+</div>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Speech and scripts</h3><ul><li><a href="https://www.home-assistant.io/integrations/tts/">Text-to-speech</a></li><li><a href="https://www.home-assistant.io/actions/tts.speak/">Speak action</a></li><li><a href="https://www.home-assistant.io/voice_control/voice_remote_local_assistant/">Local voice setup</a></li><li><a href="https://www.home-assistant.io/integrations/wyoming/">Wyoming Protocol</a></li><li><a href="https://www.home-assistant.io/docs/scripts/">Script syntax</a></li><li><a href="https://www.home-assistant.io/integrations/script/">Script integration</a></li><li><a href="https://www.home-assistant.io/docs/scripts/conditions/">Conditions</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Input boolean</a></li></ul></div><div><h3>Playback and compatibility</h3><ul><li><a href="https://www.home-assistant.io/integrations/sonos/">Sonos</a></li><li><a href="https://www.home-assistant.io/integrations/music_assistant/">Music Assistant integration</a></li><li><a href="https://www.music-assistant.io/integration/announcements/">Music Assistant announcements</a></li><li><a href="https://www.home-assistant.io/actions/assist_satellite.announce/">Assist satellite announce</a></li><li><a href="https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/tts/media_source.py">TTS media source implementation</a></li><li><a href="https://www.home-assistant.io/integrations/media_player/">Media player</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Choose routines the household will use</h2><p>Plan the rooms, controls and everyday messages you want to connect.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
