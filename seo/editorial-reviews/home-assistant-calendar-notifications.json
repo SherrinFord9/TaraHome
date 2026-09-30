@@ -1,0 +1,83 @@
+{
+  "slug": "home-assistant-calendar-notifications",
+  "action": "new",
+  "publicationDate": "2026-09-30",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant send a phone reminder before each timed appointment, including simultaneous events, without unexpected all-day alerts?",
+  "directAnswer": "Use the event's calendar trigger with a -15-minute start offset, queued mode and trigger.calendar_event data. Exclude all-day events, test plain phone delivery first, then create two harmless timed appointments far enough ahead for polling. This example does not replay reminders missed during downtime.",
+  "originalContribution": "Sections 3 and 4 provide a complete built-in automation with separate in-interface and phone outputs, plus an original 14:00 setup / 15:00 dual-appointment / 14:45 reminder rehearsal. The decision table distinguishes absent calendar data, no trigger, all-day exclusion, and phone delivery failure. It also checks duplicate notification replacement separately from missing calendar triggers.",
+  "limitations": "Documentation and Home Assistant 2026.9.4 source research; no live Home Assistant installation, physical phone, provider synchronization, or notification latency test was performed. YAML parsing and Jinja rendering used synthetic timed, simultaneous, all-day and UTC event fixtures, not an integration runtime. No guarantee of delivery, catch-up, immediate event-edit propagation, or offline phone push. Generated cover is labeled editorial illustration.",
+  "proofreadFixes": "Replaced technical wording 'complete mapping' and 'saved delivery ledger' with plain instructions. Corrected the stale System > General path to current Home information > Region and retained the older-version label. Made last-minute event-edit behavior explicit: an old reminder can remain scheduled. Added a sideways-scroll hint at the troubleshooting table. Verified that the test margin precedes the reminder time, that all-day entries are excluded before formatting, and that Run actions lacks required trigger data. Final automated plain-English and technical proofread PASS; no human/expert review claimed. Browser screenshots were recaptured after image decoding to avoid recording an incomplete paint.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Calendar events should trigger reminders individually; a negative start offset fires before the event, and calendars are read every 15 minutes. The original test gives 45 minutes before the offset trigger.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/calendar/"
+    },
+    {
+      "claim": "The trigger exposes calendar_event.summary, start and all_day. The example filters all-day events and reads per-run event data rather than the single next-event entity attribute.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/templating/"
+    },
+    {
+      "claim": "Queued mode preserves arrival order and max counts active plus queued runs. Long waits would delay later notifications; reaching the configured maximum can reject additional runs.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Run actions omits trigger data and skips top-level conditions, so it is not a valid end-to-end test for this calendar recipe. Future real test events and traces are the prescribed verification.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "All-day dates are interpreted at local midnight; excluding them prevents the -15-minute trigger from sending a previous-evening alert. A separate 09:15 timed entry gives a 09:00 reminder.",
+      "sourceUrl": "https://developers.home-assistant.io/docs/core/entity/calendar/"
+    },
+    {
+      "claim": "The checked implementation starts scheduling at the current/future window, fetches batches, and has no persistent delivery ledger for this automation. Downtime and last-minute event edits are explicitly limited.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/calendar/trigger.py"
+    },
+    {
+      "claim": "Phone notifications use a phone-specific notify.mobile_app action and require notification permission plus a message. Shared notification tags can replace prior alerts; this recipe does not use one.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    },
+    {
+      "claim": "persistent_notification.create produces an in-interface message; omitting a fixed notification_id allows separate messages. That action is not a phone-delivery receipt.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "timestamp_custom with local_time true formats the parsed event timestamp in Home Assistant's configured time zone; synthetic UTC and local fixtures rendered the same appointment time.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/timestamp_custom/"
+    },
+    {
+      "claim": "Time zone is currently under Settings > System > Home information > Region; General is identified as older UI wording.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/basic/"
+    },
+    {
+      "claim": "Local calendar event storage does not establish offline phone delivery. Local Push has separate app/connection requirements.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-local/"
+    },
+    {
+      "claim": "Standard push may involve external delivery services. Appointment titles copied into Home Assistant and phone notifications require attention to shared displays and lock-screen previews.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-details/"
+    },
+    {
+      "claim": "Google Calendar integration requires account authorization and configured developer credentials; it is an alternative event source, not an automatic copy of Local calendar.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/google/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-tts-announcements/",
+      "section": "Keep spoken messages useful and private",
+      "readerReason": "A reader who has a working speaker announcement can next learn how individual appointments supply the timing and event text, with overlap and privacy limits."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-recurring-chores/",
+      "section": "1. Choose what “repeat” means",
+      "readerReason": "Readers choosing a fixed appointment instead of a completion-relative chore can follow a dedicated event-reminder procedure. This is a separate navigation suggestion; the existing article was not edited."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440×1000: readable two-line title, visible Tara Home byline, loaded unique WebP hero after decode, four-bullet TLDR below hero. Tara Avenir loaded, H1 weight 400, body centered at 780px. Both tables fit their 918px regions; no horizontal page overflow. Both library cards display the new post first; old cards preserved. Canonical .html redirect reaches the trailing-slash article. Screenshots stored externally under TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390×844: title, byline and image stack cleanly; responsive 480px WebP loads; body width 346px and page scroll width equals viewport. Tables and code scroll inside their containers; verified the troubleshooting table reaches its final column at scrollLeft 416. Swipe hints are visible. Cards on /blog/ and /blog.html are readable with loaded images. Only console error is the deliberately blocked analytics script; no article script error observed."
+  }
+}
