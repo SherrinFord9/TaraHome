@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Home Assistant HACS vs Apps: What to Install Where</title><meta name="description" content="Choose HACS, Apps, or Add integration in Home Assistant. Follow the OS or Container route, finish setup, and verify a custom card safely." /><meta name="robots" content="index, follow" /><link rel="canonical" href="https://tarahome.ai/blog/home-assistant-hacs-vs-apps/" />
+<meta property="og:type" content="article" /><meta property="og:url" content="https://tarahome.ai/blog/home-assistant-hacs-vs-apps/" /><meta property="og:title" content="Home Assistant HACS vs Apps: What to Install Where" /><meta property="og:description" content="Choose HACS, Apps, or Add integration in Home Assistant. Follow the OS or Container route, finish setup, and verify a custom card safely." /><meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-hacs-vs-apps/cover.png" />
+<meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="Home Assistant HACS vs Apps: What to Install Where" /><meta name="twitter:description" content="Choose HACS, Apps, or Add integration in Home Assistant. Follow the OS or Container route, finish setup, and verify a custom card safely." /><meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-hacs-vs-apps/cover.png" />
+<link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" /><link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+<style>
+
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body .comparison-table:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+      .article-body pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); line-height: 1.6; }
+      .article-body pre code { border: 0; padding: 0; background: transparent; }
+      .article-body > * { min-width: 0; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body table { table-layout: fixed; }
+      .article-body th:first-child { width: 24%; }
+      .article-body th:not(:first-child) { width: 38%; }.article-body code {font-size: .88em; overflow-wrap: anywhere; background: rgba(65,168,103,.10); padding: 1px 4px; border-radius: 4px;} .article-body .table-hint {font-size: .95rem;} .article-byline {margin-top: 14px;}
+
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/tara-star.svg"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-hacs-vs-apps/#blogposting",
+      "headline": "Home Assistant HACS vs Apps: What to Install Where",
+      "description": "Choose HACS, Apps, or Add integration in Home Assistant. Follow the OS or Container route, finish setup, and verify a custom card safely.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-hacs-vs-apps/cover.png",
+      "datePublished": "2026-10-01",
+      "dateModified": "2026-10-01",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-hacs-vs-apps/"
+      },
+      "url": "https://tarahome.ai/blog/home-assistant-hacs-vs-apps/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant HACS vs Apps: What to Install Where",
+          "item": "https://tarahome.ai/blog/home-assistant-hacs-vs-apps/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need HACS to use Home Assistant?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Built-in integrations, dashboards and automations can form a complete setup. Add HACS when a specific community project provides something you need and you are comfortable maintaining it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will installing HACS give Container the App Store?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. HACS can download custom extensions on Container, but it does not add the Supervisor-managed Apps system. Run required companion services separately, or evaluate Home Assistant OS."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does HACS make my devices work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Check each project’s device connection. HACS needs internet for downloading and checking projects; the installed integration may control a device locally or may still require a vendor service."
+          }
+        }
+      ]
+    }
+  ]
+}</script></head><body><nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><header class="hero article-hero"><div><div class="article-meta"><span>Software setup</span><span>October 1, 2026</span><span>10 min read</span></div><h1>Home Assistant HACS vs Apps: What to Install Where</h1><p class="lede">Choose the right place to add a feature, finish the setup, and check that it works without changing a real device.</p><p class="article-byline">By <a href="/#about">Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-hacs-vs-apps/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-hacs-vs-apps/cover-480.webp 480w, /assets/generated/blog/home-assistant-hacs-vs-apps/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Laptop, notebook and Ethernet cable on an oak desk beside a forest-green lamp in a warm living room" fetchpriority="high" /></figure></header><div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Start with Add integration</strong> when Home Assistant already supports your device or service. You do not need HACS for every new device.</li>
+<li><strong>Use Apps for a separate program</strong> such as the Mosquitto message broker. Apps were called add-ons before Home Assistant 2026.2.</li>
+<li><strong>Use HACS for a specific community extension</strong> such as Mushroom cards or Adaptive Lighting. Downloading it is only one step; follow its configuration instructions afterward.</li>
+<li><strong>Container can use HACS, but has no managed App Store.</strong> On Home Assistant OS, “Get HACS” is an installer app. HACS itself is an integration, and its listings are not a Home Assistant testing endorsement.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant, HACS and project documentation on October 1, 2026. The examples below are configuration walkthroughs, not hands-on installation tests. Cover: AI-generated editorial illustration.</p>
+<h2 id="choose">Choose by the job you need done</h2>
+<p>Choosing between <strong>HACS and Apps in Home Assistant</strong> starts with the feature you need. Choose a built-in integration to connect a supported device, an app to run a separate program, or HACS to download a community extension you specifically want. These choices can work together.</p>
+<p>An <strong>integration</strong> connects Home Assistant to a device or service, or adds behavior inside Home Assistant. A dashboard <strong>card</strong> displays information or controls on a screen. An <strong>entity</strong> is an individual reading or control, such as a room temperature. A new card can display that temperature without creating a new sensor.</p>
+<p>HACS means Home Assistant Community Store. It helps download and manage community projects. It is optional: start with Home Assistant’s built-in integrations and cards, then add HACS if a particular project fills a real gap. Apps are separate programs running alongside Home Assistant. The phone’s Companion app is a different use of the word “app.” See the official <a href="https://www.home-assistant.io/getting-started/concepts-terminology/">concepts guide</a> and <a href="https://www.hacs.xyz/docs/faq/addons/">HACS Apps FAQ</a>.</p>
+<p class="table-hint">On a phone, swipe the table sideways to see every column.</p>
+<div class="comparison-table" role="region" aria-label="Which installation route to choose" tabindex="0"><table><thead><tr><th>Your goal</th><th>Start here</th><th>What completes the setup?</th></tr></thead><tbody>
+<tr><td>Connect a device supported by a built-in integration.</td><td>Settings → Devices &amp; services → Add integration.</td><td>Follow that integration’s setup and check its entities. HACS is unnecessary for this route.</td></tr>
+<tr><td>Run a separate service, such as Mosquitto, which passes messages between connected devices and programs.</td><td>On OS: Settings → Apps. On Container: manage the service separately.</td><td>Start and configure the service, then connect the matching Home Assistant integration when needed.</td></tr>
+<tr><td>Add custom behavior, such as Adaptive Lighting.</td><td>Find the project in HACS.</td><td>Download, complete any required restart, then configure the integration using its own instructions.</td></tr>
+<tr><td>Change how existing information appears, using Mushroom cards.</td><td>Find Mushroom in HACS.</td><td>Load its card files, then add a card to a dashboard and select an existing entity.</td></tr>
+</tbody></table></div>
+<h2 id="setup">1. Check your installation before choosing a download route</h2>
+<p>Open <strong>Settings → About</strong> and identify your Home Assistant installation type. Current supported choices are Home Assistant OS and Home Assistant Container. OS includes the management system, called Supervisor, that runs Apps. Container does not gain that system by installing HACS. If choosing between the two is your real decision, read our <a href="/blog/home-assistant-os-vs-docker/">OS versus Docker comparison</a>.</p>
+<p>Older tutorials say “Add-ons.” Home Assistant changed that label to <strong>Apps in 2026.2</strong>; this is not a missing-feature diagnosis. If you have OS and still cannot find Apps, verify the server and account you are using before assuming you need to reinstall. Use an administrator account for this setup. Sources: <a href="https://www.home-assistant.io/installation/">installation options</a> and the <a href="https://www.home-assistant.io/blog/2026/02/04/release-20262/#add-ons-are-now-called-apps">2026.2 naming change</a>.</p>
+<h2 id="prepare">2. Choose one project and check its requirements</h2>
+<p>Write down the feature you want and open the project’s own documentation. Check its minimum Home Assistant version, configuration method and recent compatibility notes. HACS itself and the project you download can have different version requirements.</p>
+<p>The <a href="https://www.hacs.xyz/docs/use/download/prerequisites/">HACS prerequisites</a> also require access to configuration files and logs, plus working internet access to its download services. Know how you would inspect an installation error before adding custom code. Keep a current completed backup; our <a href="/blog/how-to-back-up-home-assistant/">backup and restore guide</a> explains how to prepare that separately.</p>
+<p>Do not install a collection of extensions just to follow a screenshot. HACS says its custom elements are <a href="https://www.hacs.xyz/docs/faq/highlights/">not reviewed or tested by the Home Assistant development team</a>. Read the chosen project’s release notes and support instructions. A listing is a distribution route, not a promise of maintenance or compatibility.</p>
+<h2 id="download">3. Download HACS using the matching route</h2>
+<p><strong>For Home Assistant OS:</strong> add <code>https://github.com/hacs/addons</code> as an app repository under Settings → Apps → Install app → the three-dot menu → Repositories. Select <strong>Get HACS</strong>, install it, start it, and follow its logs. Once the download instructions are complete, restart Home Assistant.</p>
+<p><strong>For Home Assistant Container:</strong> use the Container tab of the <a href="https://www.hacs.xyz/docs/use/download/download/">official HACS download guide</a>. Its procedure enters the running Home Assistant container and runs the project’s download script there. Use your actual container name. Check that its configuration directory is stored persistently, then restart Home Assistant as directed. Installing an unrelated container named “HACS” is not that procedure.</p>
+<p>The download page still includes older installation tabs. They do not change Home Assistant’s current supported installation choices. If you cannot identify your setup or its configuration storage, resolve that before running commands.</p>
+<div class="callout"><p><strong>Why Get HACS appears under Apps:</strong> it downloads HACS for an OS installation. Finding or starting that installer does not finish the HACS integration setup. The next step happens in Devices &amp; services.</p></div>
+<h2 id="configure">4. Add the HACS integration</h2>
+<ol>
+<li>After the restart, open <strong>Settings → Devices &amp; services</strong>. Perform a hard refresh of the browser, or clear its cache as the HACS instructions describe.</li>
+<li>Select <strong>Add integration</strong>, search for HACS, and read the setup acknowledgements.</li>
+<li>Follow the GitHub authorization link shown by the setup flow. Sign in to GitHub, enter the device code supplied by your own Home Assistant setup, and authorize HACS.</li>
+<li>Return to Home Assistant and finish. Open HACS from the sidebar and confirm its project list loads.</li>
+</ol>
+<p>This follows the <a href="https://www.hacs.xyz/docs/use/configuration/basic/">HACS initial configuration guide</a>. GitHub authorization is part of HACS setup; it does not log you in to a light manufacturer’s service or make a cloud device local.</p>
+<h2 id="worksheet">5. Work through one request, not every store</h2>
+<p>Imagine a household has three requests: show a temperature more clearly, change lamp color through the day, and connect an MQTT device. The worksheet below separates the downloaded software from the thing that actually makes it useful. You would choose the relevant row, not install all three.</p>
+<p class="table-hint">On a phone, swipe the table sideways to see the setup and expected result.</p>
+<div class="comparison-table" role="region" aria-label="Worked installation worksheet" tabindex="0"><table><thead><tr><th>Example request</th><th>Installation sequence</th><th>Expected result and boundary</th></tr></thead><tbody>
+<tr><td>“I want a Mushroom temperature card.”</td><td>HACS → Mushroom download → dashboard editor → add a Mushroom Entity card → choose the existing temperature sensor.</td><td>The card displays the sensor’s state. It does not pair the sensor or need a Mushroom entry in Add integration.</td></tr>
+<tr><td>“My existing lamp should adjust through the day.”</td><td>HACS → Adaptive Lighting → restart → Add integration → Adaptive Lighting → configure the chosen light.</td><td>The configured integration supplies its control switches. The lamp must already work in Home Assistant; downloading code does not pair it.</td></tr>
+<tr><td>“My device needs an MQTT broker.”</td><td>Run a broker, such as the Mosquitto app on OS; configure the device and Home Assistant’s MQTT integration to use that broker.</td><td>A broker is the message exchange service. Its running status alone does not prove the device is publishing or Home Assistant has created an entity.</td></tr>
+</tbody></table></div>
+<p>The projects document these paths separately: <a href="https://github.com/piitaya/lovelace-mushroom">Mushroom</a>, <a href="https://adaptive-lighting.nijho.lt/getting-started/">Adaptive Lighting</a> and <a href="https://www.home-assistant.io/integrations/mqtt/">MQTT</a>. For the next task, use our <a href="/blog/home-assistant-adaptive-lighting/">one-lamp Adaptive Lighting walkthrough</a> or our guide to <a href="/blog/do-you-need-mqtt-mosquitto-home-assistant/">whether you need MQTT and Mosquitto</a>.</p>
+<p>A HACS <strong>custom integration</strong> runs inside Home Assistant on your server. A downloaded dashboard card is code loaded by the browser. Its <strong>resource</strong> is the file the browser needs to draw it. HACS also distributes other project types, including themes. Do not apply an integration’s restart-and-configure instructions blindly to every download. The <a href="https://www.hacs.xyz/docs/use/repositories/type/integration/">integration instructions</a> distinguish UI setup from YAML, and the <a href="https://www.hacs.xyz/docs/use/repositories/type/dashboard/">dashboard instructions</a> explain resources.</p>
+<h2 id="verify">6. Verify with an existing temperature reading</h2>
+<p>If you chose Mushroom, use a harmless display test before changing a household dashboard. You need an existing temperature entity with a valid reading and a dashboard you can edit. This walkthrough does not require switching a device on or off.</p>
+<ol>
+<li>Add a built-in Entity card showing that temperature on a spare dashboard view. Note the entity identifier, such as <code>sensor.living_room_temperature</code>; yours will differ.</li>
+<li>After downloading Mushroom and completing any reload instructions, add a <strong>Custom: Mushroom Entity card</strong> on the same view.</li>
+<li>Select that exact same temperature entity. Save the card and compare the state and unit on both cards. Different visual formatting is fine; an unavailable reading on both points to the underlying sensor.</li>
+<li>Open the view on a second phone or browser. Both cards should load there too. If only the custom card fails, investigate its resource loading before changing the sensor integration. Remove the temporary cards when finished.</li>
+</ol>
+<p>This is a suggested acceptance check, not a reported Tara test. Mushroom’s <a href="https://github.com/piitaya/lovelace-mushroom#usage">usage instructions</a> explain its card picker; Home Assistant documents <a href="https://www.home-assistant.io/dashboards/cards/">adding built-in cards</a>. A successful comparison confirms that display path, not every feature of the extension.</p>
+<h2 id="troubleshoot">If the download is finished but the feature is missing</h2>
+<p class="table-hint">On a phone, swipe the table sideways to read the next step.</p>
+<div class="comparison-table" role="region" aria-label="HACS and Apps troubleshooting" tabindex="0"><table><thead><tr><th>What you see</th><th>Check first</th><th>Next step</th></tr></thead><tbody>
+<tr><td>No Apps menu.</td><td>Installation type and tutorial date.</td><td>Container has no managed Apps. On OS, look for the current Apps label using an administrator account.</td></tr>
+<tr><td>Get HACS completed, but no HACS sidebar.</td><td>Whether you finished integration setup.</td><td>Restart as instructed, refresh the browser, then add and configure HACS in Devices &amp; services.</td></tr>
+<tr><td>A downloaded integration is absent from Add integration.</td><td>Its project instructions and HACS status.</td><td>Complete a pending restart and refresh. Some projects require YAML configuration instead of an Add integration entry.</td></tr>
+<tr><td>Mushroom is absent from Add integration.</td><td>The downloaded project type.</td><td>Look in the dashboard card picker; it is a card collection.</td></tr>
+<tr><td>A custom card reports “Custom element doesn’t exist.”</td><td>Download, documented resource entry and browser reload.</td><td>Check the project’s resource instructions. HACS’s “Open source” check should load its JavaScript; a 404 means the file is not being served at that path.</td></tr>
+<tr><td>An app is running, but its device is missing.</td><td>The matching integration’s connection and device setup.</td><td>Inspect the service and integration logs. Do not add HACS or reset the device merely because the app started.</td></tr>
+</tbody></table></div>
+<p>HACS’s <a href="https://www.hacs.xyz/docs/use/repositories/dashboard/">dashboard guide</a> explains pending restarts and project details. Its <a href="https://www.hacs.xyz/docs/use/repositories/type/dashboard/">dashboard-element guide</a> describes the Open source check. Change one installation step at a time so you can tell which layer was missing.</p>
+<h2 id="faq">Common questions</h2>
+<h3>Do I need HACS to use Home Assistant?</h3><p>No. Built-in integrations, dashboards and automations can form a complete setup. Add HACS when a specific community project provides something you need and you are comfortable maintaining it.</p>
+<h3>Will installing HACS give Container the App Store?</h3><p>No. HACS can download custom extensions on Container, but it does not add the Supervisor-managed Apps system. Run required companion services separately, or evaluate Home Assistant OS.</p>
+<h3>Does HACS make my devices work without internet?</h3><p>No. Check each project’s device connection. HACS needs internet for downloading and checking projects; the installed integration may control a device locally or may still require a vendor service.</p>
+<p>For help choosing and handing over a manageable system, see Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a>.</p></div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Home Assistant</h3><ul><li><a href="https://www.home-assistant.io/getting-started/concepts-terminology/">Integrations, entities and Apps</a></li><li><a href="https://www.home-assistant.io/installation/">Supported installation choices</a></li><li><a href="https://www.home-assistant.io/blog/2026/02/04/release-20262/">2026.2: Add-ons renamed Apps</a></li><li><a href="https://www.home-assistant.io/integrations/mqtt/">MQTT and brokers</a></li><li><a href="https://www.home-assistant.io/dashboards/cards/">Dashboard cards</a></li></ul></div><div><h3>HACS and project documentation</h3><ul><li><a href="https://www.hacs.xyz/docs/use/download/prerequisites/">HACS prerequisites</a></li><li><a href="https://www.hacs.xyz/docs/use/download/download/">Downloading HACS</a></li><li><a href="https://www.hacs.xyz/docs/use/configuration/basic/">Configuring HACS and GitHub authorization</a></li><li><a href="https://www.hacs.xyz/docs/use/repositories/dashboard/">Download status and pending restarts</a></li><li><a href="https://www.hacs.xyz/docs/use/repositories/type/integration/">Custom integration setup</a></li><li><a href="https://www.hacs.xyz/docs/use/repositories/type/dashboard/">Dashboard resources and troubleshooting</a></li><li><a href="https://www.hacs.xyz/docs/faq/highlights/">HACS support scope</a></li><li><a href="https://github.com/piitaya/lovelace-mushroom">Mushroom installation and cards</a></li><li><a href="https://adaptive-lighting.nijho.lt/getting-started/">Adaptive Lighting installation</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Build a setup you can maintain</h2><p>Plan the rooms, controls and local routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
