@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Water Leak Notifications: Repeat Until Checked</title>
+    <meta name="description" content="Set up a Home Assistant water leak notification that repeats until inspection, keeps missing data separate from dry, and resumes after a restart." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-water-leak-notification/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-water-leak-notification/" />
+    <meta property="og:title" content="Home Assistant Water Leak Notifications: Repeat Until Checked" />
+    <meta property="og:description" content="Set up a Home Assistant water leak notification that repeats until inspection, keeps missing data separate from dry, and resumes after a restart." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-water-leak-notification/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Water Leak Notifications: Repeat Until Checked" />
+    <meta name="twitter:description" content="Set up a Home Assistant water leak notification that repeats until inspection, keeps missing data separate from dry, and resumes after a restart." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-water-leak-notification/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-water-leak-notification/#blogposting",
+      "headline": "Home Assistant Water Leak Notifications: Repeat Until Checked",
+      "description": "Set up a Home Assistant water leak notification that repeats until inspection, keeps missing data separate from dry, and resumes after a restart.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-water-leak-notification/cover.png",
+      "datePublished": "2026-10-02",
+      "dateModified": "2026-10-02",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-water-leak-notification/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/binary_sensor/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://www.home-assistant.io/triggers/state/",
+        "https://www.home-assistant.io/triggers/homeassistant/",
+        "https://www.home-assistant.io/docs/configuration/events/",
+        "https://www.home-assistant.io/docs/scripts/",
+        "https://www.home-assistant.io/docs/scripts/conditions/",
+        "https://www.home-assistant.io/docs/automation/modes/",
+        "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+        "https://companion.home-assistant.io/docs/notifications/critical-notifications/",
+        "https://companion.home-assistant.io/docs/notifications/notification-details/",
+        "https://companion.home-assistant.io/docs/notifications/notification-local/",
+        "https://www.home-assistant.io/docs/scripts/perform-actions/",
+        "https://www.home-assistant.io/docs/automation/troubleshooting/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://tarahome.ai/blog/home-assistant-water-leak-notification/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Water Leak Notifications: Repeat Until Checked",
+          "item": "https://tarahome.ai/blog/home-assistant-water-leak-notification/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-water-leak-notification/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why not stop as soon as the sensor dries?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This guide keeps the incident open until inspection. Dry contacts alone do not establish that the leak source is fixed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use this for several rooms?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Give each monitored location its own helper, two automations and reset script so clearing one location cannot clear another."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does clearing the incident reopen a water valve?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The reset only changes the incident helper and operates no valves."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Practical automations</span><span><time datetime="2026-10-02">October 2, 2026</time></span><span>11 min read</span></p>
+<h1>Home Assistant Water Leak Notifications: Repeat Until Checked</h1><p class="lede">Keep a leak marked for inspection, repeat the phone reminder, and clear it deliberately after checking the area.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-water-leak-notification/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-water-leak-notification/cover-480.webp 480w, /assets/generated/blog/home-assistant-water-leak-notification/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Open forest-green kitchen sink cabinet with a small patch of water beneath the plumbing and a folded towel nearby" loading="eager" /></figure></header>
+<div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Remember the incident:</strong> use a Toggle helper to keep a leak marked for inspection, even after the sensor dries or loses contact.</li>
+<li><strong>Repeat the message:</strong> the example sends a phone notification, then tries again every five minutes until you inspect and clear it. Swiping the message away does not stop reminders.</li>
+<li><strong>Clear only after checking:</strong> the reset button requires the sensor to report dry. Unknown or unavailable is not dry, and a dry reading alone does not prove the leak is fixed.</li>
+<li><strong>Test without spilling water:</strong> first turn on the incident helper while the real sensor is dry. These are ordinary phone notifications; sound, Do Not Disturb and delivery still need separate checks.</li>
+</ul></aside>
+<h2>Keep “needs inspection” separate from “wet right now”</h2>
+<p>A useful <strong>Home Assistant water leak notification</strong> should tell you where to look and keep the problem visible until you deal with it. For an existing wet/dry sensor, use a remembered incident, a repeating reminder and an intentional reset. Do not make “sensor is no longer wet” your only definition of “problem solved.”</p>
+<p>The kitchen-sink example below uses three built-in pieces: a <strong>helper</strong>, which stores an on/off value; two <strong>automations</strong>, which react to changes; and a <strong>script</strong>, a saved sequence you run after inspection. One automation remembers detection. The other sends reminders. The script clears the incident only when the sensor reports dry.</p>
+<p>This is an alert workflow for a sensor already connected to Home Assistant. If you are still choosing hardware, start with the <a href="/blog/best-water-leak-sensors-home-assistant-2026/">water leak sensor comparison</a>. Keep any independent local alarm working: Home Assistant, its sensor connection and phone delivery can each fail. This example operates no shutoff valves and makes no claim to prevent flood damage.</p>
+<p class="research-method">Researched from current Home Assistant and Companion documentation on October 2, 2026. The example logic was checked in an isolated Home Assistant 2026.9.4 instance using simulated sensor states and notification calls, with the reminder wait shortened for the test. This was not a tested home installation; no physical leak sensor, phone delivery or plumbing equipment was tested. The cover is an AI-generated residential illustration.</p>
+<h2>1. Check the sensor and one ordinary phone message</h2>
+<p>Current documentation calls this menu <strong>Settings → Tools</strong>; older releases label it <strong>Developer tools</strong>. Use an administrator account for setup, and use the matching States and Actions tabs on your installed version.</p>
+<ol>
+<li>Open <strong>Settings → Tools → States</strong> and find your leak sensor’s <strong>entity ID</strong>, the name Home Assistant uses for that reading. The example uses <code>binary_sensor.kitchen_sink_leak</code>; replace it everywhere with yours.</li>
+<li>Confirm the sensor uses the moisture class. Its underlying <code>on</code> value means wet; <code>off</code> means dry. The screen may display these as “Wet” and “Dry.” <code>unknown</code> and <code>unavailable</code> are separate states. See the <a href="https://www.home-assistant.io/integrations/binary_sensor/">official binary-sensor meanings</a>.</li>
+<li>Install and connect the Home Assistant Companion app on the receiving phone and allow notifications. In <strong>Settings → Tools → Actions</strong>, select your actual <code>notify.mobile_app_…</code> action. Send a message such as “TEST: kitchen leak notification.” Confirm that it appears on that phone, following the <a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion notification setup</a>.</li>
+</ol>
+<p>Record that exact notification action. A successful action call is not proof that someone heard or read the message. If this basic test fails, fix <a href="/blog/home-assistant-notifications-delayed-not-arriving/">phone notification delivery</a> before building repeats.</p>
+<h2>2. Create the remembered incident</h2>
+<p>Go to <strong>Settings → Devices &amp; services → Helpers → Create helper → Toggle</strong>. Name it “Kitchen leak pending.” Check that its ID is <code>input_boolean.kitchen_leak_pending</code>, or substitute the actual ID throughout the examples. Start with it off.</p>
+<p>The <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a> normally restores its previous value after Home Assistant stops and starts. If you define it in YAML instead, do not force <code>initial: false</code>: that would discard the pending state on every start. Restoration is not a guarantee against lost data after a host or storage failure.</p>
+<p><strong>On means “needs inspection,” not “water is definitely present now.”</strong> Leave it on when the physical sensor becomes dry or unavailable. For everyday use, offer the guarded reset script from step 5 instead of encouraging people to switch this helper off directly.</p>
+<h2>3. Remember each wet report</h2>
+<p>In <strong>Settings → Automations &amp; scenes</strong>, create a new empty automation. Open its menu, choose <strong>Edit in YAML</strong>, and replace the editor contents with the block below. This is one automation, not an entire <code>configuration.yaml</code> file. Save it after replacing the sensor and helper IDs. On a narrow screen, scroll code blocks sideways to see long lines.</p>
+<pre tabindex="0" aria-label="Remember a kitchen leak automation YAML"><code>alias: Kitchen leak - remember detection
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.kitchen_sink_leak
+    to: &quot;on&quot;
+  - trigger: homeassistant
+    event: start
+  - trigger: event
+    event_type: automation_reloaded
+actions:
+  - condition: state
+    entity_id: binary_sensor.kitchen_sink_leak
+    state: &quot;on&quot;
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.kitchen_leak_pending
+mode: restart</code></pre>
+<p>The <a href="https://www.home-assistant.io/triggers/state/">state trigger</a> watches for <code>on</code> without requiring a previous <code>off</code>. That allows a sensor reconnecting while wet to raise the incident too. The condition inside the actions also checks the actual reading, including during a manual run.</p>
+<p>A <a href="https://www.home-assistant.io/triggers/homeassistant/">startup check</a> and an <a href="https://www.home-assistant.io/docs/configuration/events/#automation_reloaded">automation-reload check</a> catch a sensor already reporting wet. They cannot reconstruct a leak that began and ended entirely while Home Assistant was offline.</p>
+<h2>4. Repeat until the incident is cleared</h2>
+<p>Create a second empty automation and paste this into its YAML editor. Replace <code>notify.mobile_app_your_phone</code> with the action you tested. Keep both automations enabled.</p>
+<pre tabindex="0" aria-label="Repeat a pending kitchen leak notification automation YAML"><code>alias: Kitchen leak - repeat notification
+triggers:
+  - trigger: state
+    entity_id: input_boolean.kitchen_leak_pending
+    to: &quot;on&quot;
+  - trigger: homeassistant
+    event: start
+  - trigger: event
+    event_type: automation_reloaded
+actions:
+  - repeat:
+      while:
+        - condition: state
+          entity_id: input_boolean.kitchen_leak_pending
+          state: &quot;on&quot;
+      sequence:
+        - action: notify.mobile_app_your_phone
+          continue_on_error: true
+          data:
+            title: &quot;Kitchen sink: inspect for a leak&quot;
+            message: &gt;-
+              A leak was detected and still needs inspection.
+              Current sensor state:
+              {{ states(&#x27;binary_sensor.kitchen_sink_leak&#x27;) }}.
+              Clear the incident in Home Assistant after checking.
+        - wait_template: &gt;-
+            {{ is_state(&#x27;input_boolean.kitchen_leak_pending&#x27;, &#x27;off&#x27;) }}
+          timeout: &quot;00:05:00&quot;
+          continue_on_timeout: true
+mode: restart</code></pre>
+<p>Each run checks the helper before sending. It then waits up to five minutes, waking sooner if you clear the incident. The message includes the current sensor reading, so a disconnected sensor is not described as dry. The five minutes are the example’s reminder interval, not a measured delivery time.</p>
+<p><a href="https://www.home-assistant.io/docs/automation/modes/">Restart mode</a> replaces an existing reminder run when a new trigger arrives. After startup or an automation reload, a pending incident starts a fresh run and may send again immediately; the old five-minute countdown is not restored. Saving another automation can also produce a reload event and an extra reminder.</p>
+<p>The notification step uses <code>continue_on_error</code> so a handled send error can leave the repeat running. It does not repair invalid configuration or guarantee recovery from every failure. Inspect the trace and logs if sending fails. These behaviors use Home Assistant’s <a href="https://www.home-assistant.io/docs/scripts/">repeat, wait and error-handling building blocks</a>.</p>
+<p>For a second phone, duplicate the notification action immediately before the wait, using that phone’s tested action. Give each send its own <code>continue_on_error: true</code>. Test each recipient separately.</p>
+<h2>5. Add a reset button that requires a dry reading</h2>
+<p>Create a new script under <strong>Settings → Automations &amp; scenes → Scripts</strong>. Use its YAML editor for this block, then add the saved script to a dashboard as a button named “Kitchen inspected: clear incident.”</p>
+<pre tabindex="0" aria-label="Clear an inspected kitchen leak script YAML"><code>alias: Kitchen leak - clear after inspection
+sequence:
+  - condition: state
+    entity_id: binary_sensor.kitchen_sink_leak
+    state: &quot;off&quot;
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.kitchen_leak_pending
+mode: single</code></pre>
+<p><strong>Run the script only after checking the area and addressing the cause.</strong> The <a href="https://www.home-assistant.io/docs/scripts/conditions/">state condition</a> stops the sequence unless the sensor reports exactly <code>off</code>. It cannot verify your inspection or detect water that never reaches the sensor. If the reading is wet, unknown or unavailable, the helper stays on and reminders continue. A stale <code>off</code> reading can still pass this check; confirm that the sensor is reporting properly as well as inspecting the area.</p>
+<p>This example has no separate snooze. Swiping away a phone message does not clear the helper. Turning off the reminder automation suppresses delivery and leaves it disabled until you enable it again. If you do that while investigating, re-enable it and use <strong>Run actions</strong> to resume any pending reminder; do not leave it disabled for the next incident.</p>
+<h2>6. Rehearse with the real sensor left dry</h2>
+<p>Tell everyone receiving these messages that you are running a test. Keep the ordinary notification settings for this first rehearsal, and confirm the physical sensor reports dry.</p>
+<ol>
+<li>Use the helper’s control to turn <code>input_boolean.kitchen_leak_pending</code> on. Expect the reminder automation to send a message naming the kitchen. It should show the current raw sensor state as <code>off</code>; that is intentional for this synthetic test.</li>
+<li>Leave the helper on. Expect another send after the five-minute wait. Check the phone and the automation’s trace, not just a green “action ran” indicator.</li>
+<li>Run “Kitchen inspected: clear incident.” With the sensor dry, the helper should turn off, the wait should finish, and no further repeat should be sent. A message already in transit may still arrive.</li>
+<li>Turn the helper on once more, then save the reminder automation to exercise its reload path. Expect a fresh reminder while the incident stays pending. Clear the test again. Check restart recovery during your next planned maintenance window; do not interrupt critical routines just to test this guide.</li>
+</ol>
+<p>This checks the stored incident and notification logic, <strong>not the sensor’s water detection or radio path</strong>. Afterward, follow the exact sensor manufacturer’s safe test procedure and confirm that the first automation turns the helper on. Do not create a real plumbing leak, wet powered equipment or disable another safety system for testing.</p>
+<h2>What each state should mean</h2>
+<p>The following is a walkthrough of the example’s intended behavior, not measurements from a home installation. On a phone, scroll the table sideways to see all three columns.</p>
+<div class="comparison-table" role="region" aria-label="Leak incident expected behavior" tabindex="0"><table><thead><tr><th scope="col">Situation</th><th scope="col">Expected behavior</th><th scope="col">What to do</th></tr></thead><tbody>
+<tr><td>The sensor reports wet.</td><td>The first automation sets the helper on; the second begins reminders.</td><td>Inspect the named location and follow your household response plan.</td></tr>
+<tr><td>The sensor dries before anyone checks.</td><td>The helper stays on. Reminders say inspection is still needed.</td><td>Check the area before using the reset button.</td></tr>
+<tr><td>An incident is pending and the sensor becomes unavailable.</td><td>The remembered incident stays on; the reset condition fails.</td><td>Check both the area and the sensor connection. Missing contact is not an all-clear.</td></tr>
+<tr><td>A previously dry sensor becomes unavailable.</td><td>No leak incident is invented by this automation.</td><td>Use a separate <a href="/blog/home-assistant-unavailable-device-notification/">unavailable-device reminder</a> to find this gap.</td></tr>
+<tr><td>Home Assistant restarts with a restored pending helper.</td><td>The startup trigger begins a new reminder run.</td><td>Expect a possible repeat immediately, rather than the remaining old interval.</td></tr>
+<tr><td>The phone gets nothing, but the helper is on.</td><td>The incident is recorded, but that alone does not confirm phone delivery.</td><td>Inspect the send step, actual notify action and phone settings.</td></tr>
+</tbody></table></div>
+<h2>Make phone sound and offline behavior explicit</h2>
+<p><strong>The example sends ordinary notifications.</strong> Before relying on it overnight, follow the <a href="https://companion.home-assistant.io/docs/notifications/critical-notifications/">platform-specific critical-notification instructions</a> and repeat the harmless test with the phone locked. On iPhone, critical sound needs the appropriate payload and Critical Alerts permission. On Android, high priority and a zero time-to-live affect prompt delivery through push; they do not by themselves establish audible sound through Do Not Disturb. Alarm-stream, channel and phone settings are separate checks.</p>
+<p>The incident logic runs on your Home Assistant server. Receiving the physical event without internet still requires a local sensor integration. Standard remote phone push uses external infrastructure; <a href="https://companion.home-assistant.io/docs/notifications/notification-details/">notification privacy and delivery limits</a> still apply. Merely connecting the phone to Wi-Fi does not prove that you configured a working local delivery path. Check the <a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Local Push requirements and connection status</a> for your phone. Keep an independently functioning local alarm and test your actual arrangement.</p>
+<h2>Frequently asked questions</h2>
+<h3>Why not stop as soon as the sensor dries?</h3>
+<p>That is reasonable if you specifically want a reminder only while water touches the sensor. This guide answers a different household rule: someone must inspect a recorded incident. Moving a sensor or drying its contacts does not establish that the source of the leak is fixed.</p>
+<h3>Can I use this for several rooms?</h3>
+<p>Yes. Give each monitored location its own pending helper, two automations and reset script, with unique names and matching IDs. This keeps a kitchen reset from clearing a bathroom incident. Do not add several sensor IDs to these examples without also designing which incident each reset is allowed to clear.</p>
+<h3>Does clearing the incident reopen a water valve?</h3>
+<p>No. The reset only changes the helper. Automatic shutoff, valve reopening, plumbing compatibility and manual operation require a separate design for the installed equipment.</p>
+<p>For help planning local routines and everyday household controls together, see Tara’s <a href="/home-automation-kit/">home automation kit approach</a>.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Stored state and automation behavior</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/binary_sensor/">Binary sensors and moisture states</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers and state restoration</a></li>
+<li><a href="https://www.home-assistant.io/triggers/state/">State-change triggers</a></li>
+<li><a href="https://www.home-assistant.io/triggers/homeassistant/">Startup triggers</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/events/">Automation-reload events</a></li>
+<li><a href="https://www.home-assistant.io/docs/scripts/">Repeats, waits and action errors</a></li>
+<li><a href="https://www.home-assistant.io/docs/scripts/conditions/">Conditions inside action sequences</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/modes/">Automation run modes</a></li>
+</ul></div><div><h3>Phone delivery and verification</h3><ul>
+<li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion notification setup</a></li>
+<li><a href="https://companion.home-assistant.io/docs/notifications/critical-notifications/">Critical notifications on iOS and Android</a></li>
+<li><a href="https://companion.home-assistant.io/docs/notifications/notification-details/">Notification transport, privacy and limits</a></li>
+<li><a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Local Push prerequisites and status</a></li>
+<li><a href="https://www.home-assistant.io/docs/scripts/perform-actions/">Current Tools → Actions navigation</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Traces and manual automation tests</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Give household alerts a clear next step</h2><p>Plan sensor locations, everyday controls and the people each routine needs to reach.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>

@@ -1,0 +1,83 @@
+{
+  "slug": "home-assistant-water-leak-notification",
+  "action": "new",
+  "publicationDate": "2026-10-02",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant repeat a water leak notification and keep the incident open until I inspect it, even if the sensor goes dry or loses contact?",
+  "directAnswer": "Use a restored Toggle helper for the incident, one automation to record wet reports and one to repeat a phone message while the helper is on. Inspect the location, then use a reset script whose action-sequence condition requires the physical sensor to report off. Unknown/unavailable cannot clear it, but a stale off reading still requires human verification. Ordinary push is not a critical notification or guaranteed delivery; begin with the harmless helper-on rehearsal.",
+  "originalContribution": "Sections 2-5 contain the complete helper, two-automation and guarded-reset walkthrough for one kitchen sensor. Section 6 rehearses the incident without wetting hardware. The six-row expected-behavior table separates currently wet, dry-but-uninspected, missing contact, restart and phone-delivery failures. An isolated Home Assistant 2026.9.4 run exercised 12 scenarios using the actual article YAML with simulated sensor/notify inputs and a 120-ms substitute for the five-minute wait. It verified startup/restore, reload, repeat, clear refusal and continued attempts after a handled send error; this is software validation, not a tested home.",
+  "limitations": "No physical sensor, radio link, smartphone delivery, sound level, latency, plumbing device or real household was tested. The software test accelerated only the reminder wait and used isolated temporary state. A sensor can retain a stale off value; helper restoration after normal shutdown does not guarantee persistence after storage failure. Leaks entirely during downtime cannot be reconstructed. Startup/reload can resend immediately, reminders have no snooze, and the example controls no valve. The visible research-method note states documentation research and the limited software checks.",
+  "proofreadFixes": "Corrected the draft’s old Developer tools navigation to current Settings > Tools, retaining an older-release note and administrator setup prerequisite. Kept exact raw wet/dry states distinct from unavailable/unknown, and explicitly identified stale off readings as a limit of the reset check. Made the no-snooze behavior and re-enable/Run actions recovery explicit. Clarified that startup/reload begins a fresh run rather than restoring elapsed wait time and can cause an extra message. Scoped continue_on_error to handled failures, distinguished ordinary push from iOS/Android critical settings, and linked Local Push prerequisites instead of implying Wi-Fi alone provides offline delivery. Added sideways-scroll cues for code/table on mobile. Final automated plain-English proofread PASS: four direct TLDR bullets, six ordered setup sections, clear reset rule, visible linked Tara Home byline, honest method note, original scenario table and professional source labels. Removed six incidental legacy-page whitespace changes from the required layout sync. All publishable changes are confined to this article and its required discovery files. Corrected the troubleshooting table so a manually set pending helper is not presented as proof that physical detection worked.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Moisture binary sensors use on for wet and off for dry; unknown/unavailable are separate states. The reset sequence accepts only off; it does not prove that a stale value is fresh or that the leak was repaired.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/binary_sensor/"
+    },
+    {
+      "claim": "A UI Toggle helper stores state and normally restores it after restart. A YAML initial:false override would discard the remembered incident; article does not promise recovery from a storage failure. Clean-restart restoration was also exercised with a synthetic helper in isolated HA 2026.9.4.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "A state trigger with to:on and no from:off accepts reconnection into wet. The remember automation checks current sensor state inside its actions, and the isolated reconnect-to-wet scenario passed.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "A Home Assistant start trigger provides an explicit check when the sensor or pending helper is already on; it cannot reconstruct events that ended while the server was stopped.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/homeassistant/"
+    },
+    {
+      "claim": "automation_reloaded is an official event. The two examples re-evaluate current state on it; they do not restore elapsed countdown time and may send an extra pending reminder.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/events/"
+    },
+    {
+      "claim": "Repeat-while checks the helper before each send. wait_template ends on a known-off helper or times out after five minutes; continue_on_timeout permits the next iteration. A handled notify failure can continue, but configuration and unhandled errors are not repaired. Accelerated runtime cases verified repetition, clear and handled-error continuation.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "A false condition within the reset script sequence stops subsequent actions. The actual script refused wet, unknown and unavailable states in an isolated runtime; only off cleared the helper.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/"
+    },
+    {
+      "claim": "Restart mode stops an existing automation run before starting a new run. It does not provide exactly-once delivery or preserve a partially elapsed wait.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Phone notification setup requires a real registered notify.mobile_app action and permissions. Successful execution of a send action does not establish that a person received, heard or read it.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notifications-basic/"
+    },
+    {
+      "claim": "Ordinary pushes are not critical alerts. iOS critical sounds need the payload and permission; Android delivery priority and ttl are separate from alarm stream, channel and Do Not Disturb sound behavior.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/critical-notifications/"
+    },
+    {
+      "claim": "Local Push uses a persistent direct connection with platform-specific prerequisites. Phone Wi-Fi connectivity alone does not prove a local notification path.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-local/"
+    },
+    {
+      "claim": "Current official action documentation names Settings > Tools > Actions; the article also identifies Developer tools as an older navigation label rather than assuming identical menus across releases.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/perform-actions/"
+    },
+    {
+      "claim": "Run actions does not exercise real trigger events; the helper rehearsal verifies the incident and reminder path only. Actual sensor detection and radio behavior need the exact manufacturer’s safe test procedure separately.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/best-water-leak-sensors-home-assistant-2026/",
+      "section": "Alerts That Actually Wake Someone Up",
+      "readerReason": "A reader who selected and placed a sensor can next implement the remembered incident, repeat and intentional-clear workflow. Suggest for a separate reviewed task; no source page edited."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-notifications-delayed-not-arriving/",
+      "section": "Use Critical Alerts Sparingly",
+      "readerReason": "A reader who has confirmed leak-message delivery can next decide when reminders repeat and what counts as an inspected incident. Contextual leak example only, not a broad related-links block."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440x1000: title fits in two readable lines; linked By Tara Home credit is visible; unique under-sink hero loads as responsive WebP. Four-bullet TLDR follows hero. Body centered at 780px, table at 920px; Tara Avenir computed font confirmed. No page overflow. Both library URLs display the new first card with image/date, and the .html URL redirects to its canonical path. Screenshots saved in external TARAHOME_BLOG_ARTIFACTS directory.",
+    "mobile": "Chromium at 390x844: readable four-line title, stacked hero, full-width text and TLDR, loaded cover and card images. Document scrollWidth equals viewport width (390px). Code blocks and table scroll within their containers; tested rightward scrolling to the final table column without widening the page. Added explicit sideways-scroll cues. Both blog indexes preserve a readable single-column first card. External screenshots visually inspected; no screenshots or test files added to the site."
+  }
+}
