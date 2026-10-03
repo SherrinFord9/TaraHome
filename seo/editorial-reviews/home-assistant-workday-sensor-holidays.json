@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-workday-sensor-holidays",
+  "action": "new",
+  "publicationDate": "2026-10-03",
+  "verdict": "PASS",
+  "readerQuestion": "How can I make Home Assistant weekday routines skip public holidays and my own days off without disabling them by hand each time?",
+  "directAnswer": "Use the built-in Workday integration with the correct country/subdivision, working weekdays, Holidays excluded and offset zero. Add personal exceptions through a dedicated Local calendar or Workday dates, retain a visible enable toggle, and verify the combined conditions with a notification-only time trigger. Public holidays do not establish an employer or school schedule; unknown data skips this routine and missed time triggers are not replayed.",
+  "originalContribution": "Sections 3-5 contain an offset-aware date-query walkthrough, a complete three-condition notification-only automation, a four-morning expected-outcome table and an allowed/paused/personal-leave rehearsal. The troubleshooting table distinguishes an incorrect holiday rule, an inactive calendar event, a failed condition and a missing trigger. A temporary isolated Workday entry permits notification rehearsal on a weekend without altering a real schedule.",
+  "limitations": "Documentation research and source-code inspection, not a physical installation test or a live Home Assistant runtime test. YAML syntax and schema metadata were parsed; browser checks tested the static article and both libraries. Regional holiday accuracy, school/employer exceptions and installed-version UI details need reader verification. Calendar edits may not appear immediately. No performance, hardware, delivery or recovery claims. The AI cover is an illustration, not installation evidence. Live publication and deployment verification belong to the runner.",
+  "proofreadFixes": "Final automated proofreading replaced the vague instruction to connect a chosen action with the concrete visual-editor Light: Turn on path and a single non-critical lamp target. It explicitly states that the start rule has no shutoff. Added a visible sideways-scroll hint for mobile tables and a first/last-day calendar check. Technical review required offset zero because the 2026.9.4 check_date implementation also applies the offset; kept date queries separate from the calendar/toggle rehearsal, stated Run actions bypasses conditions, and retained unknown/unavailable skip behavior. Explained that condition recovery does not itself run the automation and that adding these checks does not cancel a ramp already started. Re-read the final TLDR, body, examples, limitations and source labels; PASS. No human or expert review is claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Workday supports working weekdays, country/subdivision holidays, explicit Holidays exclusion, custom dates/date ranges and offset; offline holiday coverage follows the bundled library rather than a live employer calendar.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/workday/"
+    },
+    {
+      "claim": "Exclusions override includes, and check_date calls date_is_workday, which adds the configured days offset. The date-query rehearsal must target the offset-zero sensor.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/workday/entity.py"
+    },
+    {
+      "claim": "workday.check_date takes check_date and a target sensor and returns an entity-keyed workday boolean. It does not evaluate the separate calendar or toggle conditions.",
+      "sourceUrl": "https://www.home-assistant.io/actions/workday.check_date/"
+    },
+    {
+      "claim": "Local calendar provides locally stored editable events; it is a separate setup from the Workday calendar and is not automatic synchronization with an external phone calendar.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/local_calendar/"
+    },
+    {
+      "claim": "Calendar on/off states represent an active event or no active event; calendars can be unavailable. Documentation warns of a 15-minute read interval, so a last-minute edit must be verified in the actual state.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/calendar/"
+    },
+    {
+      "claim": "All listed automation conditions must pass. Explicit on/on/off comparisons skip unknown or unavailable inputs; the time trigger, not a later condition change, starts this example.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/condition/"
+    },
+    {
+      "claim": "Run actions skips triggers and top-level conditions. Reader verification uses a future clock trigger and trace inspection; no successful hardware rehearsal is invented.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/testing/"
+    },
+    {
+      "claim": "A Toggle helper is a built-in Input boolean created through Helpers; it supplies the explicit enable/pause state.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "persistent_notification.create makes a Home Assistant interface notification, and a reused notification_id updates the existing notification rather than proving phone push delivery.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Current Home information settings contain the time-zone configuration; the guide identifies older menu naming as version dependent.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/basic/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-wake-up-light/",
+      "section": "3. Create one automation",
+      "readerReason": "The existing weekday wake-up recipe explicitly leaves holidays to manual disabling. A contextual link can offer the reader regional holidays and personal-day exceptions without duplicating the lamp ramp."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-calendar-notifications/",
+      "section": "Keep all-day dates and missed reminders explicit",
+      "readerReason": "Readers with all-day leave dates need a skip condition for morning routines, which is distinct from the existing before-appointment phone reminders."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440x1000: readable two-line title, visible Tara Home credit, decoded 1200px WebP hero, four-bullet TLDR, centered Tara Avenir body, complete 918px-wide tables and no horizontal page overflow. Both /blog/ and /blog.html show the new first card with the correct image/date. Legacy .html redirect resolves to the canonical path. Screenshots saved in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "PASS at 390x844: readable wrapped title and text, decoded 480px WebP hero/card, stacked layout and document width exactly 390px. Tables and code scroll within 344px regions instead of widening the page; keyboard ArrowRight verified table scrollLeft 320 and code scrollLeft 207. Added a visible table swipe hint. Both library variants have no horizontal page overflow. Screenshots saved externally."
+  }
+}

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Workday Sensor: Skip Holidays and Days Off</title>
+    <meta name="description" content="Set up a Home Assistant Workday sensor for holidays, add personal days off, and safely test which mornings your routine will run." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-workday-sensor-holidays/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-workday-sensor-holidays/" />
+    <meta property="og:title" content="Home Assistant Workday Sensor: Skip Holidays and Days Off" />
+    <meta property="og:description" content="Set up a Home Assistant Workday sensor for holidays, add personal days off, and safely test which mornings your routine will run." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-workday-sensor-holidays/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Workday Sensor: Skip Holidays and Days Off" />
+    <meta name="twitter:description" content="Set up a Home Assistant Workday sensor for holidays, add personal days off, and safely test which mornings your routine will run." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-workday-sensor-holidays/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body .comparison-table:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+      .article-body pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); line-height: 1.6; }
+      .article-body pre code { border: 0; padding: 0; background: transparent; }
+      .article-body > * { min-width: 0; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body table { table-layout: fixed; }
+      .article-body th:first-child { width: 24%; }
+      .article-body th:not(:first-child) { width: 38%; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarahome.ai/assets/logo/tara-star.svg"
+      }
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-workday-sensor-holidays/#blogposting",
+      "headline": "Home Assistant Workday Sensor: Skip Holidays and Days Off",
+      "description": "Set up a Home Assistant Workday sensor for holidays, add personal days off, and safely test which mornings your routine will run.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-workday-sensor-holidays/cover.png",
+      "datePublished": "2026-10-03",
+      "dateModified": "2026-10-03",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-workday-sensor-holidays/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Workday Sensor: Skip Holidays and Days Off",
+          "item": "https://tarahome.ai/blog/home-assistant-workday-sensor-holidays/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Workday need the internet or a subscription?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Its holiday lookup runs locally from bundled data, without an online lookup. The complete routine’s other parts can still depend on external services. This example uses a Local calendar and an in-app notification; check the integration path of any device or service you add."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will it know my school breaks or rotating shifts?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not assume so. Add the relevant school days off yourself, and maintain a separate calendar or schedule for rotating shifts. If two household members work different patterns, give their routines separate Workday entries and days-off calendars."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can it tell me whether tomorrow is a workday?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes: create another Workday entry with offset 1 for an evening check about tomorrow. Keep the morning routine on the offset-zero entry. Maintain matching region and custom-holiday settings separately; the second entry does not automatically inherit edits from the first."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body><nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><section class="hero article-hero"><div><p class="article-meta"><span>Practical automations</span><span>October 3, 2026</span><span>10 min read</span></p><h1>Home Assistant Workday Sensor: Skip Holidays and Days Off</h1><p class="lede">Give weekday routines a day off: combine regional holidays, a personal calendar and a visible pause switch, then rehearse before controlling a lamp.</p><p class="article-byline">By <a href="/#about">Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-workday-sensor-holidays/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-workday-sensor-holidays/cover-480.webp 480w, /assets/generated/blog/home-assistant-workday-sensor-holidays/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Unlit green bedside lamp beside an unmade bed, with a closed work laptop and glasses set aside on a chair" fetchpriority="high" /></figure></section><div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use the built-in Workday integration</strong> to let a timed routine run only on your working weekdays. Select your region and exclude Holidays.</li>
+<li><strong>Add your own days off separately.</strong> Public-holiday data does not know your employer’s closures, school breaks or personal leave. The example uses an editable Local calendar.</li>
+<li><strong>Keep a visible pause switch.</strong> The routine runs only when enabled, Workday is on, and the days-off calendar is off. Missing data makes this example skip the routine.</li>
+<li><strong>Rehearse with an in-app message before controlling a lamp.</strong> Check dates with an offset-zero sensor, then test the real time trigger. Keep your normal alarm: this recipe does not catch up after downtime.</li>
+</ul></aside>
+<h2 id="answer">Let the clock start the check, and the date decide</h2>
+<p>To make a <strong>Home Assistant Workday sensor skip holidays</strong>, configure your working weekdays and region, then select <strong>Holidays</strong> under <strong>Days to exclude</strong>. Use the resulting on/off sensor as a condition in your morning automation. A condition is a check that must pass before the routine proceeds.</p>
+<p>For personal leave, add dates to Workday itself or use a separate days-off calendar. Choose dates in Workday for a small, rarely changed list. Choose a Local calendar if you want to edit time off from Home Assistant’s Calendar page. The walkthrough below uses that second option and checks three things at 7 a.m.: is the routine enabled, is today a workday, and is there no active day-off entry?</p>
+<p>This suits a regular working week with occasional exceptions. A rotating shift roster needs an explicit schedule of shifts; national holidays cannot predict when you work. For separate Home, Away and Sleep behavior, use our <a href="/blog/home-assistant-house-modes/">household modes guide</a>.</p>
+<p class="research-method">Researched from current Home Assistant documentation and its 2026.9.4 Workday implementation on October 3, 2026. The configuration and worked examples are documentation-based, not a tested Tara installation. Menu labels can differ by installed version. The cover is an AI-generated editorial illustration.</p>
+<h2 id="workday">1. Create a Workday sensor for today</h2>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Add integration → Workday</strong>. An integration adds a feature or connects a service to Home Assistant.</li>
+<li>Select your <strong>country and subdivision</strong>, such as your state or province. Match your actual holiday calendar.</li>
+<li>Under <strong>Days to include</strong>, choose your working weekdays. For an ordinary Monday–Friday week, exclude Saturday, Sunday and <strong>Holidays</strong>.</li>
+<li>Keep <strong>Offset at 0</strong> and name the entry “Workday today.” An offset of 1 answers tomorrow’s question instead.</li>
+<li>Find its binary sensor in the integration’s entity list and copy its entity ID. An entity is a named item in Home Assistant; the example uses <code>binary_sensor.workday_today</code>. Your generated ID may differ.</li>
+</ol>
+<p>The <a href="https://www.home-assistant.io/integrations/workday/">Workday documentation</a> explains regional categories and offline holiday data. Newly declared holidays depend on the bundled holiday library. Check dates that matter to you rather than assuming every workplace follows the public calendar.</p>
+<p><strong>Exclusion wins.</strong> Selecting Monday as a workday does not override an excluded Monday holiday. Likewise, removing a holiday does not make an excluded Saturday a working day. This follows the <a href="https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/workday/entity.py">Workday date-selection logic</a>.</p>
+<h2 id="days-off">2. Choose where to keep personal days off</h2>
+<p><strong>For a short fixed list:</strong> open the Workday entry’s configuration options and add dates under <strong>Add holidays</strong>. The documented format is <code>YYYY-MM-DD</code>, or <code>YYYY-MM-DD,YYYY-MM-DD</code> for a range. Keep Holidays excluded. These dated entries need maintenance when next year’s leave changes.</p>
+<p><strong>For the editable-calendar example below:</strong></p>
+<ol>
+<li>Add <strong>Local calendar</strong> under Settings → Devices &amp; services. Name it “Days off.” This is a separate calendar from the calendar Workday may display. The <a href="https://www.home-assistant.io/integrations/local_calendar/">Local calendar integration</a> stores and edits events locally.</li>
+<li>Open <strong>Calendar</strong> in the sidebar and add an all-day event to Days off for each personal leave day or school break that should stop this routine. For a multi-day absence, check that the displayed event covers every intended day.</li>
+<li>Copy that calendar’s entity ID; this example uses <code>calendar.days_off</code>. Keep ordinary appointments elsewhere: <em>any active event</em> in this calendar will block the routine.</li>
+<li>Create a <strong>Toggle</strong> under <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Name it “Morning routine enabled,” confirm its ID, and keep it off until the rehearsal is ready. Put it on your dashboard for an immediate pause.</li>
+</ol>
+<p>A Local calendar is an automation calendar inside Home Assistant, not automatic synchronization with your phone’s calendar app. If you already manage leave in another calendar, connect that calendar through its supported integration and account for its connection requirements. Our <a href="/blog/home-assistant-calendar-notifications/">calendar notifications guide</a> covers appointment reminders as a separate use.</p>
+<p>Add leave ahead of time. Home Assistant’s <a href="https://www.home-assistant.io/integrations/calendar/">calendar documentation</a> notes a 15-minute read interval. Before relying on a last-minute edit, inspect the calendar entity: <code>on</code> means an event is active, and <code>off</code> means none is active. The toggle is the immediate way to pause while an edit settles. For an all-day event, check the first and last intended day in the Calendar view. Use neutral event names if other household members can see the calendar.</p>
+<h2 id="date-check">3. Check a future date without changing any devices</h2>
+<p>Open <strong>Settings → Tools → Actions</strong> (called <strong>Developer tools → Actions</strong> in older versions). Select <strong>Workday: Check date</strong>, target your <strong>offset-zero</strong> sensor and enter a date. In YAML mode, the call looks like this:</p>
+<pre tabindex="0" aria-label="Workday date query"><code>action: workday.check_date
+target:
+  entity_id: binary_sensor.workday_today
+data:
+  check_date: "2026-11-02"</code></pre>
+<p>The <a href="https://www.home-assistant.io/actions/workday.check_date/">action’s response</a> contains your sensor’s ID and <code>workday: true</code> or <code>workday: false</code>. This checks the configured date rules without changing today’s sensor state. The 2026.9.4 implementation applies the sensor’s offset to the supplied date too, which is why this test uses offset 0.</p>
+<p>Try a normal working date, an excluded weekend, and a public holiday that you expect your selected region to recognize. Compare against your own work calendar. <strong>This action does not check the separate Days off calendar or the pause toggle.</strong> That needs the complete rehearsal below.</p>
+<h2 id="automation">4. Build a notification-only morning rehearsal</h2>
+<p>Create a new empty automation under <strong>Settings → Automations &amp; scenes</strong>, open its menu and choose <strong>Edit in YAML</strong>. Paste this whole example into that automation editor, replace the three entity IDs with your actual IDs, then save and enable the automation. Do not paste it as a whole into <code>configuration.yaml</code>.</p>
+<pre tabindex="0" aria-label="Holiday-aware morning rehearsal automation"><code>alias: Morning routine - workdays rehearsal
+description: Check the date before a harmless in-app message
+triggers:
+  - trigger: time
+    at: "07:00:00"
+conditions:
+  - condition: state
+    entity_id: input_boolean.morning_routine_enabled
+    state: "on"
+  - condition: state
+    entity_id: binary_sensor.workday_today
+    state: "on"
+  - condition: state
+    entity_id: calendar.days_off
+    state: "off"
+actions:
+  - action: persistent_notification.create
+    data:
+      title: "Morning routine rehearsal"
+      message: "The workday, days-off and enable checks passed."
+      notification_id: morning_routine_rehearsal
+mode: single</code></pre>
+<p>The clock is the trigger. The three <a href="https://www.home-assistant.io/docs/automation/condition/">conditions must all pass</a>. An unknown or unavailable value does not match the required on/off value, so the routine skips. The <a href="https://www.home-assistant.io/integrations/persistent_notification/">persistent notification</a> appears inside Home Assistant; it is not a phone push alert. A repeat successful run updates the same notification ID.</p>
+<p>If you chose Workday’s Add holidays list instead of a Local calendar, remove the entire three-line condition for <code>calendar.days_off</code>. Keep the Workday and enable checks. Do not leave a reference to a calendar you never created.</p>
+<h3 id="worked-example">Worked example: one household, four mornings</h3>
+<p>Consider a household whose Workday sensor includes Monday–Friday, excludes its regional holidays, and has offset 0. A parent adds a personal day to Days off. These are expected outcomes of the configuration, not observations from a Tara home.</p>
+<p class="table-hint">On a phone, swipe sideways inside a table to read all three columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Expected morning routine decisions"><table><thead><tr><th>Morning</th><th>Inputs at 7 a.m.</th><th>Expected result</th></tr></thead><tbody>
+<tr><td>Ordinary workday</td><td>Enabled on; Workday on; Days off off</td><td>The rehearsal message appears.</td></tr>
+<tr><td>Recognized public holiday</td><td>Enabled on; Workday off; Days off off</td><td>No message. The Workday check stops it.</td></tr>
+<tr><td>Personal leave on a weekday</td><td>Enabled on; Workday on; Days off on</td><td>No message. The personal calendar stops it, even though Workday says on.</td></tr>
+<tr><td>Last-minute lie-in or missing data</td><td>Enabled off, or one required entity unknown/unavailable</td><td>No message. The routine waits for the next scheduled trigger; it does not run merely because the data recovers.</td></tr>
+</tbody></table></div>
+<h2 id="rehearse">5. Verify the full rule, then connect the routine</h2>
+<ol>
+<li><strong>Check the home time zone</strong> under <strong>Settings → System → Home information → Region</strong> (General in older versions). The <a href="https://www.home-assistant.io/docs/configuration/basic/">home information guide</a> shows the setting.</li>
+<li><strong>On an eligible day, test the allowed path.</strong> Confirm Workday is on and Days off is off. Turn the enable toggle on. Change <code>at</code> to a local time two minutes ahead, save, and wait. Expected: the rehearsal message appears and the automation trace reaches its action.</li>
+<li><strong>Test a pause.</strong> Dismiss the old rehearsal message, turn the enable toggle off, and save another future trigger time. Expected: no new message; the trace stops at that condition.</li>
+<li><strong>Test personal leave.</strong> Keep the message as the only action. On an eligible day, create a temporary Days off event covering the test time, allow the calendar to update, and confirm it is on. Turn the enable toggle on and set another future trigger time. Expected: no message; the trace stops at the calendar condition. Remove only the temporary test event afterward.</li>
+<li><strong>Restore the intended time</strong> and your real Workday entity. Once the allowed and blocked paths behave correctly, return to the visual editor. Replace the notification action with <strong>Light: Turn on</strong>, choose one non-critical bedside lamp as the target, and save. For an existing morning script, choose that script instead. Keep an ordinary way to switch the lamp off; this start rule does not include a shutoff.</li>
+</ol>
+<p><strong>Testing on a weekend?</strong> You can wait for an eligible day. Or create a separate, temporary Workday entry with no country, all seven weekdays included, no exclusions and offset 0. Use its ID only in this notification rehearsal. Restore the real Workday ID before connecting a device; otherwise weekends will keep passing.</p>
+<p><strong>Do not use Run actions to validate the exclusions:</strong> it skips the trigger and top-level conditions. Use the future time and inspect the trace, as described in <a href="https://www.home-assistant.io/docs/automation/testing/">Home Assistant’s testing guide</a>.</p>
+<p>For a gradual lamp ramp, follow the existing <a href="/blog/home-assistant-wake-up-light/">wake-up light walkthrough</a> and add the relevant Workday/calendar checks to that automation, retaining its enable check. These start conditions do not cancel a ramp already running. Avoid keeping two morning automations that both control the same lamp. Keep your independent alarm: a missed trigger during downtime is not replayed by this recipe.</p>
+<h2 id="troubleshooting">If the wrong morning runs—or nothing runs</h2>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Holiday routine troubleshooting"><table><thead><tr><th>What you see</th><th>Check first</th><th>Next step</th></tr></thead><tbody>
+<tr><td>It runs on a public holiday</td><td>Was Holidays excluded? Does Check date return false on the offset-zero sensor?</td><td>Correct the region/category or add the missing date. Then test the real automation’s condition, not Run actions.</td></tr>
+<tr><td>It runs during personal leave</td><td>Is the selected Days off entity on at the scheduled time?</td><td>Check the actual calendar, all-day dates and time zone. Pause with the toggle while waiting for an edit to appear.</td></tr>
+<tr><td>It skips an ordinary weekday</td><td>Read each actual state in the trace: enabled on, Workday on, Days off off.</td><td>Fix the first failed check. A mistyped ID or unavailable calendar is a reason to skip, not proof the holiday list is wrong.</td></tr>
+<tr><td>No trace at all</td><td>Was the automation enabled, saved before the time, and Home Assistant running?</td><td>Set another future test time. Changing a condition afterward does not restart a missed run.</td></tr>
+</tbody></table></div>
+<h2 id="faq">Questions before you reuse the rule</h2>
+<h3>Does Workday need the internet or a subscription?</h3>
+<p>Its holiday lookup runs locally from bundled data, without an online lookup. The complete routine’s other parts can still depend on external services. This example uses a Local calendar and an in-app notification; check the integration path of any device or service you add.</p>
+<h3>Will it know my school breaks or rotating shifts?</h3>
+<p>Do not assume so. Add the relevant school days off yourself, and maintain a separate calendar or schedule for rotating shifts. If two household members work different patterns, give their routines separate Workday entries and days-off calendars.</p>
+<h3>Can it tell me whether tomorrow is a workday?</h3>
+<p>Yes: create another Workday entry with offset 1 for an evening check about tomorrow. Keep the morning routine on the offset-zero entry. Maintain matching region and custom-holiday settings separately; the second entry does not automatically inherit edits from the first.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Dates and calendars</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/workday/">Workday setup and regional holidays</a></li>
+<li><a href="https://www.home-assistant.io/actions/workday.check_date/">Check date action and response</a></li>
+<li><a href="https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/workday/entity.py">Workday offset and exclusion logic, version 2026.9.4</a></li>
+<li><a href="https://www.home-assistant.io/integrations/local_calendar/">Local calendar setup</a></li>
+<li><a href="https://www.home-assistant.io/integrations/calendar/">Calendar states and update timing</a></li></ul></div><div><h3>Routine setup and verification</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/condition/">Automation conditions</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/testing/">Testing automations and reading traces</a></li>
+<li><a href="https://www.home-assistant.io/integrations/persistent_notification/">Persistent notifications inside Home Assistant</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/basic/">Home information and time zone</a></li>
+</ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make routines fit the household.</h2><p>Tara’s <a href="/home-automation-kit/">home automation kit for coordinated local routines</a> is a starting point for planning everyday behavior and a clear handoff. Include holidays and a visible pause control in that plan.</p><a class="cta" href="/configurator/">Plan your Tara kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
