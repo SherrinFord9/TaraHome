@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Irrigation Rain Delay: Skip Wet Days</title>
+    <meta name="description" content="Set a Home Assistant irrigation rain delay on the right schedule, preserve longer pauses, check rainfall units, and rehearse without opening a valve." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-irrigation-rain-delay/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-irrigation-rain-delay/" />
+    <meta property="og:title" content="Home Assistant Irrigation Rain Delay: Skip Wet Days" />
+    <meta property="og:description" content="Set a Home Assistant irrigation rain delay on the right schedule, preserve longer pauses, check rainfall units, and rehearse without opening a valve." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-irrigation-rain-delay/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Irrigation Rain Delay: Skip Wet Days" />
+    <meta name="twitter:description" content="Set a Home Assistant irrigation rain delay on the right schedule, preserve longer pauses, check rainfall units, and rehearse without opening a valve." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-irrigation-rain-delay/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-irrigation-rain-delay/#blogposting",
+      "headline": "Home Assistant Irrigation Rain Delay: Skip Wet Days",
+      "description": "Set a Home Assistant irrigation rain delay on the right schedule, preserve longer pauses, check rainfall units, and rehearse without opening a valve.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-irrigation-rain-delay/cover.png",
+      "datePublished": "2026-10-04",
+      "dateModified": "2026-10-04",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-irrigation-rain-delay/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Irrigation Rain Delay: Skip Wet Days",
+          "item": "https://tarahome.ai/blog/home-assistant-irrigation-rain-delay/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Rain Bird\u2019s supported Home Assistant control path is local. A local rain source can keep that part local too, but forecasts and some weather stations depend on online services. Home Assistant, the network and controller must still be working when the rule sends a new delay."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will the rehearsal notify my phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It creates a message inside Home Assistant. Add and test a separate phone notification if you need to hear about a missed check while away."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is 5 mm the right threshold for my garden?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is only the worked example\u2019s value. Choose the threshold and pause length around your plants, soil, recent watering and local restrictions, then observe the result. This simple rule does not calculate plant water needs."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+</head>
+  <body><nav><a href="/"><strong>Tara</strong></a><div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div></nav><main class="article"><article><section class="hero article-hero"><div><p class="article-meta"><span>Practical automations</span><span>October 4, 2026</span><span>10 min read</span></p><h1>Home Assistant Irrigation Rain Delay: Skip Wet Days</h1><p class="lede">Pause the schedule that actually waters your garden, keep existing delays intact, and check the decision before connecting it to real irrigation.</p><p class="article-byline">By <a href="/#about">Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-irrigation-rain-delay/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-irrigation-rain-delay/cover-480.webp 480w, /assets/generated/blog/home-assistant-irrigation-rain-delay/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Rain-wet cedar patio and herb garden with damp soil, inactive drip tubing, terracotta pots and a dark-green door" fetchpriority="high" /></figure></section><div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Delay the system that owns the schedule.</strong> If the irrigation controller starts watering, use its rain-delay control. If Home Assistant starts it, check rain before each start.</li>
+<li><strong>Check the rainfall period and unit.</strong> Rain over the last 24 hours, rain since midnight, a rain rate and tomorrow’s forecast are different inputs.</li>
+<li><strong>Preserve an existing pause.</strong> Add a short delay only when none is active. Do not reset a longer household delay to one day or clear it because the forecast turns dry.</li>
+<li><strong>Rehearse with a message first.</strong> Missing data must mean “check,” not “zero rain.” A rain delay may still allow manual watering; it is not a universal valve lock.</li>
+</ul></aside>
+
+<h2 id="answer">Start with the schedule, not the valve</h2>
+<p>A <strong>Home Assistant irrigation rain delay</strong> should prevent the next scheduled watering. First find out what starts that watering: the controller’s own program or a Home Assistant automation. Then put the rain check in that path.</p>
+<p>For a controller that already manages its schedule, keep that arrangement and use its built-in delay setting. The Rain Bird example below changes a delay measured in days. It does not replace the controller’s schedule or open any zones. Other integrations expose different controls: RainMachine, for example, separates restrictions on starting from pausing and stopping. Check the exact action for your integration before copying a recipe. <a href="https://www.home-assistant.io/integrations/rainbird/">Rain Bird documentation</a>; <a href="https://www.home-assistant.io/integrations/rainmachine/">RainMachine documentation</a>.</p>
+<p>A zone is one separately controlled watering area. If Home Assistant starts each run, a rain check belongs immediately before that start. Turning a zone off once does not remove tomorrow’s scheduled start. Keep the device’s rain, freeze and run-time protections in place; this guide adds a convenience rule, not flood protection.</p>
+<p class="research-method">Researched from Home Assistant and Rain Bird documentation on October 4, 2026. The worked examples are illustrative configurations, not a tested irrigation installation. The cover is an AI-generated garden illustration.</p>
+
+<h2 id="choose">1. Find the correct control</h2>
+<p>Write down every place that can start watering: the controller, a vendor app schedule, Home Assistant, and any other automation service. Choose one regular schedule owner so a second program cannot quietly start a skipped run.</p>
+<p class="table-hint">On a phone, swipe the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Choose where to apply the rain delay" tabindex="0"><table><thead><tr><th>Your setup</th><th>Where the check belongs</th><th>What to verify</th></tr></thead><tbody>
+<tr><td>The controller runs a saved program</td><td>Use its built-in rain delay or documented schedule restriction.</td><td>The intended programs and zones are covered, and the resume day is correct.</td></tr>
+<tr><td>A Home Assistant automation starts each run</td><td>Put a rain/hold condition immediately before every start action.</td><td>No separate controller schedule starts the same zones.</td></tr>
+<tr><td>A valve has only on/off control</td><td>First establish a reliable, device-side maximum run time.</td><td>A Home Assistant crash cannot leave the valve open indefinitely. An ordinary delayed “off” action is insufficient.</td></tr>
+</tbody></table></div>
+<p>Do not treat a restored Home Assistant countdown as a hardware shutoff. The <a href="/blog/home-assistant-timer-survive-restart/">timer restart guide</a> explains the missed-finish-event case; the server cannot close a valve while it is offline.</p>
+
+<h2 id="rain-input">2. Define what “enough rain” means</h2>
+<p>For this example, imagine a garden whose owner has chosen to skip the next scheduled watering after <strong>at least 5 mm of measured rain over the previous 24 hours</strong>. That is a demonstration threshold, not a watering recommendation for every soil, plant or climate.</p>
+<ul>
+<li><strong>Use an amount:</strong> millimetres (mm) or inches (in). A rate such as mm/h describes intensity, and a percentage describes probability; neither is a rainfall total. Five millimetres is about 0.20 inches.</li>
+<li><strong>Read the period:</strong> “today” usually means since midnight. At 5:45 am it can omit yesterday evening’s rain. A lifetime counter also needs a correctly calculated time window before it can answer this question.</li>
+<li><strong>Check the source:</strong> a measured backyard total and predicted rain are different evidence. A sensor in Home Assistant is one named reading; its entity ID is the address you use to select it.</li>
+<li><strong>Check freshness:</strong> a valid number can still be old. Use the source’s documented measurement timestamp or health signal. An unchanged zero is not automatically stale; Home Assistant’s <code>last_changed</code> only says when a value changed. Even <code>last_reported</code> records a write to Home Assistant, not proof of a fresh physical measurement. <a href="https://www.home-assistant.io/docs/configuration/state_object/">State timestamps explained</a>.</li>
+</ul>
+<p>If your integration does not provide a trustworthy rainfall period and freshness check, keep the rule as a reminder for a person to review. For choosing a source of outdoor readings, see the <a href="/blog/best-weather-station-home-assistant-2026/">Home Assistant weather station guide</a>. For missing-device warnings, use the separate <a href="/blog/home-assistant-unavailable-device-notification/">availability notification guide</a>; availability alone does not validate a rainfall total.</p>
+
+<h2 id="walkthrough">3. Build the Rain Bird delay rule</h2>
+<p>This path is for an <strong>existing Rain Bird controller connected through its supported LNK WiFi module</strong>, already set up in the Rain Bird app and Home Assistant. The module is a hardware prerequisite, not something software supplies. Controllers using newer HTTPS firmware require Home Assistant 2026.3.1 or later. The integration’s control connection is local; a web weather provider would add a separate internet dependency. <a href="https://www.home-assistant.io/integrations/rainbird/">Check current prerequisites and version limits</a>.</p>
+<ol>
+<li><strong>Locate Rain Delay on the controller’s Home Assistant device page.</strong> Note its <code>number.</code> entity ID, allowed values and current delay. Select this entity specifically, rather than a zone switch or a whole area.</li>
+<li><strong>Record the controller’s next start.</strong> If the first watering is at 6:00 am, set a time trigger for 5:45 am in a new automation under Settings → Automations &amp; scenes. Confirm Home Assistant and the controller agree on local time. Leave the draft disabled while building it.</li>
+<li><strong>Add a Choose action with the four branches below, in that order.</strong> A Choose action runs the first matching branch; use its default branch for “no new delay.” Use a message inside Home Assistant for every branch during rehearsal. “No change” means do not call any controller action.</li>
+<li><strong>Run the harmless rehearsal in the next section.</strong> Then connect your real readings to the disabled draft’s conditions, keeping its outputs as messages. For live readings, require the expected unit, period, numeric value and source-specific freshness check. Do not set a missing reading to zero to make a template work.</li>
+<li><strong>After verifying the live decisions, change only the “add delay” branch</strong> to the Number: Set value action shown below. Keep an in-app message explaining the decision. Enable the time trigger and supervise the first scheduled result.</li>
+</ol>
+<p>For the live conditions, define “invalid” as a missing/non-numeric value, negative amount or delay, unexpected unit or period, or a failed freshness check. Use <code>delay &gt; 0</code> for an active pause and <code>rain &gt;= 5</code> together with <code>delay == 0</code> for adding one. A template condition supports these inclusive comparisons; the visual numeric-state “above” field does not include equality. <a href="https://www.home-assistant.io/docs/scripts/conditions/">Condition types</a>.</p>
+<p>The four branches are: <strong>invalid data → request a check; active delay → keep it; sufficient rain with no delay → add one day; otherwise → make no change.</strong> The invalid-data branch leaves the controller’s original schedule in charge, so watering may still occur. If that is unsuitable for your garden, use a reviewed controller suspension or manual review instead of assuming the missing-data message has stopped anything.</p>
+<pre tabindex="0" aria-label="Rain Bird delay action"><code>action: number.set_value
+target:
+  entity_id: number.your_controller_rain_delay
+data:
+  value: 1</code></pre>
+<p>Replace <code>number.your_controller_rain_delay</code> with the actual entity ID. This uses <code>number.set_value</code> for a device setting, not <code>input_number.set_value</code> for a helper. Put it only in the verified wet/no-existing-delay branch. <a href="https://www.home-assistant.io/integrations/number/">Number actions</a>.</p>
+<div class="callout"><p><strong>Check the exceptions before enabling it.</strong> Rain Bird allows manual watering while a delay is active, and some ESP-Me stations configured to ignore the rain sensor are also exempt from Delay Watering. Inspect the exact model’s settings and manual. Do not prove a skip by manually starting a zone: that follows a different path. <a href="https://wifi.rainbird.com/articles/delay-watering-for-days/">Manual watering during a delay</a>; <a href="https://www.rainbird.com/products/esp-me-series-controllers">ESP-Me station exceptions</a>.</p></div>
+
+<h2 id="rehearsal">4. Rehearse without changing the controller</h2>
+<p>Under Settings → Automations &amp; scenes → Scripts, create a new script, open its YAML editor and paste the following. YAML is the text version of the editor’s settings. This script uses <strong>made-up inputs</strong> and only writes a notification inside Home Assistant. It reads no live sensor and changes no valve or delay.</p>
+<p><code>data_usable</code> represents the result of checking the source, period, unit and freshness. In this rehearsal you set it yourself; it is not an automatic sensor-health test.</p>
+<details class="configuration" open><summary>Notification-only rehearsal script</summary><pre tabindex="0"><code>alias: Irrigation rain delay rehearsal
+mode: single
+sequence:
+  - variables:
+      rain_mm: 6
+      delay_days: 0
+      data_usable: true
+      threshold_mm: 5
+  - action: persistent_notification.create
+    data:
+      notification_id: irrigation_rain_delay_rehearsal
+      title: Irrigation rain delay rehearsal
+      message: &gt;-
+        {% if not data_usable
+              or not is_number(rain_mm)
+              or not is_number(delay_days)
+              or rain_mm | float(0) &lt; 0
+              or delay_days | float(0) &lt; 0 %}
+          CHECK DATA: leave the controller unchanged.
+          Its existing schedule may still run.
+        {% elif delay_days | float(0) &gt; 0 %}
+          KEEP DELAY: leave the existing pause unchanged.
+        {% elif rain_mm | float(0) &gt;= threshold_mm %}
+          ADD DELAY: propose 1 day on the controller.
+        {% else %}
+          NO NEW DELAY: leave the controller unchanged.
+        {% endif %}
+</code></pre></details>
+<p>Save and run the script. Open Home Assistant’s notifications: the initial values should produce <strong>ADD DELAY</strong>. That message is a proposal, not confirmation that a controller changed. Edit the variables, save and run again for each row below. The stable notification ID replaces the previous message. <a href="https://www.home-assistant.io/docs/scripts/">Script variables and templates</a>; <a href="https://www.home-assistant.io/integrations/persistent_notification/">In-app notifications</a>.</p>
+<div class="comparison-table" role="region" aria-label="Rain delay rehearsal expected results" tabindex="0"><table><thead><tr><th>Rehearsal inputs</th><th>Expected message</th><th>Meaning for the live rule</th></tr></thead><tbody>
+<tr><td>Rain 6 mm; delay 0; usable true</td><td>ADD DELAY</td><td>Enough measured rain: propose one day.</td></tr>
+<tr><td>Rain 5 mm; delay 0; usable true</td><td>ADD DELAY</td><td>The threshold includes exactly 5 mm.</td></tr>
+<tr><td>Rain 6 mm; delay 3; usable true</td><td>KEEP DELAY</td><td>Preserve the household’s three-day pause.</td></tr>
+<tr><td>Rain 0 mm; delay 3; usable true</td><td>KEEP DELAY</td><td>Dry readings do not cancel an existing pause.</td></tr>
+<tr><td>Rain 2 mm; delay 0; usable true</td><td>NO NEW DELAY</td><td>No new rain-based intervention; other restrictions remain.</td></tr>
+<tr><td>Set rain to <code>"unknown"</code>, or usable to false</td><td>CHECK DATA</td><td>No claim of dry weather and no controller change.</td></tr>
+</tbody></table></div>
+<p>The example deliberately checks an already-active delay before adding one. It also never writes zero, which would cancel a pause. Rechecking every few minutes and repeatedly writing “1 day” can keep extending a pause; start with one deliberate evaluation before the first watering, then inspect the resume day.</p>
+
+<h2 id="verify">5. Confirm a skip and a sensible return to watering</h2>
+<p>Use the disabled draft’s live-data messages first. Once those decisions are correct, supervise a naturally wet scheduled day with the controller action enabled. Confirm its delay setting and displayed resume day, then observe the intended scheduled start being skipped. A successful Home Assistant action or a cached calendar entry alone does not prove that every physical zone stayed off.</p>
+<p>Rain Bird resumes its regular schedule after the delay expires. Check that the next eligible day still suits the garden and local watering restrictions; do not clear a pause just to test. If Home Assistant was offline before the trigger, it could not send a new delay. Independent controller protections remain important. <a href="https://wifi.rainbird.com/articles/how-to-delay-watering-manually-in-rain-bird-2-0-app/">Rain Bird delay expiry</a>.</p>
+<p>Read the automation trace—the record of which steps ran—to distinguish a missed trigger from a failed condition or action. Testing an automation’s Run actions command skips its triggers and top-level conditions; it is not proof that the scheduled event will pass. <a href="https://www.home-assistant.io/docs/automation/testing/">Testing and traces</a>.</p>
+
+<h2 id="forecast">Can I skip because rain is forecast instead?</h2>
+<p>Yes, but treat a forecast as a prediction. Home Assistant’s current weather state, such as <code>rainy</code>, is not tomorrow’s rainfall. Use <code>weather.get_forecasts</code>, select a forecast type your provider supports, and examine the returned timestamps, amounts and <code>precipitation_unit</code>. An hourly value is not a whole-day total; probability and amount are separate fields. Missing amounts do not mean zero. <a href="https://www.home-assistant.io/actions/weather.get_forecasts/">Forecast response fields</a>; <a href="https://www.home-assistant.io/integrations/weather/">Weather states and units</a>.</p>
+<p>For a first setup, keep forecast skips advisory until you have compared predictions with actual rain at home. A forecast that repeatedly predicts rain can otherwise postpone watering again and again. Add a review reminder after a chosen number of skipped runs, rather than automatically overriding rain or freeze protections.</p>
+
+<h2 id="troubleshooting">When the result looks wrong</h2>
+<div class="comparison-table" role="region" aria-label="Irrigation rain delay troubleshooting" tabindex="0"><table><thead><tr><th>What you see</th><th>Check first</th><th>Next step</th></tr></thead><tbody>
+<tr><td>It watered despite a delay</td><td>Was this a manual/HA start, another schedule, or an exempt station?</td><td>Inspect the start source and model settings before changing the rain threshold.</td></tr>
+<tr><td>Rain was above the threshold, but nothing ran</td><td>A numeric-state trigger fires on a crossing; it need not fire just because the value is already high.</td><td>Evaluate at a scheduled time before watering, with the threshold as a condition. For exactly 5 mm to count, use a template with <code>&gt;= 5</code>; a numeric “above 5” condition excludes 5.</td></tr>
+<tr><td>“Today’s rain” says zero after a wet evening</td><td>Did the sensor reset at midnight? Is it a rain rate rather than an amount?</td><td>Choose the correct period and unit; do not reduce the threshold to compensate.</td></tr>
+<tr><td>A three-day pause becomes one day</td><td>Does every wet reading overwrite the delay?</td><td>Only add a delay when its current value is zero.</td></tr>
+<tr><td>The controller rejects commands</td><td>Version compatibility, integration errors and concurrent Rain Bird app use.</td><td>Close the app, allow the integration to refresh and inspect errors; avoid rapid repeated commands.</td></tr>
+</tbody></table></div>
+<p>Home Assistant’s <a href="https://www.home-assistant.io/docs/automation/trigger/">trigger documentation</a> explains threshold crossings. The <a href="https://www.home-assistant.io/integrations/rainbird/">Rain Bird limitations</a> describe its single-request connection constraint.</p>
+
+<h2 id="faq">Other practical questions</h2>
+<h3>Does this work without internet?</h3>
+<p>Rain Bird’s supported Home Assistant control path is local. A local rain source can keep that part local too, but forecasts and some weather stations depend on online services. Home Assistant, the network and controller must still be working when the rule sends a new delay.</p>
+<h3>Will the rehearsal notify my phone?</h3>
+<p>No. It creates a message inside Home Assistant. Add and test a separate phone notification if you need to hear about a missed check while away.</p>
+<h3>Is 5 mm the right threshold for my garden?</h3>
+<p>It is only the worked example’s value. Choose the threshold and pause length around your plants, soil, recent watering and local restrictions, then observe the result. This simple rule does not calculate plant water needs.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Irrigation controls</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/rainbird/">Home Assistant: Rain Bird prerequisites and Rain Delay</a></li>
+<li><a href="https://wifi.rainbird.com/articles/delay-watering-for-days/">Rain Bird: automatic delay and manual watering</a></li>
+<li><a href="https://www.rainbird.com/products/esp-me-series-controllers">Rain Bird ESP-Me: station-specific exceptions</a></li>
+<li><a href="https://www.home-assistant.io/integrations/rainmachine/">Home Assistant: RainMachine action types</a></li>
+</ul></div><div><h3>Readings and verification</h3><ul>
+<li><a href="https://www.home-assistant.io/actions/weather.get_forecasts/">Home Assistant: forecast fields and supported types</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/state_object/">Home Assistant: state timestamps</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/testing/">Home Assistant: tests and traces</a></li>
+<li><a href="https://www.home-assistant.io/docs/scripts/">Home Assistant: script syntax</a></li>
+</ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Give every routine a clear owner.</h2><p>Tara’s <a href="/home-automation-kit/">home automation kit for coordinated local routines</a> starts with the household’s intended behavior. Include manual controls, missing-data behavior and a clear handoff when planning a routine.</p><a class="cta" href="/configurator/">Plan your Tara kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>

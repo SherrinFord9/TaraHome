@@ -1,0 +1,74 @@
+{
+  "slug": "home-assistant-irrigation-rain-delay",
+  "action": "new",
+  "publicationDate": "2026-10-04",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant skip irrigation after rain without leaving another watering schedule running or accidentally clearing an existing rain delay?",
+  "directAnswer": "Apply the rain delay to the system that owns the schedule. For the documented Rain Bird path, change its Rain Delay number only when verified rainfall meets the chosen threshold and the current delay is zero. Preserve an active pause, treat unusable data as a request for review, and rehearse through in-app messages before changing a controller. Manual starts and model-specific station exceptions can still permit watering.",
+  "originalContribution": "Sections 1-5 combine a schedule-owner decision table with an ordered Rain Bird walkthrough and an original notification-only YAML rehearsal. Its expected-result table covers exact-threshold equality, preserving a three-day pause even on dry readings, and unknown data. The troubleshooting table separates trigger crossings, rainfall periods, manual starts and concurrent controller connections. These connect several documented behaviors into a practical decision procedure rather than reproducing one integration page.",
+  "limitations": "Documentation research and isolated syntax/logic checks only; no Home Assistant runtime, rain gauge, controller, physical watering or outage test was performed. The rehearsal has synthetic inputs; data_usable represents a source-specific check the live setup must supply. Five millimetres and one day are illustrative, not a universal garden watering prescription. Supported controller/module, firmware, station exceptions, source units/period/freshness and physical skipped-run behavior must be verified in the reader's installation. An in-app message is not phone push delivery. The generated garden scene is disclosed as illustration, not product photography or installation evidence.",
+  "proofreadFixes": "Automated proofreading PASS after corrections: defined a zone as a separately controlled watering area; simplified native-control wording to built-in control; removed a duplicated author credit from the method note; specified invalid live-data checks and the Choose default branch; corrected the inclusive 5 mm boundary by explicitly requiring >= 5, since numeric above excludes equality; and kept data_usable explicitly synthetic rather than implying automatic freshness validation. Confirmed every live add-delay instruction preserves any active pause and never clears it with zero. Both YAML blocks parsed and 13 isolated Jinja cases passed, including equality, 4.99 mm, existing pauses, unknown/unavailable, negative and non-finite inputs; the simulation uses a finite-number stub and is not represented as a Home Assistant runtime test. Browser inspection found the first desktop screenshot preceded asynchronous image decoding; recaptured after all images decoded and confirmed loaded art. All 14 external documentation links returned HTTP 200, and 1454 local link/asset/fragment references across the new article and both indexes resolved. Layout, typography, editorial-copy, image provenance/uniqueness, intent, schedule and topic-brief checks passed. Layout sync's whitespace-only changes to six old articles were reverted, leaving their bytes unchanged.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Rain Bird exposes a Rain Delay number measured in days for its automatic irrigation schedules; a zone switch starts watering and is not the same control. LNK module/app setup is a prerequisite. New HTTPS firmware requires Home Assistant 2026.3.1 or later, and the documented control path remains local.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/rainbird/"
+    },
+    {
+      "claim": "Rain Bird permits manual watering during Delay Watering, zero cancels the delay, and regular automatic scheduling resumes after expiry; the article must not describe the delay as a valve lock.",
+      "sourceUrl": "https://wifi.rainbird.com/articles/delay-watering-for-days/"
+    },
+    {
+      "claim": "The ESP-Me product documentation specifically excludes stations set to ignore the rain sensor from Delay Watering. The walkthrough directs the reader to check exact model/station settings instead of claiming all-zone inhibition.",
+      "sourceUrl": "https://www.rainbird.com/products/esp-me-series-controllers"
+    },
+    {
+      "claim": "RainMachine restrictions on starting, pause and stop are different actions; a generic cross-brand rain-delay command is not assumed.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/rainmachine/"
+    },
+    {
+      "claim": "The device's number entity uses number.set_value. An input_number helper has a different domain and changing one does not itself change the controller.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/number/"
+    },
+    {
+      "claim": "Numeric above/below conditions exclude equality, so the worked threshold of at least 5 mm needs an inclusive template comparison. This was corrected explicitly in both the walkthrough and troubleshooting advice.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/"
+    },
+    {
+      "claim": "A numeric-state trigger responds to crossing a threshold, not merely remaining above it. Evaluating a condition at a deliberate pre-watering time addresses that distinction without claiming missed time triggers replay after downtime.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "last_changed measures changes in entity state; last_reported measures a state-machine write. Neither a stable zero nor a recent write alone proves the physical rain reading is fresh.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/state_object/"
+    },
+    {
+      "claim": "weather.get_forecasts returns dated forecast periods, with precipitation amount and probability as different fields. Supported forecast types and units must be checked before interpreting a period as a watering input.",
+      "sourceUrl": "https://www.home-assistant.io/actions/weather.get_forecasts/"
+    },
+    {
+      "claim": "The weather entity's current condition is distinct from its forecast response, and precipitation_unit identifies the units used. The article distinguishes mm/in from rate and probability rather than treating every rain-related value alike.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/weather/"
+    },
+    {
+      "claim": "persistent_notification.create writes inside Home Assistant; reusing notification_id replaces that message. The harmless rehearsal has no controller or valve action and promises no phone alert.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Run actions skips automation triggers and top-level conditions. The article instead calls for tracing the scheduled path and separately observing a natural scheduled skip.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/testing/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/best-weather-station-home-assistant-2026/",
+      "section": "The automations that make a personal station worth buying",
+      "readerReason": "After choosing a station for rainfall readings, the next useful step is applying a measured-rain check to the irrigation schedule, including units, data freshness and existing-delay handling. Suggestion for a separate navigation review only; the existing page was not edited."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440x1000 in Chromium. Visually inspected the final top and full-page screenshots: readable two-line title, visible October 4 date and linked Tara Home credit, loaded post-local WebP hero, four-bullet TLDR, centered 780px article column, regular-weight Tara Avenir and readable tables. Document width equals 1440. Both library entries show the new card first; desktop two-column cards are aligned, the card navigates to the article, and the .html redirect resolves to its trailing-slash canonical path. Screenshots saved under TARAHOME_BLOG_ARTIFACTS, including article-desktop-top.png, article-desktop.png and library-desktop.png. Analytics requests were blocked during browser checks.",
+    "mobile": "PASS at 390x844 in Chromium. Inspected article-mobile-top.png, article-mobile.png, rehearsal-mobile.png and library-mobile.png under TARAHOME_BLOG_ARTIFACTS. Title wraps without clipping, hero and card load, normal body text is 16.96px, and page width remains 390px. Each table stays in a 344px scroll container; a 180px horizontal scroll worked. Code scrolls inside its own container, and the disclosure closes and reopens. Both /blog/ and /blog.html have the correct first card and no viewport overflow. A fresh mobile navigation selected the 480px WebP; resizing an already-loaded desktop page can retain the larger decoded candidate."
+  }
+}
