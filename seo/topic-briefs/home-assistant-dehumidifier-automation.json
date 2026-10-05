@@ -1,0 +1,139 @@
+{
+  "version": 2,
+  "slug": "home-assistant-dehumidifier-automation",
+  "researchedAt": "2026-10-05",
+  "primaryQuery": "Home Assistant dehumidifier automation",
+  "readerQuestion": "How can I automate an existing dehumidifier in Home Assistant using a room humidity target and quiet hours without unsafe power switching or repeated cycling?",
+  "selectedBecause": "Current exact-query results and independently authored community discussions show recurring confusion about threshold crossings, external room readings, schedules and appliance restart behavior. This practical local-control question has no existing Tara owner. The useful contribution is an appliance-permission decision, a harmless helper-only rehearsal, a 55/58/52 percent worked example and a schedule that changes controller enablement only when needed. Checking Core 2026.9.4 revealed that forced enabling bypasses tolerance and minimum-cycle checks; the guide will explicitly bound those settings instead of promising compressor protection. Interest is qualitative, not measured search volume.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant dehumidifier automation",
+      "evidenceSummary": "Exact-query search reviewed October 5 returned the Generic hygrostat documentation, a November 2023 quiet-hours question https://community.home-assistant.io/t/dehumidifier-automation/644064, Ben Walters January 2026 walkthrough https://benwalters.info/turning-a-dumb-dehumidifier-smart-with-home-assistant/ and Jonathas Ribeiro https://jonathas.com/automating-winter-humidity-control-with-home-assistant-and-dehumidifiers/. Recurrence checked against April 4 2026 threshold confusion https://www.reddit.com/r/homeassistant/comments/1scnt4x/i_just_want_a_simple_automation_when_humidity_is/ and July 19 2026 restart questions https://www.reddit.com/r/homeassistant/comments/1v0pxf0/suggest_dehumidifiers_that_restore_power/. Current primary docs https://www.home-assistant.io/integrations/generic_hygrostat/ and https://www.home-assistant.io/integrations/humidifier/ support implementation. Older discussions are dated evidence rechecked today, not new October posts or volume estimates.",
+      "decision": "selected",
+      "reason": "A durable appliance-control question with a concrete documentation/source-checked walkthrough and a meaningful safety correction to common power-cut advice. Strong fit with local routines; no existing dehumidifier owner."
+    },
+    {
+      "query": "Home Assistant window open heating automation",
+      "evidenceSummary": "Exact-query and related search reviewed October 5 found https://community.home-assistant.io/t/blueprint-window-open-climate-off-window-closed-stable-restore/976904 (January 2026), https://github.com/mxstzdev/home-assistant-blueprint-area-heating-control and https://www.reddit.com/r/homeassistant/comments/1rvzlkx/my_window_sensor_kept_opening_after_reconnect_so/ (March 2026). Primary https://www.home-assistant.io/integrations/climate/ confirms capability-specific actions; the current Midea integration docs also offer a window-open example.",
+      "decision": "rejected",
+      "reason": "Viable separate follow-up, but restoration and frost/heat-pump policy require a tightly scoped thermostat path. The existing heating schedule, open/close windows, door-open alerts and manual override pages already answer much of the supporting workflow; the selected appliance-control gap adds more distinct utility today."
+    },
+    {
+      "query": "Home Assistant humidity sensor calibration",
+      "evidenceSummary": "Exact-query search reviewed October 5 returned https://community.home-assistant.io/t/zha-correcting-values-of-humidity-sensor/945532 (2025 thread, current searchable result) and https://community.home-assistant.io/t/how-to-calibrate-temperature-humidity-sensors-tips-on-the-procedure-not-the-code/252243 (2020, older recurrence). Current primary https://www.zigbee2mqtt.io/devices/SNZB-02.html describes a humidity offset and https://sonoff.tech/en-de/blogs/news/home-assistant-temperature-humidity-sensor-setup-and-automation-guide describes device-specific offset options.",
+      "decision": "rejected",
+      "reason": "A useful separate topic, but available discussions mainly concern model-specific offsets and do not establish a trustworthy physical reference. A generic offset recipe could hide placement errors. Less complete broad homeowner answer than the selected control walkthrough without new measurement evidence."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1scnt4x/i_just_want_a_simple_automation_when_humidity_is/",
+      "observedAt": "2026-10-05",
+      "evidence": "April 4 2026 discussion asks why a simple above-55-percent dehumidifier rule will not run as expected. Shows threshold-versus-current-state confusion; no engagement or search-volume inference."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/making-my-dehumidifier-smart/993502",
+      "observedAt": "2026-10-05",
+      "evidence": "March 2026 discussion combines external room humidity with avoiding a weekday high-cost time window. Supports separating humidity control from permission to run. Technical instructions here are verified against primary docs instead of copying modifications from the thread."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1v0pxf0/suggest_dehumidifiers_that_restore_power/",
+      "observedAt": "2026-10-05",
+      "evidence": "July 19 2026 question and later replies ask about appliances that resume after power returns. This is evidence of a compatibility question, not permission to mains-switch any appliance."
+    },
+    {
+      "source": "google-search",
+      "url": "https://www.google.com/search?q=Home+Assistant+dehumidifier+automation",
+      "observedAt": "2026-10-05",
+      "evidence": "Direct Google browser request returned HTTP 429 and an unusual-traffic page; no Google ranking order was observed. Available web-search exact-query results were reviewed instead, including both independent walkthroughs in searchReview. Record this access limitation; do not claim live Google positions or volume."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant dehumidifier automation",
+    "reviewedAt": "2026-10-05",
+    "intent": "Set up an existing dehumidifier to respond to room moisture while respecting sleeping hours, appliance controls and failures.",
+    "resultGap": "The reviewed walkthroughs are useful and include external sensors and scheduling; the gap is not an absence of guides. Tara can add a software-only rehearsal and make explicit that power recovery is not manufacturer permission to cut mains, a virtual controller being on is not compressor operation, and minimum-cycle settings do not cover forced enablement. Google directly returned 429; exact-query web-search results were reviewed without a claim about Google order.",
+    "resultsReviewed": [
+      "https://benwalters.info/turning-a-dumb-dehumidifier-smart-with-home-assistant/",
+      "https://jonathas.com/automating-winter-humidity-control-with-home-assistant-and-dehumidifiers/",
+      "https://community.home-assistant.io/t/dehumidifier-automation/644064"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Generic hygrostat",
+      "url": "https://www.home-assistant.io/integrations/generic_hygrostat/",
+      "supports": "Built-in helper; dehumidifier mode, separate humidity sensor and toggle output; YAML options and UI subset."
+    },
+    {
+      "name": "Generic hygrostat Core 2026.9.4 source",
+      "url": "https://raw.githubusercontent.com/home-assistant/core/2026.9.4/homeassistant/components/generic_hygrostat/humidifier.py",
+      "supports": "Dehumidifier threshold direction, force bypass of tolerance/minimum cycle, restore behavior, stale readings and generic toggle actions."
+    },
+    {
+      "name": "Humidifier entity and actions",
+      "url": "https://www.home-assistant.io/integrations/humidifier/",
+      "supports": "Native on/off and humidity target; the domain also includes dehumidifiers."
+    },
+    {
+      "name": "Schedule",
+      "url": "https://www.home-assistant.io/integrations/schedule/",
+      "supports": "Weekly run-permission blocks and on/off state."
+    },
+    {
+      "name": "Automation triggers",
+      "url": "https://www.home-assistant.io/docs/automation/trigger/",
+      "supports": "State, startup and periodic triggers; numeric triggers require threshold crossings."
+    },
+    {
+      "name": "Input boolean",
+      "url": "https://www.home-assistant.io/integrations/input_boolean/",
+      "supports": "Software-only toggle and visible pause helper."
+    },
+    {
+      "name": "Input number",
+      "url": "https://www.home-assistant.io/integrations/input_number/",
+      "supports": "Software-only numeric reading for the harmless rehearsal."
+    },
+    {
+      "name": "Meaco manufacturer guidance",
+      "url": "https://blog.meaco.com/we-answer-your-most-asked-questions-dehumidifier-edition/",
+      "supports": "Manufacturer warns against smart-plug power cuts; shutdown and internal control should remain intact. Do not generalize its warranty wording to other brands."
+    },
+    {
+      "name": "Midea integration",
+      "url": "https://www.home-assistant.io/integrations/midea/",
+      "supports": "Native integration can support dehumidifiers with local control; token/key setup and protocol/API support must be checked."
+    },
+    {
+      "name": "State timestamps",
+      "url": "https://www.home-assistant.io/docs/configuration/state_object/",
+      "supports": "Unchanged value is different from no report; a Home Assistant report is not independent validation of a physical sample."
+    },
+    {
+      "name": "Automation testing",
+      "url": "https://www.home-assistant.io/docs/automation/testing/",
+      "supports": "Configuration check and traces; Run actions does not test triggers."
+    },
+    {
+      "name": "Configuration YAML",
+      "url": "https://www.home-assistant.io/docs/configuration/",
+      "supports": "Merge existing top-level sections and check configuration before restarting."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-bathroom-fan-humidity-automation/",
+      "/blog/home-assistant-open-close-windows/",
+      "/blog/home-assistant-heating-schedule/",
+      "/blog/home-assistant-hacs-vs-apps/",
+      "/blog/home-assistant-unavailable-device-notification/",
+      "/home-automation-kit/"
+    ],
+    "decision": "Inventoried all canonical titles and all topic-brief questions, reviewed closest briefs and relevant article sections, keyword strategy/map and historical opportunity CSV. Bathroom fan owns shower extraction, windows owns ventilation advice, heating owns thermostat timetables, HACS/apps owns installation surfaces, and availability owns missing-device messages. None configures an existing dehumidifier, Generic hygrostat, appliance permission and run windows. Pre-draft intent gate passed. Historical constraints: parsed schedule-selected seo/search-performance-2026-09-21.json and relevant rows of seo/search-comparison-2026-09-21.json; export cutoff September 19. Completed September 13-19 property totals 3 clicks/212 impressions versus September 6-12 2/205, all three current clicks branded/homepage and zero blog clicks. US impressions 111 to 72; desktop 176 to 185, mobile 28 to 27, tablet 1 to 0. No relevant dehumidifier, humidity or heating query/page row establishes demand. Page rows sum to 375 with a different aggregation from the 212 property impressions; visible query rows omit anonymized searches. September 20-21 absent, not zero. September 21 inspections say IKEA, laundry and Spokane indexed, trash and vacation discovered but not indexed. Indexed low visibility, lack of crawling and CTR are separate observations. Preserve all topic owners regardless of index status. No meaningful recovery, platform culprit or proven title rollback follows; July causal limits remain in seo/search-change-review-2026-09-15.md. Read recovery review and analytics measurement contract; no private exports, GA4 events or inquiries used as demand. Separate refresh opportunities: retain established IKEA/Bluetooth/leak-sensor/doorbell review priorities; consider reviewing bathroom-fan sensor freshness wording separately. Do not edit those pages, the homepage, strategy, runner or protected assets. Publishing or indexing requests do not establish recovery."
+  }
+}

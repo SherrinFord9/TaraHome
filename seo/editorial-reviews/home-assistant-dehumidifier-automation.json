@@ -1,0 +1,74 @@
+{
+  "slug": "home-assistant-dehumidifier-automation",
+  "action": "new",
+  "publicationDate": "2026-10-05",
+  "verdict": "PASS",
+  "readerQuestion": "How can I automate an existing dehumidifier in Home Assistant using a room humidity target and quiet hours without unsafe power switching or repeated cycling?",
+  "directAnswer": "Prefer supported native appliance humidity/on-off controls. For manufacturer-approved switch control, use Generic hygrostat plus a separate schedule and visible pause. Rehearse with a Number and Toggle helper first; the minimum-cycle setting is not comprehensive compressor protection, and restored operation can briefly precede schedule correction.",
+  "originalContribution": "Sections 2 and 3 contain a complete software-only Generic hygrostat rehearsal, a worked 55% target with ordinary 58% start/52% stop decision table, a missing-report exercise and a complete schedule/pause automation that avoids redundant forced-enable calls. Section 1 adds an appliance-permission decision table and Section 4 separates native control from approved switch control.",
+  "limitations": "Documentation/source research, not hands-on appliance testing. The article YAML was parsed, actual selected upstream Core 2026.9.4 methods were executed in a stubbed logic harness, and eight schedule-state cases were evaluated; this was not a full Home Assistant runtime or electrical/appliance compatibility test. No exact appliance, plug rating, drying performance, latency or energy savings were measured. Restarts/sensor recovery may briefly resume regulation before schedule correction, and offline Home Assistant cannot issue a stop. Google access limitation is recorded in the topic brief.",
+  "proofreadFixes": "Final automated grandma-proofread PASS. Explained humidistat, integration, entity, RH, percentage-point margins and hysteresis. Added an explicit 49%-then-50% fresh reading before initial enablement and another reading after schedule setup because the short demo timeout can expire while the reader configures the page. Clarified that 10 seconds/two minutes belong only to the software rehearsal and must not be copied to equipment. Kept native controls first after checking manufacturer warnings against mains interruption. Verified and stated forced-enable/initialization bypasses and immediate explicit stop; distinguished controller on from actual drying, initial_state fallback from a boot lockout, and reports from physical freshness. Kept a visible pause because direct manual off is intentionally re-enabled by the schedule. Removed duplicate byline wording and added a sideways-scroll hint for code. Browser review found no page overflow or broken images. All twelve unique external article/source URLs returned HTTP 200 and internal links/fragments in the article and both indexes resolved. No human or expert review claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Generic hygrostat is built in, supports dehumidifier mode and separates a numeric humidity input from a toggle output; the UI exposes fewer options than YAML.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/generic_hygrostat/"
+    },
+    {
+      "claim": "Core 2026.9.4 accepts entity IDs for the test Number input and Toggle output. The source uses numeric state conversion and homeassistant.turn_on/turn_off, so the rehearsal does not need any appliance connection.",
+      "sourceUrl": "https://raw.githubusercontent.com/home-assistant/core/2026.9.4/homeassistant/components/generic_hygrostat/__init__.py"
+    },
+    {
+      "claim": "For dehumidifier mode with target 55 and margins 3, ordinary evaluations start at 58 or above and stop at 52 or below, subject to the minimum duration. Between thresholds the output preserves its prior state. The worked cases were checked against extracted upstream methods.",
+      "sourceUrl": "https://raw.githubusercontent.com/home-assistant/core/2026.9.4/homeassistant/components/generic_hygrostat/humidifier.py"
+    },
+    {
+      "claim": "Forced enablement/initialization bypass tolerance and minimum-cycle checks; explicit off stops immediately. The schedule avoids unnecessary enable calls and the article does not promise compressor protection.",
+      "sourceUrl": "https://raw.githubusercontent.com/home-assistant/core/2026.9.4/homeassistant/components/generic_hygrostat/humidifier.py"
+    },
+    {
+      "claim": "Prior hygrostat state and target can be restored. initial_state false is a fallback, not guaranteed off at each startup; startup and sensor recovery can precede the schedule correction.",
+      "sourceUrl": "https://raw.githubusercontent.com/home-assistant/core/2026.9.4/homeassistant/components/generic_hygrostat/humidifier.py"
+    },
+    {
+      "claim": "The stale timeout handles missing humidity reports and stops a running output; the rehearsal refreshes its input before enabling and after configuration. A reported number is not independent proof of a fresh physical measurement.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/state_object/"
+    },
+    {
+      "claim": "A Schedule helper is on within configured run blocks and off outside them. The example checks present permission on state changes/startup and periodically, and keeps a pause helper visible.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/schedule/"
+    },
+    {
+      "claim": "State triggers using to null avoid attribute-only changes. Numeric-state triggers represent crossings, so an already-high reading need not trigger an above rule.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "The Humidifier domain also represents dehumidifiers, with supported target and on/off actions. Native sensor control is not automatically replaced by adding an external reading to the dashboard.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/humidifier/"
+    },
+    {
+      "claim": "Meaco warns against smart-plug mains cuts because the appliance needs its normal shutdown process. Power-failure recovery alone is not permission to switch this way; no tank or thermal protection is bypassed. The guide does not generalize Meaco warranty wording to all brands.",
+      "sourceUrl": "https://blog.meaco.com/we-answer-your-most-asked-questions-dehumidifier-edition/"
+    },
+    {
+      "claim": "Midea integration supports specified protocols and local communication, with credentials potentially needed at setup; some newer API variants remain outside its support. No exact model compatibility was invented.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/midea/"
+    },
+    {
+      "claim": "The first verification uses software helpers only. Configuration should be checked before restart, and Run actions alone does not test schedule triggers. The article identifies current Settings/Tools and older Developer tools naming.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/testing/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-bathroom-fan-humidity-automation/",
+      "section": "When a fixed threshold is good enough",
+      "readerReason": "A reader who needs ongoing room dehumidification rather than shower extraction can follow the separate appliance-control guide. This would clarify the two jobs without replacing the fan article or implying a dehumidifier supplies ventilation."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440\u00d71000 Chromium: full title readable, centered 780px article body, Tara Avenir active, hero WebP loaded, five TLDR bullets directly after hero, wide tables stay within viewport. Both /blog/ and /blog.html show the new card first with loaded art and matching October 5 date. JSON-LD list positions are sequential. Local .html URL redirects to canonical path. Screenshots saved in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390\u00d7844 plus 360\u00d7800 Chromium: readable title and byline, stacked hero, loaded responsive image, no document-level horizontal overflow. At 390px the tables use 344px scroll regions for 760px content; open code blocks scroll within 310px containers. Details summary opens correctly. Both library cards remain readable without page overflow. Inspected screenshots stored outside website root."
+  }
+}
