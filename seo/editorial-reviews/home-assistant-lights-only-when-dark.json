@@ -1,0 +1,63 @@
+{
+  "slug": "home-assistant-lights-only-when-dark",
+  "action": "new",
+  "publicationDate": "2026-10-06",
+  "verdict": "PASS",
+  "readerQuestion": "How can I make Home Assistant turn a room light on only when someone is there and it is dark enough, without the lamp's own light breaking the routine?",
+  "directAnswer": "Use a room lux reading and check darkness before turn-on. Trigger on either occupancy beginning or lux crossing below the chosen threshold, then require the pause helper on, occupancy on, lamp off and lux below the threshold. Keep optional vacancy-based shutoff independent of lux. First observe readings with the lamp off and rehearse beside one nonessential lamp; Sun is an alternative only when a night-time rule is sufficient.",
+  "originalContribution": "Section 2 provides an explicitly hypothetical 75/18/140-lux calibration example and explains why 30 is only a starting threshold. Sections 3-4 provide two complete automation examples, with separate turn-on and clear-room shutoff behavior. Section 5 supplies a five-case rehearsal table covering bright entry, dark entry, darkness arriving while occupied, shutoff after clear and pause behavior, each with an expected result and a troubleshooting next step.",
+  "limitations": "Documentation research and local static-site verification only; no Home Assistant instance, physical sensors or lighting hardware were tested. The YAML examples were parsed but not executed against real integrations. Reporting intervals and placement depend on the reader's exact devices. A stale numeric lux value is not detected; unknown lux blocks turn-on. Ordinary motion can clear while someone sits still. The optional off rule also affects a manually lit lamp unless paused. The for timer does not survive restart/reload and there is no catch-up routine. Re-enabling the pause helper permits future triggers, rather than immediately operating the lamp. Cover art is an AI-generated illustration, not installation evidence.",
+  "proofreadFixes": "Narrowed the working title to 'Turn Lights On Only When Dark' so it does not promise daylight-based shutoff. Qualified States-tool navigation with both the current documentation's Settings > Tools path and the older Developer tools label. Added keyboard focus and descriptive labels to both YAML scroll regions, then added a mobile-only sideways-scrolling hint after inspecting the tables and code at 390 pixels. Applied the required research-method class to the visible, honest disclosure. Checked that 30 is excluded, both threshold values match, each condition uses the real raw state, the off routine has no lux gate, and no explanation promises restart recovery or automatic manual-intent detection. Re-read the TLDR, opening answer, worked example, limitations and FAQ after these corrections. Automated editorial proofreading; no human or expert-review claim.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Either of two triggers may start the routine, while occupancy and darkness must both be checked. A condition becoming true alone does not start an automation.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "A numeric_state trigger reacts to crossing a threshold rather than every reading remaining below it, and the generic trigger compares raw units without conversion. The example requires a numeric lux reading.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/numeric_state/"
+    },
+    {
+      "claim": "Numeric-state conditions use exclusive bounds; exactly 30 does not satisfy below 30. Listed conditions are AND by default.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/#numeric-state-condition"
+    },
+    {
+      "claim": "Sun calculates solar times and horizon state using the configured home location; using it as a darkness proxy does not measure the room's actual illumination.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/sun/"
+    },
+    {
+      "claim": "Input boolean is a built-in toggle helper suitable for the common pause condition. In the supplied YAML it is a condition only, so switching it on does not trigger a lamp command.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "The off example watches the raw occupancy state off continuously for three minutes. It does not treat an unavailable or unknown occupancy value as confirmed vacancy.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "Light turn_on and turn_off are explicit actions; the example avoids toggle and avoids sending brightness/color capabilities that the reader's lamp might not expose.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/light/"
+    },
+    {
+      "claim": "Run actions bypasses triggers and top-level conditions; real input changes plus Traces are the relevant verification. Unknown or unavailable numeric states do not pass the numeric condition, and in-progress waits do not continue after restart. Current documentation locates States under Settings > Tools; older menus differ.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-motion-lights-multiple-sensors/",
+      "section": "If the lights still behave unexpectedly — You only want lights after dark",
+      "readerReason": "A reader who has already built any-on/every-off occupancy now needs the room-specific lux calibration and a trigger for darkness arriving while occupancy remains on. Suggest for a separate reviewed navigation task only."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-sunset-lights-automation/",
+      "section": "1. Decide what evening should mean",
+      "readerReason": "A reader deciding that clouds or curtains matter more than sunset can continue to a measured-room-light example. This is a separate next question, and the evening-window/bedtime owner remains unchanged."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440x1000: title wraps readably, centered Avenir layout retained and heading weight is 400; source cover delivers as cover-1200.webp and is visibly loaded after image decode. TLDR has four useful bullets directly after the hero; decision table remains centered and readable. Both /blog/ and /blog.html show the new first card with the correct date, title and loaded image. The .html article redirect reaches the canonical path. All eight unique primary-source links returned HTTP 200 through the browser request context. Static checks found 548 existing local targets with no missing paths or anchors; both YAML examples parsed. Screenshots and test artifacts saved outside the website in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "Chromium at 390x844: title, byline and body fit the viewport; hero visibly uses cover-480.webp. Document scroll width equals 390, with no page-level horizontal overflow. Tables and code scroll inside their own 344-pixel regions, are keyboard focusable, and have a mobile scrolling hint. Confirmed table can scroll horizontally; YAML remains unwrapped and readable. Library first card loads and fits the same width. Mobile hero, table, code and library screenshots saved outside the website in TARAHOME_BLOG_ARTIFACTS."
+  }
+}

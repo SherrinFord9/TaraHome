@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant: Turn Lights On Only When Dark</title>
+    <meta name="description" content="Set up Home Assistant lights only when dark: choose a lux threshold, handle an occupied room getting dimmer, and keep automatic shutoff independent." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-lights-only-when-dark/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-lights-only-when-dark/" />
+    <meta property="og:title" content="Home Assistant: Turn Lights On Only When Dark" />
+    <meta property="og:description" content="Set up Home Assistant lights only when dark: choose a lux threshold, handle an occupied room getting dimmer, and keep automatic shutoff independent." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-lights-only-when-dark/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant: Turn Lights On Only When Dark" />
+    <meta name="twitter:description" content="Set up Home Assistant lights only when dark: choose a lux threshold, handle an occupied room getting dimmer, and keep automatic shutoff independent." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-lights-only-when-dark/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body .comparison-table:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+      .article-body pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); line-height: 1.6; }
+      .article-body pre code { border: 0; padding: 0; background: transparent; }
+      .article-body > * { min-width: 0; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body table { table-layout: fixed; }
+      .article-body th:first-child { width: 24%; }
+      .article-body th:not(:first-child) { width: 38%; }
+      .article-body .scroll-hint { display: none; } @media (max-width: 760px) { .article-body .scroll-hint { display: block; font-size: 0.94rem; } }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://tarahome.ai/assets/logo/tara-star.svg"
+      }
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-lights-only-when-dark/#blogposting",
+      "headline": "Home Assistant: Turn Lights On Only When Dark",
+      "description": "Set up Home Assistant lights only when dark: choose a lux threshold, handle an occupied room getting dimmer, and keep automatic shutoff independent.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-lights-only-when-dark/cover.png",
+      "datePublished": "2026-10-06",
+      "dateModified": "2026-10-06",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-lights-only-when-dark/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant: Turn Lights On Only When Dark",
+          "item": "https://tarahome.ai/blog/home-assistant-lights-only-when-dark/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I use 30, 50 or 100 lux?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use the reading that matches your room and sensor position. Start from observations with the lamp off. If comfortable daylight and uncomfortable dimness produce nearly the same reading, improve placement before endlessly adjusting the number."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if the lux sensor becomes unavailable?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Automatic turn-on cannot pass its numeric check. The separate off routine can still run if occupancy is confirmed clear and the helper is on. Keep manual control available; do not convert a missing reading to zero, which would incorrectly treat it as darkness."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this need cloud access or a subscription?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The example uses built-in Home Assistant automation features. Whether the complete routine works during an internet outage depends on how your lamp and sensors connect. Check each integration\u2019s control path; writing local automation logic does not turn a cloud-controlled device into a local one."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body><nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><section class="hero article-hero"><div><p class="article-meta"><span>Practical automations</span><span>October 6, 2026</span><span>10 min read</span></p><h1>Home Assistant: Turn Lights On Only When Dark</h1><p class="lede">Give a room light two sensible rules: turn on when someone needs it, and turn off after the room clears. Choose darkness from real readings, not a guess.</p><p class="article-byline">By <a href="/#about">Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-lights-only-when-dark/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-lights-only-when-dark/cover-480.webp 480w, /assets/generated/blog/home-assistant-lights-only-when-dark/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Warm green-shaded lamp lighting a reading chair beside a window with soft cloudy daylight" fetchpriority="high" /></figure></section><div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use a room light sensor</strong> if you want the lamp to respond to clouds or closed curtains. A Sun condition is simpler when “only after sunset” is enough.</li>
+<li><strong>Check darkness before turning on.</strong> Start the routine when occupancy begins or the lux reading falls below your chosen threshold; require both occupancy and darkness.</li>
+<li><strong>Keep shutoff separate.</strong> Turn off after the room has been clear for a while. Do not make that action depend on it still being dark: the lamp itself may brighten the sensor.</li>
+<li><strong>Start with one nonessential lamp and a pause switch.</strong> The example uses an illustrative 30-lux threshold, not a universal setting. Missing readings block automatic turn-on; normal manual control remains available.</li>
+</ul></aside>
+<h2>Measure the room, then check whether someone needs light</h2>
+<p>To make Home Assistant turn lights on only when dark, add a <strong>Numeric state condition</strong> for a light-level sensor before the turn-on action. Lux, written <strong>lx</strong>, describes how much light reaches that sensor. Use a reading from the room you want to light, then choose the threshold by observing when that room actually feels too dim.</p>
+<p>There are two moments to handle: someone enters an already dark room, or the room becomes dark while someone is still there. A motion-only trigger handles the first. Add a lux-crossing trigger for the second, and require an occupied room in either case. Home Assistant’s <a href="https://www.home-assistant.io/docs/automation/trigger/">trigger documentation</a> explains this pattern: either event starts a check, but both conditions must pass.</p>
+<p>The example below turns a lamp <em>on</em> when needed. It does not switch it off just because daylight returns. Its optional shutoff waits for the occupancy sensor to clear, avoiding a loop in which turning on the lamp immediately makes the room “too bright.”</p>
+<p class="research-method"><strong>Research basis:</strong> researched from Home Assistant documentation on October 6, 2026. The room readings are a worked example, not measurements from a Tara installation. No hardware testing is claimed. The cover is an AI-generated editorial illustration.</p>
+<h2>1. Choose a room sensor or a Sun condition</h2>
+<p class="scroll-hint">On a phone, swipe tables and code examples sideways to see every column or line.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Choosing a darkness measurement"><table><thead><tr><th>Your requirement</th><th>Use</th><th>What to check</th></tr></thead><tbody>
+<tr><td>Respond to a dark room during the day</td><td>A numeric room illuminance sensor</td><td>It must expose a usable lux reading in Home Assistant, near the place where you need light.</td></tr>
+<tr><td>Allow motion lights only at night</td><td>A Sun condition</td><td>Home Assistant’s home location must be correct. This follows the sun, not the room’s curtains or clouds.</td></tr>
+<tr><td>Light the house before sunset until bedtime</td><td>An evening schedule</td><td>Use the <a href="/blog/home-assistant-sunset-lights-automation/">sunset and bedtime guide</a> for that different routine.</td></tr>
+</tbody></table></div>
+<p>The <a href="https://www.home-assistant.io/integrations/sun/">Sun integration</a> calculates solar events from your configured location. It does not measure indoor brightness. For this walkthrough, use an existing numeric lux sensor; a device that reports only “light” or “dark” needs a state condition instead.</p>
+<p>You also need a lamp you can already operate from Home Assistant and a motion or presence sensor. An <strong>entity</strong> is the individual reading or control shown in Home Assistant. A conventional motion sensor may clear while you sit still; use a suitable presence sensor for a reading chair, or start with a room where people keep moving. For several sensors, use the separate <a href="/blog/home-assistant-motion-lights-multiple-sensors/">any-sensor-on, every-sensor-clear guide</a>.</p>
+<h2>2. Pick the threshold with the lamp off</h2>
+<ol>
+<li>Open the sensor’s history and watch its value with the room lamp off, first when daylight is comfortable and then when you would normally reach for the switch.</li>
+<li>Keep the sensor in a representative position. A sunny windowsill or the lamp’s direct beam can describe that small spot rather than the seating area.</li>
+<li>Turn the lamp on once and note how much the reported value changes. This reveals whether an automatic “too bright, turn off” rule would respond to the lamp itself.</li>
+<li>Choose a starting threshold between your comfortable and too-dim observations. Confirm the reading is in <strong>lx</strong>; do not paste a raw Zigbee value or a bright/dark label into this numeric example.</li>
+</ol>
+<div class="callout"><p><strong>Worked example, not measured data:</strong> suppose a room reads 75 lx when comfortable, 18 lx when you want the lamp, and 140 lx with the lamp lit. Start by trying “below 30.” At 18 the lamp may turn on; at 140 it should stay on until the room is clear. The exact numbers belong to this illustration, not every home.</p></div>
+<p>Also watch <em>when</em> readings arrive. Do not assume a sensor reports every small change immediately. If its displayed value does not follow your light changes, check that exact device’s integration and reporting options before changing the automation. A plausible old number can still pass a numeric condition; this example does not detect stale readings.</p>
+<h2>3. Create a visible pause and the turn-on routine</h2>
+<p>Go to <strong>Settings → Devices &amp; services → Helpers → Create helper → Toggle</strong>. Name it “Room automatic lighting,” add it to your dashboard and switch it on. This <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a> gives the household one place to pause both routines.</p>
+<p>Then open <strong>Settings → Automations &amp; scenes</strong> and create a new automation. In the visual editor, add two starts under <strong>When</strong>: the occupancy sensor changes to occupied, or the lux reading crosses below 30. Under <strong>And if</strong>, require the helper on, occupancy detected, lamp off and lux below 30. Under <strong>Then do</strong>, turn on the lamp. Save as “Room lamp — on when occupied and dark.”</p>
+<p>Search the editor for <strong>Numeric state</strong> if you cannot find the lux sensor under a device-specific choice. Current documentation calls the generic trigger <a href="https://www.home-assistant.io/triggers/numeric_state/">Numeric state crossed threshold</a>; labels vary with Home Assistant version. The generic option compares the raw number, without converting units.</p>
+<p>For a copyable version, create a new empty automation, open its menu and choose <strong>Edit in YAML</strong>. Replace the four example entity IDs with yours. The helper name does not guarantee that Home Assistant assigned the exact ID shown. Use the <strong>States</strong> tool to confirm IDs and that your occupied/clear sensor uses raw states <code>on</code> and <code>off</code>. Current documentation places this tool under <strong>Settings → Tools → States</strong>; older releases label it <strong>Developer tools → States</strong>.</p>
+<pre tabindex="0" aria-label="Home Assistant automation YAML"><code class="language-yaml">alias: Room lamp - on when occupied and dark
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.room_occupancy
+    to: "on"
+  - trigger: numeric_state
+    entity_id: sensor.room_illuminance
+    below: 30
+conditions:
+  - condition: state
+    entity_id: input_boolean.room_automatic_lighting
+    state: "on"
+  - condition: state
+    entity_id: binary_sensor.room_occupancy
+    state: "on"
+  - condition: state
+    entity_id: light.room_lamp
+    state: "off"
+  - condition: numeric_state
+    entity_id: sensor.room_illuminance
+    below: 30
+actions:
+  - action: light.turn_on
+    target:
+      entity_id: light.room_lamp
+mode: single</code></pre>
+<p>The <a href="https://www.home-assistant.io/docs/scripts/conditions/#numeric-state-condition">numeric condition</a> excludes the boundary: exactly 30 does not pass “below 30.” Keep the threshold identical in the trigger and condition. The lamp-off check prevents this routine from repeatedly sending turn-on commands to an already lit lamp.</p>
+<p>A crossing from 40 to 25 can start a run; further readings of 24 and 23 do not each create another threshold crossing. If you save the routine when the room is already occupied and dark, it waits for a relevant new transition. Turning the pause helper back on also only permits future runs; it does not immediately operate the lamp.</p>
+<h2>4. Add shutoff without a darkness condition</h2>
+<p>If you want automatic shutoff, create a <strong>second</strong> automation. Its <a href="https://www.home-assistant.io/triggers/state/">State changed trigger</a> watches the occupancy sensor become <code>off</code> and remain there for three minutes. It checks the pause helper and clear state again before sending an explicit <a href="https://www.home-assistant.io/integrations/light/">Light: Turn off</a> action.</p>
+<pre tabindex="0" aria-label="Home Assistant automation YAML"><code class="language-yaml">alias: Room lamp - off after room clears
+triggers:
+  - trigger: state
+    entity_id: binary_sensor.room_occupancy
+    to: "off"
+    for: "00:03:00"
+conditions:
+  - condition: state
+    entity_id: input_boolean.room_automatic_lighting
+    state: "on"
+  - condition: state
+    entity_id: binary_sensor.room_occupancy
+    state: "off"
+actions:
+  - action: light.turn_off
+    target:
+      entity_id: light.room_lamp
+mode: single</code></pre>
+<p>There is deliberately no lux condition here. If the lit lamp makes the sensor read 140 lx, an “only below 30” check would block shutoff. Conversely, making “above 30” an immediate off trigger could turn the lamp off as soon as it illuminates the sensor.</p>
+<p><strong>Manual-use limit:</strong> this simple off routine also applies to a lamp someone switched on by hand. Switch the helper off first if you want to keep it on, or stay in darkness for a movie. It pauses future automatic actions without changing the lamp. For automatic detection of manual choices, use the <a href="/blog/home-assistant-automation-manual-override/">manual override guide</a>.</p>
+<p><strong>Restart limit:</strong> a pending <code>for</code> wait does not survive a Home Assistant restart or automation reload. This example has no catch-up routine; a lamp may stay on until another occupied-to-clear cycle. Check it manually after maintenance. Unknown occupancy is not confirmed vacancy, so do not add an “unknown means clear” shortcut.</p>
+<h2>5. Rehearse beside one nonessential lamp</h2>
+<p>Keep ordinary manual control available and start with a table lamp, away from stairs or essential route lighting. Pause other routines that control that same lamp during the test. The following are <strong>expected results</strong> of this example, not reported hardware measurements.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Lighting rehearsal and expected results"><table><thead><tr><th>Try this</th><th>Expected result</th><th>If it differs</th></tr></thead><tbody>
+<tr><td>With the lamp off and lux above 30, let occupancy go clear, then enter.</td><td>The lamp stays off.</td><td>Check the trace’s lux value and whether a different routine turned it on.</td></tr>
+<tr><td>Make the room dimmer, verify a reading below 30, then cause a new occupancy event.</td><td>The lamp turns on.</td><td>Check the helper, entity IDs and raw occupancy state.</td></tr>
+<tr><td>Remain detected with the lamp off; lower daylight so the reported value crosses from above 30 to below it.</td><td>The lamp turns on without a new occupancy event.</td><td>Check that the lux sensor actually reported a crossing and occupancy stayed on.</td></tr>
+<tr><td>With the lamp lit, leave the sensor’s coverage until it has reported clear for three minutes.</td><td>The lamp turns off even if the lux reading is high.</td><td>Check for a misplaced darkness condition in the off routine.</td></tr>
+<tr><td>Turn the helper off, then create a fresh occupancy or clear-state event.</td><td>Neither routine changes the lamp.</td><td>Check both routines use the same helper; inspect other controllers.</td></tr>
+</tbody></table></div>
+<p>Inspect each real run under the automation’s <strong>Traces</strong> view. <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Run actions bypasses triggers and top-level conditions</a>, so it cannot prove that the light stays off in a bright room. Test by changing the actual inputs instead.</p>
+<h2>Frequently asked questions</h2>
+<h3>Should I use 30, 50 or 100 lux?</h3>
+<p>Use the reading that matches your room and sensor position. Start from observations with the lamp off. If comfortable daylight and uncomfortable dimness produce nearly the same reading, improve placement before endlessly adjusting the number.</p>
+<h3>What happens if the lux sensor becomes unavailable?</h3>
+<p>Automatic turn-on cannot pass its numeric check. The separate off routine can still run if occupancy is confirmed clear and the helper is on. Keep manual control available; do not convert a missing reading to zero, which would incorrectly treat it as darkness.</p>
+<h3>Does this need cloud access or a subscription?</h3>
+<p>The example uses built-in Home Assistant automation features. Whether the complete routine works during an internet outage depends on how your lamp and sensors connect. Check each integration’s control path; writing local automation logic does not turn a cloud-controlled device into a local one.</p>
+<p>For room-by-room planning that includes sensor positions and everyday controls, see Tara’s <a href="/smart-lighting-kit/">smart lighting kit with presence detection</a>.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Measurements and controls</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/sun/">Sun integration and home location</a></li>
+<li><a href="https://www.home-assistant.io/docs/scripts/conditions/#numeric-state-condition">Numeric conditions and exact thresholds</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li>
+<li><a href="https://www.home-assistant.io/integrations/light/">Light actions</a></li>
+</ul></div><div><h3>Automation behavior</h3><ul>
+<li><a href="https://www.home-assistant.io/docs/automation/trigger/">Triggers and conditions</a></li>
+<li><a href="https://www.home-assistant.io/triggers/numeric_state/">Numeric threshold crossings</a></li>
+<li><a href="https://www.home-assistant.io/triggers/state/">State changes and continuous waits</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Traces, manual tests and restart limitations</a></li>
+</ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Plan lighting around the room</h2><p>Include daylight, seating, sensor coverage and familiar manual controls in your room plan.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
