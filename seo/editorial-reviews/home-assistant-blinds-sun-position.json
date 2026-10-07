@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-blinds-sun-position",
+  "action": "new",
+  "publicationDate": "2026-10-07",
+  "verdict": "PASS",
+  "readerQuestion": "How can I make an existing Home Assistant roller shade lower when the sun reaches its window, while keeping manual control and avoiding needless motor movements?",
+  "directAnswer": "Start with one position-controlled interior shade, observe its sun-angle range, add an explicit pause and rehearse the supplied notification-only rule. After verifying the decisions, replace its last action with set_cover_position. It only lowers, preserves a farther-closed position, and leaves reopening manual. Cloud behavior needs a separately observed brightness threshold.",
+  "originalContribution": "Sections 2 and 4-6 provide an original native automation, west-window 230-310 degree example and north-wrap calculation, a seven-row decision table, harmless pause/preview tests, position tolerance, and an exact one-action transition to motor control. Published YAML was parsed and its templates checked against 25 synthetic cases including compass wrap, threshold equality, missing/invalid data, moving cover, pause, time limits and never requesting a more-open target. This was an offline PyYAML/Jinja evaluation with mocked entity functions, not a Home Assistant runtime test.",
+  "limitations": "No shade, sensor, motor calibration, Home Assistant installation, energy savings or latency was tested. Angle, time, position and lux values are examples to verify in the room. A numeric position or brightness value can be stale/estimated; this routine cannot detect that. Requires working position control and reliable feedback; not for tilt-only devices, awnings, exit shutters or powered doors/windows. Reopening is manual. Local operation depends on the selected motor integration. Cover image is generated editorial illustration.",
+  "proofreadFixes": "Final automated proofreading made three concrete corrections: bounded the configurable shade target to 0-100 and distinguished numeric position feedback from verified physical position; stated that re-enabling the toggle immediately checks conditions and may move the shade; and stated that the optional lux condition cannot detect a stale numeric reading. Confirmed the 35% value means open percentage, tilt is a separate action, a more-closed position remains untouched, the main YAML contains only a notification action, and all safety/pause/time checks are inside the action list. Verified old preview messages are explicitly labeled last qualifying decisions. Corrected the internal brief to describe the existing house-mode arrival/departure guidance accurately instead of claiming a zone.home code example. Final reread passed; no human or expert review claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Sun azimuth is clockwise from north and elevation is height above the horizon, calculated using the configured home location. Sun geometry does not itself observe shade obstructions or cloudy-day room brightness. Example angles are declared illustrative.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/sun/"
+    },
+    {
+      "claim": "cover.set_cover_position targets 0 closed through100 open. The article uses an exact shade entity, bounds the chosen target, and compares reported position before sending a lower-only target.",
+      "sourceUrl": "https://www.home-assistant.io/actions/cover.set_cover_position/"
+    },
+    {
+      "claim": "Lift position and slat tilt are separate supported capabilities; tilt_position is not a replacement field in this lift-position example.",
+      "sourceUrl": "https://www.home-assistant.io/actions/cover.set_cover_tilt_position/"
+    },
+    {
+      "claim": "Cover position feedback may be absent, and SET_POSITION and SET_TILT_POSITION are separate features. This design requires position support and skips missing/non-numeric feedback; a plausible value still needs physical verification.",
+      "sourceUrl": "https://developers.home-assistant.io/docs/core/entity/cover/"
+    },
+    {
+      "claim": "Time-pattern, Home Assistant start and state-change triggers can start the rule. The five-minute reevaluation reads the current state after startup and does not replay missed events.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "An action-list condition stops subsequent actions when false, so paused, out-of-hours and invalid-data cases do not reach the notification or optional motor action.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/"
+    },
+    {
+      "claim": "Toggle helpers normally restore prior state; pausing this rule is distinct from stopping a motor, reopening the shade or pausing other controllers. Re-enabling triggers a new check because the example explicitly watches to:on.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "The initial persistent notification appears inside Home Assistant; a reused notification_id updates one item. It is not a phone push alert and the published preview sends no cover command.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Run actions bypasses triggers and top-level conditions; the article retains checks inside actions and separately asks readers to inspect a scheduled trace. The first verification step leaves all motor commands absent.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "The optional numeric-state condition requires a value strictly above the example threshold and does not pass unavailable/nonnumeric input. It does not detect stale numeric readings and cannot reopen the shade.",
+      "sourceUrl": "https://www.home-assistant.io/docs/scripts/conditions/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/motorized-blinds-home-assistant-without-hub/",
+      "section": "Which App Should Pair the Shade First? (#pairing-order)",
+      "readerReason": "After confirming an installed motor has percentage control, the reader can proceed to a bounded sun-based shading routine and preview its decisions. Suggestion only for a separate navigation review."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-lights-only-when-dark/",
+      "section": "2. Pick the threshold with the lamp off",
+      "readerReason": "A reader comparing daylight at a window may next want to reduce direct glare with a shade; the new walkthrough distinguishes solar direction from measured lux and explains sensor placement. Suggestion only; existing page not edited."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440x1000 Chromium: visually inspected centered article, two-line readable title, Tara Avenir, loaded1536x1024 source delivered as responsive WebP, byline and four-bullet TLDR. Worked table readable at desktop width. Library remains two-column with the new card first; redirect reaches canonical. Initial screenshot captured before image decode was replaced after decode. No page overflow. Console errors were deliberately blocked Google Tag Manager loads, not article resource failures.",
+    "mobile": "390x844 Chromium: inspected title, loaded cover, TLDR, YAML, decision table and both library variants. Document width390 equals viewport390. Table is344px wide with760px internal content and horizontal scroll verified; long code scrolls within its344px container. Both indexes load the new card first with no page overflow. Screenshots saved in TARAHOME_BLOG_ARTIFACTS."
+  }
+}

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Blinds Automation Based on Sun Position</title>
+    <meta name="description" content="Set up a Home Assistant blinds automation using sun position, a manual pause and a notification-only test before lowering one existing shade." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-blinds-sun-position/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-blinds-sun-position/" />
+    <meta property="og:title" content="Home Assistant Blinds Automation Based on Sun Position" />
+    <meta property="og:description" content="Set up a Home Assistant blinds automation using sun position, a manual pause and a notification-only test before lowering one existing shade." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-blinds-sun-position/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Blinds Automation Based on Sun Position" />
+    <meta name="twitter:description" content="Set up a Home Assistant blinds automation using sun position, a manual pause and a notification-only test before lowering one existing shade." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-blinds-sun-position/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; font-size: 0.91rem; line-height: 1.55; max-width: 100%; overflow-x: auto; padding: 18px; }
+      .article-body pre code { overflow-wrap: normal; white-space: pre; }
+      .article-body pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body .comparison-table:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+      .article-body pre { max-width: 100%; overflow-x: auto; padding: 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); line-height: 1.6; }
+      .article-body pre code { border: 0; padding: 0; background: transparent; }
+      .article-body > * { min-width: 0; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body table { table-layout: fixed; }
+      .article-body th:first-child { width: 24%; }
+      .article-body th:not(:first-child) { width: 38%; }.article-body pre { background: #082c23; color: #f7f0df; padding: 20px; border-radius: 16px; max-width: 100%; overflow-x: auto; font-size: .9rem; line-height: 1.55; }
+.article-body code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+.article-body p code, .article-body li code { overflow-wrap: anywhere; font-size: .88em; }
+.article-byline { margin-top: 16px; }
+.article-body .research-method, .article-body .table-note { font-size: .94rem; color: var(--muted); }
+
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-blinds-sun-position/#blogposting",
+      "headline": "Home Assistant Blinds Automation Based on Sun Position",
+      "description": "Set up a Home Assistant blinds automation using sun position, a manual pause and a notification-only test before lowering one existing shade.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-blinds-sun-position/cover.png",
+      "datePublished": "2026-10-07",
+      "dateModified": "2026-10-07",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-blinds-sun-position/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/sun/",
+        "https://www.home-assistant.io/actions/cover.set_cover_position/",
+        "https://www.home-assistant.io/actions/cover.set_cover_tilt_position/",
+        "https://developers.home-assistant.io/docs/core/entity/cover/",
+        "https://www.home-assistant.io/docs/automation/trigger/",
+        "https://www.home-assistant.io/docs/scripts/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://www.home-assistant.io/integrations/persistent_notification/",
+        "https://www.home-assistant.io/docs/automation/troubleshooting/",
+        "https://www.home-assistant.io/docs/scripts/conditions/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Blinds Automation Based on Sun Position",
+          "item": "https://tarahome.ai/blog/home-assistant-blinds-sun-position/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need a light sensor or weather service?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The starting rule uses calculated sun position and a fixed shade target. It may also lower the shade on cloudy days. A correctly placed light sensor adds a check for real brightness; it is optional, and its threshold is specific to that position."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will this work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Sun calculation and automation run in Home Assistant. Motor control also needs a working local integration to keep operating without internet. A cloud-dependent shade integration remains cloud-dependent. While Home Assistant itself is stopped, this rule cannot issue commands."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does restarting Home Assistant reopen the shade?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Startup triggers a fresh check. If the toggle restores as on, the data is ready and the daytime shading conditions pass, the rule may lower the shade. If the data is not ready, a later five-minute check can try again. There is no reopening action."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body><nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><section class="hero article-hero"><div><p class="article-meta"><span>Practical automations</span><span>October 7, 2026</span><span>12 min read</span></p><h1>Home Assistant Blinds Automation Based on Sun Position</h1><p class="lede">Lower a shade when sunlight reaches its window, keep a simple manual pause, and preview every decision before the motor moves.</p><p class="article-byline">By <a href="/#about">Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-blinds-sun-position/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-blinds-sun-position/cover-480.webp 480w, /assets/generated/blog/home-assistant-blinds-sun-position/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Cream roller shade partly lowered beside an oak desk and green chair, with afternoon sunlight falling across the floor" fetchpriority="high" /></figure></section><div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use sun direction and height to decide when to shade a window.</strong> Start with one existing roller shade and one comfortable position, rather than moving it continuously.</li>
+<li><strong>Rehearse with a notification first.</strong> The example below reports what it would do without sending a motor command. Enable movement only after the timing makes sense in the room.</li>
+<li><strong>Keep a visible pause switch.</strong> Turn it off before adjusting the shade manually. A shade you have already closed farther stays there.</li>
+<li><strong>Sun position does not measure clouds or glare.</strong> Add a suitable brightness sensor if cloudy days need different behavior. This first rule lowers the shade only; reopening remains manual.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant documentation on October 7, 2026. The worked configuration is an illustrative design, not a tested Tara installation or a measurement of cooling savings. The cover is an AI-generated editorial illustration.</p>
+<h2 id="start">Start with one window and one shading position</h2>
+<p>A Home Assistant blinds automation based on sun position needs three decisions: which direction the window faces, when sunlight actually reaches it, and how far to lower the shade. The built-in Sun integration provides the first part of the calculation. Your observations in the room supply the useful limits.</p>
+<p>Start with a <strong>shade-only routine</strong>: while enabled during your chosen daytime hours, lower an existing roller shade to a fixed position when the sun is in its troublesome direction. Leave it alone if it is already more closed. Reopen it yourself when you want the view back. This avoids a rule that unexpectedly opens a bedroom shade when a cloud passes or evening arrives.</p>
+<p>Follow the steps below in order: check the existing controls, observe the sunlight, add a pause, then run a harmless preview. This guide assumes the shade is already connected. If you are still choosing a motor or control system, use the <a href="/blog/motorized-blinds-home-assistant-without-hub/">Home Assistant motorized-blinds buying guide</a> first.</p>
+<h2 id="controls">1. Confirm what your shade can actually control</h2>
+<p>Home Assistant calls a blind, shade or shutter control a <strong>cover entity</strong>—a named control such as <code>cover.office_shade</code>. Open its controls and check that it offers a position percentage. For the example, you also need a believable <code>current_position</code> attribute, the extra value shown with the entity in <strong>Developer tools → States</strong>. Read it there; do not change the state to pretend the motor moved.</p>
+<p><a href="https://www.home-assistant.io/actions/cover.set_cover_position/">Set cover position</a> uses <strong>0 for closed and 100 for open</strong>. Thus 35 means 35% open, not 35% closed. Confirm the physical direction and travel limits using the manufacturer's calibration instructions before enabling automation. Choose a target between 0 and 100. A numeric position can still be stale or estimated; compare it with the real shade before trusting it.</p>
+<p>A slat-tilting blind is different. <a href="https://www.home-assistant.io/actions/cover.set_cover_tilt_position/">Set cover tilt position</a> uses a separate action and <code>tilt_position</code> field. Do not paste this lift-position example into a tilt-only setup. An open/close-only device or one with unreliable position feedback also needs a different design; changing its icon does not add those capabilities.</p>
+<div class="callout"><p><strong>Use an unobstructed interior window shade for this exercise.</strong> Keep children, pets and objects clear of its travel. Keep normal physical controls available. Do not reuse this code for a garage door, powered window, exit shutter or outdoor awning: those need their own access, obstruction or wind protections.</p></div>
+<h2 id="sun">2. Find the sun angles that matter at this window</h2>
+<p>In <strong>Developer tools → States</strong>, find <code>sun.sun</code> and read its <code>azimuth</code> and <code>elevation</code> attributes. Check Home Assistant's configured home location if they do not match your surroundings. The <a href="https://www.home-assistant.io/integrations/sun/">Sun documentation</a> defines azimuth as clockwise from north and elevation as height above the horizon.</p>
+<ul>
+<li><strong>Direction, or azimuth:</strong> north is 0°, east 90°, south 180° and west 270°. The window direction means looking straight outward through the glass, perpendicular to the wall.</li>
+<li><strong>Height, or elevation:</strong> 0° is the horizon; positive numbers put the sun above it. Nearby trees, roof overhangs and buildings can still block it.</li>
+</ul>
+<p>On a day when glare is a problem, note the angles when it begins and ends. For an illustrative west-facing office, start with direction <strong>270°</strong>, an angle allowance of <strong>40° on each side</strong>, and a minimum elevation of <strong>5°</strong>. That accepts directions from 230° through 310° while the sun is at least 5° high. These are example settings, not measurements of your window.</p>
+<p>The code calculates the shortest distance around the compass. For a window facing 350° and sun at 10°, the difference is 20°, not 340°. It therefore also works across north. Keep the angle allowance between 0° and 90°, and adjust the minimum height to observations: a high minimum can miss low winter glare. Recheck the settings as seasons change.</p>
+<h2 id="pause">3. Add the household's pause switch</h2>
+<p>Go to <strong>Settings → Devices & services → Helpers → Create helper → Toggle</strong>. Name it “Office sun shading” and keep it off during setup. Note its full entity ID; the code expects <code>input_boolean.office_sun_shading</code>. Add it to an Entities card on a dashboard the household uses, beside the normal shade control.</p>
+<p>The <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper normally restores its previous state after restart</a>. Check any startup-state option your installed version offers. Off pauses this rule; it does not reopen the shade, stop a movement already sent, or pause other controllers. Turning it back on immediately checks the current conditions and can lower the shade once motor control is enabled.</p>
+<p><strong>Turn the toggle off before a manual adjustment.</strong> This example does not infer who moved the shade. A wall remote, voice command or vendor app can otherwise be followed by another shading command on the next check. For more elaborate pause/resume behavior, see <a href="/blog/home-assistant-automation-manual-override/">manual overrides for Home Assistant automations</a>.</p>
+<h2 id="preview">4. Add the notification-only preview</h2>
+<p>Open <strong>Settings → Automations & scenes → Create automation → Create new automation</strong>. In the editor menu choose <strong>Edit in YAML</strong>, and paste the complete example below. YAML is the text form of the automation. Replace both entity IDs wherever they appear, set your window angles, and change the daytime hours to suit the room before saving.</p>
+<p>The rule checks every five minutes, when Home Assistant starts, and when you turn the toggle on. Each check reads the current situation; it does not replay missed moves. Missing data, a moving shade, a paused routine or a position already close enough to the target stops the action list. The <a href="https://www.home-assistant.io/docs/automation/trigger/">trigger documentation</a> and <a href="https://www.home-assistant.io/docs/scripts/">action-list conditions</a> describe these building blocks.</p>
+<p class="table-note">The code scrolls horizontally on a phone.</p>
+<pre><code>alias: Office sun shading - preview
+description: Lower one shade for glare; preview first, no automatic reopening.
+triggers:
+  - trigger: time_pattern
+    minutes: &quot;/5&quot;
+  - trigger: homeassistant
+    event: start
+  - trigger: state
+    entity_id: input_boolean.office_sun_shading
+    to: &quot;on&quot;
+conditions: []
+actions:
+  - condition: state
+    entity_id: input_boolean.office_sun_shading
+    state: &quot;on&quot;
+  - condition: time
+    after: &quot;09:00:00&quot;
+    before: &quot;17:30:00&quot;
+  - variables:
+      window_direction: 270
+      half_angle: 40
+      minimum_elevation: 5
+      shade_position: 35
+      azimuth: &quot;{{ state_attr(&#x27;sun.sun&#x27;, &#x27;azimuth&#x27;) }}&quot;
+      elevation: &quot;{{ state_attr(&#x27;sun.sun&#x27;, &#x27;elevation&#x27;) }}&quot;
+      current_position: &quot;{{ state_attr(&#x27;cover.office_shade&#x27;, &#x27;current_position&#x27;) }}&quot;
+  - condition: template
+    value_template: &gt;-
+      {{ states(&#x27;cover.office_shade&#x27;) in [&#x27;open&#x27;, &#x27;closed&#x27;]
+         and states(&#x27;sun.sun&#x27;) in [&#x27;above_horizon&#x27;, &#x27;below_horizon&#x27;]
+         and is_number(azimuth) and is_number(elevation)
+         and is_number(current_position) }}
+  - condition: template
+    value_template: &gt;-
+      {{ 0 &lt;= (azimuth | float) &lt;= 360
+         and -90 &lt;= (elevation | float) &lt;= 90
+         and 0 &lt;= (current_position | float) &lt;= 100 }}
+  - condition: template
+    value_template: &gt;-
+      {% set difference = (((azimuth | float) - window_direction + 180) % 360 - 180) | abs %}
+      {{ difference &lt;= half_angle
+         and (elevation | float) &gt;= minimum_elevation
+         and (current_position | float) &gt; shade_position + 10 }}
+  - action: persistent_notification.create
+    data:
+      notification_id: office_sun_shading_preview
+      title: &quot;Office shade preview&quot;
+      message: &gt;-
+        At {{ now().strftime(&#x27;%H:%M&#x27;) }}, this rule would lower the shade
+        from {{ current_position }}% to {{ shade_position }}% open.
+        Sun direction: {{ azimuth }} degrees; height: {{ elevation }} degrees.
+        Preview only: no motor command was sent.
+mode: single
+</code></pre>
+<p>Turn “Office sun shading” on during the chosen hours. When all checks pass, Home Assistant's sidebar <strong>Notifications</strong> area should show “Office shade preview,” with a time, sun angles and proposed position. This is a notification inside Home Assistant, not a phone push alert. The fixed notification ID updates one message instead of creating a new item at every check. The message remains as the <em>last qualifying decision</em>; a later skipped check does not clear it.</p>
+<p>If nothing appears, open the automation's <strong>Traces</strong> and find the condition that stopped it. That may be the correct result. Do not widen the real window settings simply to force a motor test.</p>
+<h2 id="example">5. Check the worked decisions before enabling movement</h2>
+<p>This table follows the example exactly. Unless stated otherwise, it is 14:00, the toggle is on, the west window settings are unchanged, and the shade is stationary with valid data. The results describe the configuration's logic, not observed hardware performance.</p>
+<p class="table-note">Scroll sideways on a phone to read all three columns.</p>
+<div class="comparison-table" role="region" aria-label="Worked shading decisions" tabindex="0"><table><thead><tr><th>Situation</th><th>Preview result</th><th>Reason</th></tr></thead><tbody>
+<tr><td>Sun 250°, elevation 20°; shade 100% open.</td><td>Report a proposed move to 35% open.</td><td>Direction difference is 20°; sunlight and position checks pass.</td></tr>
+<tr><td>Same sun; shade already at 40% open.</td><td>No new notification.</td><td>The remaining difference is only five percentage points. The rule tolerates up to ten.</td></tr>
+<tr><td>Same sun; you have closed the shade to 20% open.</td><td>No new notification.</td><td>The rule never opens a shade to reach its target.</td></tr>
+<tr><td>Sun 315°, or elevation 4°.</td><td>No new notification.</td><td>Direction is outside the example range, or height is below its minimum.</td></tr>
+<tr><td>It is 18:00, or the toggle is off.</td><td>No new notification.</td><td>The daytime or pause check stops the sequence.</td></tr>
+<tr><td>The shade is unavailable, moving, or missing its position.</td><td>No new notification.</td><td>Missing feedback is not treated as an open shade.</td></tr>
+<tr><td>A cloud passes while the sun remains at 250° and 20°.</td><td>The basic rule can still qualify.</td><td>It calculates direction, not brightness; see the optional sensor check below.</td></tr>
+</tbody></table></div>
+<ol>
+<li><strong>Verify the pause harmlessly.</strong> Leave the code in preview mode, turn the toggle off, and choose Run actions. Its trace should stop at the first action-list condition, with no new notification or movement.</li>
+<li><strong>Verify a qualifying decision.</strong> When sunlight reaches the window during the chosen hours, turn the toggle on and compare the notification's time and angles with the room. If the shade is already closed farther, a skipped result is expected.</li>
+<li><strong>Check a later scheduled run.</strong> Read the trace after a five-minute clock boundary. Run actions alone does not test the triggers. An old preview message is not evidence that the latest check passed.</li>
+</ol>
+<p><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Run actions skips triggers and top-level conditions</a>. Here the checks are deliberately inside the action list, so a whole-sequence manual run still respects them. Running an individual action separately can bypass earlier checks; keep the preview unchanged while rehearsing.</p>
+<h2 id="movement">6. Enable movement for this one shade</h2>
+<p>After the preview makes sense, turn the toggle off. With the window clear and someone present, confirm the selected position using the shade's normal control. Then replace only the final <code>persistent_notification.create</code> action and its data block with this action, keeping all preceding checks:</p>
+<pre><code>  - action: cover.set_cover_position
+    target:
+      entity_id: cover.office_shade
+    data:
+      position: "{{ shade_position }}"</code></pre>
+<p>Replace the entity ID here too. Rename the automation “Office sun shading,” save it, and turn the toggle on when ready. A qualifying run should lower the shade to your target. Once it reports a position within ten percentage points above that target—or farther closed—later checks should send nothing. Read the trace <em>and</em> look at the shade; a completed action does not prove the motor reached its destination.</p>
+<p><strong>If movement fails or position feedback stays wrong, switch the toggle off.</strong> Otherwise the rule can retry on later five-minute checks. Repair the control path or calibration before resuming. Do not remove the position check to make an unresponsive motor keep trying.</p>
+<p>This rule does not reopen the shade when the sun leaves, a cloud arrives, or the active hours end. For a manual reopening during the shading period, pause first. If you later add automatic reopening, give it explicit daytime/privacy conditions and honor the same pause switch. Do not reverse the shading condition and assume that “no glare” always means “open the window covering.”</p>
+<h2 id="clouds">Add a brightness check only if you need it</h2>
+<p>If cloudy afternoons make the shade close unnecessarily, add an illuminance sensor—a sensor that reports light level in lux. Observe readings during actual glare and under cloud before choosing a threshold. Place it where lowering this shade does not hide the light it is supposed to measure; check the sensor's environmental rating before placing it outdoors.</p>
+<p>For example, insert this condition immediately before the final notification or motor action. Replace the entity ID and the illustrative <strong>15,000 lux</strong> threshold with values appropriate to your sensor's placement:</p>
+<pre><code>  - condition: numeric_state
+    entity_id: sensor.window_illuminance
+    above: 15000</code></pre>
+<p>That means the reading must be strictly above the chosen threshold at the check; an unavailable or nonnumeric reading does not pass. This condition does not detect a sensor stuck on an old numeric reading. It only gates lowering. It does not reopen the shade under a cloud, so this version avoids cloud-driven open/close cycling. For the related problem of a lamp affecting its own sensor, see the <a href="/blog/home-assistant-lights-only-when-dark/">guide to choosing room brightness thresholds</a>.</p>
+<h2 id="troubleshooting">When the result looks wrong</h2>
+<ul>
+<li><strong>It moves when the room is already shaded:</strong> narrow the direction range using observations of trees and overhangs. Calculated sun position cannot see those obstructions.</li>
+<li><strong>It misses low winter glare:</strong> check the minimum elevation and active hours. Change them based on the room, not a universal “best” angle.</li>
+<li><strong>It fights a manual change:</strong> pause before using the remote. Also check vendor schedules and other automations; this toggle controls only this rule.</li>
+<li><strong>It never acts:</strong> find the stopped condition in Traces. Check exact entity IDs, local time, valid sun attributes and <code>current_position</code>. A tilt-only or open/close-only control does not meet the example's prerequisites.</li>
+<li><strong>It opens unexpectedly:</strong> this code never requests opening. Inspect other automations, vendor schedules and the motor's direction/calibration before enabling it again.</li>
+</ul>
+<h2 id="faq">Frequently asked questions</h2>
+<h3>Do I need a light sensor or weather service?</h3>
+<p>No. The starting rule uses calculated sun position and a fixed shade target. It may also lower the shade on cloudy days. A correctly placed light sensor adds a check for real brightness; it is optional, and its threshold is specific to that position.</p>
+<h3>Will this work without internet?</h3>
+<p>The Sun calculation and automation run in Home Assistant. Motor control also needs a working local integration to keep operating without internet. A cloud-dependent shade integration remains cloud-dependent. While Home Assistant itself is stopped, this rule cannot issue commands.</p>
+<h3>Does restarting Home Assistant reopen the shade?</h3>
+<p>No. Startup triggers a fresh check. If the toggle restores as on, the data is ready and the daytime shading conditions pass, the rule may lower the shade. If the data is not ready, a later five-minute check can try again. There is no reopening action.</p>
+<p>For help combining shade controls, household pauses and other local routines, see Tara's <a href="/home-automation-kit/">home automation kit for coordinated local routines</a>.</p>
+</div></article><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Shade and sun documentation</h3><ul><li><a href="https://www.home-assistant.io/integrations/sun/">Home Assistant Sun</a></li><li><a href="https://www.home-assistant.io/actions/cover.set_cover_position/">Cover position</a></li><li><a href="https://www.home-assistant.io/actions/cover.set_cover_tilt_position/">Cover tilt</a></li><li><a href="https://developers.home-assistant.io/docs/core/entity/cover/">Cover entity developer documentation</a></li></ul></div><div><h3>Automation documentation</h3><ul><li><a href="https://www.home-assistant.io/docs/automation/trigger/">Automation triggers</a></li><li><a href="https://www.home-assistant.io/docs/scripts/">Script syntax</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a></li><li><a href="https://www.home-assistant.io/integrations/persistent_notification/">Persistent notification</a></li><li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Automation troubleshooting</a></li><li><a href="https://www.home-assistant.io/docs/scripts/conditions/">Numeric and time conditions</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make local routines easy to live with</h2><p>Plan the rooms, everyday controls and manual overrides your household needs.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
