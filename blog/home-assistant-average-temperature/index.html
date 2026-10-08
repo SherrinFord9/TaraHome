@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Average Temperature: Combine Room Sensors</title>
+    <meta name="description" content="Create a Home Assistant average temperature from selected rooms, choose what happens when a sensor goes missing, and verify the result safely." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-average-temperature/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-average-temperature/" />
+    <meta property="og:title" content="Home Assistant Average Temperature: Combine Room Sensors" />
+    <meta property="og:description" content="Create a Home Assistant average temperature from selected rooms, choose what happens when a sensor goes missing, and verify the result safely." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-average-temperature/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Average Temperature: Combine Room Sensors" />
+    <meta name="twitter:description" content="Create a Home Assistant average temperature from selected rooms, choose what happens when a sensor goes missing, and verify the result safely." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-average-temperature/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-average-temperature/#blogposting",
+      "headline": "Home Assistant Average Temperature: Combine Room Sensors",
+      "description": "Create a Home Assistant average temperature from selected rooms, choose what happens when a sensor goes missing, and verify the result safely.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-average-temperature/cover.png",
+      "datePublished": "2026-10-08",
+      "dateModified": "2026-10-08",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-average-temperature/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Average Temperature: Combine Room Sensors",
+          "item": "https://tarahome.ai/blog/home-assistant-average-temperature/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I average every temperature sensor in the house?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Select readings that represent the rooms you mean. Exclude outdoor, fridge, and device-internal temperatures from an occupied-room average."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this improve sensor accuracy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Combining readings does not establish their accuracy. Keep the source values visible and investigate unexpected differences."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use this to control my thermostat?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only through a separately designed, supported control path. Creating an average sensor does not make a thermostat use it. Keep normal protections and manual controls in place."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Home Assistant helpers</span><span><time datetime="2026-10-08">October 8, 2026</time></span><span>10 min read</span></p>
+<h1>Home Assistant Average Temperature: Combine Room Sensors</h1><p class="lede">Combine the rooms you care about into one reading, keep missing sensors visible, and check what the average really means.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-average-temperature/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-average-temperature/cover-480.webp 480w, /assets/generated/blog/home-assistant-average-temperature/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A hallway thermometer between a shaded green reading room and a sunlit living room" loading="eager" /></figure></header>
+<div class="article-body"><aside class="tldr" aria-label="TLDR summary">
+  <p class="tldr-label">TLDR</p>
+  <ul>
+    <li><strong>Use a built-in Sensor group set to Arithmetic mean</strong> to combine selected room temperatures. No custom integration is needed.</li>
+    <li><strong>Choose the rooms deliberately.</strong> Start with one representative temperature reading per room, using the same unit. Exclude outdoor, fridge, and device-internal temperatures.</li>
+    <li><strong>Set Ignore non-numeric to off in Group options</strong> if the number must represent every selected room. Otherwise a missing warm room can make the average look cooler.</li>
+    <li><strong>Check the average beside its individual readings first.</strong> Creating this helper does not make a thermostat use it, and an average can hide a room that is too hot or cold.</li>
+  </ul>
+</aside>
+<p class="research-method">Researched from Home Assistant documentation and Core 2026.10 source on October 8, 2026. The examples below are calculated illustrations, not measurements from a Tara installation. Menu labels can differ on older releases.</p>
+
+<h2 id="answer">Create one reading from the rooms you actually mean</h2>
+<p>For a <strong>Home Assistant average temperature</strong>, start with a <strong>Group helper → Sensor group → Arithmetic mean</strong>. A helper is a value calculated or stored inside Home Assistant. This one adds the latest selected readings and divides by their count. You get a separate sensor to display without changing the original sensors.</p>
+<p>For a whole-home overview, include the occupied rooms you care about. For bedroom comfort, average the bedrooms instead. Name the result accordingly: “Upstairs bedrooms average” tells the household more than “House temperature.” Each selected sensor has equal weight; a room with two selected sensors counts twice.</p>
+<p>Our recommended starting point is a display that requires all selected readings, with the room values visible underneath. This makes gaps easier to notice before you base a routine on the result. The <a href="https://www.home-assistant.io/integrations/group/">Group documentation</a> describes the built-in calculation and its missing-value behavior.</p>
+
+<h2 id="setup">1. Check the inputs before creating the helper</h2>
+<p>You need an existing Home Assistant installation, permission to create helpers, and at least two room temperature readings already visible in it. An <strong>entity</strong> is one named reading or control, such as <code>sensor.bedroom_temperature</code>. Different sensor brands can contribute readings; this guide starts after their individual connections are working.</p>
+<ol>
+  <li><strong>Write down the exact entities.</strong> Select measured room temperatures, not thermostat target temperatures, humidity percentages, outdoor weather, or a computer’s internal temperature.</li>
+  <li><strong>Use comparable locations.</strong> Decide what the number should represent. A sunlit window ledge and a shaded occupied corner answer different questions. Do not treat a difference as a calibration fault without checking placement and the device’s instructions.</li>
+  <li><strong>Check the units and current values.</strong> For an easy first check, use all °C or all °F. Never average bare numbers such as 20 and 68 as though they used the same scale.</li>
+</ol>
+<p>Correctly classified temperature sensors support unit conversion in Home Assistant. The current Sensor group implementation can convert compatible units when the device class and units are valid. A handwritten formula that averages raw states does not automatically do that. Use the source sensor’s supported unit setting; simply changing a label does not convert a number. See the <a href="https://www.home-assistant.io/integrations/sensor/">sensor reference</a> and <a href="https://github.com/home-assistant/core/blob/2026.10.0/homeassistant/components/group/sensor.py">Group implementation</a>.</p>
+
+<h2 id="helper">2. Create the Sensor group</h2>
+<ol>
+  <li>Open <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Choose <strong>Group</strong>, then <strong>Sensor group</strong>.</li>
+  <li>Name it <strong>Living rooms average</strong>, or another name that accurately describes your selection. Add only the chosen room entities.</li>
+  <li>Set <strong>Type</strong> to <strong>Arithmetic mean</strong>. Leave <strong>Hide members</strong> off so the individual readings remain easy to find. Save the helper.</li>
+  <li>Find the saved helper in the Helpers list and open its <strong>Group options</strong>. Set <strong>Ignore non-numeric</strong> to off and save the options, even if the switch already appears off. Do not assume the newly created group has saved this policy. In Core 2026.10 this choice appears when editing the group, rather than on its initial creation form.</li>
+  <li>Open the new sensor and check its actual entity ID and temperature unit. Consistent source sensors let the group infer its temperature classification and unit. If the unit is missing or wrong, inspect the inputs before using the result.</li>
+</ol>
+<p>The steps follow the <a href="https://github.com/home-assistant/core/blob/2026.10.0/homeassistant/components/group/config_flow.py">Core 2026.10 configuration flow</a>. Older releases may arrange the options differently. Confirm that you are creating a Sensor group, rather than a light group or an old-style YAML group.</p>
+<p>With the recommended setting, a missing or nonnumeric member prevents a complete numeric result. If every member is unavailable or missing, the group is unavailable. Turning <strong>Ignore non-numeric</strong> on allows calculation from the remaining numeric members. That can suit a casual overview, but the number then describes whichever rooms are still reporting.</p>
+
+<h2 id="worked-example">3. Check what the average hides</h2>
+<p>Imagine three selected rooms: a bedroom at <strong>19°C</strong>, a study at <strong>21°C</strong>, and a living room at <strong>23°C</strong>. Their mean is <strong>(19 + 21 + 23) ÷ 3 = 21°C</strong>. That does not mean each room is comfortable, or that a thermostat should aim for 21°C in every room.</p>
+<p class="table-hint">Calculated examples, not observed sensor tests. On a narrow screen, scroll the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Three-room average worked example" tabindex="0"><table>
+  <thead><tr><th scope="col">Selected readings</th><th scope="col">Result</th><th scope="col">What it tells you</th></tr></thead>
+  <tbody>
+    <tr><td>19, 21, 23°C; all three valid</td><td>Mean 21°C; lowest 19°C; highest 23°C</td><td>The average conceals a 4°C difference between rooms.</td></tr>
+    <tr><td>19, 21°C; living room unavailable; Ignore non-numeric off</td><td>Unknown</td><td>The three-room picture is incomplete.</td></tr>
+    <tr><td>Same missing room; Ignore non-numeric on</td><td>Mean 20°C</td><td>The result fell because a room disappeared, not because the home cooled.</td></tr>
+    <tr><td>19, 21, 29°C; all valid</td><td>Mean 23°C; median 21°C</td><td>The median, or middle reading, resists one extreme value but can hide a genuinely hot room.</td></tr>
+    <tr><td>Two selected bedroom sensors at 19°C, plus 21 and 23°C</td><td>Mean 20.5°C</td><td>The bedroom now has twice the influence of either other room.</td></tr>
+  </tbody>
+</table></div>
+<p>The <a href="https://www.home-assistant.io/template-functions/average/">arithmetic mean definition</a> is simple; deciding which readings deserve equal weight is the household decision. If every room must stay within a comfort range, keep the individual readings or also create Minimum and Maximum helpers. Do not swap to Median merely to make an inconvenient high reading disappear.</p>
+
+<p>If one room repeatedly warms in direct sun, the <a href="/blog/home-assistant-blinds-sun-position/">sun-position blinds walkthrough</a> is a practical next step. Keep that room’s own reading visible when deciding whether the shading helps.</p>
+
+<h2 id="verify">4. Verify it without operating the heating</h2>
+<p>Add an <a href="https://www.home-assistant.io/dashboards/entities/">Entities card</a> to an editable dashboard. Put the new average and its selected source sensors in the same card. Read their current numbers together, calculate the mean, and compare to the displayed value after rounding. If a source updates during the calculation, check again using the new values.</p>
+<p>For a controlled, harmless rehearsal, create three separate <a href="https://www.home-assistant.io/integrations/input_number/">Number helpers</a> named “Average demo A,” “Average demo B,” and “Average demo C.” Give each a 0–40 range, step 1, and °C unit. These are adjustable values, not real sensor readings.</p>
+<ol>
+  <li>Set the demo values to <strong>19, 21, and 23</strong>. Create a separate Sensor group containing only these three helpers, using Arithmetic mean. All three demo inputs must use the same °C unit.</li>
+  <li>The expected result is <strong>21°C</strong>. Change only demo C to <strong>26</strong>; the expected result becomes <strong>22°C</strong>.</li>
+  <li>Keep the demo helpers out of real heating, cooling, and alert automations. Remove the demo group and its three unused helpers when finished.</li>
+</ol>
+<p>This verifies the calculation and update path on your installation. It does not test real sensor accuracy, missing-device detection, or thermostat compatibility. For a Fahrenheit demonstration, use three values within a suitable Fahrenheit range instead; the arithmetic is identical.</p>
+
+<h2 id="choose-helper">Which averaging tool should you choose?</h2>
+<div class="comparison-table" role="region" aria-label="Temperature averaging helper choices" tabindex="0"><table>
+  <thead><tr><th scope="col">Need</th><th scope="col">Use</th><th scope="col">Watch for</th></tr></thead>
+  <tbody>
+    <tr><td>Current average of selected rooms, with an explicit missing-reading policy</td><td>Sensor group, Arithmetic mean</td><td>Start with Ignore non-numeric off; it requires all selected values.</td></tr>
+    <tr><td>A simple current mean, lowest, or highest value using the existing Min/Max helper</td><td>Min/Max</td><td>Unknown inputs are omitted; inputs must share a unit. It is not equivalent to the strict group setting.</td></tr>
+    <tr><td>A bedroom should count more, or membership should change by an agreed rule</td><td>Template helper</td><td>Define weights, unit conversion, and missing-input behavior explicitly.</td></tr>
+    <tr><td>Average temperature over the past hour</td><td>Statistics helper using one source, optionally the room-average sensor</td><td>Choose the averaging method and sample coverage; this answers a different question.</td></tr>
+  </tbody>
+</table></div>
+<p><a href="https://www.home-assistant.io/integrations/min_max/">Min/Max</a> supports mean and median despite its name. For an existing working Min/Max average, there is no need to rebuild it unless you want different missing-input behavior. Its same-unit requirement is stricter than the compatible-unit conversion in current Sensor groups.</p>
+<p>A <a href="https://www.home-assistant.io/integrations/statistics/">Statistics helper</a> summarizes readings over time. Its time-weighted methods consider the spacing between samples, but they do not guarantee coverage of a full hour just because you set a one-hour maximum age. Check sample coverage and capacity. A current room average uses the latest reported value from each selected room, not an hour of readings.</p>
+
+<h2 id="troubleshooting">If the result looks wrong</h2>
+<ul>
+  <li><strong>The helper says Unknown:</strong> inspect each selected source for a missing, unavailable, or nonnumeric value. Check units and entity selection before enabling Ignore non-numeric just to regain a number.</li>
+  <li><strong>The average is plausible but misleading:</strong> inspect the membership list. Look for an outdoor sensor, a thermostat setpoint, a duplicate room, or a previously created average included alongside its own inputs.</li>
+  <li><strong>A room stopped reporting but the average still exists:</strong> a stale numeric reading can remain usable by the calculation. Requiring numeric values is not a freshness check. Review that device’s reporting behavior; the <a href="/blog/home-assistant-unavailable-device-notification/">unavailable-device notification guide</a> explains the difference between unavailable and unchanged.</li>
+  <li><strong>The thermostat still follows its own temperature:</strong> that is expected unless its exact integration and model support another input and you configure it. A displayed helper does not replace a thermostat’s built-in sensor.</li>
+</ul>
+<p>The calculation runs inside Home Assistant. Whether the underlying readings arrive without internet depends on their individual device connections. A local average does not make a cloud-provided source local.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Should I average every temperature sensor in the house?</h3>
+<p>No. Select readings that represent the rooms you mean. A fridge, outdoor weather reading, or device’s internal temperature should not join an occupied-room average simply because it measures temperature. The official <a href="https://www.home-assistant.io/docs/templating/tutorial-average-temperature/">template tutorial</a> explains aggregation; review its source selection before adapting it to your own home.</p>
+<h3>Does this improve sensor accuracy?</h3>
+<p>It combines readings; it does not establish that they are accurate. Two sensors in the same room and sensors in two different rooms are different comparisons. Keep the source values visible and investigate an unexpected difference.</p>
+<h3>Can I use this to control my thermostat?</h3>
+<p>Only through a separately designed, supported control path. Keep the thermostat’s normal protections and manual controls in place. Start with the display, then consult the exact thermostat documentation. Tara’s <a href="/blog/home-assistant-heating-schedule/">weekly heating schedule guide</a> covers changing supported target temperatures; it does not make every thermostat accept an external measured-temperature input.</p>
+<p>If you are planning sensors and routines together, the <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup guide</a> explains the broader setup path. Agree on what each room reading should mean before using it to make household decisions.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Built-in helpers</h3><ul><li><a href="https://www.home-assistant.io/integrations/group/">Group: setup and missing readings</a></li><li><a href="https://www.home-assistant.io/integrations/min_max/">Min/Max: means, medians and unit requirements</a></li><li><a href="https://www.home-assistant.io/integrations/statistics/">Statistics: averaging over time</a></li><li><a href="https://www.home-assistant.io/integrations/sensor/">Sensor classes and units</a></li><li><a href="https://www.home-assistant.io/integrations/input_number/">Number helpers for a harmless rehearsal</a></li></ul></div><div><h3>Calculation and display</h3><ul><li><a href="https://github.com/home-assistant/core/blob/2026.10.0/homeassistant/components/group/config_flow.py">Core 2026.10: group configuration flow</a></li><li><a href="https://github.com/home-assistant/core/blob/2026.10.0/homeassistant/components/group/sensor.py">Core 2026.10: sensor-group calculation</a></li><li><a href="https://www.home-assistant.io/template-functions/average/">Arithmetic mean template function</a></li><li><a href="https://www.home-assistant.io/docs/templating/tutorial-average-temperature/">Average-temperature template tutorial</a></li><li><a href="https://www.home-assistant.io/dashboards/entities/">Entities dashboard card</a></li></ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make room readings useful</h2><p>Plan the sensors and everyday routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>

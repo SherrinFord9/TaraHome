@@ -1,0 +1,63 @@
+{
+  "slug": "home-assistant-average-temperature",
+  "action": "new",
+  "publicationDate": "2026-10-08",
+  "verdict": "PASS",
+  "readerQuestion": "How can I combine selected room temperature sensors into one Home Assistant reading without hiding a missing sensor or averaging the wrong rooms?",
+  "directAnswer": "Create a Sensor group with Arithmetic mean using deliberately selected room readings. Open the saved Group options and explicitly save Ignore non-numeric off when every selected room must be represented. Keep the input readings visible, verify the arithmetic, and do not assume this changes a thermostat input or detects stale numeric readings.",
+  "originalContribution": "Sections 3 and 4 provide a three-room decision table and a harmless rehearsal using three independent Number helpers. The table distinguishes a real temperature change from a warm room disappearing, shows how a duplicate room changes weighting, and contrasts mean versus median. The walkthrough checks actual Core 2026.10 creation and options code rather than relying on unused translation labels.",
+  "limitations": "Documentation and versioned-source research, not hardware testing or a live Home Assistant configuration test. Example temperatures are hypothetical arithmetic. Thermostat support and sensor accuracy are not asserted. Menu arrangements vary by version. Local browser verification concerns the article and library, not Home Assistant device behavior. No current Search Console inspection or traffic recovery claim is made.",
+  "proofreadFixes": "Automated grandma-proofread PASS after corrections. Replaced initial instructions that incorrectly placed rounding, device-class and unit fields on the Group creation form; Core 2026.10 config_flow.py does not expose them there. Moved Ignore non-numeric to the saved Group options and required an explicit save because sensor.py falls back to True when the UI entry lacks the key, despite the general docs describing a false default. Distinguished compatible-unit conversion in Sensor groups from Min/Max same-unit requirements and raw template arithmetic. Added the stale-numeric caveat and stated that an average does not change thermostat control. Defined helper/entity/mean/median in context, separated cross-room and time averages, and labeled worked values as calculated illustrations. Corrected all inherited social titles/descriptions when constructing this article. Final visible copy has four decisive TLDR bullets, numbered setup, an independent Number-helper rehearsal, honest authorship, professional source labels, and a relevant link to the October 7 blinds guide. Desktop/mobile visual inspection found no broken image or page overflow; tables scroll within their regions on mobile.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Sensor groups calculate selected numeric states by mean; ignore_non_numeric false requires every member, whereas true permits remaining numeric members. All unavailable or missing members produce unavailable. The worked missing-room result matches these rules.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/group/"
+    },
+    {
+      "claim": "Core 2026.10 initial Sensor group form exposes name, members, hide-members and type. Ignore non-numeric is in options; creation does not expose the stale unit/class/rounding translation fields. The article directs readers to edit and save the options.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.0/homeassistant/components/group/config_flow.py"
+    },
+    {
+      "claim": "Core 2026.10 UI setup uses ignore_non_numeric True if no key is stored, so the guide requires explicitly saving off rather than assuming the documented generic default. Mean uses current member numeric values, compatible-unit conversion depends on valid units/class, and no reading-age check is part of this calculation.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.0/homeassistant/components/group/sensor.py"
+    },
+    {
+      "claim": "Min/Max supports mean and median, requires at least two same-unit inputs and omits unknown inputs. It is not the strict missing-input Sensor group policy.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/min_max/"
+    },
+    {
+      "claim": "Statistics operates on recent samples over time. Time-weighted averages depend on sample coverage and do not automatically cover an entire max_age interval. This differs from the current cross-room mean.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/statistics/"
+    },
+    {
+      "claim": "Number helpers store manually adjustable values and can have a unit and range. Three new standalone helpers support the harmless 19/21/23 to 19/21/26 arithmetic rehearsal without controlling heating. Expected means are 21 and 22; these were calculated, not hardware measurements.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_number/"
+    },
+    {
+      "claim": "Sensor device class describes the measured quantity and supports the corresponding units. Temperature display/conversion must be distinguished from relabeling raw numbers.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/sensor/"
+    },
+    {
+      "claim": "An Entities card can show the new average with each source; it does not itself make a thermostat use that sensor or verify sensor accuracy.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/entities/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-heating-schedule/",
+      "section": "2. Confirm the thermostat control and units",
+      "readerReason": "A reader comparing room comfort readings may need to create an explicit room average before deciding whether their thermostat supports an external measurement. This suggestion must retain the measured-input versus target-temperature distinction."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-open-close-windows/",
+      "section": "What You Need Before Building the Reminder",
+      "readerReason": "A reader choosing an indoor reference may need to decide whether one room or several rooms should represent the window reminder. The new guide explains membership and missing values without duplicating the ventilation rule."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440\u00d71000 Chromium: inspected the hero, worked example, full-page capture and library card. Title and visible byline are readable, Avenir loads, post-local 1200 WebP is complete, centered article is preserved, tables fit their 918px regions, document width equals viewport. Library card opens the canonical article; legacy .html redirects correctly. Screenshots and browser results saved only in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390\u00d7844 Chromium: inspected hero, example and library screenshots. Title wraps cleanly, body is readable, 480 WebP loads, document width stays 390px. Both 344px table regions contain 760px tables and horizontal scrolling was exercised successfully. Library card remains within the viewport with a working image and link. No site-root screenshot files remain."
+  }
+}
