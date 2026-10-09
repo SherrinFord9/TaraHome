@@ -1,0 +1,74 @@
+{
+  "slug": "home-assistant-vacuum-when-nobody-home",
+  "action": "new",
+  "publicationDate": "2026-10-09",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant start my existing robot vacuum only after everyone leaves, avoid repeated starts, and send it home if someone returns?",
+  "directAnswer": "Use a template that checks every selected resident has a known away state, require ten continuous minutes, restrict starts to a daytime window, require a docked robot and household permission, then save today's date before the action. Rehearse with a persistent notification. The optional return rule enforces away-only cleaning for all jobs, including manual starts; presence delays and untracked occupants remain limitations.",
+  "originalContribution": "Sections 2–5 provide three helpers, complete notification-only automation, a complete replacement actions block, and an optional return rule. The Alex/Sam morning table demonstrates the last-person departure, a failed 10:00 check, eligible 10:05 attempt, and no second attempt after another departure. A six-case troubleshooting table ties observed behavior to the first failed condition. The saved date records an attempt, not verified completion.",
+  "limitations": "Documentation research and local editorial/code checks only; no Home Assistant runtime, physical robot, phone-presence accuracy, response time or hardware compatibility testing. YAML parsed and template truth tables exercised with supplied states, not real devices. Unknown/unavailable checks cannot detect all stale away states; guests and pets require manual permission. Return-to-base requests are not instant stops or proof of docking. Abrupt failures and older restored backups can invalidate a convenience date record. The image is a disclosed generated room illustration without fabricated hardware.",
+  "proofreadFixes": "Automated tarahome-grandma-proofread PASS after corrections. Initial replacement action fragment lost leading indentation and failed YAML parsing; replaced it with a complete actions section preserving the date write before vacuum.start, then parsed all three YAML blocks successfully. Clarified that the 10:00–16:00 window limits starts and does not terminate an ongoing clean. Checked and explicitly stated that the optional return policy affects manual/vendor-app jobs, that permission off alone does not stop the start-only version, and that Run actions bypasses all guards. Verified the normal-restart delay and helper restoration in current docs. Defined integration, entity and helper; retained four decisive TLDR bullets, direct opening answer, visible Tara Home credit and honest method note. No private analytics, demand discussion or invented testing appears in copy. Link verification passed for 379 local targets and all 13 external primary-source URLs. Desktop/mobile screenshots were inspected, not merely captured.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Vacuum controls are provided by the actual integration; cleaning, returning and docked are distinct stored states. A generic vacuum entity does not establish every capability.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/vacuum/"
+    },
+    {
+      "claim": "vacuum.start starts or resumes a task, so the article does not promise a new whole-home run for every robot.",
+      "sourceUrl": "https://www.home-assistant.io/actions/vacuum.start/"
+    },
+    {
+      "claim": "vacuum.return_to_base requests a journey to the dock and requires support; it is not an immediate stop or observed docking.",
+      "sourceUrl": "https://www.home-assistant.io/actions/vacuum.return_to_base/"
+    },
+    {
+      "claim": "A Person uses device trackers and may be home, not_home or a named zone. Presence can be stale and does not count untracked guests or pets.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/person/"
+    },
+    {
+      "claim": "has_value rejects unknown, unavailable and absent entities; the selected-person template blocks these instead of interpreting them as away. Evaluated 25 state combinations plus a missing-person case locally.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/states/"
+    },
+    {
+      "claim": "A state-based Template binary sensor can be created through Helpers and derives its value from referenced entities.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/template/"
+    },
+    {
+      "claim": "Input Datetime can store a date only and restores state after normal stopping unless YAML initial overrides it. The example records today's attempted action before start and does not require a midnight reset.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_datetime/"
+    },
+    {
+      "claim": "The for duration in a state condition is measured from the state change and, after restart, from loading the entity again. The example waits again instead of claiming to know unseen absence.",
+      "sourceUrl": "https://www.home-assistant.io/conditions/state/"
+    },
+    {
+      "claim": "Time-pattern checks reevaluate eligibility and allow recovery from a missed scheduled start without a long-running delay. This does not guarantee robot action latency.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "Persistent notifications appear inside the Home Assistant frontend; the rehearsal is not a phone-push delivery test.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Run actions skips triggers and conditions; a successful manual run cannot validate the away checks.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "An away-running vacuum can trigger motion alarms. The article keeps cleaning disabled until compatible rather than prescribing disabled alarm protection.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/roborock/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/robot-vacuum-home-assistant-local-control/",
+      "section": "Maps, cameras, pets, and unattended cleaning",
+      "readerReason": "After choosing and verifying a robot's connection, the reader needs a concrete away-only routine with a guest pause, daily attempt record and return policy. Suggest a contextual link in a separate reviewed navigation task; do not edit this existing owner in the daily job."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440×1000. Visually inspected article hero and expanded code, plus the library's first card. Title readable in two lines, post-local image loaded, four-bullet TLDR follows hero, centered body and Tara Avenir computed at weight 400. Document width 1440 with no overflow. /blog/ and /blog.html both list the new post first; legacy .html redirects to canonical. Screenshots saved outside the worktree in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "PASS at 390×844 and 360×800. Visually inspected hero, TLDR, worked table, expanded YAML and library card. Main body text 16.96px; title wraps within the viewport and cover shows the clear-floor composition. Document widths exactly 390 and 360. Tables and code scroll inside focusable containers; verified table scrollLeft 250 and code scrollLeft 200 at 360px. Canonical and JSON-LD dates verified as 2026-10-09. No missing images or page-wide overflow."
+  }
+}

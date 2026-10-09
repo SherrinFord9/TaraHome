@@ -1,0 +1,122 @@
+{
+  "version": 2,
+  "slug": "home-assistant-vacuum-when-nobody-home",
+  "researchedAt": "2026-10-09",
+  "primaryQuery": "Home Assistant vacuum when nobody home",
+  "readerQuestion": "How can Home Assistant start my existing robot vacuum only after everyone leaves, avoid repeated starts, and send it home if someone returns?",
+  "selectedBecause": "A September 28, 2026 Reddit discussion independently raises away-only cleaning, a daily limit, daytime hours and return-to-dock behavior; older separate Community questions show the same household problem and a missed second-person departure. Exact-query results include the current official minimal zone/start example and extensive device-specific configurations. The useful gap is one bounded, documented recipe with explicit person validity checks, a guest/pet pause, a persisted date for at most one start attempt per day, restart re-evaluation, harmless notification rehearsal and an honest arrival-policy caveat. This extends an existing robot rather than publishing another buying guide. Community posts establish interest, not search volume.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant vacuum when nobody home",
+      "evidenceSummary": "Current exact-query search on October 9 returned https://www.home-assistant.io/actions/vacuum.start/ and https://community.home-assistant.io/t/start-vacuum-when-nobody-is-home/307847 plus https://roenning.net/2026/04/02/dreame-vacuum-home-assistant-smart-cleaning-when-nobodys-home/. September 28 discussion https://www.reddit.com/r/homeassistant/comments/1wsq4ey/tell_me_about_your_robot_vacuum_automations/ explicitly describes once-per-day, away delay and returning when someone comes home. Independent February 2023 discussion https://community.home-assistant.io/t/using-home-zone-to-trigger-when-nobody-home/530525 shows state-versus-attribute confusion. Technical basis checked against current Vacuum, Person, Template, Input Datetime and automation documentation. Older threads are recurrence evidence, not fresh posts.",
+      "decision": "selected",
+      "reason": "Strongest recent community signal within the 14-day review window, a concrete household outcome, and clear room for an original worked policy. Separate from the existing local-vacuum model and integration comparison."
+    },
+    {
+      "query": "Home Assistant turn off heating when window open",
+      "evidenceSummary": "Exact-query search on October 9 returned https://www.home-assistant.io/integrations/window/ and https://community.home-assistant.io/t/turn-off-heating-when-door-or-window-is-open/902445. The latter has January 2026 discussion about failing to restore heating and preserving a previously off thermostat. https://community.home-assistant.io/t/blueprint-window-open-climate-off-window-closed-stable-restore/976904 is a January 19 restore blueprint. Current Climate documentation https://www.home-assistant.io/integrations/climate/ exposes modes/actions whose availability depends on the exact device.",
+      "decision": "rejected",
+      "reason": "Useful recurring question, but today's strongest concrete community evidence is older than the vacuum discussion and safe restoration requires model-specific HVAC behavior. Existing heating-schedule, window-comfort and manual-override owners cover parts of the workflow. Keep for separate research rather than rushing universal off/restore advice."
+    },
+    {
+      "query": "Home Assistant first person arrives home lights automation",
+      "evidenceSummary": "Exact-query search on October 9 returned https://community.home-assistant.io/t/automation-for-when-first-person-comes-home/971164 (January 6, 2026) and https://community.home-assistant.io/t/if-first-person-comes-home-turn-on-lights/500236 (2022), both discussing first arrival or simultaneous arrivals. Current https://www.home-assistant.io/integrations/zone/ documents person count and https://www.home-assistant.io/integrations/person/ documents tracker precedence.",
+      "decision": "rejected",
+      "reason": "Clear household task but weaker recent evidence and substantial proximity to house modes, person troubleshooting and recent dark-only lighting. A zero-to-positive count alone would add little beyond those owners and official examples."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1wsq4ey/tell_me_about_your_robot_vacuum_automations/",
+      "observedAt": "2026-10-09",
+      "evidence": "Posted September 28, 2026 with September 30 replies. Readers independently describe cleaning after 15-30 minutes away, a one-per-day limit, daytime restrictions and docking on return. This is current qualitative interest; no vote or comment counts are used as volume."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/start-vacuum-when-nobody-is-home/307847",
+      "observedAt": "2026-10-09",
+      "evidence": "Older May 2021 question, surfaced by today's exact-query search: an automation tied to only one phone misses the other occupant leaving last. Historical recurrence only, not a current increase."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/using-home-zone-to-trigger-when-nobody-home/530525",
+      "observedAt": "2026-10-09",
+      "evidence": "Older February 2023 question wants a simple empty-house vacuum automation and confuses the persons attribute with the zone count. Rechecked as recurring setup friction; not recent search-volume evidence."
+    },
+    {
+      "source": "google-search",
+      "url": "https://www.google.com/search?q=Home+Assistant+vacuum+when+nobody+home",
+      "observedAt": "2026-10-09",
+      "evidence": "Exact query reviewed through the web search tool. Results include official start-action docs, older Community questions, a 2026 Dreame walkthrough and larger YAML packages. Direct Google browser request returned HTTP 429 with a challenge; no claim is made to observing personalized Google rank positions or a successful direct Google result page."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant vacuum when nobody home",
+    "reviewedAt": "2026-10-09",
+    "intent": "Configure an already integrated vacuum to start only when the household is away, at sensible hours, with no repeated departures causing repeated starts.",
+    "resultGap": "The official start-action example answers the basic trigger but omits a daily attempt record, invalid person states, guest/pet permission, restart re-evaluation and a safe dry run. Community results show single-person and zone-attribute mistakes. The custom example combines those boundaries and explicitly says docking on arrival also interrupts manual cleaning under an away-only policy. Direct Google was blocked by HTTP 429; current exact-query web results were available and reviewed, without ranking/volume claims.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/actions/vacuum.start/",
+      "https://community.home-assistant.io/t/start-vacuum-when-nobody-is-home/307847",
+      "https://community.home-assistant.io/t/using-home-zone-to-trigger-when-nobody-home/530525"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant vacuum building block",
+      "url": "https://www.home-assistant.io/integrations/vacuum/",
+      "supports": "Stored states, integration-dependent capabilities, start versus return-to-base and optional area mapping."
+    },
+    {
+      "name": "Person",
+      "url": "https://www.home-assistant.io/integrations/person/",
+      "supports": "Person entities, tracker precedence and why device-derived presence is not ground truth."
+    },
+    {
+      "name": "Template helpers",
+      "url": "https://www.home-assistant.io/integrations/template/",
+      "supports": "UI binary-sensor helper and state-based template recalculation."
+    },
+    {
+      "name": "State templates",
+      "url": "https://www.home-assistant.io/docs/templating/",
+      "supports": "State access and validity checking; helper represents selected residents, not a people detector."
+    },
+    {
+      "name": "Input Datetime",
+      "url": "https://www.home-assistant.io/integrations/input_datetime/",
+      "supports": "Date-only helper, set_datetime action and restore behavior without a forced initial value."
+    },
+    {
+      "name": "Input Boolean",
+      "url": "https://www.home-assistant.io/integrations/input_boolean/",
+      "supports": "A dashboard permission toggle with persisted state."
+    },
+    {
+      "name": "Automation conditions and triggers",
+      "url": "https://www.home-assistant.io/docs/scripts/conditions/",
+      "supports": "State duration, time window, and all conditions required before actions."
+    },
+    {
+      "name": "Automation troubleshooting",
+      "url": "https://www.home-assistant.io/docs/automation/troubleshooting/",
+      "supports": "Traces and Run actions bypass of triggers and conditions."
+    },
+    {
+      "name": "Roborock safety and connectivity",
+      "url": "https://www.home-assistant.io/integrations/roborock/",
+      "supports": "Vacuum can trigger an armed motion alarm; automation does not make an integration local."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/robot-vacuum-home-assistant-local-control/",
+      "/blog/home-assistant-person-not-updating/",
+      "/blog/home-assistant-house-modes/",
+      "/blog/home-assistant-actionable-notifications/"
+    ],
+    "decision": "Inventoried every canonical title and available topic-brief reader question, read closest page bodies, schedule and ownership maps. Vacuum owner compares hardware/control paths and only mentions away cleaning; Person owner diagnoses presence updates; house modes owns shared household state; actionable notifications owns confirmation transport. The new page owns one operational vacuum recipe, leaving all titles/URLs stable. Pre-draft SEO intent gate passed. Commercial owner /home-automation-kit/ matches coordinated local routines. Read schedule-selected September 21 performance/inspection/recovery, July causal review and analytics contract; JSON-parsed Chart cutoff September 19: September 13-19 3 clicks/212 impressions versus September 6-12 2/205; last 28 days 11/955 versus prior 28 21/2700. September 20-21 are absent, not zero. Recent dimensions only from seo/search-comparison-2026-09-21.json: homepage 3 clicks/22 impressions versus 1/16; Person owner 0/3 versus 0/8; automation-not-firing owner 0/9 versus 0/5; Bluetooth 0/19 versus 0/8. All current clicks accounted for by tarahome/homepage; no blog clicks or non-brand recovery. US 111 to 72 impressions; desktop 176 to 185, mobile 28 to 27, tablet 1 to 0. Page rows sum to 375 versus property Chart 212 because these are different aggregations; visible query rows omit anonymized searches. Neither tiny rows nor cumulative three-month tables justify volume or a pivot. September 21 inspections: IKEA, laundry and Spokane indexed; trash and vacation discovered but not indexed. These are dated observations, not live October status; no September 15 exclusions repeated as current. July losses span devices, countries and changed/unchanged HTML; no platform culprit or title rollback remedy proven. Separate refresh tasks only: recovery review priorities remain IKEA, Bluetooth, leak-sensor and doorbell owners with real device evidence when available; existing vacuum buying page has dated model recommendations that deserve their own exact-model review, not another buying URL. Preserve PARASOLL/VALLHORN Zigbee facts and ownership regardless of indexing. No private analytics, GA4 event totals, inquiry data, strategy changes or old-article edits used. One-per-day limit unchanged; publication/indexing requests are not indexing or recovery proof."
+  }
+}
