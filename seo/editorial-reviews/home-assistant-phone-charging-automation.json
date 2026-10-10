@@ -1,0 +1,67 @@
+{
+  "slug": "home-assistant-phone-charging-automation",
+  "action": "new",
+  "publicationDate": "2026-10-10",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant stop my phone charger near a chosen battery level, and when should I use the phone’s own charge limit instead?",
+  "directAnswer": "Use a manufacturer-supported native charge limit when available. Otherwise, use the Companion app battery level and a dedicated charger plug for an approximate cutoff; start each charge deliberately and keep a visible override. Test the rule with helpers first because stale reports and an unavailable control path prevent a guaranteed percentage cutoff.",
+  "originalContribution": "Sections 3–5 contain a complete helper-only YAML rehearsal, a six-case expected-result table, and exact substitutions for the real battery sensor and charger switch. The example includes current-level checks on plug/enable changes, startup and periodic retry, accepts exactly 80%, rejects missing/out-of-range values, and never turns the plug on by itself. Sections 6 and troubleshooting address the overlooked next-charge and stale-high-reading cases. Extracted YAML and Jinja conditions passed 126 mocked boundary/override/plug-state cases and the real-entity substitution check; these are logic checks, not a Home Assistant runtime or hardware test.",
+  "limitations": "No phone, charger, smart plug, network delivery time or battery-lifespan outcome was tested. Native menus and support depend on model and installed software; Android periodic updates and iOS background behavior do not guarantee delivery. Numeric availability does not establish freshness. The five-minute retry does not refresh phone data. Missing readings leave the plug unchanged; a stale high number may stop charging too early. Server or network failure prevents the cutoff. The helper override remains off until manually restored. A permanently mounted tablet needs a separate unattended charging design. Cover imagery is generated illustration. Research-source availability limitations are recorded in the topic brief; no Google ranking or volume claim is made.",
+  "proofreadFixes": "PASS after fixes: wrapped the YAML in the existing constrained configuration container so long entity IDs scroll within the code block rather than widening mobile pages; added an explicit sideways-scroll/copy-whole-block hint; changed the general template documentation link to the current type-conversion page supporting float(-1). Verified the operational instructions: native optimized charging is distinct from a fixed cap; exactly 80 passes; unavailable/unknown do not become a valid percentage; the scheduled retry does not request a sensor refresh; Run actions bypasses conditions and is excluded from the rehearsal; the cutoff never restarts charging; full-charge override must be disabled before turning the outlet on and manually re-enabled afterward. Images were decoded before final browser screenshots to avoid a premature blank first capture. The layout sync removed blank lines in seven existing articles; those incidental changes were restored, leaving all old article files unchanged. Authorship, documentation basis, five TLDR bullets, six ordered setup sections, source labels and restrained CTA were checked. This was an automated proofreading pass, not a human or expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "iPhone 15 and later offer native 80–100% charge limits; Optimized Battery Charging on older phones is a delayed-full-charge behavior, and occasional 100% charging can be intentional. Native limits are recommended before adding a plug routine.",
+      "sourceUrl": "https://support.apple.com/en-us/108055"
+    },
+    {
+      "claim": "Google documents Limit to 80% on Pixel 6a and later and intentional full charging for capacity estimates. The article warns that installed software can change menu placement.",
+      "sourceUrl": "https://support.google.com/pixelphone/answer/6090612?hl=en"
+    },
+    {
+      "claim": "The Companion app reports battery data. Android Fast While Charging changes periodic updates and requires an app restart; iOS background updates are system-controlled. Neither yields a guaranteed percentage cutoff or direct phone charge-limit command.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/core/sensors/"
+    },
+    {
+      "claim": "State, Home Assistant startup and time-pattern triggers can recheck a current condition. A threshold-crossing trigger alone is not a persistent already-above test; a periodic automation trigger does not itself fetch new phone data.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "Entity states are text; float(default) supplies a fallback for unavailable/nonnumeric data. The example uses -1 and accepts only 80 through 100. Parsed YAML and mocked Jinja checks cover 79.9, 80, 100, 101, invalid strings, NaN and infinity.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/types/"
+    },
+    {
+      "claim": "A Toggle helper provides the enable switch and the mock charger; input_boolean.turn_off operates only the mock in the rehearsal. The real enable helper remains in place after conversion.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "A Number helper can provide a user-controlled 0–100 test battery value; testing it does not require changing a real sensor state or draining a phone.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_number/"
+    },
+    {
+      "claim": "switch.turn_off targets the outlet switch after all mock-charger IDs and the action domain have been replaced. This does not configure the phone’s charging controller; verify the actual outlet and phone result.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/switch/"
+    },
+    {
+      "claim": "Run actions skips normal trigger/condition testing; the harmless verification changes actual helper controls and inspects traces instead. Expected results are identified as logical outcomes, not measured response times.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/best-smart-plugs-home-assistant-2026/",
+      "section": "Where Smart Plugs Are Useful, and Where They Are a Bad Idea",
+      "readerReason": "A reader who already chose a compatible plug can continue to a concrete phone-charger routine with a manual start, cutoff, override and harmless rehearsal."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-wall-tablet-dashboard-stays-awake/",
+      "section": "Power and Mounting Safety",
+      "readerReason": "A short contextual link could explain native charge limits and stale battery readings for readers considering battery-based power control, while explicitly distinguishing this off-only phone recipe from unattended tablet charging."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440×1000 article: centered 780px reading column, regular Tara Avenir title, readable five-bullet TLDR, decoded post-local WebP hero, scrollWidth equal to viewport, and accessible table/code regions. Library at 1440×900: new first card has correct title/date/image and opens the canonical article. Both library copies contain the card; legacy .html redirect reaches the trailing-slash URL. Screenshots saved outside the worktree in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390×844 and 320×780 article: title and body wrap, cover loads and remains legible, no horizontal page overflow (390/390 and 320/320). At 390px the two tables scroll inside 344px regions with 760px content, and YAML scrolls inside a 312px block with 656px content. Library at 390×900 has a readable first card and working navigation with no page overflow. Mobile cover, code and table screenshots were visually inspected; a code scrolling hint was added."
+  }
+}
