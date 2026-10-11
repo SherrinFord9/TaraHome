@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant History Stats: Track Daily Device Runtime</title>
+    <meta name="description" content="Use Home Assistant History Stats to total daily on-time, choose the right device state, and check runtime without confusing missing history with inactivity." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-history-stats/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-history-stats/" />
+    <meta property="og:title" content="Home Assistant History Stats: Track Daily Device Runtime" />
+    <meta property="og:description" content="Use Home Assistant History Stats to total daily on-time, choose the right device state, and check runtime without confusing missing history with inactivity." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-history-stats/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant History Stats: Track Daily Device Runtime" />
+    <meta name="twitter:description" content="Use Home Assistant History Stats to total daily on-time, choose the right device state, and check runtime without confusing missing history with inactivity." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-history-stats/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+
+      .article-body pre { background: #e9e5d7; border: 1px solid var(--line); border-radius: 14px; padding: 20px; overflow-x: auto; max-width: 100%; font-size: .94rem; line-height: 1.6; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body .comparison-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+      .article-body .table-hint { display: none; }
+      @media (max-width: 820px) { .article-body .table-hint { display: block; font-size: .92rem; margin-bottom: 8px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-history-stats/#blogposting",
+      "headline": "Home Assistant History Stats: Track Daily Device Runtime",
+      "description": "Use Home Assistant History Stats to total daily on-time, choose the right device state, and check runtime without confusing missing history with inactivity.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-history-stats/cover.png",
+      "datePublished": "2026-10-11",
+      "dateModified": "2026-10-11",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-history-stats/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant History Stats: Track Daily Device Runtime",
+          "item": "https://tarahome.ai/blog/home-assistant-history-stats/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need an automation to reset the total at midnight?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. With Start set to today’s midnight and End to now, the measurement window moves to the new day automatically. A midnight reset automation or Utility Meter is not needed solely to reset this display."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will it know what happened during a Home Assistant outage?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not assume so. It calculates from available recorded states, not an independent physical runtime meter. Missing changes during an outage limit the result."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this keep everything local?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The calculation happens in Home Assistant. The source device may still depend on a vendor cloud to report its state. Saving runtime also creates a record of household activity."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Home Assistant helpers</span><span><time datetime="2026-10-11">October 11, 2026</time></span><span>11 min read</span></p>
+<h1>Home Assistant History Stats: Track Daily Device Runtime</h1><p class="lede">See how long a lamp or sensor was on today, check the total, and understand what recorded runtime can—and cannot—tell you.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-history-stats/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-history-stats/cover-480.webp 480w, /assets/generated/blog/home-assistant-history-stats/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A lit reading lamp and analog clock on a walnut table beside a dark-green armchair" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use the built-in History Stats helper, with Type set to Time.</strong> It adds together the periods when a selected device reported the state you chose.</li>
+<li><strong>For today, use local midnight as Start and now as End.</strong> Leave Duration empty. “Today” and “the last 24 hours” are different questions.</li>
+<li><strong>Choose what you actually want to measure.</strong> A plug being on means its outlet is enabled; it does not prove the connected appliance is working.</li>
+<li><strong>Check with a harmless Toggle helper first.</strong> Six recorded minutes on should add about 0.10 hours. Missing history and stale device reports limit the result.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant documentation and Core 2026.10.1 source on October 11, 2026. The timeline below is a calculated example, not a measured Tara installation. No device or live Home Assistant installation was tested for this guide. Menu labels can differ on older releases.</p>
+
+<h2 id="answer">Add up the on-time, without building a timer automation</h2>
+<p><strong>Home Assistant History Stats</strong> is the simplest built-in starting point for “How long was this lamp on today?” Create a helper—a value calculated inside Home Assistant—that watches the lamp’s recorded <code>on</code> state. It can combine several separate sessions into one daily total.</p>
+<p>You need an existing device that reports its state, plus retained history for that device. You do not need a new timer, a paid service, or a custom integration. Start with a lamp whose on/off status already looks right in Home Assistant, and display its total before using it in any automation. The <a href="https://www.home-assistant.io/integrations/history_stats/">History Stats documentation</a> describes the available helper settings.</p>
+<p>This measures <em>reported state over time</em>. It does not independently watch the bulb, measure electricity, or turn anything off. If your actual question is “stop something after ten minutes,” use the separate <a href="/blog/home-assistant-timer-survive-restart/">countdown and restart guide</a>. A daily runtime display answers what happened, rather than scheduling a future action.</p>
+
+<h2 id="choose-source">1. Choose a state that means the right thing</h2>
+<p>An <strong>entity</strong> is a named item in Home Assistant, such as <code>light.reading_lamp</code>. Open <strong>Settings → Tools → States</strong>, or <strong>Developer tools → States</strong> on older releases, and read its stored state. Use this screen to inspect; do not use <strong>Set state</strong> as a device test. The <a href="https://www.home-assistant.io/docs/tools/dev-tools/">Tools documentation</a> explains that changing a displayed state does not command the physical device.</p>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Choose the source state" tabindex="0"><table>
+<thead><tr><th scope="col">You want to know…</th><th scope="col">Suitable starting point</th><th scope="col">What the result means</th></tr></thead><tbody>
+<tr><td>How long a lamp was on</td><td>The lamp entity; state <code>on</code></td><td>Time Home Assistant recorded the lamp as on, including dimmed operation.</td></tr>
+<tr><td>How long a window was open</td><td>Its contact binary sensor; stored state <code>on</code></td><td>Reported open time. The interface may label this “Open,” but the stored value is <code>on</code>.</td></tr>
+<tr><td>How long an appliance worked</td><td>A verified running-status entity, if the integration provides one</td><td>A smart plug’s <code>on</code> state alone measures enabled supply, including appliance standby.</td></tr>
+<tr><td>How long heating actually ran</td><td>A supported activity report, rather than thermostat mode</td><td><code>heat</code> means heating mode is selected. It can include time when the system is idle.</td></tr>
+</tbody></table></div>
+<p>Home Assistant’s <a href="https://www.home-assistant.io/integrations/binary_sensor/">binary-sensor reference</a> confirms the Open/on mapping. For thermostats, the <a href="https://developers.home-assistant.io/docs/core/entity/climate/">climate reference</a> separates mode from the optional <code>hvac_action</code> attribute, which describes current activity. History Stats selects entity states, not an arbitrary attribute. If activity exists only as an attribute, it needs a separate recorded sensor before you can count it this way. If the integration does not report activity, this lamp recipe cannot establish burner or compressor runtime.</p>
+
+<h2 id="setup">2. Create the daily runtime helper</h2>
+<ol>
+<li>Open <strong>History</strong> and select the source entity. Check that today’s on and off periods appear. A current on/off reading alone does not prove that earlier changes were saved. See the <a href="https://www.home-assistant.io/integrations/history/">History instructions</a> if your panel is empty.</li>
+<li>Go to <strong>Settings → Devices &amp; services → Helpers → Create helper → History Stats</strong>.</li>
+<li>Name it <strong>Reading lamp on today</strong>, select your lamp, and choose <strong>Time</strong>. Select the state corresponding to <code>on</code>.</li>
+<li>In the period options, enter the settings below. Expand <strong>Additional settings</strong> to check Minimum state duration. Home Assistant may spread these fields across several dialogs.</li>
+<li>Save, then add the new sensor to an editable dashboard. An <a href="https://www.home-assistant.io/dashboards/entities/">Entities card</a> can show the lamp and its runtime together.</li>
+</ol>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Daily runtime helper settings" tabindex="0"><table>
+<thead><tr><th scope="col">Setting</th><th scope="col">Enter or choose</th><th scope="col">Reason</th></tr></thead><tbody>
+<tr><td>Type</td><td>Time</td><td>Produces accumulated duration in hours.</td></tr>
+<tr><td>Start</td><td><code>{{ today_at('00:00') }}</code></td><td>Midnight in Home Assistant’s configured local time zone.</td></tr>
+<tr><td>End</td><td><code>{{ now() }}</code></td><td>Count up to the current time.</td></tr>
+<tr><td>Duration</td><td>Leave empty</td><td>Use exactly two of Start, End and Duration.</td></tr>
+<tr><td>State class</td><td>Total increasing</td><td>For this daily total, lets statistics accumulate increases across daily resets.</td></tr>
+<tr><td>Minimum state duration</td><td>0 seconds</td><td>Include short sessions while checking your setup.</td></tr>
+</tbody></table></div>
+<p><strong>State class</strong> tells Home Assistant how to store statistics about a sensor; it does not change which device state you count. Choose it when creating this new helper. The fields above are supported by the <a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/history_stats/config_flow.py">2026.10.1 helper configuration</a>.</p>
+<p>For a rolling 24-hour view, create a separate helper: leave Start empty, use <code>{{ now() }}</code> for End, set Duration to 24 hours, and choose <strong>Measurement</strong> as its state class. That moving total can fall as yesterday’s sessions leave the window. The <a href="https://www.home-assistant.io/template-functions/today_at/">today_at reference</a> explains local time; a local calendar day is not always exactly 24 elapsed hours when clocks change.</p>
+
+<h2 id="worked-example">3. Check a whole day, including the midnight boundary</h2>
+<p>Imagine these recorded lamp sessions. The first began before midnight; only its portion inside today belongs in today’s total. This is arithmetic to explain the settings, not a claim about a real household.</p>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Worked daily runtime example" tabindex="0"><table>
+<thead><tr><th scope="col">Recorded on-session</th><th scope="col">Counted today</th><th scope="col">Running total</th></tr></thead><tbody>
+<tr><td>Yesterday 23:50 → today 00:20</td><td>20 minutes</td><td>20 minutes</td></tr>
+<tr><td>Today 06:30 → 07:15</td><td>45 minutes</td><td>65 minutes</td></tr>
+<tr><td>Today 18:00 → 19:10</td><td>70 minutes</td><td>135 minutes</td></tr>
+</tbody></table></div>
+<p>After the final switch-off, the expected Time result is <strong>135 ÷ 60 = 2.25 hours</strong>. Likewise, <strong>1.50 hours means 90 minutes</strong>, not one hour and fifty minutes. Period clipping and matching-state accumulation follow the <a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/history_stats/data.py">History Stats calculation</a>.</p>
+<p>If you create another helper with Type <strong>Count</strong>, this example has three matching on-periods, even though only two switch-ons happened after midnight. The already-on session at the start also counts. Choose Time for duration; do not read Count as hours or assume it is a strict count of today's button presses.</p>
+
+<h2 id="safe-test">4. Rehearse without controlling an appliance</h2>
+<p>Use a separate <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a> as a pretend lamp. It changes only its own value unless you connect it to an automation. Leave it unconnected to device actions.</p>
+<ol>
+<li>Create a Toggle helper named <strong>Runtime practice</strong>. Set it off and confirm its changes appear in History.</li>
+<li>Create another History Stats helper using the daily settings above, but select this Toggle as the source. Note its starting total; a new, previously unused source should be near zero.</li>
+<li>Turn the Toggle on for three minutes, off for one minute, then on for another three minutes. Turn it off again. Avoid crossing midnight during this rehearsal.</li>
+<li>Allow the next update. The total should have increased by about <strong>0.10 h</strong>: six on-minutes divided by sixty. The intervening off-minute should not count.</li>
+<li>Leave it off for another minute. The daily total should stay steady. Then compare your real lamp’s total with its History timeline before relying on it.</li>
+</ol>
+<p>History Stats updates when the source changes and otherwise about once a minute. Allow for that cadence and your timing; this is not a stopwatch calibration. If your source history is absent, fix recording first rather than repeatedly recreating the helper.</p>
+
+<h2 id="retention">5. Keep older daily summaries without pretending history is unlimited</h2>
+<p><strong>Recorder</strong> is the part of Home Assistant that saves state history. Its default detailed-history retention is ten days. Asking History Stats for the last thirty days does not create the missing twenty days. Review the source’s inclusion in Recorder and the retained period before interpreting a long total. The <a href="https://www.home-assistant.io/integrations/recorder/">Recorder documentation</a> describes the filters and retention setting.</p>
+<p>For future daily comparisons, the daily <strong>Total increasing</strong> helper above can produce long-term statistics if that new sensor is also recorded. Home Assistant stores these hourly summaries separately from the original on/off events. A new sensor’s initial reading becomes a baseline: do not assume its first partial day backfills all earlier runtime. See <a href="https://www.home-assistant.io/docs/configuration/long-term-statistics/">long-term statistics</a>.</p>
+<p>Once statistics exist, an optional <a href="https://www.home-assistant.io/dashboards/statistics-graph/">Statistics graph card</a> can show daily changes as bars. In an editable dashboard, add a Manual card and paste the following, replacing the example sensor ID with your actual helper’s ID:</p>
+<pre><code>type: statistics-graph
+title: Reading lamp runtime by day
+entities:
+  - sensor.reading_lamp_on_today
+stat_types:
+  - change
+period: day
+chart_type: bar
+days_to_show: 7</code></pre>
+<p>The bars summarize accumulated recorded on-time, not electrical consumption. They do not restore purged switch events or prove what happened while Home Assistant was offline. Keep the raw source history available while checking the first complete days. Before increasing retention substantially, review the <a href="/blog/home-assistant-database-too-large-recorder-purge/">Recorder storage guide</a>; this setup does not require deleting history or disabling automatic cleanup.</p>
+
+<h2 id="troubleshooting">If the number looks wrong</h2>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Runtime troubleshooting decisions" tabindex="0"><table>
+<thead><tr><th scope="col">Symptom</th><th scope="col">Check first</th><th scope="col">Useful next step</th></tr></thead><tbody>
+<tr><td>Zero while the window was open</td><td>Stored state versus displayed label</td><td>Check for <code>on</code>, not the word “Open,” and verify the source has recorded history.</td></tr>
+<tr><td>More runtime than expected</td><td>What the selected entity represents</td><td>A powered plug or thermostat mode may stay on while the appliance is idle. Inspect a genuine activity report if available.</td></tr>
+<tr><td>The total drops during the afternoon</td><td>A rolling period or missing older history</td><td>Check Start/End/Duration. A trailing window drops old sessions; a window beyond retained history is incomplete.</td></tr>
+<tr><td>Very short sessions disappear</td><td>Minimum state duration</td><td>Use zero during verification, then choose a deliberate filter only if those sessions should be excluded.</td></tr>
+<tr><td>The chart has no daily change bars</td><td>The helper’s state class, recording and age</td><td>Confirm Total increasing for the new daily helper, confirm Recorder includes it, and allow statistics to be generated. Do not erase existing statistics as a first fix.</td></tr>
+</tbody></table></div>
+<p><strong>A missing report is not proof of inactivity.</strong> An <code>unavailable</code> interval is not a match for <code>on</code>; conversely, an integration that leaves a stale <code>on</code> value can make apparent runtime too long. Compare the underlying timeline. For recurring connection problems, the <a href="/blog/home-assistant-unavailable-device-notification/">unavailable-device guide</a> explains why unchanged and unavailable are different.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Do I need an automation to reset the total at midnight?</h3>
+<p>No. With Start set to today’s midnight and End to now, the measurement window moves to the new day automatically. You do not need a midnight reset automation or a Utility Meter solely to reset this display.</p>
+<h3>Will it know what happened during a Home Assistant outage?</h3>
+<p>Do not assume so. It calculates from available recorded states, not an independent physical runtime meter. Missing changes during an outage limit the result. A restart is not a reason to discard the history that was successfully recorded.</p>
+<h3>Does this keep everything local?</h3>
+<p>The calculation happens in Home Assistant. The source device may still depend on a vendor cloud to report its state. Saving runtime also creates a record of household activity; consider that before tracking occupancy or individual people.</p>
+<p>Our recommendation is to start with one clearly named device and a visible source timeline. If you are planning the wider system, Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> explains the setup path. Agree on what each reading actually represents before using it to make household decisions.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid">
+<div><h3>Helpers and recorded history</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/history_stats/">History Stats settings and time periods</a></li>
+<li><a href="https://www.home-assistant.io/integrations/recorder/">Recorder retention and inclusion filters</a></li>
+<li><a href="https://www.home-assistant.io/integrations/history/">Viewing source history</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers for the practice exercise</a></li>
+</ul></div><div><h3>Interpreting the result</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/binary_sensor/">Stored binary-sensor states</a></li>
+<li><a href="https://developers.home-assistant.io/docs/core/entity/climate/">Thermostat mode versus current activity</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/long-term-statistics/">Long-term statistics and initial baselines</a></li>
+<li><a href="https://www.home-assistant.io/dashboards/statistics-graph/">Statistics graph configuration</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday device behavior easier to understand</h2><p>Plan the devices, readings and routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>

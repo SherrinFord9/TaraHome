@@ -1,0 +1,74 @@
+{
+  "slug": "home-assistant-history-stats",
+  "action": "new",
+  "publicationDate": "2026-10-11",
+  "verdict": "PASS",
+  "readerQuestion": "How can I see how long a device was on today in Home Assistant, check the total, and avoid confusing missing history or standby time with real runtime?",
+  "directAnswer": "Create a built-in History Stats Time helper for a verified source state, using local midnight as Start and now as End, with Duration empty. For this daily window, Total increasing supports accumulated statistics. First check a separate unconnected Toggle helper: two three-minute on-periods should add about 0.10 hours. The result describes reported state, not independently measured physical operation; retained history and accurate source reports are prerequisites.",
+  "originalContribution": "Section 1 provides a source-selection decision table distinguishing lamp state, window state, enabled plug supply and thermostat mode. Section 3 works through a session crossing midnight plus two daytime sessions: 135 minutes becomes 2.25 hours, with Count equal to three matching periods rather than two switch-ons. Section 4 supplies a harmless two-session Toggle rehearsal. Section 5 distinguishes retained raw events from future daily statistical summaries, followed by a symptom/check/next-step troubleshooting table. The exact Core 2026.10.1 calculation method was exercised with synthetic histories in external artifacts; this verifies arithmetic and matching semantics, not an installation.",
+  "limitations": "Documentation and released-source research, with synthetic calculation checks only. No live Home Assistant installation, hardware runtime, thermostat compatibility, cloud reliability or measured timing accuracy was tested. UI labels may differ on older releases. Actual appliance activity requires an appropriate source entity; optional hvac_action is not assumed present and no unsupported attribute-selection recipe is offered. Long-term statistics cannot backfill missing or purged source events, and the first partial day has a baseline limitation. Generated cover art is illustrative. Live deployment and indexing are outside this draft job.",
+  "proofreadFixes": "Final automated plain-English pass: added the explicit Additional settings location for Minimum state duration after checking the released configuration flow; added visible mobile-only swipe guidance after browser inspection showed tables intentionally wider than the phone; corrected library ItemList positions across both compact and multiline entries and rechecked their sequence. Checked the actual rendered article for a four-bullet direct answer, clear entity/helper/state-class definitions, midnight clipping, decimal-hour arithmetic, Count semantics, stale-on versus unavailable behavior, first-day statistics baseline, authorship and honest research limits. These checks passed without adding unsupported device-control advice. All 781 checked local references resolve; all published primary-source URLs returned HTTP 200. The review is automated, not human or expert certification.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "History Stats Time measures accumulated matching-state duration in hours; exactly two of Start, End and Duration are required. It updates on source changes or once per minute otherwise.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/history_stats/"
+    },
+    {
+      "claim": "Core 2026.10.1 UI supports entity/type selection, raw state selection, start/end/duration, Total increasing for a Time helper and Minimum state duration under Additional settings. It does not offer arbitrary attribute selection.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/history_stats/config_flow.py"
+    },
+    {
+      "claim": "The worked day clips the pre-midnight session to 20 minutes and totals 8100 seconds, or 2.25 hours, across three matching blocks. Two three-minute practice blocks total 360 seconds. Synthetic cases using the published calculation method also confirmed unavailable does not match on and a stale on state continues accumulating.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/history_stats/data.py"
+    },
+    {
+      "claim": "Window binary sensors store on for Open; unavailable and unknown are distinct states. The visible word Open should not be entered as the raw state in a template or YAML configuration.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/binary_sensor/"
+    },
+    {
+      "claim": "Thermostat hvac_mode determines state and denotes the requested operating mode. Optional hvac_action describes current activity. Selecting heat does not establish burner or compressor runtime.",
+      "sourceUrl": "https://developers.home-assistant.io/docs/core/entity/climate/"
+    },
+    {
+      "claim": "today_at returns a time in Home Assistant's local time zone. A local-midnight-to-now window differs from a trailing 24-hour duration and calendar days can span daylight-saving transitions.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/today_at/"
+    },
+    {
+      "claim": "Recorder defaults to ten days of detailed history and entity include/exclude filters determine recorded data. An enlarged query window cannot supply purged observations. No purge, database deletion or disabling cleanup is required for the recipe.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/recorder/"
+    },
+    {
+      "claim": "Recorded numeric sensors with a supported state class can retain long-term statistics separately from detailed source events. The first observed total is a baseline, not automatic backfill of earlier activity.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/long-term-statistics/"
+    },
+    {
+      "claim": "The optional Statistics graph card supports bar charts, day periods and change statistics. The example targets the daily increasing helper, not a falling rolling-window measurement.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/statistics-graph/"
+    },
+    {
+      "claim": "An unconnected Toggle helper supplies on/off values for a harmless rehearsal without sending device commands. Expected six-minute accumulation is about 0.10 hours, with off-time excluded.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "The States tool can inspect actual stored values; using Set state is not a physical-device operation or proof of a successful device command.",
+      "sourceUrl": "https://www.home-assistant.io/docs/tools/dev-tools/"
+    },
+    {
+      "claim": "Hours represent duration, not electrical energy, current or power. No conversion to kWh or Energy Dashboard eligibility is claimed for the runtime sensor.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/sensor/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-database-too-large-recorder-purge/",
+      "section": "Do Not Confuse Raw History With Long-Term Statistics",
+      "readerReason": "A reader considering shorter retention may next need a concrete example of daily device on-time that depends on recorded states and a separate explanation of future statistical summaries. Suggest a contextual link for a separately reviewed navigation task; do not alter the existing guide in this run."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440x1100: readable two-line title, visible October 11 date and Tara Home byline, loaded unique responsive WebP hero, four-bullet TLDR immediately after hero, centered Avenir body and readable worked-example table. Document width equals viewport. Both library URLs return 200, show the new card first with working image and correct date, and their ItemList positions are sequential. Legacy .html redirect reaches the canonical path. Screenshots saved in the runner's external artifacts directory.",
+    "mobile": "Chromium at 390x844: title wraps within the page, hero loads, text and code remain readable, and document width stays 390px. Tables are confined to 344px scrollable regions with keyboard focus and visible swipe guidance. Scrolling the worked-example table exposes its running-total column without moving the page sideways; tested scrollLeft reached 416px. Both library cards were also checked at 390px, with readable title/date and no page overflow. Screenshots saved outside the website root."
+  }
+}
