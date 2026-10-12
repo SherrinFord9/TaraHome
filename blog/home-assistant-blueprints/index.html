@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Blueprints: Use, Edit, and Update Safely</title>
+    <meta name="description" content="Use Home Assistant blueprints with a one-lamp walkthrough. Choose inputs or Take control, verify the behavior, and update shared routines carefully." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-blueprints/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-blueprints/" />
+    <meta property="og:title" content="Home Assistant Blueprints: Use, Edit, and Update Safely" />
+    <meta property="og:description" content="Use Home Assistant blueprints with a one-lamp walkthrough. Choose inputs or Take control, verify the behavior, and update shared routines carefully." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-blueprints/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Blueprints: Use, Edit, and Update Safely" />
+    <meta name="twitter:description" content="Use Home Assistant blueprints with a one-lamp walkthrough. Choose inputs or Take control, verify the behavior, and update shared routines carefully." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-blueprints/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-blueprints/#blogposting",
+      "headline": "Home Assistant Blueprints: Use, Edit, and Update Safely",
+      "description": "Use Home Assistant blueprints with a one-lamp walkthrough. Choose inputs or Take control, verify the behavior, and update shared routines carefully.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-blueprints/cover.png",
+      "datePublished": "2026-10-12",
+      "dateModified": "2026-10-12",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-blueprints/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/docs/automation/using_blueprints/",
+        "https://www.home-assistant.io/docs/blueprint/",
+        "https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/automation/blueprints/motion_light.yaml",
+        "https://www.home-assistant.io/docs/blueprint/schema/",
+        "https://www.home-assistant.io/docs/blueprint/selectors/",
+        "https://www.home-assistant.io/docs/automation/testing/",
+        "https://www.home-assistant.io/docs/automation/troubleshooting/",
+        "https://www.home-assistant.io/blog/2023/12/06/release-202312/#re-import-blueprints",
+        "https://www.home-assistant.io/docs/automation/modes/",
+        "https://www.home-assistant.io/docs/blueprint/tutorial/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Blueprints: Use, Edit, and Update Safely",
+          "item": "https://tarahome.ai/blog/home-assistant-blueprints/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does a blueprint make a cloud device local?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It defines a routine, not a new connection to the device. Check the integration used by each sensor and action. Downloading instructions locally does not remove a vendor login or cloud dependency."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is my lamp missing from the Light picker?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Check its entity type. This example selects lights; a plug may appear as a switch instead. Do not choose an unrelated entity just to complete the form. Confirm the blueprint’s accepted inputs and use a suitable lamp target."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use a blueprint for a very simple rule?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only if it makes the rule easier to understand and maintain. A small automation you can explain is a reasonable choice. Choose reuse when several rooms really share the same behavior, rather than adding options you do not need."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+      <header class="hero article-hero"><div>
+        <p class="article-meta"><span>Home Assistant setup</span><span><time datetime="2026-10-12">October 12, 2026</time></span><span>9 min read</span></p>
+        <h1>Home Assistant Blueprints: Use, Edit, and Update Safely</h1>
+        <p class="lede">Configure one useful routine, check what it really does, and keep shared blueprint updates from surprising other rooms.</p>
+        <p class="article-byline"><a href="/#about">By Tara Home</a></p>
+      </div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-blueprints/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-blueprints/cover-480.webp 480w, /assets/generated/blog/home-assistant-blueprints/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="An unlit desk lamp and a glowing hallway lamp in a warm home with dark-green door trim" loading="eager" /></figure></header>
+      <div class="article-body">
+        <aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+          <li><strong>Use a blueprint when its options fit your routine.</strong> It supplies reusable instructions; you choose your own devices and save an automation.</li>
+          <li><strong>Start with one nonessential lamp.</strong> Check the sensor and lamp separately, then test a real sensor change and the eventual switch-off.</li>
+          <li><strong>Edit inputs for ordinary adjustments.</strong> Use <em>Take control</em> only when you need to change the instructions themselves; that automation then stops following the blueprint.</li>
+          <li><strong>Review updates before re-importing.</strong> Replacing a shared blueprint can affect every automation using it. A successful import does not prove that your routines still work.</li>
+        </ul></aside>
+        <h2 id="answer">Use the blueprint as a starting point</h2>
+        <p><strong>Home Assistant blueprints</strong> are reusable configurations with blanks for your household’s choices. For an automation blueprint, those choices might be a motion sensor, a lamp and a waiting time. Importing the blueprint makes it available; creating and saving an automation with those inputs gives you a routine that can run.</p>
+        <p>Choose a blueprint when its advertised behavior and options match your goal. If you only need to select another lamp or change a duration, keep the connection to the blueprint. If you need an extra rule that it does not offer, choose a better-fitting blueprint or convert your configured automation with <strong>Take control</strong>.</p>
+        <p>One definition can supply several separately configured automations. Changing one routine’s lamp input does not change the others, but replacing their common definition can. Home Assistant’s <a href="https://www.home-assistant.io/docs/blueprint/">blueprint introduction</a> explains this inheritance.</p>
+        <p class="research-method">Researched from Home Assistant documentation and the 2026.10.1 motion-light blueprint source on October 12, 2026. The walkthrough is an illustrative configuration and expected-behavior exercise, not a Tara hardware test. Menu wording and installed blueprint versions can differ. The cover is an AI-generated editorial illustration.</p>
+
+        <h2 id="prerequisites">1. Check what the blueprint requires</h2>
+        <p>Before importing, read its description, required Home Assistant version and recent change notes. Check the exact device model and connection method when those are specified. A remote-control blueprint written for Zigbee2MQTT is not automatically suitable for the same remote connected through ZHA.</p>
+        <p>An <strong>entity</strong> is one named control or reading inside Home Assistant. A blueprint’s selection fields can filter entities by type, device class or integration. An absent device in a picker is a reason to check those requirements before re-pairing anything. The <a href="https://www.home-assistant.io/docs/blueprint/schema/">schema reference</a> describes minimum versions and inputs; the <a href="https://www.home-assistant.io/docs/blueprint/selectors/">selector reference</a> explains the filters.</p>
+        <p>Blueprint support is built in. The example below needs no HACS download, extra app or paid license. A particular community blueprint may require additional integrations or helpers; those are separate prerequisites. See <a href="/blog/home-assistant-hacs-vs-apps/">HACS versus Apps and integrations</a> if its installation instructions mix these terms.</p>
+        <p>Read the actions before enabling a community routine. For a first exercise, exclude locks, alarms, heaters, water valves and essential lighting. A friendly configuration form is not a guarantee that the underlying actions are appropriate for your home.</p>
+
+        <h2 id="import">2. Import once, then create the routine</h2>
+        <ol>
+          <li>Open <strong>Settings → Automations &amp; scenes → Blueprints</strong>.</li>
+          <li>For a community blueprint, choose <strong>Import Blueprint</strong>, paste its supported forum, GitHub or GitHub Gist URL, then select <strong>Preview</strong>. Check the displayed identity before completing the import.</li>
+          <li>Choose <strong>Create automation</strong> for the blueprint, fill its inputs, give the routine a specific name and save.</li>
+        </ol>
+        <p>If <strong>Motion-activated Light</strong> is already listed, use it directly for the exercise below. If absent, the <a href="https://www.home-assistant.io/docs/automation/using_blueprints/">official importing instructions</a> provide a practice link. That link uses Home Assistant’s development branch, so compare its requirements with your installed release before importing.</p>
+
+        <h2 id="example">3. Work through one lamp before adding rooms</h2>
+        <p>Suppose a desk lamp should turn on when the study sensor detects someone, then turn off after the sensor clears plus a short delay. Use a lamp that is already exposed as a <code>light.</code> entity and responds to its normal Home Assistant control. Keep another light available so the test cannot leave someone in darkness.</p>
+        <p>First watch the sensor change between clear and detected, and operate the lamp manually. If either check fails, fix that connection before adding the blueprint. Temporarily pause only other nonessential routines that control this lamp, noting which ones to restore.</p>
+        <p class="table-hint">On a phone, swipe the table sideways.</p>
+        <div class="comparison-table" role="region" aria-label="Practice blueprint inputs" tabindex="0"><table><thead><tr><th scope="col">Field</th><th scope="col">Example choice</th><th scope="col">What to check</th></tr></thead><tbody>
+          <tr><td>Automation name</td><td>Study lamp — blueprint practice</td><td>A name you can find again without confusing it with a permanent routine.</td></tr>
+          <tr><td>Motion Sensor</td><td>Your study motion or occupancy entity</td><td>It actually changes between clear and detected in Home Assistant.</td></tr>
+          <tr><td>Light</td><td>Only the desk lamp</td><td>Select its individual entity, not the whole room.</td></tr>
+          <tr><td>Wait time</td><td>30 seconds for practice</td><td>This is an example setting, not a recommended timeout for every room.</td></tr>
+        </tbody></table></div>
+        <p>The <a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/automation/blueprints/motion_light.yaml">2026.10.1 implementation</a> accepts motion or occupancy binary sensors and light targets. It starts on a clear-to-detected change, turns on the lamp, waits for the sensor to clear, waits the selected seconds, then turns the lamp off.</p>
+        <p><strong>Time from the reported clear state.</strong> If, in a hypothetical run, detection starts at 10:00:00 and the sensor clears at 10:00:45, a 30-second setting makes the turn-off command due around 10:01:15, assuming no new detection or interruption. Those timestamps are a worked example, not measured response times.</p>
+        <p>This basic version has no daylight restriction, brightness setting or manual-override input. It can turn off a lamp that somebody had already switched on. Use it to learn the workflow; for a finished room routine, decide how <a href="/blog/home-assistant-lights-only-when-dark/">lighting should respond only when it is dark</a> and how <a href="/blog/home-assistant-automation-manual-override/">manual choices should pause automation</a>.</p>
+
+        <h2 id="verify">4. Verify the trigger and the ending</h2>
+        <p>Enable the practice routine when it is safe to change the lamp. Start with the sensor clear, then walk into its detection area. Use the following expectations to check more than whether the light briefly comes on.</p>
+        <p class="table-hint">On a phone, swipe the table sideways to reach the checks in the last column.</p>
+        <div class="comparison-table" role="region" aria-label="Blueprint verification and troubleshooting" tabindex="0"><table><thead><tr><th scope="col">Try this</th><th scope="col">Expected result</th><th scope="col">If it differs</th></tr></thead><tbody>
+          <tr><td>Cause a new clear-to-detected change</td><td>Only the selected lamp turns on.</td><td>Check the chosen sensor, enabled automation and exact light target.</td></tr>
+          <tr><td>Leave the area; watch for the sensor to report clear</td><td>The lamp stays on for the additional 30 seconds, then receives Off.</td><td>If the sensor still reports detected, the extra delay has not started.</td></tr>
+          <tr><td>After clear, cause another detection during the delay</td><td>The old run is replaced. Switch-off waits for another clear report and the full delay.</td><td>Check the actual sensor transitions and installed blueprint version.</td></tr>
+          <tr><td>Finish the exercise</td><td>Disable the practice routine, restore the lamp and resume any paused routines.</td><td>Check that a duplicate practice automation was not left enabled.</td></tr>
+        </tbody></table></div>
+        <p>The repeated-detection behavior follows this blueprint’s <code>restart</code> mode. Other blueprints can behave differently; <a href="https://www.home-assistant.io/docs/automation/modes/">automation modes</a> govern overlapping runs.</p>
+        <p>Open the automation’s <strong>Traces</strong> view to see which step ran or waited. <strong>Run actions</strong> skips the normal triggers and top-level conditions, so it does not establish that real motion starts the routine. Home Assistant’s <a href="https://www.home-assistant.io/docs/automation/testing/">testing guide</a> explains that distinction.</p>
+        <p>A Home Assistant restart interrupts an in-progress wait or delay; this example does not restore its countdown. Keep the ordinary lamp control usable. For a routine that needs a deadline to survive restarts, use the separate <a href="/blog/home-assistant-timer-survive-restart/">timer recovery guide</a>. See the official <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">troubleshooting guide</a> for disabled routines and failed actions.</p>
+
+        <h2 id="edit">5. Choose inputs or Take control</h2>
+        <p>For a longer wait or a different lamp, reopen the saved automation and change its inputs. Give a second room its own automation from the same blueprint. Select that room’s sensor and lamp explicitly; do not assume a duplicated name changed the targets.</p>
+        <p>For behavior the form cannot express, open the configured automation’s menu and choose <strong>Take control</strong>. Review the preview before confirming. This turns that routine into an ordinary editable automation; it no longer inherits blueprint changes. There is no automatic conversion back. The <a href="https://www.home-assistant.io/docs/automation/using_blueprints/#editing-an-imported-blueprint">editing instructions</a> describe the conversion.</p>
+        <p>For example, one study needs a special exception but five other rooms use the original behavior. Detaching just the study routine keeps that exception separate. Editing the shared blueprint file would instead change the definition used by the remaining rooms. Keep a note of the exception so future maintenance does not erase its purpose.</p>
+
+        <h2 id="update">6. Update the shared definition deliberately</h2>
+        <p>A normal imported blueprint is a local copy; do not assume it follows every change published by its author. The built-in <strong>Re-import blueprint</strong> command downloads a replacement. Home Assistant introduced that workflow in <a href="https://www.home-assistant.io/blog/2023/12/06/release-202312/#re-import-blueprints">2023.12</a>, and the current usage documentation warns that incompatible changes can break dependent automations.</p>
+        <ol>
+          <li><strong>List the affected routines.</strong> Record their inputs and retain the known-good blueprint file before replacing it. A record of inputs alone does not preserve the old instructions. In the automation’s menu, <strong>Edit in YAML</strong> opens its text configuration. The <code>path</code> entry under <code>use_blueprint</code> identifies its file beneath <code>blueprints/automation/</code> in your configuration directory. Use your existing configuration-file access to copy it somewhere safe. If you cannot preserve that file, defer the replacement.</li>
+          <li><strong>Read what changed.</strong> Check renamed or newly required inputs, minimum versions, altered defaults and changed actions. For an essential routine, postpone the update until you have a safe maintenance plan.</li>
+          <li><strong>Choose a quiet maintenance period.</strong> Disable affected nonessential routines while checking the replacement. Updating the shared definition is not an isolated test of one room.</li>
+          <li><strong>Re-import from the blueprint’s menu.</strong> Inspect each dependent automation, correct its inputs if necessary, then re-enable and repeat its harmless acceptance test one at a time.</li>
+        </ol>
+        <p>If a lighting routine fails after the update, leave it disabled and check the reported error against the changed input requirements. To undo this file replacement, restore your saved blueprint at the same path, restore recorded inputs if you changed them, reload automations and repeat the lamp check. The <a href="https://www.home-assistant.io/docs/blueprint/tutorial/">blueprint tutorial</a> explains file locations and references.</p>
+        <p>Dependent automations pick up the changed definition when reloaded. If you edited the file manually, reload automations as described in the <a href="https://www.home-assistant.io/docs/blueprint/">official introduction</a>. Disabling one routine does not give it a private version of the blueprint. A detached automation, by contrast, needs its own fixes because it no longer receives the shared changes.</p>
+
+        <h2 id="faq">Common questions</h2>
+        <h3>Does a blueprint make a cloud device local?</h3>
+        <p>No. It defines a routine, not a new connection to the device. Check the integration used by each sensor and action. Downloading instructions locally does not remove a vendor login or cloud dependency.</p>
+        <h3>Why is my lamp missing from the Light picker?</h3>
+        <p>Check its entity type. This example selects lights; a plug may appear as a switch instead. Do not choose an unrelated entity just to complete the form. Confirm the blueprint’s accepted inputs and use a suitable lamp target.</p>
+        <h3>Should I use a blueprint for a very simple rule?</h3>
+        <p>Only if it makes the rule easier to understand and maintain. A small automation you can explain is a reasonable choice. Choose reuse when several rooms really share the same behavior, rather than adding options you do not need.</p>
+        <p>If you want help assembling and handing over understandable routines, Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> is the relevant service path. Start with a clear description of what each room should do and what a person’s manual adjustment should mean.</p>
+      </div>
+      <section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid">
+        <div><h3>Blueprint setup and maintenance</h3><ul>
+          <li><a href="https://www.home-assistant.io/docs/blueprint/">About blueprints and shared definitions</a></li>
+          <li><a href="https://www.home-assistant.io/docs/automation/using_blueprints/">Importing, editing and re-importing</a></li>
+          <li><a href="https://www.home-assistant.io/docs/blueprint/schema/">Blueprint inputs and version requirements</a></li>
+          <li><a href="https://www.home-assistant.io/docs/blueprint/selectors/">Selection fields and filters</a></li>
+          <li><a href="https://www.home-assistant.io/docs/blueprint/tutorial/">Blueprint files and automation references</a></li>
+          <li><a href="https://www.home-assistant.io/blog/2023/12/06/release-202312/#re-import-blueprints">Re-import feature introduction</a></li>
+        </ul></div>
+        <div><h3>Example behavior and verification</h3><ul>
+          <li><a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/automation/blueprints/motion_light.yaml">Motion-light source, Home Assistant 2026.10.1</a></li>
+          <li><a href="https://www.home-assistant.io/docs/automation/modes/">Automation execution modes</a></li>
+          <li><a href="https://www.home-assistant.io/docs/automation/testing/">Testing and traces</a></li>
+          <li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Automation troubleshooting</a></li>
+        </ul></div>
+      </div></section>
+      <section class="block article-cta"><p class="kicker">Plan your home</p><h2>Start with the routines you need</h2><p>Choose your rooms and everyday controls to begin a smart home plan.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+    </article></main>
+    <footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+  </body>
+</html>
