@@ -1,0 +1,67 @@
+{
+  "slug": "home-assistant-mold-indicator",
+  "action": "new",
+  "publicationDate": "2026-10-13",
+  "verdict": "PASS",
+  "readerQuestion": "How do I set up and calibrate Home Assistant’s Mold Indicator, and what does its percentage actually tell me about a cold window or wall?",
+  "directAnswer": "Create the built-in helper from one room’s temperature and humidity, outdoor temperature and a factor calculated from a simultaneous surface measurement. Start with a dashboard display and inspect estimated_critical_temp. The percentage is estimated surface relative humidity, not mold probability or detection; visible moisture and stale inputs need separate attention.",
+  "originalContribution": "Sections #calibrate, #worked-example and #verify provide a Celsius/Fahrenheit calibration worksheet, a five-row sensitivity comparison and a harmless attribute check. With 20°C indoors and 0°C outdoors, a 12.5°C surface gives factor 1.6; at 50% room humidity the helper reports 80%, versus 50% with factor 1. A second table in #troubleshooting maps five concrete symptoms to checks and next steps. The five displayed outputs were verified by executing the unchanged dew-point and mold calculation methods extracted from official Core 2026.10.1 source, with constants/logging stubbed; this is an arithmetic verification, not a running Home Assistant installation test.",
+  "limitations": "Documentation and source-code research only. No sensor accuracy, actual surface temperatures, building condition, hardware compatibility or Home Assistant installation behavior was measured. Calibration applies to the chosen spot and conditions; a plausible calculation cannot establish absence of mold. Screenshots show the local article and library, not a tested Home Assistant setup. The unique cover is disclosed as AI-generated. Publication, live deployment and indexing are left to the runner and are not claimed here.",
+  "proofreadFixes": "The first measurement paragraph was too vague about the required instrument. Added a surface-contact thermometer/probe example, time to settle, and primary-source infrared material/distance limitations; clarified that a permanent surface sensor is unnecessary for calibration. Corrected an accidental self-link created while adapting the page shell so the whole-home average reference reaches its existing owner. Final automated proofreading verified four direct TLDR bullets, the measured-factor recommendation in the opening, definitions of helper/entity/relative humidity, all five worked-example outputs, Celsius/Fahrenheit consistency, current selector prerequisites, the difference between unavailable and stale input, and a read-only verification step. Confirmed room-humidity guidance is not presented as a surface-humidity alarm threshold. Visible research-method note and Tara Home credit are present; no human/expert review or hardware testing is claimed. Final desktop/mobile visual inspection found no remaining layout defect.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Mold Indicator estimates relative humidity near a cold surface from two temperatures, room humidity and a calibration factor; its percentage is not a probability of mold or evidence of existing growth.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/mold_indicator/"
+    },
+    {
+      "claim": "Calibration uses simultaneous indoor, outdoor and surface temperature measurements with a significant indoor/outdoor difference. The factor is (indoor − outdoor)/(surface − outdoor); using consistent Celsius or Fahrenheit gives the same factor. Zero denominator and small temperature separation make the example unusable or sensitive to error.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/mold_indicator/#calibration"
+    },
+    {
+      "claim": "Core 2026.10.1 helper selectors require sensor entities with temperature/humidity device classes; weather entities are not selectable. The factor is numeric, zero is rejected, and current options include the input selections.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/mold_indicator/config_flow.py"
+    },
+    {
+      "claim": "The implementation converts supported temperature units, requires humidity in % within 0–100, clears output for missing/invalid inputs, and does not impose a freshness timeout on otherwise numeric readings. A missing reading must not be replaced with zero.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/mold_indicator/sensor.py"
+    },
+    {
+      "claim": "The source calculates surface temperature as outdoor+(indoor−outdoor)/factor. Its integer, capped readings for the article’s five examples are 50, 80, 64, 96 and 100. Factor 1 makes estimated surface temperature equal indoor temperature. The estimated_critical_temp attribute is converted for the installation’s unit system.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/mold_indicator/sensor.py"
+    },
+    {
+      "claim": "The harmless verification inspects current state attributes without using Set state, changing physical conditions, operating appliances or deleting history. Current documentation calls the interface Settings → Tools; older layouts use Developer tools.",
+      "sourceUrl": "https://www.home-assistant.io/docs/tools/dev-tools/"
+    },
+    {
+      "claim": "An Entities card can display the helper alongside its input entities so the household sees both the estimate and the measured readings.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/entities/"
+    },
+    {
+      "claim": "Infrared surface measurements depend on the target material and measurement distance; shiny surfaces can mislead. Measuring room air near a wall does not establish that wall’s surface temperature.",
+      "sourceUrl": "https://www.fluke.com/en-ca/learn/blog/temperature/how-to-get-great-results-with-an-infrared-thermometer"
+    },
+    {
+      "claim": "EPA room-air guidance is below 60% relative humidity, ideally 30–50% where possible. Condensation and moisture problems require attention independently of the helper, and fixing the moisture source matters. These room values are not prescribed as thresholds for the estimated surface percentage.",
+      "sourceUrl": "https://www.epa.gov/mold/brief-guide-mold-moisture-and-your-home"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-dehumidifier-automation/",
+      "section": "When the result looks wrong",
+      "readerReason": "A reader who sees condensation despite an ordinary room humidity reading can next learn how a colder surface changes relative humidity and how to calibrate that estimate. This is a suggestion for a separate reviewed navigation task."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-open-close-windows/",
+      "section": "Use dew point for the moisture check",
+      "readerReason": "After comparing indoor/outdoor moisture for ventilation, a reader may need to distinguish that decision from estimating humidity at a cold wall or window. Link to the calibration walkthrough only in that context, in a separate task."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS in Chromium at 1440×1000. Visually inspected title, hero, four-bullet TLDR, worked-example table and troubleshooting table. Centered body; loaded Tara Avenir with regular-weight headings; no overlap, horizontal page overflow or page errors. Responsive 1200px WebP loads. Both library cards appear first with the correct title/date and working image. FAQ schema matches visible answers; canonical and publication/modified dates are 2026-10-13; the .html redirect reaches the canonical article. Screenshots and browser-results.json saved under TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "PASS at 390×1000 and 320×1000. Visually inspected hero/title, calibration copy, source labels and library card. Title/nav wrap, text remains readable, the 480px WebP loads, and the page has no horizontal overflow. Both tables remain inside focusable scroll regions and keyboard ArrowRight scrolling was verified at each mobile width. Four TLDR bullets precede the article body. Screenshot artifacts are external to the website worktree."
+  }
+}

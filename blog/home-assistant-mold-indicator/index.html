@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Mold Indicator: Setup and Calibration</title>
+    <meta name="description" content="Set up Home Assistant Mold Indicator, calculate the calibration factor for a cold surface, and check what its humidity percentage actually means." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-mold-indicator/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-mold-indicator/" />
+    <meta property="og:title" content="Home Assistant Mold Indicator: Setup and Calibration" />
+    <meta property="og:description" content="Set up Home Assistant Mold Indicator, calculate the calibration factor for a cold surface, and check what its humidity percentage actually means." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-mold-indicator/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Mold Indicator: Setup and Calibration" />
+    <meta name="twitter:description" content="Set up Home Assistant Mold Indicator, calculate the calibration factor for a cold surface, and check what its humidity percentage actually means." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-mold-indicator/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-mold-indicator/#blogposting",
+      "headline": "Home Assistant Mold Indicator: Setup and Calibration",
+      "description": "Set up Home Assistant Mold Indicator, calculate the calibration factor for a cold surface, and check what its humidity percentage actually means.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-mold-indicator/cover.png",
+      "datePublished": "2026-10-13",
+      "dateModified": "2026-10-13",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-mold-indicator/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Mold Indicator: Setup and Calibration",
+          "item": "https://tarahome.ai/blog/home-assistant-mold-indicator/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-mold-indicator/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does 100% prove there is mold?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It means the model has reached its saturation limit near the estimated surface. The helper measures neither spores nor existing growth. Inspect the actual location and address moisture rather than treating the number as a diagnosis."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use one factor for every room?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not assume so. A factor describes the particular surface and temperature relationship you measured. Different windows, wall corners and rooms may need separate calibration. Recheck after changes that affect that relationship, rather than copying the same number throughout the house."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Home Assistant helpers</span><span><time datetime="2026-10-13">October 13, 2026</time></span><span>9 min read</span></p>
+<h1>Home Assistant Mold Indicator: Setup and Calibration</h1>
+<p class="lede">Estimate humidity at a cold window or wall, measure the calibration factor, and understand what the percentage can—and cannot—tell you.</p>
+<p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-mold-indicator/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-mold-indicator/cover-480.webp 480w, /assets/generated/blog/home-assistant-mold-indicator/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" loading="eager" fetchpriority="high" alt="Condensation along a cold window above a pale oak sill, with a dark-green curtain pulled aside" /></figure>
+</header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use the built-in Mold Indicator helper</strong> with room temperature, room humidity, outdoor temperature and a measured calibration factor. Start with a dashboard display.</li>
+<li><strong>Measure one cold surface before choosing the factor.</strong> Copying 1 or 2 from somebody else’s setup can give a misleading result for your window or wall.</li>
+<li><strong>The percentage estimates humidity near that surface.</strong> An 80% reading is not an 80% chance of mold, and the helper cannot detect existing mold.</li>
+<li><strong>Check the inputs alongside the result.</strong> Missing readings, stale weather data and the wrong room can undermine the estimate. Visible dampness needs attention even when the number looks reassuring.</li>
+</ul></aside>
+
+<h2 id="answer">Use it to watch one cold spot</h2>
+<p>The <strong>Home Assistant Mold Indicator</strong> is useful when you want to understand why a cold window or wall may be damp even though the room’s humidity seems ordinary. Set it up for one room and one measured cold spot, then compare its estimate with that spot’s actual condition. It needs no separate mold-detection device.</p>
+<p>A <em>helper</em> is a value stored or calculated inside Home Assistant. This helper estimates the temperature of a surface from indoor temperature, outdoor temperature and your calibration factor. It then estimates relative humidity there. Relative humidity describes how close air is to saturation at its current temperature; colder air near a surface can have a higher percentage than the warmer room air.</p>
+<p>For a first setup, choose a heated room with a cold outside-facing window or wall. The worked example below stays within that situation. Do not assume the same calibration describes a chilled pipe, a summer air-conditioned surface or every corner of the house. See the <a href="https://www.home-assistant.io/integrations/mold_indicator/">Mold Indicator documentation</a> for the underlying model.</p>
+<p class="research-method"><strong>Research method:</strong> researched from current Home Assistant documentation, Core 2026.10.1 source code and EPA moisture guidance on October 13, 2026. The numerical examples are calculations, not measurements from a Tara installation. We have not tested sensors or a building with this setup. The cover is an AI-generated household illustration.</p>
+
+<h2 id="inputs">1. Check the three live readings</h2>
+<p>You need an existing Home Assistant installation, access to create helpers, and these readings already working. An <em>entity</em> is Home Assistant’s named reading or control, such as <code>sensor.bedroom_temperature</code>.</p>
+<ul>
+<li><strong>Indoor temperature:</strong> the measured air temperature in the room you are checking, rather than a thermostat’s target temperature.</li>
+<li><strong>Indoor humidity:</strong> relative humidity from that same room, expressed as a percentage.</li>
+<li><strong>Outdoor temperature:</strong> an appropriate outside-air reading. Check what the source actually measures; a device’s internal temperature is not outside air temperature.</li>
+</ul>
+<p>The current <a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/mold_indicator/config_flow.py">helper selection form</a> requires <code>sensor.</code> entities classified as temperature or humidity. A <code>weather.</code> entity whose main state is “cloudy” will not appear as a temperature sensor. Use a suitable temperature sensor supplied by that integration, or create a correctly classified <a href="https://www.home-assistant.io/integrations/template/">Template sensor</a> from its temperature attribute. Preserve the actual unit and make missing data unavailable; do not turn a missing temperature into zero.</p>
+<p>Use one room’s readings. A <a href="/blog/home-assistant-average-temperature/">whole-home temperature average</a> answers a different question and can hide the cold bedroom you meant to check. The calculation happens inside Home Assistant, but weather-service inputs may still depend on internet access.</p>
+
+<h2 id="calibrate">2. Measure the calibration factor</h2>
+<p>In addition to those live readings, you need a way to measure the <strong>surface temperature</strong> of the cold spot during calibration. A room-air sensor sitting nearby does not establish the wall’s surface temperature. Use a surface-contact thermometer or probe suitable for the material, following its instructions and allowing the reading to settle. If you use a non-contact infrared thermometer, follow its surface and distance guidance: shiny materials can give misleading readings. <a href="https://www.fluke.com/en-ca/learn/blog/temperature/how-to-get-great-results-with-an-infrared-thermometer">Fluke’s measurement guidance</a> explains these limitations. You do not need to buy a permanent sensor for the surface just to calculate the factor.</p>
+<ol>
+<li>Choose the particular window-frame area or wall corner you want the helper to represent. Record the location so you can check the same spot again.</li>
+<li>Measure when there is a meaningful difference between indoors and outdoors. At the same time, note the surface temperature and the two temperature readings you will actually use in Home Assistant.</li>
+<li>Use the same scale for all three numbers: all Celsius or all Fahrenheit. Calculate the factor below.</li>
+</ol>
+<div class="callout"><p><strong>Calibration factor = (indoor − outdoor) ÷ (surface − outdoor)</strong></p><p>Example: room <strong>20°C</strong>, outdoors <strong>0°C</strong>, measured window-frame surface <strong>12.5°C</strong>.</p><p><strong>(20 − 0) ÷ (12.5 − 0) = 1.6</strong></p><p>The same temperatures in Fahrenheit give <strong>(68 − 32) ÷ (54.5 − 32) = 1.6</strong>. The factor itself has no temperature unit.</p></div>
+<p>These are hypothetical measurements for learning the calculation. Use your own measurements when configuring a real room. If the surface and outdoors have the same temperature, the denominator is zero and this calculation cannot give a usable factor. If all three temperatures are very close, small measurement errors can dominate the result; measure again under more suitable conditions.</p>
+<p>For this heated-room example, the surface sits between the outdoor and indoor temperatures, giving a factor above 1. A result outside that pattern is a reason to recheck the measurements and whether this example fits your situation, rather than forcing a convenient number. The <a href="https://www.home-assistant.io/integrations/mold_indicator/#calibration">official calibration instructions</a> specify simultaneous measurements and a significant temperature difference.</p>
+
+<h2 id="create">3. Create the helper</h2>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Select <strong>Mold Indicator</strong>.</li>
+<li>Name it for the location, for example <strong>Bedroom window surface humidity</strong>. Select the room temperature, room humidity and outdoor temperature entities you checked.</li>
+<li>Enter your measured factor as a number. For the worked example it is <strong>1.6</strong>; it is not the name of another sensor or a formula to paste into the field.</li>
+<li>Save it, then add the result and all three inputs to an <a href="https://www.home-assistant.io/dashboards/entities/">Entities card</a> on an editable dashboard.</li>
+</ol>
+<p>These steps follow the current documentation and Core 2026.10.1 form. Older releases can arrange the options differently. The current options form lets you revisit the selected inputs and factor, and rejects a zero factor. You do not need HACS or an extra app for this built-in helper.</p>
+
+<h2 id="worked-example">What an unmeasured factor changes</h2>
+<p>Keep the imaginary room at 20°C and outdoors at 0°C. The measured surface is 12.5°C, so the calibrated factor is 1.6. Now compare the outcomes below. The percentages were calculated using the <a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/mold_indicator/sensor.py">Core 2026.10.1 implementation</a>, which displays whole percentages and caps its result at 100.</p>
+<p>Calculated examples, not a sensor test. On a narrow screen, scroll the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Calibration and humidity worked examples" tabindex="0"><table>
+<thead><tr><th scope="col">Factor</th><th scope="col">Room humidity</th><th scope="col">Estimated surface temperature</th><th scope="col">Helper reading</th></tr></thead>
+<tbody>
+<tr><td>1, copied without measuring</td><td>50%</td><td>20°C</td><td>50%</td></tr>
+<tr><td>1.6, calculated for this example</td><td>50%</td><td>12.5°C</td><td>80%</td></tr>
+<tr><td>1.6</td><td>40%</td><td>12.5°C</td><td>64%</td></tr>
+<tr><td>1.6</td><td>60%</td><td>12.5°C</td><td>96%</td></tr>
+<tr><td>1.6</td><td>65%</td><td>12.5°C</td><td>100%, capped</td></tr>
+</tbody></table></div>
+<p>With factor 1, the formula treats the surface as being at room temperature. In this example, that hides the cold spot entirely. Factor 1 is a mathematical choice, not a universal default for an unknown room.</p>
+<p>The other rows keep the temperatures fixed and change only room humidity. They show why the same window may look fine one day and be at risk of condensation another day. They do not establish how much drying your own room needs, or how quickly mold will grow.</p>
+<p><strong>80% means estimated relative humidity near the surface.</strong> It does not mean 80% of the wall has mold or an 80% probability of growth. A capped 100% indicates the calculation has reached saturation; it is still an estimate, not an observation of water on the wall.</p>
+
+<h2 id="verify">4. Verify it without changing the room</h2>
+<p>Start with the dashboard display. Leave heaters, fans, humidifiers and window controls out of this first check.</p>
+<ol>
+<li>Read the two current temperatures and your saved factor. Calculate <strong>outdoor + (indoor − outdoor) ÷ factor</strong>.</li>
+<li>Open <strong>Settings → Tools → States</strong> and select the new sensor. Older layouts call this <strong>Developer tools → States</strong>. Inspect its <code>estimated_critical_temp</code> attribute—the extra value attached to the sensor—without using Set state.</li>
+<li>Compare the attribute with your calculation, using the same temperature scale. With the example’s 20°C, 0°C and factor 1.6, the expected estimate is <strong>12.5°C</strong>, or <strong>54.5°F</strong>. The attribute follows the installation’s temperature system; it is not always Celsius.</li>
+<li>Later, repeat the real surface measurement while noting the live inputs. Compare the estimated temperature with the measured surface temperature. If they differ substantially, investigate location, measurement method and calibration before adding a routine.</li>
+</ol>
+<p>The arithmetic check confirms the selected inputs and factor lead to the expected calculation. It cannot prove that the estimate matches your building. The <a href="https://www.home-assistant.io/docs/tools/dev-tools/">Tools documentation</a> explains state inspection; overwriting a real sensor’s state is unnecessary here.</p>
+
+<h2 id="troubleshooting">If the reading looks wrong</h2>
+<p>Use this order before changing your household routines.</p>
+<div class="comparison-table" role="region" aria-label="Mold Indicator troubleshooting decisions" tabindex="0"><table>
+<thead><tr><th scope="col">What you see</th><th scope="col">Check first</th><th scope="col">Next step</th></tr></thead><tbody>
+<tr><td>A source is missing from the selector</td><td>Is it a temperature/humidity sensor, or a weather entity, thermostat target or unclassified value?</td><td>Choose the correct measured sensor. For an attribute-derived template, set the proper device class, real unit and availability behavior.</td></tr>
+<tr><td>The result is unavailable</td><td>Are all three inputs numeric and available, with temperature units and humidity in %?</td><td>Restore or correct the input. Do not substitute zero merely to make the helper display a number.</td></tr>
+<tr><td>The result tracks room humidity almost exactly</td><td>Is the factor 1, or are the indoor/outdoor selections wrong?</td><td>Recheck the measured surface and factor. Similar readings can be legitimate; equality alone is not a defect.</td></tr>
+<tr><td>The number stays plausible after a source stops reporting</td><td>Is an old numeric value still present?</td><td>Check the source’s update behavior. A numeric value does not prove fresh data.</td></tr>
+<tr><td>There is condensation despite a low result</td><td>Is this the same surface and room you calibrated?</td><td>Address the visible moisture and investigate the mismatch. Do not lower the factor to make the display look better.</td></tr>
+</tbody></table></div>
+<p>In the current implementation, invalid or unavailable inputs prevent a valid result; a stale numeric input can still be used. For the distinction between a lost device and an unchanged reading, see the <a href="/blog/home-assistant-unavailable-device-notification/">unavailable-device notification guide</a>.</p>
+
+<h2 id="next-step">Decide what to do with the estimate</h2>
+<p>Tara’s recommendation is to observe one calibrated spot before automating equipment. Name the display “surface humidity estimate” and keep room humidity next to it so nobody mistakes it for a mold test.</p>
+<p>The <a href="https://www.epa.gov/mold/brief-guide-mold-moisture-and-your-home">EPA’s moisture guidance</a> recommends keeping room relative humidity below 60%, ideally 30–50% where possible. That is room-air guidance, not an alarm setting for the helper’s estimated surface humidity. Condensation, leaks or visible mold need attention regardless of a low software reading; fix the moisture problem and seek appropriate help when the cause or cleanup is unclear.</p>
+<p>If the next step is controlling an existing appliance, the <a href="/blog/home-assistant-dehumidifier-automation/">dehumidifier automation guide</a> explains native humidity controls, quiet hours and power-switching limitations. Do not connect this percentage directly to a plug and assume it supplies appliance protection.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Does 100% prove there is mold?</h3>
+<p>No. It means the model has reached its saturation limit near the estimated surface. The helper measures neither spores nor existing growth. Inspect the actual location and address moisture rather than treating the number as a diagnosis.</p>
+<h3>Can I use one factor for every room?</h3>
+<p>Do not assume so. A factor describes the particular surface and temperature relationship you measured. Different windows, wall corners and rooms may need separate calibration. Recheck after changes that affect that relationship, rather than copying the same number throughout the house.</p>
+<p>For planning room sensors and their everyday uses together, Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup guide</a> explains the broader setup path.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid">
+<div><h3>Home Assistant documentation</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/mold_indicator/">Mold Indicator setup and calibration</a></li>
+<li><a href="https://www.home-assistant.io/integrations/template/">Template sensors and availability</a></li>
+<li><a href="https://www.home-assistant.io/dashboards/entities/">Entities dashboard card</a></li>
+<li><a href="https://www.home-assistant.io/docs/tools/dev-tools/">Tools: inspect states and attributes</a></li>
+</ul></div><div><h3>Calculation and moisture guidance</h3><ul>
+<li><a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/mold_indicator/config_flow.py">Core 2026.10.1: helper configuration</a></li>
+<li><a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/components/mold_indicator/sensor.py">Core 2026.10.1: calculation and input handling</a></li>
+<li><a href="https://www.fluke.com/en-ca/learn/blog/temperature/how-to-get-great-results-with-an-infrared-thermometer">Fluke: infrared surface-measurement limitations</a></li>
+<li><a href="https://www.epa.gov/mold/brief-guide-mold-moisture-and-your-home">EPA: A Brief Guide to Mold, Moisture and Your Home</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Give each room reading a purpose</h2><p>Plan the sensors and household routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>
