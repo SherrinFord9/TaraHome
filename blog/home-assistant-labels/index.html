@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Labels: Organize and Target the Right Devices</title>
+    <meta name="description" content="Use Home Assistant labels alongside areas and categories, preview their members, and target selected lights without accidentally controlling the whole room." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-labels/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-labels/" />
+    <meta property="og:title" content="Home Assistant Labels: Organize and Target the Right Devices" />
+    <meta property="og:description" content="Use Home Assistant labels alongside areas and categories, preview their members, and target selected lights without accidentally controlling the whole room." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-labels/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Labels: Organize and Target the Right Devices" />
+    <meta name="twitter:description" content="Use Home Assistant labels alongside areas and categories, preview their members, and target selected lights without accidentally controlling the whole room." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-labels/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+
+      .article-body pre { background: #e9e5d7; border: 1px solid var(--line); border-radius: 14px; padding: 20px; overflow-x: auto; max-width: 100%; font-size: .94rem; line-height: 1.6; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body .comparison-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+      .article-body .table-hint { display: none; }
+      @media (max-width: 820px) { .article-body .table-hint { display: block; font-size: .92rem; margin-bottom: 8px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-labels/#blogposting",
+      "headline": "Home Assistant Labels: Organize and Target the Right Devices",
+      "description": "Use Home Assistant labels alongside areas and categories, preview their members, and target selected lights without accidentally controlling the whole room.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-labels/cover.png",
+      "datePublished": "2026-10-14",
+      "dateModified": "2026-10-14",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-labels/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Labels: Organize and Target the Right Devices",
+          "item": "https://tarahome.ai/blog/home-assistant-labels/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does a label automatically add a dashboard button?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It provides organization and a target for compatible actions. Add a control for the saved script if you want a button, or use a Light Group if you need a combined light entity."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can the same lamp have more than one label?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. A lamp could have both Evening lamps and Decorative lights. Review every action that uses either collection before adding it; one label does not cancel another."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does labeling a cloud device make it local?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Labels change how Home Assistant organizes and selects controls. The device still uses its existing integration and connection, including any internet dependency."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Home Assistant setup</span><span><time datetime="2026-10-14">October 14, 2026</time></span><span>10 min read</span></p>
+<h1>Home Assistant Labels: Organize and Target the Right Devices</h1><p class="lede">Keep rooms organized, select lights by purpose, and check exactly what a label will control before running an action.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-labels/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-labels/cover-480.webp 480w, /assets/generated/blog/home-assistant-labels/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Two matching green table lamps illuminate a living room and adjoining hall, with the living-room ceiling light off" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Keep areas for rooms; add labels for shared jobs.</strong> “Living room” describes a place. “Evening lamps” can select a few lights across several rooms.</li>
+<li><strong>Label individual controls when precision matters.</strong> Start with two non-critical lamps’ individual controls. Labeling a whole device or area can include more controls.</li>
+<li><strong>Select just the label for the first action.</strong> Adding a room to the same target does not mean “only labeled lights in this room”; it adds the room’s lights too.</li>
+<li><strong>Preview membership before running anything.</strong> Check the entity, device and area lists below, then test the two lamps. A label does not create a shared dimmer or change a device’s connection.</li>
+</ul></aside>
+
+<h2 id="short-answer">Use labels for a purpose that crosses rooms</h2>
+<p><strong>Home Assistant labels let you select things by purpose without moving them out of their rooms.</strong> Keep each device in its real area, then add a label to the particular controls that should share an action. For a first setup, label two lamps “Evening lamps” and target that label with a light-on action.</p>
+<p>An <strong>entity</strong> is one named control or reading, such as a lamp’s on/off control. A physical device may expose several entities. That distinction matters: labeling a two-channel device is broader than labeling just one of its light controls. Home Assistant’s <a href="https://www.home-assistant.io/docs/organizing/">organization guide</a> explains the relationship between devices, entities and areas.</p>
+<p>Use a category when you only want to tidy a settings list, such as putting lighting automations under one heading. Use a Light Group when you want one combined light control. Labels are useful when you want selected items to share an action while keeping their separate controls and room assignments.</p>
+<p>Start by writing down the intended members, apply a new label directly to those entities, inspect its membership, and only then run an action. You do not need to rename or re-pair working devices for this exercise.</p>
+<p class="research-method">Researched from current Home Assistant documentation and the Core 2026.10.1 target-resolution code on October 14, 2026. The household below is an illustrative configuration, not a tested Tara installation. The cover is an AI-generated illustration.</p>
+
+<h2 id="choose-tool">Choose the organization tool that fits the job</h2>
+<p class="table-hint">On a phone, swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Areas labels categories and groups compared" tabindex="0"><table>
+<thead><tr><th scope="col">What you need</th><th scope="col">Use</th><th scope="col">Example</th></tr></thead><tbody>
+<tr><td>A physical room</td><td>Area</td><td>Keep the reading lamp and ceiling light in Living room.</td></tr>
+<tr><td>A purpose shared by selected items</td><td>Label</td><td>Evening lamps includes the reading lamp and a hall lamp.</td></tr>
+<tr><td>A tidier automation list</td><td>Category</td><td>Put evening and bedtime routines under Lighting.</td></tr>
+<tr><td>One combined light control</td><td>Light Group helper</td><td>Give two lamps one on/off and brightness control, where supported.</td></tr>
+</tbody></table></div>
+<p>An entity can have multiple labels, but only one area. Categories belong to their particular settings table: a category on the automation list does not become a collection of lights. See <a href="https://www.home-assistant.io/docs/organizing/categories/">categories</a>. If your goal is one shared dimmer, follow the <a href="/blog/home-assistant-light-group-vs-area/">Light Group versus area guide</a> instead of expecting a label to create a new light entity.</p>
+
+<h2 id="membership">1. Write a small membership plan</h2>
+<p>Imagine this home. The owner wants the reading lamp and hall lamp on together in the evening, while the ceiling light stays independently controlled. These entity IDs are examples; use the IDs shown in your own installation.</p>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Two-room label membership plan" tabindex="0"><table>
+<thead><tr><th scope="col">Control</th><th scope="col">Area</th><th scope="col">Evening lamps label?</th></tr></thead><tbody>
+<tr><td><code>light.reading_lamp</code></td><td>Living room</td><td>Yes, on this entity</td></tr>
+<tr><td><code>light.hall_lamp</code></td><td>Hall</td><td>Yes, on this entity</td></tr>
+<tr><td><code>light.living_room_ceiling</code></td><td>Living room</td><td>No</td></tr>
+</tbody></table></div>
+<p>Check each lamp’s individual on/off control first. Use lamps that nobody depends on for a stairway, exit or other safety task, and keep their physical controls accessible. This walkthrough assumes both are already working, enabled, visible <code>light.</code> entities, with no other routine changing them during the test.</p>
+<p>A lamp on a smart plug may appear as <code>switch.</code> instead. A light action will not switch it just because you gave it the same label. The <a href="/blog/home-assistant-light-group-vs-area/">light-group guide</a> explains the optional Switch as X helper for a plug dedicated to a lamp; it does not give an ordinary plug dimming capability.</p>
+
+<h2 id="apply-label">2. Create the label and apply it to the two entities</h2>
+<ol>
+<li>Open <strong>Settings → Areas, labels &amp; zones → Labels</strong>. Choose <strong>Create label</strong>, name it <strong>Evening lamps</strong>, and save. Use a new, unused name for this exercise.</li>
+<li>Open <strong>Settings → Devices &amp; services → Entities</strong>. Find the two lamp controls from your plan.</li>
+<li>Enter selection mode, select those two rows, and choose <strong>Add label → Evening lamps</strong>. Keep their existing area assignments.</li>
+<li>Leave this new label off the devices themselves, their areas, and any other entities. You are deliberately making a small collection of individual controls.</li>
+</ol>
+<p>The official <a href="https://www.home-assistant.io/docs/organizing/labels/">label instructions</a> show the selection controls. Menu placement can vary with the installed release. The important choice is the <strong>Entities</strong> tab, not the similarly named device list.</p>
+
+<h2 id="preview">3. Preview the membership without changing a device</h2>
+<p>Open <strong>Settings → Tools → Template</strong>; older releases place Template under <strong>Developer tools</strong>. Paste this read-only check. A template is an expression that looks up information; these expressions do not send commands.</p>
+<pre><code>Label ID: {{ label_id('Evening lamps') }}
+Entities: {{ label_entities('Evening lamps') | sort | list }}
+Devices: {{ label_devices('Evening lamps') }}
+Areas: {{ label_areas('Evening lamps') }}</code></pre>
+<p>For the example, the entity list should contain exactly <code>light.hall_lamp</code> and <code>light.reading_lamp</code>. Both Devices and Areas should show an empty list, <code>[]</code>. Your label ID may be <code>evening_lamps</code>; copy the actual value rather than guessing it from the display name. If no ID appears, check the label name before continuing.</p>
+<p>The functions have deliberately different jobs: <a href="https://www.home-assistant.io/template-functions/label_id/">label_id</a> finds the internal identifier, <a href="https://www.home-assistant.io/template-functions/label_devices/">label_devices</a> lists directly labeled devices, and <a href="https://www.home-assistant.io/template-functions/label_areas/">label_areas</a> lists directly labeled areas.</p>
+<p><strong>An empty entity list does not prove a label action has no targets.</strong> <a href="https://www.home-assistant.io/template-functions/label_entities/">label_entities</a> lists only entities labeled directly. A label placed on a device or area can still reach its eligible entities when used as an action target. That is why this preview checks all three lists.</p>
+<p>If Devices or Areas is not empty, remove the practice label from those entries and check again. If Entities contains an unexpected control, remove the label from that entity. These changes remove the label assignment, not the device. A listed entity may still be unavailable or excluded from indirect targeting; the preview is a membership audit, not proof that a command will succeed.</p>
+
+<h2 id="first-action">4. Test a label-only action on the two lamps</h2>
+<p>Once the lists match, create a new script under <strong>Settings → Automations &amp; scenes → Scripts</strong>. A <a href="https://www.home-assistant.io/integrations/script/">script</a> is a saved sequence you can run yourself, so no schedule needs to start it during setup.</p>
+<ol>
+<li>Add a <strong>Turn on light</strong> action, whose YAML name is <code>light.turn_on</code>.</li>
+<li>Under Targets, select only the <strong>Evening lamps</strong> label. Remove any extra room, device or entity targets.</li>
+<li>Leave brightness and color options unset. Save the script as <strong>Evening lamps on</strong>.</li>
+<li>With both practice lamps off, run the script once. Both should turn on; the ceiling light should stay as it was. Observe the real lamps as well as their displayed states.</li>
+</ol>
+<p>This is a real light command. Run it at a convenient time with the household aware. Return each lamp to its previous state using its individual control after the test. The <a href="https://www.home-assistant.io/docs/scripts/perform-actions/">action documentation</a> explains targets and immediate execution.</p>
+<p>If you prefer the script’s YAML editor, this is the equivalent. Replace <code>evening_lamps</code> with the ID from the preview. YAML is the text form of the same settings.</p>
+<pre><code>alias: Evening lamps on
+mode: single
+sequence:
+  - action: light.turn_on
+    target:
+      label_id: evening_lamps</code></pre>
+<p>Only add this script to an existing evening routine after the supervised test. If you want different brightness levels for different lamps, a scene may fit better; the <a href="/blog/home-assistant-scenes-vs-scripts/">scenes versus scripts guide</a> explains that next decision.</p>
+
+<h2 id="combined-targets">5. Avoid the “room plus label” trap</h2>
+<p>In an action target, selecting an area and a label combines their members. It does not restrict the label to that area. For our three-light example, here is what a light-on action selects:</p>
+<p class="table-hint">Swipe the table sideways to compare all three outcomes.</p>
+<div class="comparison-table" role="region" aria-label="Label and area target outcomes" tabindex="0"><table>
+<thead><tr><th scope="col">Selected targets</th><th scope="col">Lights included</th><th scope="col">Consequence</th></tr></thead><tbody>
+<tr><td>Evening lamps label only</td><td>Reading lamp + hall lamp</td><td>The intended evening pair</td></tr>
+<tr><td>Living room area only</td><td>Reading lamp + ceiling</td><td>The room’s two lights</td></tr>
+<tr><td>Evening lamps label AND Living room area in the target picker</td><td>Reading lamp + hall lamp + ceiling</td><td>All three, not just the reading lamp</td></tr>
+</tbody></table></div>
+<p>This follows the additive target resolution in <a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/helpers/target.py">Home Assistant Core 2026.10.1</a>. Multiple selected labels also collect members of either label. For “evening lamps in the living room only,” choose the reading-lamp entity directly in this small example. A dedicated narrower label is another option if that subset will be reused.</p>
+<p>Similarly, labeling an entire multi-channel device can reach more than one eligible light control. Use an entity label for the single channel you intend. An action still applies only to supported entity types; a shared label does not turn a temperature reading into a switch.</p>
+
+<h2 id="troubleshooting">If the result is different from your plan</h2>
+<p class="table-hint">Swipe sideways to read every column.</p>
+<div class="comparison-table" role="region" aria-label="Label troubleshooting decisions" tabindex="0"><table>
+<thead><tr><th scope="col">What you see</th><th scope="col">Check first</th><th scope="col">Next step</th></tr></thead><tbody>
+<tr><td>No entities in the preview</td><td>Label spelling and where it was assigned</td><td>Check Devices and Areas too. Apply the practice label to the intended entity rows.</td></tr>
+<tr><td>The ceiling light changes too</td><td>An extra area target or label on the area/device</td><td>Remove the broad target or practice-label assignment; repeat the preview.</td></tr>
+<tr><td>One lamp does not respond</td><td>Its individual control and entity type</td><td>Confirm it works alone and is a usable <code>light.</code> entity before changing the script.</td></tr>
+<tr><td>A labeled item is listed but skipped</td><td>Availability, disabled status and visibility</td><td>Inspect that specific entity. Core 2026.10.1 excludes hidden entities from label-target expansion; do not unhide unrelated controls to fix one lamp.</td></tr>
+<tr><td>A newly added lamp joins the routine unexpectedly</td><td>Its label assignments</td><td>Remove the shared action label if it should not participate. Recheck the membership plan.</td></tr>
+</tbody></table></div>
+<p>Treat an action label like a list of things you have authorized a routine to control. Adding another member can change the next run without editing the script. If replacing a failed lamp, check the replacement’s entity type and label deliberately; the <a href="/blog/replace-home-assistant-device-without-rebuilding-automations/">device replacement guide</a> covers preserving other references.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Does a label automatically add a dashboard button?</h3>
+<p>No. It provides organization and a target for compatible actions. Add a control for the saved script if you want a button, or use a Light Group if you need a combined light entity.</p>
+<h3>Can the same lamp have more than one label?</h3>
+<p>Yes. A lamp could have both Evening lamps and Decorative lights. Review every action that uses either collection before adding it; one label does not cancel another.</p>
+<h3>Does labeling a cloud device make it local?</h3>
+<p>No. Labels change how Home Assistant organizes and selects controls. The device still uses its existing integration and connection, including any internet dependency.</p>
+<p>Our recommendation is to keep rooms accurate and add one purposeful label at a time. If you are planning a larger installation, Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> is the relevant starting point for agreeing on device names and everyday routines.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid">
+<div><h3>Organization and actions</h3><ul>
+<li><a href="https://www.home-assistant.io/docs/organizing/labels/">Create, apply and remove labels</a></li>
+<li><a href="https://www.home-assistant.io/docs/organizing/">Areas, labels, categories and groups</a></li>
+<li><a href="https://www.home-assistant.io/docs/organizing/categories/">Categories in settings lists</a></li>
+<li><a href="https://www.home-assistant.io/docs/scripts/perform-actions/">Choose and run action targets</a></li>
+</ul></div><div><h3>Checking membership</h3><ul>
+<li><a href="https://www.home-assistant.io/template-functions/label_entities/">Directly labeled entities</a></li>
+<li><a href="https://www.home-assistant.io/template-functions/label_devices/">Directly labeled devices</a></li>
+<li><a href="https://www.home-assistant.io/template-functions/label_areas/">Directly labeled areas</a></li>
+<li><a href="https://github.com/home-assistant/core/blob/2026.10.1/homeassistant/helpers/target.py">Target expansion in Core 2026.10.1</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Give each routine a clear job</h2><p>Plan the rooms, devices and shared controls that should work together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>
