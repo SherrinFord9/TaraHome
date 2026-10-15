@@ -1,0 +1,62 @@
+{
+  "slug": "home-assistant-tv-lights-automation",
+  "action": "new",
+  "publicationDate": "2026-10-15",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant dim a lamp when my TV starts playing, raise it on pause, and stop changing the room when the household does not want movie lighting?",
+  "directAnswer": "First observe the actual media-player states in every intended app. Use a visible TV lighting allowed toggle and a five-second cancellable settling delay, rehearse with persistent notifications, then connect one dimmable nonessential lamp. Android TV Remote alone does not report playback status; unreliable app states require a different source or manual lighting. The example uses fixed 15/45/65 percent levels rather than restoring a previous setting.",
+  "originalContribution": "Sections #observe, #preview and #rehearsal combine a playback-source decision table with complete preview YAML and a six-row household rehearsal. Section #lamp gives the exact action replacement after validation. Sixteen isolated Home Assistant Core 2026.10.1 checks exercised the published logic using simulated entities and recorded service calls: five main cases retained the original five-second delay, and the remaining state/action matrix used a 100ms delay only to shorten the checks. No hardware was connected. This verifies opt-in while already playing, quick-resume cancellation, deliberate pause, off-during-wait cancellation, ignored buffering/unknown/unavailable/on, recognized states, attribute-only suppression, fixed notification ID and numeric brightness targeting.",
+  "limitations": "Documentation research and isolated runtime checks do not establish physical TV, app or lamp compatibility, actual response latency, or installed-version UI availability. App state accuracy must be observed in the reader's home. Fixed brightness does not restore earlier lighting; permission must be turned off after watching. Older toggle-helper versions may restore previous permission after restart if the current startup option is absent. The generated cover illustrates a room and is not installation evidence. No human or expert review is claimed.",
+  "proofreadFixes": "Final automated plain-English review added explicit horizontal-scroll guidance beside the long YAML and the second table after mobile inspection. Updated the method note to describe the completed isolated Home Assistant checks and explicitly exclude physical-device testing. Verified that permission checks inside actions allow an off event to cancel the pending delay; moving that check to top-level conditions would change cancellation behavior. Confirmed that on/unknown/unavailable/buffering send no command, a recovered recognized state may run again when allowed, and Run actions does not prove the trigger. Confirmed the final light.turn_on step can illuminate an off lamp and that 65% is a fixed finish level. Retained the visible caveats rather than promising automatic previous-state restoration, movie detection, guaranteed timing or universal app support.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Media-player on means playback details are not known; playing, paused, idle, buffering, unavailable and unknown are distinct states. A power-only signal cannot drive a reliable play/pause rule.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/media_player/"
+    },
+    {
+      "claim": "Android TV Remote supplies remote/power control but not playback status. Google Cast can report supported app content; it also has power-state and app-support limits, so combining entries cannot invent missing information.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/androidtv_remote/"
+    },
+    {
+      "claim": "A state trigger with to:null excludes attribute-only updates. The isolated Core check confirmed a media_position-only update did not start this example.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "Restart mode cancels the earlier running sequence when a new eligible trigger arrives. Top-level conditions remain empty and permission is checked inside actions, allowing permission-off to cancel the waiting run. Already executed commands are not undone.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Toggle helpers normally restore previous state. Current documentation exposes More options / Each time Home Assistant starts / Turn off; changing this option does not change the current state. Article qualifies UI availability by installed version.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "persistent_notification.create is an in-frontend preview, and a fixed notification_id overwrites that notification. The example sends no lamp command before the explicit replacement step.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "light.turn_on with brightness_pct requests a percentage and can turn on an off lamp. The isolated replacement-action check recorded integer 15 and only light.tv_lamp as target; physical brightness was not measured.",
+      "sourceUrl": "https://www.home-assistant.io/actions/light.turn_on/"
+    },
+    {
+      "claim": "Run actions skips the real trigger and top-level condition evaluation, while condition steps inside actions still apply. The article requires actual remote-driven state changes for trigger verification.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/testing/"
+    },
+    {
+      "claim": "Reading States is harmless; editing a state does not control the underlying device but can trigger real automations. Readers are instructed to observe States and operate their normal remote.",
+      "sourceUrl": "https://www.home-assistant.io/docs/tools/dev-tools/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-scenes-vs-scripts/",
+      "section": "Keep the boundaries clear as you add more routines",
+      "readerReason": "A reader who understands scenes and scripts may next want a concrete media-triggered routine; the new guide explains choosing a usable TV playback signal and rehearsing its behavior. Suggestion only for a separate reviewed navigation task."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440×1000: title and byline readable, unique 1200px WebP cover loads, Tara Avenir retained, article body centered at 780px with balanced wide tables, and document width equals viewport. Inspected hero, TLDR, code and rehearsal table screenshots. Both library indexes contain the new card and valid unique JSON-LD entries; library desktop card visually inspected. Legacy .html navigation reaches the canonical path. All 11 unique external documentation links returned HTTP 200; local article links including /#about resolve.",
+    "mobile": "PASS at 390×844, plus overflow check at 360×800: title wraps naturally, 480px hero WebP loads, TLDR remains readable, and document width equals viewport. Tables and code scroll within focusable containers rather than widening the page; keyboard right-arrow moved the rehearsal table by 40px. Added adjacent scroll hints and inspected scrolled-table, code and source/footer screenshots. Mobile library card title/date/image fit. Screenshots and isolated-runtime test files are stored in TARAHOME_BLOG_ARTIFACTS outside the worktree."
+  }
+}
