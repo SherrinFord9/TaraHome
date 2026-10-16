@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Window-Open Heating: Setback and Resume</title>
+    <meta name="description" content="Set up Home Assistant window-open heating with a lower room target, a preview test, and a clear rule for resuming the current normal temperature." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-window-open-heating/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-window-open-heating/" />
+    <meta property="og:title" content="Home Assistant Window-Open Heating: Setback and Resume" />
+    <meta property="og:description" content="Set up Home Assistant window-open heating with a lower room target, a preview test, and a clear rule for resuming the current normal temperature." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-window-open-heating/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Window-Open Heating: Setback and Resume" />
+    <meta name="twitter:description" content="Set up Home Assistant window-open heating with a lower room target, a preview test, and a clear rule for resuming the current normal temperature." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-window-open-heating/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+
+      .article-body pre { background: #e9e5d7; border: 1px solid var(--line); border-radius: 14px; padding: 20px; overflow-x: auto; max-width: 100%; font-size: .94rem; line-height: 1.6; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body pre:focus-visible, .article-body .comparison-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+      .article-body .table-hint { display: none; }
+      @media (max-width: 820px) { .article-body .table-hint { display: block; font-size: .92rem; margin-bottom: 8px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-window-open-heating/#blogposting",
+      "headline": "Home Assistant Window-Open Heating: Setback and Resume",
+      "description": "Set up Home Assistant window-open heating with a lower room target, a preview test, and a clear rule for resuming the current normal temperature.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-window-open-heating/cover.png",
+      "datePublished": "2026-10-16",
+      "dateModified": "2026-10-16",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-window-open-heating/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Window-Open Heating: Setback and Resume",
+          "item": "https://tarahome.ai/blog/home-assistant-window-open-heating/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I use this for two windows in the same room?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not duplicate the automation for the same thermostat: the closed window could restore heat while the other stays open. A multi-window version needs one combined decision: lower the target if any valid contact is open, resume only when all are closed, and handle missing contacts explicitly. The supplied example is for one contact."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why not simply turn the thermostat off?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Off behavior, frost protection and restart behavior depend on the equipment. This recipe leaves the operating mode alone and changes a supported target. It is not a universal replacement for the thermostat’s own window feature, and it does not promise to stop all heat."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The automation logic runs in Home Assistant. Both the contact and thermostat integrations must also work locally for the complete routine to keep working during an internet outage. Home Assistant itself must remain running."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Practical comfort</span><span><time datetime="2026-10-16">October 16, 2026</time></span><span>11 min read</span></p>
+<h1>Home Assistant Window-Open Heating: Setback and Resume</h1><p class="lede">Lower one room’s heating target while a window is open. Preview the changes, then resume the current normal temperature when it closes.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-window-open-heating/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-window-open-heating/cover-480.webp 480w, /assets/generated/blog/home-assistant-window-open-heating/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="An ajar casement window above a white radiator, with an oak sill and dark-green curtain" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use one room controller:</strong> choose a lower temperature while its window is open, then return to the current normal target after it closes. Keep an existing thermostat window feature if it already does this reliably.</li>
+<li><strong>Start with preview on:</strong> the example writes a notification inside Home Assistant. Rehearse with a pretend window before allowing thermostat commands.</li>
+<li><strong>Keep heating protections:</strong> this changes a target in Heat mode; it does not cut power or guarantee that heating stops. Choose the lower target for your home and equipment.</li>
+<li><strong>Make manual control explicit:</strong> turn the control toggle off before adjusting the thermostat directly. Pausing leaves the last target in place; it does not restore anything.</li>
+<li><strong>Plan for failure:</strong> an unavailable contact stops new commands, and Home Assistant cannot restore a target while it is down. Keep normal thermostat controls available.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant documentation on October 16, 2026. The worked timeline is illustrative; no thermostat, heating installation or live Home Assistant system was tested. Menu labels may differ on older releases. The cover is generated editorial imagery.</p>
+
+<h2 id="answer">Use a lower target, with a clear way back</h2>
+<p>A Home Assistant window-open heating routine needs a rule for both opening and closing. For one independently controlled room, a useful starting point is <strong>two editable targets: normal and window-open</strong>. After the contact has stayed open for two minutes, select the lower target. After it has stayed closed for two minutes, select the current normal target.</p>
+<p>This example deliberately keeps the thermostat in <strong>Heat</strong> mode. A lower target is called a <em>setback</em>. It may reduce the request for heat, but the thermostat can still heat if the room falls below that target. Heat mode itself does not mean the equipment is actively heating; Home Assistant reports those separately in its <a href="https://www.home-assistant.io/integrations/climate/">Climate documentation</a>.</p>
+<p>Use this only where the thermostat controls the room you intend. A hallway thermostat may govern the whole house. If the equipment manufacturer discourages short setbacks, or you cannot confirm suitable limits, use a window reminder instead. Keep frost protection and equipment cycling protections in the thermostat or heating controller.</p>
+
+<h2 id="prerequisites">1. Check the room, contact and thermostat</h2>
+<p>An <em>entity</em> is a named value or control in Home Assistant. You need one existing window-contact entity and one working room thermostat entity. This is a setup guide for equipment you already have, not a compatibility guarantee.</p>
+<ol>
+<li>Inspect the contact in <strong>Settings → Tools → States</strong> (Developer tools → States on older versions). A window contact normally stores <code>on</code> for open and <code>off</code> for closed. Confirm the mapping from normal use; <code>unknown</code> and <code>unavailable</code> are neither. See the <a href="https://www.home-assistant.io/integrations/binary_sensor/">binary-sensor states</a>.</li>
+<li>Inspect the thermostat’s mode, target, units and limits. This recipe requires <code>heat</code>, a single numeric <code>temperature</code> target, and numeric <code>min_temp</code>/<code>max_temp</code> attributes. It does not handle Auto, cooling, or a Heat/Cool target range. The <a href="https://contributors.home-assistant.io/core/entities/climate/">climate entity reference</a> explains these capabilities.</li>
+<li>Use a thermostat whose target adjustment already works in Home Assistant. The <a href="https://www.home-assistant.io/actions/climate.set_temperature/">set-temperature action</a> is model-dependent. This example omits <code>hvac_mode</code>, so it does not request a change of mode.</li>
+<li>Identify every schedule or automation that writes that target. Before live use, consolidate those writes. Do not run this alongside a vendor schedule or another automation that repeatedly overwrites the thermostat.</li>
+</ol>
+<p>For a weekly plan, the existing <a href="/blog/home-assistant-heating-schedule/">Home Assistant heating-schedule guide</a> explains the timetable. Here, a schedule should update the <em>normal-temperature helper</em>, leaving this one automation to select the final thermostat target.</p>
+
+<h2 id="helpers">2. Add the four household controls</h2>
+<p>Under <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>, create two Toggle helpers and two Number helpers. A helper stores a setting; creating it does not control heating. Put all four on an editable dashboard beside the thermostat.</p>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Window heating helper settings" tabindex="0"><table><thead><tr><th scope="col">Helper</th><th scope="col">Example entity ID</th><th scope="col">Starting setting</th></tr></thead><tbody>
+<tr><td>Office window control</td><td><code>input_boolean.office_window_control</code></td><td>Off until the configuration is ready; on allows evaluation.</td></tr>
+<tr><td>Office window preview</td><td><code>input_boolean.office_window_preview</code></td><td>On. Keep it on throughout the rehearsal.</td></tr>
+<tr><td>Office normal temperature</td><td><code>input_number.office_normal_temperature</code></td><td>Your normal room target.</td></tr>
+<tr><td>Office window temperature</td><td><code>input_number.office_window_temperature</code></td><td>An agreed lower target suitable for the room and equipment.</td></tr>
+</tbody></table></div>
+<p>Set both Number helpers to the thermostat’s displayed unit, supported step and an appropriate bounded range. <strong>The code does not convert Celsius to Fahrenheit.</strong> A unit label alone does not convert a number. Set the actual values before enabling the routine. The example timeline uses 20°C and 16°C only to explain the logic; these are not universal safe temperatures.</p>
+<p>Keep the Toggle helpers’ startup behavior at <strong>Restore previous state</strong>. If your version offers a startup choice, check it explicitly. Home Assistant documents the <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle settings</a> and <a href="https://www.home-assistant.io/integrations/input_number/">Number settings and restoration</a>. Verify each actual entity ID; the names above are examples.</p>
+
+<h2 id="automation">3. Add one automation, with preview still on</h2>
+<p>Go to <strong>Settings → Automations &amp; scenes → Create automation → Create new automation</strong>, open the menu, and choose <strong>Edit in YAML</strong>. Replace the editor contents with this single automation. Replace every example entity ID, including the dotted contact reference in the stability check.</p>
+<p>It checks the window on changes, at startup, and once a minute. The contact must have held its current state for at least 120 seconds. The minute check means the decision is normally made on the first check after that threshold; this is not a measured response-time promise. There is no long-running wait to resume after a restart. Home Assistant’s <a href="https://www.home-assistant.io/docs/automation/trigger/">trigger documentation</a> describes these trigger types.</p>
+<p class="table-hint">Scroll the code sideways to read long lines. On a keyboard, focus the code box and use the arrow keys.</p>
+<pre tabindex="0" role="region" aria-label="Window heating automation YAML"><code>alias: Office window-aware heating
+mode: restart
+triggers:
+  - trigger: state
+    entity_id:
+      - binary_sensor.office_window
+      - input_boolean.office_window_control
+      - input_boolean.office_window_preview
+      - input_number.office_normal_temperature
+      - input_number.office_window_temperature
+      - climate.office
+  - trigger: homeassistant
+    event: start
+  - trigger: time_pattern
+    minutes: &quot;/1&quot;
+conditions:
+  - condition: state
+    entity_id: input_boolean.office_window_control
+    state: &quot;on&quot;
+  - condition: state
+    entity_id: climate.office
+    state: &quot;heat&quot;
+  - condition: template
+    value_template: &gt;-
+      {{ states(&#x27;input_boolean.office_window_preview&#x27;) in [&#x27;on&#x27;, &#x27;off&#x27;]
+         and states(&#x27;binary_sensor.office_window&#x27;) in [&#x27;on&#x27;, &#x27;off&#x27;] }}
+  - condition: template
+    value_template: &gt;-
+      {{ (now() - states.binary_sensor.office_window.last_changed)
+         .total_seconds() &gt;= 120 }}
+  - condition: template
+    value_template: &gt;-
+      {% set normal = states(&#x27;input_number.office_normal_temperature&#x27;) %}
+      {% set setback = states(&#x27;input_number.office_window_temperature&#x27;) %}
+      {% set low = state_attr(&#x27;climate.office&#x27;, &#x27;min_temp&#x27;) %}
+      {% set high = state_attr(&#x27;climate.office&#x27;, &#x27;max_temp&#x27;) %}
+      {{ is_number(normal) and is_number(setback)
+         and is_number(low) and is_number(high)
+         and is_number(state_attr(&#x27;climate.office&#x27;, &#x27;temperature&#x27;))
+         and low | float &lt;= setback | float &lt;= normal | float &lt;= high | float }}
+actions:
+  - variables:
+      target_temperature: &gt;-
+        {{ states(&#x27;input_number.office_window_temperature&#x27;) | float
+           if is_state(&#x27;binary_sensor.office_window&#x27;, &#x27;on&#x27;)
+           else states(&#x27;input_number.office_normal_temperature&#x27;) | float }}
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: input_boolean.office_window_preview
+            state: &quot;on&quot;
+        sequence:
+          - action: persistent_notification.create
+            data:
+              notification_id: office_window_preview
+              title: Office heating preview
+              message: &gt;-
+                Window state: {{ states(&#x27;binary_sensor.office_window&#x27;) }}.
+                Proposed target: {{ target_temperature }}.
+                Checked: {{ now().strftime(&#x27;%H:%M:%S&#x27;) }}.
+                No thermostat command sent.
+      - conditions:
+          - condition: state
+            entity_id: input_boolean.office_window_preview
+            state: &quot;off&quot;
+          - condition: template
+            value_template: &gt;-
+              {{ (state_attr(&#x27;climate.office&#x27;, &#x27;temperature&#x27;) | float
+                  - target_temperature | float) | abs &gt; 0.01 }}
+        sequence:
+          - action: climate.set_temperature
+            target:
+              entity_id: climate.office
+            data:
+              temperature: &quot;{{ target_temperature }}&quot;</code></pre>
+<p>The numeric guard rejects missing readings, reversed targets and targets beyond the reported thermostat limits. The later comparison avoids resending an already reported target. It cannot prove that the valve or heating system physically acted. A slow or failed integration may cause another attempt on the next check.</p>
+<p>Preview updates one notification with a time stamp inside Home Assistant, using a fixed <a href="https://www.home-assistant.io/integrations/persistent_notification/">notification ID</a>. It is not a phone push alert. If a condition blocks a run, the old preview can remain visible: use its time stamp and the automation’s <strong>Traces</strong> to distinguish an old message from a new decision.</p>
+
+<h2 id="rehearsal">4. Rehearse without opening a window or changing heat</h2>
+<p>Create one extra Toggle helper called <strong>Office practice window</strong>, with no connection to other automations. In this automation only, temporarily replace every <code>binary_sensor.office_window</code> with <code>input_boolean.office_practice_window</code>, including the dotted reference <code>states.input_boolean.office_practice_window.last_changed</code>.</p>
+<ol>
+<li>Leave <strong>Preview on</strong>, turn <strong>Control on</strong>, and set the practice window off. With the thermostat already in Heat mode and valid settings, wait for two minutes of stable state and the next minute check. Expect a notification proposing the normal target, with no thermostat change. If the real thermostat is Off, expect a blocked trace; do not turn heating on just to run a test.</li>
+<li>Turn the practice window on. After the same stability period, expect the lower target in the updated preview. Briefly switching it on and back off should not produce a lower-target decision.</li>
+<li>While it remains on, change the normal helper to another suitable value. The proposed target should remain the lower one. Turn the practice window off; after the stability period, expect the <em>new</em> normal target.</li>
+<li>Turn Control off, change the practice window, and wait. The preview time stamp should stop advancing. The thermostat must remain unchanged throughout this rehearsal.</li>
+</ol>
+<p>Let the helper changes and minute checks trigger the automation normally. <strong>Do not use Run actions to verify the safeguards:</strong> that button skips the top-level conditions, as the <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">automation troubleshooting documentation</a> explains. Use ordinary helper toggles; do not fabricate a thermostat state with the Tools screen, disconnect equipment or interrupt heating protections.</p>
+
+<h2 id="worked-example">What “resume” means in this example</h2>
+<p>Assume valid readings, Heat mode, Control on and Preview on. These are expected decisions from the code, not results measured in a house.</p>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Worked window heating timeline" tabindex="0"><table><thead><tr><th scope="col">Event</th><th scope="col">Normal / lower target</th><th scope="col">Expected decision</th></tr></thead><tbody>
+<tr><td>Window reported closed and stable</td><td>20°C / 16°C</td><td>Propose 20°C.</td></tr>
+<tr><td>Window opens for 40 seconds, then closes</td><td>20°C / 16°C</td><td>No 16°C decision; opening never reaches two minutes.</td></tr>
+<tr><td>Window stays open for two minutes</td><td>20°C / 16°C</td><td>Propose 16°C on the next evaluation.</td></tr>
+<tr><td>Household changes normal target while window is open</td><td>19°C / 16°C</td><td>Continue proposing 16°C.</td></tr>
+<tr><td>Window closes and stays closed for two minutes</td><td>19°C / 16°C</td><td>Propose 19°C, not the earlier 20°C.</td></tr>
+<tr><td>Contact becomes unavailable</td><td>19°C / 16°C</td><td>No new command or preview update. Inspect the contact and current thermostat target.</td></tr>
+</tbody></table></div>
+<p>After a Home Assistant restart, evaluation begins again when the entities are available and the contact satisfies the stability check. It does not need a remembered “before the window opened” snapshot. <strong>During downtime, the last thermostat target may remain in place—including the lower target.</strong> This automation is a convenience layer, not frost protection or an independent heating controller.</p>
+
+<h2 id="live-use">5. Hand control over deliberately</h2>
+<p>Turn Control off, restore the real contact ID everywhere, and save. Keep Preview on and Control on while observing the real contact during normal use. Confirm its reported state, thermostat units and proposed targets before turning Preview off for a supervised trial.</p>
+<p>Once live, change the normal helper to request a different room temperature. To use the thermostat directly, <strong>turn Control off first, then set the thermostat yourself</strong>. Otherwise the next evaluation can overwrite a manual target. Turning Control off or Preview on does not undo a target already sent. Re-enabling Control selects the target appropriate to the current window state. The <a href="/blog/home-assistant-automation-manual-override/">manual-override guide</a> explains how to make that handoff visible to everyone.</p>
+
+<h2 id="troubleshooting">If the result is unexpected</h2>
+<p class="table-hint">Swipe the table sideways to read all columns.</p>
+<div class="comparison-table" role="region" aria-label="Window heating troubleshooting" tabindex="0"><table><thead><tr><th scope="col">Symptom</th><th scope="col">Check first</th><th scope="col">Next step</th></tr></thead><tbody>
+<tr><td>No new preview</td><td>Control, Heat mode, contact stability, numeric helpers and entity IDs</td><td>Read the blocked condition in Traces. An old notification is not evidence of a fresh run.</td></tr>
+<tr><td>Target returns to a different value</td><td>A vendor schedule or second automation</td><td>Choose one target writer. Route the desired schedule into the normal helper.</td></tr>
+<tr><td>Room still receives heat</td><td>Room temperature versus the lower target; actual equipment behavior</td><td>A setback is not an Off command. Check the model’s behavior without disabling its protections.</td></tr>
+<tr><td>Heating does not resume after closing</td><td>Contact report, Control toggle, thermostat mode and availability</td><td>Use normal thermostat controls if needed. The code deliberately does nothing in Off or with missing readings.</td></tr>
+<tr><td>Window is open but Home Assistant says closed</td><td>Contact placement, battery and integration reporting</td><td>Fix the sensor before relying on the automation. A stable value can still be stale.</td></tr>
+</tbody></table></div>
+
+<h2 id="faq">Common questions</h2>
+<h3>Can I use this for two windows in the same room?</h3>
+<p>Do not duplicate the automation for the same thermostat: the closed window could restore heat while the other stays open. A multi-window version needs one combined decision: lower the target if any valid contact is open, resume only when all are closed, and handle missing contacts explicitly. The supplied example is for one contact.</p>
+<h3>Why not simply turn the thermostat off?</h3>
+<p>Off behavior, frost protection and restart behavior depend on the equipment. This recipe leaves the operating mode alone and changes a supported target. It is not a universal replacement for the thermostat’s own window feature, and it does not promise to stop all heat.</p>
+<h3>Does this work without internet?</h3>
+<p>The automation logic runs in Home Assistant. Both the contact and thermostat integrations must also work locally for the complete routine to keep working during an internet outage. Home Assistant itself must remain running.</p>
+<p>Start with one room and a household agreement about the normal target, lower target and manual controls. If you are planning a wider installation, Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> explains the setup and handoff path.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Thermostat and helper documentation</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/climate/">Climate modes and activity</a></li>
+<li><a href="https://www.home-assistant.io/actions/climate.set_temperature/">Setting a thermostat target</a></li>
+<li><a href="https://contributors.home-assistant.io/core/entities/climate/">Climate capabilities, limits and units</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_number/">Number helpers</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li>
+</ul></div><div><h3>Automation documentation</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/binary_sensor/">Window contact states</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/trigger/">State, startup and periodic triggers</a></li>
+<li><a href="https://www.home-assistant.io/docs/templating/states/">Reading states and handling missing values</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/state_object/">State timestamps</a></li>
+<li><a href="https://www.home-assistant.io/integrations/persistent_notification/">Persistent notifications</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make room comfort easier to manage</h2><p>Plan the controls and routines that fit how your household uses each room.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>

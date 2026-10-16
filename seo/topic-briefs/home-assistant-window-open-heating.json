@@ -1,0 +1,111 @@
+{
+  "version": 2,
+  "slug": "home-assistant-window-open-heating",
+  "researchedAt": "2026-10-16",
+  "primaryQuery": "Home Assistant window open heating",
+  "readerQuestion": "How can Home Assistant lower one room thermostat’s target while a window is open, then resume the current normal target without restoring stale settings?",
+  "selectedBecause": "Selected after current exact-query searches and primary-documentation checks for three concrete questions. Window-aware heating has recurring cross-community questions and a practical gap around stable contact readings, schedule ownership, restart recovery and harmless preview. It fits local comfort automation and can link naturally to the existing heating-schedule and configured Home Assistant guides. This is qualitative interest, not measured search volume. Historical context: the September 21 review and search-performance-2026-09-21.json end September 19. September 13-19 had 3 clicks/212 impressions versus 2/205 on September 6-12; all three latest clicks are branded tarahome/homepage, blog clicks zero. No meaningful recovery is demonstrated, and September 20-21 are missing, not zero. Recent page/query/device/country rows were parsed from search-comparison-2026-09-21.json, not cumulative three-month dimensions: US impressions 111 to 72; desktop 176 to 185; mobile 28 to 27. Page rows total 375 versus property 212 because the aggregations differ; visible queries omit anonymized searches. Tiny samples do not establish demand or a platform pivot. September 21 inspections show IKEA, laundry and Spokane indexed; trash and vacation discovered but not indexed. These dated observations are not live October rankings. July losses crossed device, country and changed/unchanged HTML cohorts; no single cause or title rollback cure is established. The analytics measurement contract was read; no private analytics or inquiries were used.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant window open heating",
+      "evidenceSummary": "Exact query reviewed October 16. https://community.home-assistant.io/t/blueprint-window-open-climate-off-window-closed-stable-restore/976904 (January 19-23, 2026) describes missed restores, sensor flapping and restart problems. https://www.reddit.com/r/homeassistant/comments/1sdj6qi/need_help_with_planning_smart_heating_setup/ (April 6, 2026) asks how window sensors fit a room heating setup. Current search also returns https://raspberry.tips/en/smart-home/window-open-heating-off-home-assistant and https://selorahomes.com/recipes/climate/window-open-hvac-pause/. Current official Climate and set_temperature references establish model-dependent modes and a target-temperature action. These are current reviews of both older discussions and recent result pages, not a claim of a new demand spike.",
+      "decision": "selected",
+      "reason": "Distinct from choosing when to ventilate or making a weekly timetable. A one-room setpoint controller with preview, bounded temperatures, explicit manual handoff and current-target resume provides an inspectable worked solution. It does not claim that every HVAC system should be switched off."
+    },
+    {
+      "query": "Home Assistant history retention",
+      "evidenceSummary": "Exact-query results include current History/Recorder documentation, https://haag-automation.com/en/home-assistant-langzeitdaten.html and https://community.home-assistant.io/t/data-retention/444859. Fresh October 9-12 discussion at https://community.home-assistant.io/t/zeitarchiv-long-term-data-archive-comparisons-data-correction-and-energy-dashboard/1028030 and July 22 Reddit storage discussion https://www.reddit.com/r/homeassistant/comments/1v3bxl8/storage_system_152gb/ show recurring interest in retention and archive maintenance. Official documentation separates detailed history and hourly statistics.",
+      "decision": "rejected",
+      "reason": "The existing /blog/home-assistant-database-too-large-recorder-purge/ already recommends short detailed retention plus long-term statistics, and /blog/home-assistant-history-stats/ explains runtime and missing history. An additional general retention URL would substantially repeat that owner despite passing the lexical intent checker."
+    },
+    {
+      "query": "Home Assistant automation modes single restart queued parallel",
+      "evidenceSummary": "Exact-query results feature the current https://www.home-assistant.io/docs/automation/modes/ and https://community.home-assistant.io/t/automation-mode-single-when-using-multiple-triggers/640113. Current review of https://community.home-assistant.io/t/call-script-from-automation-with-variables/994935 (March 2026) shows continuing confusion about reusable sequences and modes. Official documentation now directly explains each mode with a diagram and UI steps.",
+      "decision": "rejected",
+      "reason": "The official result is strong, and Tara already covers duplicate runs, missing triggers, scripts/scenes and restart-safe timers. A general modes article would add less distinct household usefulness than the window-heating walkthrough."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/blueprint-window-open-climate-off-window-closed-stable-restore/976904",
+      "observedAt": "2026-10-16",
+      "evidence": "January 2026 discussion, reviewed now: users describe heating failing to resume or resuming with windows open, plus restart and contact-flapping concerns. Used for the reader problem, not proof that the posted blueprint works on every thermostat."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1sdj6qi/need_help_with_planning_smart_heating_setup/",
+      "observedAt": "2026-10-16",
+      "evidence": "April 6, 2026 homeowner planning discussion asks whether and how to add window contacts to smart heating. Independently supports the setup decision; no vote count or search-volume inference."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant window open heating",
+    "reviewedAt": "2026-10-16",
+    "intent": "Use an existing window contact and room thermostat to reduce the heating target during ventilation, then resume predictably.",
+    "resultGap": "Exact-query web search returned working topic-specific guides and blueprints; this is not an empty result set. The useful addition is a clearly scoped single-room, Heat-mode setpoint example with a notification-only rehearsal, no saved prior-state dependency, validation of contact/helper values, and a timeline showing a normal-target change while the window stays open. Direct Google browser access was attempted during candidate research and returned HTTP 429; no Google result order, ranking, People Also Ask or search-volume claims are made. The available web-search results and linked pages were reviewed instead.",
+    "resultsReviewed": [
+      "https://raspberry.tips/en/smart-home/window-open-heating-off-home-assistant",
+      "https://selorahomes.com/recipes/climate/window-open-hvac-pause/",
+      "https://community.home-assistant.io/t/window-open-climate-off/257293"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Climate states and capabilities",
+      "url": "https://www.home-assistant.io/integrations/climate/",
+      "supports": "Heat mode differs from current heating activity; supported states depend on the thermostat."
+    },
+    {
+      "name": "Set thermostat target temperature",
+      "url": "https://www.home-assistant.io/actions/climate.set_temperature/",
+      "supports": "Send a single temperature target to a supporting climate entity; omit hvac_mode to avoid selecting another operating mode."
+    },
+    {
+      "name": "Automation triggers",
+      "url": "https://www.home-assistant.io/docs/automation/trigger/",
+      "supports": "State, startup and periodic triggers provide reevaluation rather than a long wait."
+    },
+    {
+      "name": "Input number",
+      "url": "https://www.home-assistant.io/integrations/input_number/",
+      "supports": "Editable desired temperatures with defined minimum, maximum, step and unit; helpers can be updated by another automation."
+    },
+    {
+      "name": "Input boolean",
+      "url": "https://www.home-assistant.io/integrations/input_boolean/",
+      "supports": "Explicit enable and preview toggles; a disconnected helper can rehearse contact-state logic."
+    },
+    {
+      "name": "Persistent Notification",
+      "url": "https://www.home-assistant.io/integrations/persistent_notification/",
+      "supports": "A stable notification ID updates one Home Assistant notification rather than producing phone alerts."
+    },
+    {
+      "name": "Binary sensor",
+      "url": "https://www.home-assistant.io/integrations/binary_sensor/",
+      "supports": "A window contact uses on for open and off for closed; unavailable is a separate state."
+    },
+    {
+      "name": "State timestamps",
+      "url": "https://www.home-assistant.io/docs/configuration/state_object/",
+      "supports": "last_changed supports the reported-state stability check and does not prove a fresh physical report."
+    },
+    {
+      "name": "Automation troubleshooting",
+      "url": "https://www.home-assistant.io/docs/automation/troubleshooting/",
+      "supports": "Run actions skips top-level conditions; real trigger traces are required for safeguard verification."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-heating-schedule/",
+      "/blog/home-assistant-open-close-windows/",
+      "/blog/home-assistant-automation-manual-override/",
+      "/blog/home-assistant-scene-snapshot-restore/",
+      "/blog/home-assistant-database-too-large-recorder-purge/"
+    ],
+    "decision": "Existing heating schedule owns weekly timing, ventilation guide owns when outside conditions favor opening windows, manual override owns household handoff, and scene snapshot guide owns temporary light restoration. This article owns the contact-state-to-room-temperature decision and current-target resume. It links to relevant owners and does not recreate a weekly timetable, ventilation calculation or buying shortlist. All titles and existing topic briefs were inventoried; unindexed owners remain protected. Separate refresh opportunities: review the Recorder guide against current Apps naming and supported backup advice; verify IKEA, Bluetooth, water-leak and doorbell owners with real device evidence as the September 21 recovery review requests. These are separate tasks, not daily-writer changes. Preserve factual IKEA Zigbee/Matter distinctions, existing URLs, dates and protected commercial pages."
+  }
+}

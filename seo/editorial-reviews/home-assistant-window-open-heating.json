@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-window-open-heating",
+  "action": "new",
+  "publicationDate": "2026-10-16",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant lower one room thermostat’s target while a window is open, then resume the current normal target without restoring stale settings?",
+  "directAnswer": "Use one automation for an independently controlled room and one contact. Select an editable lower target only after the reported window state has been stable for two minutes; on stable closure, select the current normal-temperature helper. First rehearse with Preview on and a disconnected Toggle as the contact. Only Heat mode with a supported single target is covered. A setback is not Off, missing readings stop new commands, and manual thermostat changes require turning Control off first.",
+  "originalContribution": "Sections #helpers through #worked-example provide a complete guarded YAML controller, a notification-only practice procedure using a simulated window, and a six-row timeline showing that a changed normal target is used at closure instead of a stale snapshot. The published YAML was parsed and its actual Jinja templates and branch conditions exercised in 22 mocked-state cases: normal/open preview, 40-second opening, 119/120-second boundary, target changes while open, current-target resume, disabled control, unavailable contact, unknown preview, Off/Cool modes, invalid/nonfinite numbers, reversed/out-of-range targets, missing bounds, startup settling, live branch selection, redundant-target suppression and Fahrenheit values. This is a local template/branch check, not a Home Assistant runtime or hardware test.",
+  "limitations": "No physical thermostat, window contact, heating installation or live Home Assistant system was tested. No energy savings, temperature safety threshold, response latency, universal device support or frost protection is promised. Only one contact and one independently controlled Heat-mode thermostat with a numeric single target are covered. A stale valid contact report cannot be detected by the stability check. Home Assistant downtime or unavailable readings may leave the lower target in place. Existing vendor schedules, native window features and other thermostat writers need a deliberate ownership decision. The two number helpers must use the thermostat’s actual unit, supported steps and suitable limits; labels do not convert values. Generated cover art is illustrative. This is automated editorial review, not human or expert review.",
+  "proofreadFixes": "Final automated plain-English pass simplified the opening into two direct sentences, added adjacent horizontal-scroll instructions and keyboard focus to the YAML block after mobile inspection, and added the documented warning that Run actions skips top-level safeguards and is not a valid rehearsal. Rechecked the procedure against the code: preview is an in-frontend notification rather than a phone alert; a blocked run leaves an old preview visible, so its timestamp and Traces matter; turning Control off or Preview on does not undo an earlier target; Heat mode differs from actual heating; unavailable contacts do not mean closed; resuming uses the current normal helper; duplicate controllers for two windows would fight. Confirmed a lower target does not guarantee zero heat and the example 20/16°C values are illustrative. Re-ran the review after these corrections: PASS.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Heat is an operating mode, while hvac_action describes current heating/idle activity; supported modes vary by thermostat. The guide covers Heat only, not Auto, Cool or Heat/Cool.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/climate/"
+    },
+    {
+      "claim": "climate.set_temperature supports a single target or a range depending on the device. Omitting hvac_mode keeps the current mode. The example only sends temperature and does not command Off or switch electrical supply.",
+      "sourceUrl": "https://www.home-assistant.io/actions/climate.set_temperature/"
+    },
+    {
+      "claim": "Thermostat temperature unit, min/max and target-step capabilities are integration-dependent. Matching helper units and supported step sizes is a prerequisite, and a numerical target guard is not a guarantee of safe room temperatures.",
+      "sourceUrl": "https://contributors.home-assistant.io/core/entities/climate/"
+    },
+    {
+      "claim": "A window binary sensor uses on for open and off for closed; unknown and unavailable are separate states. The code blocks rather than converting those into closed.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/binary_sensor/"
+    },
+    {
+      "claim": "Number helpers expose bounded editable values and normally restore their prior value without a YAML initial setting. A schedule can update the normal helper instead of independently commanding the thermostat.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_number/"
+    },
+    {
+      "claim": "Toggle helpers default to restoring previous state; current UI documentation also lists explicit startup choices. The guide asks readers to confirm Restore previous state and separately set Preview on now.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "State, startup and periodic triggers can reevaluate the rule. The once-per-minute check finds a satisfied stability condition later; it is not proof of physical thermostat response time.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "last_changed records state changes rather than attribute-only changes. The 120-second comparison tests a reported state’s stability, not contact freshness or physical window position.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/state_object/"
+    },
+    {
+      "claim": "Persistent notifications appear inside Home Assistant, and a fixed notification_id overwrites the existing notification. It is not a push-notification channel; an older preview remains until replaced or dismissed.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Run actions skips triggers and top-level conditions, so the supplied rehearsal uses ordinary helper changes and the minute trigger instead of treating that button as a safeguard test.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-heating-schedule/",
+      "section": "4. Add the automation",
+      "readerReason": "Readers extending a weekly room timetable with a window contact need a single target writer and a rule for returning to the current scheduled target. This new guide supplies that distinct next step. Suggestion for a separate reviewed navigation task only."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-open-close-windows/",
+      "section": "Check rain, heating or air-conditioning, and household safety",
+      "readerReason": "After deciding when to ventilate, a reader may want an independently controlled room to use a lower heating target while its window stays open. The new article explains the scope, preview and resume rule. No old-page change is authorized by this suggestion."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440×1000: inspected hero, visible October 16 date and Tara Home byline, five-bullet TLDR, body, code and library card. Heading weight is 400, Tara Avenir retained, body text 16.96px; post-local responsive WebP loads. Document width is 1440px with centered reading column and contained wide tables. Both library indexes contain the new first card and schema entry; .html navigation reaches the canonical path. Local link/asset scan resolved 577 unique targets across the article and indexes; all 11 final external primary-documentation URLs returned HTTP 200.",
+    "mobile": "PASS at 390×844: title and byline wrap cleanly, 480px WebP loads, body text is 16.96px with 28.832px line height, and document width remains 390px. Tables scroll within 344px containers; long YAML scrolls within its own box. Added a scroll hint and tabindex=0, then verified right-arrow keyboard scrolling. Mobile library card image, title and date fit. Screenshots and template/link-check files are outside the worktree in TARAHOME_BLOG_ARTIFACTS."
+  }
+}
