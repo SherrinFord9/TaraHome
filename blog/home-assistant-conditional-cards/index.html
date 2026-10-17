@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Conditional Cards: Show What Needs Attention</title>
+    <meta name="description" content="Set up Home Assistant conditional cards with a safe practice exercise, OR rules, and a window-status example that keeps missing sensor readings visible." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-conditional-cards/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-conditional-cards/" />
+    <meta property="og:title" content="Home Assistant Conditional Cards: Show What Needs Attention" />
+    <meta property="og:description" content="Set up Home Assistant conditional cards with a safe practice exercise, OR rules, and a window-status example that keeps missing sensor readings visible." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-conditional-cards/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Conditional Cards: Show What Needs Attention" />
+    <meta name="twitter:description" content="Set up Home Assistant conditional cards with a safe practice exercise, OR rules, and a window-status example that keeps missing sensor readings visible." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-conditional-cards/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+
+      .article-body pre { background: #e9e5d7; border: 1px solid var(--line); border-radius: 14px; padding: 20px; overflow-x: auto; max-width: 100%; font-size: .94rem; line-height: 1.6; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body .comparison-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+      .article-body .table-hint { display: none; }
+      @media (max-width: 820px) { .article-body .table-hint { display: block; font-size: .92rem; margin-bottom: 8px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-conditional-cards/#blogposting",
+      "headline": "Home Assistant Conditional Cards: Show What Needs Attention",
+      "description": "Set up Home Assistant conditional cards with a safe practice exercise, OR rules, and a window-status example that keeps missing sensor readings visible.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-conditional-cards/cover.png",
+      "datePublished": "2026-10-17",
+      "dateModified": "2026-10-17",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-conditional-cards/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Conditional Cards: Show What Needs Attention",
+          "item": "https://tarahome.ai/blog/home-assistant-conditional-cards/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need HACS or a custom card?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Visibility, Conditional, Entities and Entity filter are built-in options. The practice exercise uses only built-in helpers and cards."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will hiding a card stop its automation?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. A display condition is not an automation condition. Keep reminders, manual overrides and device actions in their own routines."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should every control disappear when it is idle?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Keep frequently used controls in predictable places. Add a small attention section for temporary information, then check that another household member can still find everyday functions."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Everyday dashboards</span><span><time datetime="2026-10-17">October 17, 2026</time></span><span>10 min read</span></p>
+<h1>Home Assistant Conditional Cards: Show What Needs Attention</h1><p class="lede">Show a useful card when a window needs checking, keep everyday controls easy to find, and test the rules before using real sensors.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-conditional-cards/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-conditional-cards/cover-480.webp 480w, /assets/generated/blog/home-assistant-conditional-cards/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Tablet viewed from behind on an oak console beside an open casement window in a sunlit home" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Start with the card’s Visibility tab.</strong> For a normal card on your dashboard, add the condition that should make it appear. No custom card or paid service is needed.</li>
+<li><strong>Use OR when any one problem should show the card.</strong> Separate conditions otherwise require every condition to pass.</li>
+<li><strong>Test with two software switches (Toggle helpers) first.</strong> Leave dashboard edit mode before checking whether the card disappears.</li>
+<li><strong>Keep missing readings visible.</strong> A window sensor reporting “Unavailable” is not proof that the window is closed. Hiding a card also does not restrict someone’s access to its devices.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant documentation, the 2026.10 release notes, and frontend 20260930.4 source on October 17, 2026. The examples are configuration walkthroughs, not a tested Tara installation. No physical devices or live Home Assistant dashboard were tested. The cover is an illustrative generated scene.</p>
+
+<h2 id="answer">Make the card answer one household question</h2>
+<p><strong>Home Assistant conditional cards</strong> let you show a card only when its conditions match. For a new card, start with its built-in <strong>Visibility</strong> settings. Keep the dedicated Conditional card for cases such as a card nested inside a stack, where the normal Visibility tab is missing. Both approaches are built in.</p>
+<p>For example, a small “Windows: check status” card could appear when either of two selected windows is open or its sensor has lost contact. The usual lights and room controls can stay in their familiar places. A disappearing everyday control is harder for someone else in the house to find.</p>
+<p>Start on a separate practice dashboard with two software switches. Once you understand the result, substitute your real window sensors. This changes the display only: it does not close windows, send alerts, or pause heating. If you need a message when you are away from the screen, use the separate <a href="/blog/home-assistant-door-left-open-notification/">door-left-open notification guide</a>. For a lower room temperature target while a window is open, follow the <a href="/blog/home-assistant-window-open-heating/">window-open heating walkthrough</a>.</p>
+<p>The <a href="https://contributors.home-assistant.io/design/dashboards/conditional-card/">official card design guidance</a> favors built-in visibility for new cards and keeping routine controls easy to find.</p>
+
+<h2 id="choose">1. Choose what should disappear</h2>
+<p>A <strong>card</strong> is one dashboard block. An <strong>entity</strong> is a named reading or control inside Home Assistant. Decide whether you want to hide the whole block or remove individual rows from a list.</p>
+<p class="table-hint">Swipe sideways to read all columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Choose a native dashboard option"><table><thead><tr><th>Your aim</th><th>Use</th><th>What happens</th></tr></thead><tbody>
+<tr><td>Show one normal card only when needed</td><td>The card’s Visibility tab</td><td>The whole card appears or disappears; its contents stay the same.</td></tr>
+<tr><td>Make one child card conditional inside a stack</td><td>A Conditional card containing that child</td><td>The wrapper checks conditions before showing the enclosed card.</td></tr>
+<tr><td>List only the windows currently needing attention</td><td>An Entity filter card</td><td>Matching rows remain; nonmatching rows leave the list.</td></tr>
+</tbody></table></div>
+<p>The <a href="https://www.home-assistant.io/dashboards/cards/#showing-or-hiding-a-card-or-badge-conditionally">card documentation</a> specifically notes that nested children of vertical stacks, horizontal stacks and grid cards lack the Visibility tab. A grid <em>card</em> is different from the grid layout of a Sections view.</p>
+
+<h2 id="practice">2. Build a harmless practice card</h2>
+<p>Use an administrator account to create the dashboard and helpers. You need no window sensors for this rehearsal, and the new helpers should not run any existing automation.</p>
+<ol>
+<li>Open <strong>Settings → Dashboards → Add dashboard</strong>, choose <strong>New dashboard from scratch</strong>, and name it “Visibility practice.” This follows the <a href="https://www.home-assistant.io/dashboards/dashboards/#creating-a-new-dashboard">separate-dashboard procedure</a> and leaves your main dashboard alone.</li>
+<li>Go to <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Create two <strong>Toggle</strong> helpers named “Card test kitchen” and “Card test study.” These are software on/off switches; leave them disconnected from device actions. See the <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper documentation</a>.</li>
+<li>Check their entity IDs in each helper’s settings. The example assumes <code>input_boolean.card_test_kitchen</code> and <code>input_boolean.card_test_study</code>. If yours differ, replace both names in the code below.</li>
+<li>On the practice dashboard, enter edit mode and add an <strong>Entities</strong> card containing both helpers. Leave this control card always visible, so you can switch either helper on and off.</li>
+<li>Add a second card using <strong>Manual</strong>, and paste the following YAML—Home Assistant’s text configuration format. Save it, then select <strong>Done</strong> to leave edit mode.</li>
+</ol>
+<p class="table-hint">Swipe sideways to read the full code.</p>
+<pre><code>type: markdown
+content: "Practice: at least one test switch is on."
+visibility:
+  - condition: or
+    conditions:
+      - condition: state
+        entity: input_boolean.card_test_kitchen
+        state: "on"
+      - condition: state
+        entity: input_boolean.card_test_study
+        state: "on"</code></pre>
+<p>This belongs in a <strong>dashboard card’s editor</strong>, not <code>configuration.yaml</code> or an automation. You can build the same rule visually: edit the second card, open Visibility, add an OR condition, and put the two entity-state checks inside it.</p>
+<p>Home Assistant 2026.10 expanded the available visibility conditions and added current pass/fail feedback. Older releases may show different controls. The examples use the documented <code>entity</code> format, which remains supported; a current editor may save state conditions using <code>entity_id</code>. Do not change a working card merely to make its text match a screenshot. See the <a href="https://www.home-assistant.io/blog/2026/10/07/release-202610/">2026.10 release notes</a> and <a href="https://www.home-assistant.io/dashboards/conditional/">condition configuration reference</a>.</p>
+
+<h2 id="test">3. Check all four combinations</h2>
+<p>Use the always-visible helper card to try the following combinations. These are the expected logical results, not measurements from a Tara system.</p>
+<p class="table-hint">Swipe sideways to read all columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Practice visibility outcomes"><table><thead><tr><th>Kitchen helper</th><th>Study helper</th><th>Expected message card</th></tr></thead><tbody>
+<tr><td>Off</td><td>Off</td><td>Hidden</td></tr>
+<tr><td>On</td><td>Off</td><td>Visible</td></tr>
+<tr><td>Off</td><td>On</td><td>Visible</td></tr>
+<tr><td>On</td><td>On</td><td>Visible</td></tr>
+</tbody></table></div>
+<p>If the card appears only in the last row, the checks probably sit beside each other instead of inside OR. If it never disappears, first confirm you have left edit mode: Home Assistant deliberately shows conditional cards while you are editing them.</p>
+<p>Finally, switch both helpers off. The practice message should disappear while the helper control card remains available. You can undo the exercise by removing these two practice cards; no physical device has been changed.</p>
+
+<h2 id="windows">4. Substitute real readings without hiding a missing sensor</h2>
+<p>For a window <strong>binary sensor</strong>, the stored state is normally <code>on</code> for open and <code>off</code> for closed. The interface may display friendly or translated labels instead. It can also report <code>unknown</code> or <code>unavailable</code>; neither tells you the physical window position. Check the exact entity and raw state in <strong>Developer tools → States</strong>, using it for inspection only. The <a href="https://www.home-assistant.io/integrations/binary_sensor/">binary-sensor reference</a> explains these values.</p>
+<p>Here is an original two-window example. Replace the entity IDs in <em>both</em> the rows and conditions with two working sensors from your home. Add it as a new Manual card:</p>
+<p class="table-hint">Swipe sideways to read the full code.</p>
+<pre><code>type: entities
+title: "Windows: check status"
+show_header_toggle: false
+entities:
+  - entity: binary_sensor.kitchen_window
+    name: Kitchen window
+  - entity: binary_sensor.study_window
+    name: Study window
+visibility:
+  - condition: or
+    conditions:
+      - condition: state
+        entity: binary_sensor.kitchen_window
+        state:
+          - "on"
+          - "unknown"
+          - "unavailable"
+      - condition: state
+        entity: binary_sensor.study_window
+        state:
+          - "on"
+          - "unknown"
+          - "unavailable"</code></pre>
+<p>The title deliberately says “check status,” rather than “windows open”: a lost reading also brings the card into view. Both rows remain visible whenever either needs attention, so you can compare their reported states. The <a href="https://www.home-assistant.io/dashboards/entities/">Entities card</a> supplies those named rows.</p>
+<p>With valid, reporting entities, both closed means hidden; either open means visible; either unknown or unavailable also means visible. For the first real check, use a noncritical interior contact sensor or observe an ordinary window opening when it is safe to do so. Expect its row to change and the card to appear. Do not open a garage door, unlock an exterior door, disconnect sensors, or overwrite real entity states just to test the display.</p>
+<p>A sensor can also keep an old “closed” reading without becoming unavailable. This card cannot detect that from the state alone. Keep important alerts independent of dashboard visibility; the <a href="/blog/home-assistant-unavailable-device-notification/">unavailable-device notification guide</a> explains the difference between losing contact and an unchanged reading.</p>
+
+<h2 id="rows">5. Filter rows only if that is what you want</h2>
+<p>If you have many windows and want only the affected ones listed, use the built-in <a href="https://www.home-assistant.io/dashboards/entity-filter/">Entity filter card</a> instead. It checks each listed entity and retains matching rows. Its <code>show_empty: false</code> setting hides the whole result when no rows match.</p>
+<p>For the same window rule, a state condition can match the list <code>["on", "unknown", "unavailable"]</code>. That is different from putting visibility on an ordinary Entities card, which shows or hides every row together. Start with the two-window version above if seeing a closed window beside the affected one helps your household interpret the display.</p>
+
+<h2 id="troubleshooting">If a card stays hidden or visible</h2>
+<p class="table-hint">Swipe sideways to read all columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Conditional card troubleshooting"><table><thead><tr><th>What you see</th><th>Check first</th><th>Useful correction</th></tr></thead><tbody>
+<tr><td>Always visible</td><td>Dashboard edit mode and saved conditions</td><td>Save, select Done, and change one practice helper. A card without conditions is always visible.</td></tr>
+<tr><td>Visible only when both test switches are on</td><td>Where the two checks are nested</td><td>Move them inside one OR condition.</td></tr>
+<tr><td>No Visibility tab</td><td>Whether this is a child of a stack or grid card</td><td>Try a top-level card; use a Conditional wrapper when the child must remain nested.</td></tr>
+<tr><td>A sensor says Open, but the rule fails</td><td>Its entity ID and stored state</td><td>For a window binary sensor, match <code>on</code>. A cover entity uses different states; do not substitute it blindly.</td></tr>
+<tr><td>A temperature or battery comparison fails</td><td>State versus Numeric state</td><td>Use Numeric state for a threshold, in the sensor’s displayed unit. Plain State checks equality; putting a calculation in that text field does not turn it into a template condition.</td></tr>
+<tr><td>A card disappears on one screen only</td><td>Screen and User conditions, plus parent conditions</td><td>Recheck in the same account and viewport. Remove an optional display restriction from the practice card before changing real-device settings.</td></tr>
+</tbody></table></div>
+<p>On 2026.10, use the Visibility tab’s current-result feedback to locate a failing condition. For a genuine calculation, that release also offers a dedicated Template condition. You do not need it for either example here.</p>
+
+<h2 id="access">Visibility is a presentation choice</h2>
+<p>Hiding a camera or lock card does not revoke access to that entity. A non-admin user plus hidden cards, tabs or a kiosk display does not establish room-only permissions. Home Assistant’s <a href="https://www.home-assistant.io/dashboards/views/#visible">view documentation</a> explicitly says a hidden tab’s URL remains accessible; its <a href="https://contributors.home-assistant.io/core/internals/permissions/">permission documentation</a> distinguishes entity access from administration rights.</p>
+<p>For a child, guest or shared tablet, first read <a href="/blog/limit-home-assistant-users-to-certain-devices/">what Home Assistant can actually restrict for each user</a>. A simpler screen can be useful without being an access boundary. Also remember that anyone physically near an unlocked household display may see the information it shows.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Do I need HACS or a custom card?</h3>
+<p>No. Visibility, Conditional, Entities and Entity filter are built-in options. The practice exercise uses only built-in helpers and cards.</p>
+<h3>Will hiding a card stop its automation?</h3>
+<p>No. A display condition is not an automation condition. Keep reminders, manual overrides and device actions in their own routines.</p>
+<h3>Should every control disappear when it is idle?</h3>
+<p>No. Keep frequently used controls in predictable places. Add a small attention section for temporary information, then check that another household member can still find everyday functions.</p>
+<p>If you want help planning the dashboard alongside devices and routines, Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> explains the service path. Choose the household questions first, then decide which cards answer them.</p>
+
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Dashboard setup</h3><ul><li><a href="https://www.home-assistant.io/dashboards/conditional/">Conditional cards and condition syntax</a></li><li><a href="https://www.home-assistant.io/dashboards/cards/">Card editing and Visibility settings</a></li><li><a href="https://www.home-assistant.io/dashboards/dashboards/">Creating a separate dashboard</a></li><li><a href="https://www.home-assistant.io/blog/2026/10/07/release-202610/">2026.10 visibility changes</a></li><li><a href="https://contributors.home-assistant.io/design/dashboards/conditional-card/">Conditional card design guidance</a></li></ul></div><div><h3>Readings and access</h3><ul><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li><li><a href="https://www.home-assistant.io/integrations/binary_sensor/">Binary sensor states and labels</a></li><li><a href="https://www.home-assistant.io/dashboards/entities/">Entities card settings</a></li><li><a href="https://www.home-assistant.io/dashboards/entity-filter/">Entity filter and empty results</a></li><li><a href="https://www.home-assistant.io/dashboards/views/#visible">View visibility limits</a></li><li><a href="https://contributors.home-assistant.io/core/internals/permissions/">User permissions</a></li><li><a href="https://github.com/home-assistant/frontend/blob/20260930.4/src/panels/lovelace/common/validate-condition.ts">State-condition implementation used for the example checks</a></li></ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Put useful information where your household needs it</h2><p>Plan the devices, controls and everyday routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>

@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-conditional-cards",
+  "action": "new",
+  "publicationDate": "2026-10-17",
+  "verdict": "PASS",
+  "readerQuestion": "How can I make Home Assistant show a dashboard card only when something needs attention, without hiding an unavailable sensor or confusing visibility with access control?",
+  "directAnswer": "Use a normal card’s Visibility tab for a new top-level card, a Conditional wrapper for a nested child where needed, or Entity filter when individual rows should disappear. Start with two independent Toggle helpers, put alternative checks inside OR, save and leave edit mode. Match unknown/unavailable as well as open in the window example; visibility does not restrict entity access.",
+  "originalContribution": "Sections 2–4 provide a complete two-helper rehearsal, a four-row expected-outcome table, and a two-window Entities card whose state lists deliberately include on, unknown and unavailable. Section 1 compares whole-card visibility, nested wrappers and row filtering; the troubleshooting table maps six symptoms to specific checks. Both published YAML blocks parse, and 20 state combinations passed an isolated evaluation using the published frontend 20260930.4 condition functions. This is a source-level check, not a Home Assistant installation test.",
+  "limitations": "No physical devices, running Home Assistant instance, live dashboard subscriptions or real sensor failure were tested. The examples assume valid entity IDs and truthful reports; a stale closed reading can remain closed and is not diagnosed by the card. The October 2026 editor differs from older versions. Browser checks cover the article and libraries only. Cover art is generated editorial illustration, not evidence of an installation. Publication does not establish indexing or traffic outcomes.",
+  "proofreadFixes": "Added the administrator prerequisite before creating helpers and the practice dashboard. Replaced unexplained spare Toggle helpers in the TLDR with software switches (Toggle helpers). Changed awkward connect them to no device actions wording. Mobile inspection found code wider than its container, so added visible swipe hints while preserving contained horizontal scrolling. Confirmed the always-visible helper control card remains usable when the message hides, the two example entity names are changed in both rows and conditions, and the reader exits edit mode for verification. Rechecked the 2026.10 template/visibility changes, nested-card limitation, window raw states and entity authorization boundary against primary sources. Added the recent window-open heating guide as a separate next step. Automated proofreading only; no human or expert review claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A new top-level card can use its own Visibility tab; the tab is unavailable inside nested vertical-stack, horizontal-stack and grid-card children. A Sections view is not itself a grid card.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/cards/"
+    },
+    {
+      "claim": "Conditional cards are deliberately shown in dashboard edit mode, and the published state conditions accept lists. The normal list is AND; an OR group permits either selected state check to pass. The entity-based condition format remains supported.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/conditional/"
+    },
+    {
+      "claim": "The 2026.10 release expands native visibility to automation conditions including Template, Sun, Zone and Device and adds current-result feedback. Do not repeat older advice that templates are universally unsupported.",
+      "sourceUrl": "https://www.home-assistant.io/blog/2026/10/07/release-202610/"
+    },
+    {
+      "claim": "Create a new dashboard from scratch to avoid changing the built-in Overview.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/dashboards/#creating-a-new-dashboard"
+    },
+    {
+      "claim": "Toggle helpers can be created through the Helpers UI and provide software on/off states for the harmless exercise without actuating real hardware.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Window binary sensors store on/off while the UI may display Open/Closed; unknown and unavailable must not be interpreted as closed.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/binary_sensor/"
+    },
+    {
+      "claim": "Entity filter acts on individual rows and show_empty false hides an empty result, unlike showing/hiding an ordinary Entities card as one block.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/entity-filter/"
+    },
+    {
+      "claim": "View visibility only hides tabs; the URL remains accessible. It is not a room-only permission system.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/views/#visible"
+    },
+    {
+      "claim": "Built-in Users and Administrators share entity permissions; administrator checks separately restrict configuration. Non-admin status plus hidden cards does not establish entity-level authorization.",
+      "sourceUrl": "https://contributors.home-assistant.io/core/internals/permissions/"
+    },
+    {
+      "claim": "Both article YAML blocks passed parsing; four helper combinations and sixteen binary-sensor combinations matched the stated OR results when evaluated with the published frontend condition functions. The check does not claim a live Home Assistant dashboard or device test.",
+      "sourceUrl": "https://github.com/home-assistant/frontend/blob/20260930.4/src/panels/lovelace/common/validate-condition.ts"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-wall-tablet-dashboard-stays-awake/",
+      "section": "Build a Tablet Dashboard, Not an Admin Dashboard",
+      "readerReason": "After making a tablet display readable and persistent, the reader can use conditional cards to show a small attention section while retaining everyday controls. Suggestion for a separate reviewed navigation task only."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-window-open-heating/",
+      "section": "2. Add the four household controls",
+      "readerReason": "A reader adding a room contact and manual controls may next want a visible window-status card that also exposes unknown/unavailable readings. The display is separate from the existing guide’s thermostat target writer. Suggestion only; the existing article was not edited."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440×1000 Chromium: visually inspected article hero and worked-example section plus /blog.html first card. Title fits, Tara Avenir regular 400 is applied, byline and October 17 date are visible, and post-local WebP loads. The article is centered with no page overflow (1440px viewport/1440px document). Both libraries place the new card first; its click and .html redirect reach the canonical trailing-slash article. Screenshots are in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390×844 Chromium: visually inspected hero, four-bullet TLDR, option table, YAML and /blog/ first card. Text and image fit with no page overflow (390px viewport/390px document). The 760px table scrolls inside a 344px region; scrollLeft advanced to 200. Code also scrolls within its container and now has a swipe hint. Responsive cover-480.webp loads. No invented Home Assistant UI screenshots were used; verification screenshots remain outside the website."
+  }
+}
