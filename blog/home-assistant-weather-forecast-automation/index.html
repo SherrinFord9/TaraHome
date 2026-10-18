@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Weather Forecast Automation: Morning Rain Check</title>
+    <meta name="description" content="Build a Home Assistant weather forecast automation with an hourly rain check, clear missing-data messages, and a harmless notification test." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-weather-forecast-automation/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-weather-forecast-automation/" />
+    <meta property="og:title" content="Home Assistant Weather Forecast Automation: Morning Rain Check" />
+    <meta property="og:description" content="Build a Home Assistant weather forecast automation with an hourly rain check, clear missing-data messages, and a harmless notification test." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-weather-forecast-automation/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Weather Forecast Automation: Morning Rain Check" />
+    <meta name="twitter:description" content="Build a Home Assistant weather forecast automation with an hourly rain check, clear missing-data messages, and a harmless notification test." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-weather-forecast-automation/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+
+      .article-body pre { background: #e9e5d7; border: 1px solid var(--line); border-radius: 14px; padding: 20px; overflow-x: auto; max-width: 100%; font-size: .94rem; line-height: 1.6; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body .comparison-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+      .article-body .table-hint { display: none; }
+      @media (max-width: 820px) { .article-body .table-hint { display: block; font-size: .92rem; margin-bottom: 8px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-weather-forecast-automation/#blogposting",
+      "headline": "Home Assistant Weather Forecast Automation: Morning Rain Check",
+      "description": "Build a Home Assistant weather forecast automation with an hourly rain check, clear missing-data messages, and a harmless notification test.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-weather-forecast-automation/cover.png",
+      "datePublished": "2026-10-18",
+      "dateModified": "2026-10-18",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-weather-forecast-automation/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Weather Forecast Automation: Morning Rain Check",
+          "item": "https://tarahome.ai/blog/home-assistant-weather-forecast-automation/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I use rain probability instead?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, if the provider supplies precipitation_probability for the periods you need. Check the response first. It is a percentage, while precipitation is an amount with a unit. A missing probability is not zero, and probabilities from successive hours should not be added together."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need a template sensor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not for this once-per-run message. Consider one when you also need a reusable forecast value on a dashboard or as a trigger elsewhere. Keep a separate plan for refreshing that value; copying a response into a sensor does not make it update by itself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can this close a roof or stop watering?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This example only creates a message. A roof needs its manufacturer\u2019s obstruction and weather safeguards; a forecast reminder cannot replace them. Watering also needs a policy for missing weather data and any independent schedule. Use the irrigation rain-delay guide for that separate decision."
+          }
+        }
+      ]
+    }
+  ]
+}</script></head><body>    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+<main class="article"><article><header class="hero article-hero"><div>
+<p class="article-meta"><span>Everyday automations</span><span><time datetime="2026-10-18">October 18, 2026</time></span><span>12 min read</span></p>
+<h1>Home Assistant Weather Forecast Automation: Morning Rain Check</h1><p class="lede">Read the next twelve hours of forecast data, leave a useful morning message, and keep missing information from becoming a false all-clear.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-weather-forecast-automation/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-weather-forecast-automation/cover-480.webp 480w, /assets/generated/blog/home-assistant-weather-forecast-automation/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A dark green umbrella and raincoat beside an oak entryway bench, with a face-down phone and rain on the window" loading="eager" /></figure></header><div class="article-body"><aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use <code>weather.get_forecasts</code> before checking the forecast.</strong> Save its response in the automation. A weather entity’s ordinary state describes current conditions.</li>
+<li><strong>Start with an hourly forecast and a morning reminder.</strong> The example checks a twelve-hour window and writes a message inside Home Assistant without moving or switching anything.</li>
+<li><strong>Read each forecast timestamp.</strong> The first item is not a universal shortcut for “today,” “tomorrow,” or the next twelve hours.</li>
+<li><strong>Missing data is not dry weather.</strong> Forecasts need their provider’s data connection and can miss rain at your house. Use this for planning what to take outside, not as a property-protection system.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant documentation on October 18, 2026. This is a configuration walkthrough with illustrative forecast examples, not a tested Tara installation or a weather-provider accuracy comparison. The cover is an illustrative generated scene.</p>
+
+<h2 id="answer">Get the forecast first, then make the decision</h2>
+<p>A <strong>Home Assistant weather forecast automation</strong> needs three steps: run at a chosen time, request the forecast, and use the returned information in the following action. Start with a message you can inspect. Add device control only after designing a separate routine for that device.</p>
+<p>An <strong>entity</strong> is one item Home Assistant tracks, such as <code>weather.forecast_home</code>. Seeing “Sunny” on that item tells you its current condition. Seeing tomorrow’s icons in its weather card does not mean tomorrow’s forecast is stored in the same state. The <a href="https://www.home-assistant.io/integrations/weather/">Weather documentation</a> distinguishes these values.</p>
+<p>The example below uses an existing hourly weather forecast. At 7 a.m., it checks forecast periods beginning between 7 a.m. and 7 p.m. and leaves one readable result in Home Assistant. It also reports absent or incomplete information. There is no sensor purchase, custom integration, AI service, or paid notification service in this walkthrough.</p>
+<p>A <strong>response variable</strong> is simply a named result that later steps in the same run can read. Here, that result is called <code>forecast_reply</code>. You do not need to create a template sensor just to use it once each morning. Put any check of this result <strong>after the forecast action</strong>; the automation’s top-level Conditions section runs before the result exists.</p>
+
+<h2 id="provider">1. Check the provider and the exact weather entity</h2>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Entities</strong> and find your weather entity. Copy its full ID, including <code>weather.</code>.</li>
+<li>If you need a provider, add <strong>Meteorologisk institutt (Met.no)</strong> from <strong>Add integration</strong>. It offers hourly and daily forecasts without an API key. Confirm the location and elevation instead of accepting an incorrect home location.</li>
+<li>Use that entity’s documentation to confirm hourly support. Some providers offer different forecast types or omit fields.</li>
+</ol>
+<p><a href="https://www.home-assistant.io/integrations/met/">Met.no’s integration documentation</a> describes the setup and its cloud-polling connection: Home Assistant periodically retrieves data from an internet service. The decision runs on your Home Assistant server, but fresh forecasts still require the provider and internet access. Free access does not make the forecast local.</p>
+
+<h2 id="inspect">2. Request a forecast without changing a device</h2>
+<p>Open Home Assistant’s <strong>Actions tool</strong>. Depending on your installed release, it may appear under <strong>Developer tools</strong> or <strong>Settings → Tools</strong>. Choose <strong>Weather: Get forecasts</strong>, your exact weather entity, and <strong>Hourly</strong>. Perform the action.</p>
+<p>You can use this in the Actions tool’s YAML editor after replacing the example entity ID:</p>
+<pre tabindex="0" aria-label="Request an hourly forecast"><code>action: weather.get_forecasts
+target:
+  entity_id: weather.forecast_home
+data:
+  type: hourly</code></pre>
+<p><strong>Expected result:</strong> a response grouped under that same entity ID, containing a <code>forecast</code> list. Inspect several entries for <code>datetime</code> and <code>condition</code>. This reads forecast data; it does not operate your lights, heating, windows or irrigation. See the <a href="https://www.home-assistant.io/actions/weather.get_forecasts/">forecast action reference</a>.</p>
+<p>If the request fails, fix the provider, entity ID or forecast type before continuing. If a response lacks condition values, the rain-condition example cannot interpret those periods. Do not substitute a daily forecast into the hourly example and expect the same time window.</p>
+
+<h2 id="walkthrough">3. Add the morning rain-check automation</h2>
+<p>In <strong>Settings → Automations &amp; scenes</strong>, create a new empty automation. Open its menu and choose <strong>Edit in YAML</strong>. Paste the complete example below, replacing <code>weather.forecast_home</code> on the <code>weather_entity</code> line. This belongs in one automation’s editor, not at the top of <code>configuration.yaml</code>.</p>
+<p>The rule looks for the rain-related condition names <code>rainy</code>, <code>pouring</code>, <code>lightning-rainy</code> and <code>snowy-rainy</code>. It does not use a rain-probability threshold. A “no rain condition” result can still include snow, hail, wind or other hazards.</p>
+<p class="table-hint">Swipe sideways to read the full code.</p>
+<pre tabindex="0" aria-label="Complete morning rain-check automation"><code>alias: Morning forecast rain check
+description: A forecast reminder inside Home Assistant; no device control.
+triggers:
+  - trigger: time
+    at: &quot;07:00:00&quot;
+conditions: []
+actions:
+  - variables:
+      weather_entity: weather.forecast_home
+      forecast_reply: {}
+      window_start: &gt;-
+        {{ as_timestamp(now().replace(minute=0, second=0, microsecond=0)) }}
+  - action: weather.get_forecasts
+    target:
+      entity_id: &quot;{{ weather_entity }}&quot;
+    data:
+      type: hourly
+    response_variable: forecast_reply
+    continue_on_error: true
+  - variables:
+      forecast_rows: &gt;-
+        {{ forecast_reply.get(weather_entity, {}).get(&#x27;forecast&#x27;, []) or [] }}
+  - variables:
+      rain_report: &gt;-
+        {% set start = window_start | float %}
+        {% set ns = namespace(periods=0, rain=0, missing=0, bad_time=0) %}
+        {% set rain_codes = [&#x27;rainy&#x27;, &#x27;pouring&#x27;, &#x27;lightning-rainy&#x27;, &#x27;snowy-rainy&#x27;] %}
+        {% set other_codes = [&#x27;clear-night&#x27;, &#x27;cloudy&#x27;, &#x27;fog&#x27;, &#x27;hail&#x27;,
+          &#x27;lightning&#x27;, &#x27;partlycloudy&#x27;, &#x27;snowy&#x27;, &#x27;sunny&#x27;, &#x27;windy&#x27;,
+          &#x27;windy-variant&#x27;, &#x27;exceptional&#x27;] %}
+        {% for row in forecast_rows %}
+          {% set stamp = as_timestamp(row.get(&#x27;datetime&#x27;), none) %}
+          {% if stamp is none %}
+            {% set ns.bad_time = ns.bad_time + 1 %}
+          {% elif start &lt;= stamp &lt; start + 12 * 3600 %}
+            {% set ns.periods = ns.periods + 1 %}
+            {% set condition = row.get(&#x27;condition&#x27;) %}
+            {% if condition in rain_codes %}
+              {% set ns.rain = ns.rain + 1 %}
+            {% elif condition not in other_codes %}
+              {% set ns.missing = ns.missing + 1 %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        Window: {{ start | timestamp_custom(&#x27;%a %H:%M %Z&#x27;) }}
+        to {{ (start + 12 * 3600) | timestamp_custom(&#x27;%a %H:%M %Z&#x27;) }}.
+        {% if ns.rain &gt; 0 %}
+          Take a raincoat: {{ ns.rain }} returned forecast period(s) include rain.
+        {% elif ns.periods == 0 or ns.missing &gt; 0 or ns.bad_time &gt; 0 %}
+          Forecast incomplete or unavailable. Check your weather app.
+        {% else %}
+          No rain condition in {{ ns.periods }} returned forecast period(s).
+          This is not an all-clear; check for gaps and other weather hazards.
+        {% endif %}
+        Reviewed {{ ns.periods }} period(s); {{ ns.missing }} without a usable
+        condition; {{ ns.bad_time }} row(s) with an unreadable time.
+  - action: persistent_notification.create
+    data:
+      notification_id: morning_forecast_rain_check
+      title: &quot;Weather check — {{ now().strftime(&#x27;%b %d, %H:%M&#x27;) }}&quot;
+      message: &quot;{{ rain_report }}&quot;
+mode: single
+</code></pre>
+<p><strong>What the code does:</strong> it anchors the window to the start of the current local hour, then compares timestamps over twelve elapsed hours. That keeps a 7:00 forecast entry inside a run that starts a second after 7:00. It ignores periods outside the window and reports unreadable timestamps. Home Assistant’s <a href="https://contributors.home-assistant.io/core/entities/weather/">weather entity reference</a> defines the forecast timestamps and condition names.</p>
+<p>The message counts returned periods, not guaranteed hours of coverage. An hourly provider can return a short list, gaps, or duplicate entries. Even twelve entries do not prove twelve distinct hours. The example therefore never declares the whole window dry. It also cannot tell when the provider originally issued a forecast from its future timestamps alone. The <a href="https://www.home-assistant.io/docs/templating/dates-and-times/">date and time template guide</a> explains the timestamp conversions used here.</p>
+<p><code>continue_on_error</code> lets the message step run after a recoverable forecast-action error, using the initially empty response. It does not repair invalid YAML or a broken template. Such errors still need inspection in the automation’s trace, the step-by-step record of a run. This follows the <a href="https://www.home-assistant.io/docs/automation/building-blocks/">action error-handling documentation</a>.</p>
+<p>The final action creates a <strong>persistent notification</strong>: a message in Home Assistant’s notification panel. It does not send a phone push alert. Reusing the same notification ID updates that one message, and its title shows when this check ran. The <a href="https://www.home-assistant.io/actions/persistent_notification.create/">notification documentation</a> explains that behavior. The check time is not the forecast’s issue time.</p>
+
+<h2 id="worked-example">4. Read the result against a worked example</h2>
+<p>Suppose the check runs at 7 a.m. and these are the only entries returned. Times below are expressed in the home’s local time for readability. These are invented example inputs for explaining the calculation, not measured weather data.</p>
+<p class="table-hint">Swipe sideways to read all columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Illustrative forecast selection"><table><thead><tr><th>Period begins</th><th>Condition</th><th>How the example treats it</th></tr></thead><tbody>
+<tr><td>6 a.m.</td><td>Rainy</td><td>Outside the window; excluded.</td></tr>
+<tr><td>7 a.m.</td><td>Cloudy</td><td>One period checked; no rain code.</td></tr>
+<tr><td>9 a.m.</td><td>Rainy</td><td>One rain period.</td></tr>
+<tr><td>Noon</td><td>Missing</td><td>One period checked, but its condition is unknown.</td></tr>
+<tr><td>3 p.m.</td><td>Pouring</td><td>One more rain period.</td></tr>
+<tr><td>7 p.m.</td><td>Rainy</td><td>At the end boundary; excluded.</td></tr>
+</tbody></table></div>
+<p><strong>Expected message:</strong> take a raincoat; two returned periods include rain. Four periods were reviewed, one without a usable condition. The missing noon value does not erase the positive rain evidence. Equally, those four entries cannot describe every hour of the day.</p>
+<p>If both rain entries become “Cloudy,” the missing noon condition produces <strong>“Forecast incomplete or unavailable.”</strong> If all four entries have known non-rain conditions, the result says only that none of those four periods has a rain condition, and warns about gaps. An empty list also produces the incomplete/unavailable message. These counts describe forecast entries, not the number of hours it will rain or the amount of rainfall.</p>
+
+<h2 id="test">5. Rehearse once, then check the scheduled run</h2>
+<ol>
+<li>Save the automation and use its <strong>Run actions</strong> command. Open Home Assistant’s notification panel. Expect one weather-check message with the current check time and a window beginning at the current hour.</li>
+<li>Open the automation’s <strong>Traces</strong> view. Select the forecast action and inspect its returned variables, then compare the timestamps and conditions with the reported count. Running it at noon checks noon through midnight; it does not pretend it is 7 a.m.</li>
+<li>Run it once more. Expect the existing message to update. Do not unplug a device or change the weather entity’s state to force a rain result.</li>
+<li>Keep the automation enabled and confirm its next 7 a.m. run. Check Home Assistant’s configured time zone if the schedule is wrong. Manual execution verifies the actions, not the scheduled trigger.</li>
+</ol>
+<p>To stop the exercise, disable this new automation and dismiss its notification. If Home Assistant is off at 7 a.m., this simple schedule does not catch up later. It will run at the next scheduled time; you can run its actions manually after startup. Home Assistant’s <a href="https://www.home-assistant.io/docs/automation/trigger/">trigger documentation</a> explains why a trigger reacts at a specific moment.</p>
+<p>For a phone reminder, first verify your phone’s notification action independently, then adapt the final message action to that exact phone. If delivery fails, use the <a href="/blog/home-assistant-notifications-delayed-not-arriving/">phone notification troubleshooting guide</a>. Keep the forecast check and the delivery problem separate.</p>
+
+<h2 id="troubleshooting">When the result is missing or surprising</h2>
+<p class="table-hint">Swipe sideways to read all columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Forecast automation troubleshooting"><table><thead><tr><th>What you see</th><th>Check first</th><th>Next step</th></tr></thead><tbody>
+<tr><td>Weather card works, but the forecast template is empty</td><td>Whether the template reads an old forecast attribute</td><td>Request the forecast action and read its response in later actions.</td></tr>
+<tr><td>Response exists, but the example finds no rows</td><td>The exact key above <code>forecast</code></td><td>Match <code>weather_entity</code> to the actual entity ID, including its suffix.</td></tr>
+<tr><td>Hourly request is rejected</td><td>Provider support for that forecast type</td><td>Use a supported hourly provider, or design a separate daily check.</td></tr>
+<tr><td>Incomplete message or a failed run</td><td>Response list, missing conditions, and trace errors</td><td>Repair the data source or template; do not replace missing values with zero rain.</td></tr>
+<tr><td>A 7 a.m. message remains after an outage</td><td>The date in the notification title and latest trace</td><td>Run the check manually after recovery. An old message is not proof that today’s schedule ran.</td></tr>
+<tr><td>It rained despite a non-rain result</td><td>Returned period coverage and the provider’s own forecast</td><td>Treat this as a planning aid. A forecast is not a rain sensor at your house.</td></tr>
+</tbody></table></div>
+<p>Requesting the forecast again does not necessarily obtain a newly issued prediction: integrations can cache data. Do not add a loop that calls the action every few seconds. For a local observation at the property, the <a href="/blog/best-weather-station-home-assistant-2026/">weather-station comparison</a> explains a different data source and its hardware requirements.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Can I use rain probability instead?</h3>
+<p>Yes, if the provider supplies <code>precipitation_probability</code> for the periods you need. Check the response first. It is a percentage, while <code>precipitation</code> is an amount with a unit. A missing probability is not zero, and probabilities from successive hours should not be added together.</p>
+<h3>Do I need a template sensor?</h3>
+<p>Not for this once-per-run message. Consider one when you also need a reusable forecast value on a dashboard or as a trigger elsewhere. Keep a separate plan for refreshing that value; copying a response into a sensor does not make it update by itself.</p>
+<h3>Can this close a roof or stop watering?</h3>
+<p>This example only creates a message. A roof needs its manufacturer’s obstruction and weather safeguards; a forecast reminder cannot replace them. Watering also needs a policy for missing weather data and any independent schedule. Use the <a href="/blog/home-assistant-irrigation-rain-delay/">irrigation rain-delay guide</a> for that separate decision.</p>
+<p>If you want household routines planned together, Tara’s <a href="/home-automation-kit/">home automation kit for coordinated local routines</a> explains the service approach. Identify which inputs still depend on the internet before deciding how each routine should behave during an outage.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Weather and forecasts</h3><ul>
+<li><a href="https://www.home-assistant.io/actions/weather.get_forecasts/">Get weather forecasts: action and response format</a></li>
+<li><a href="https://www.home-assistant.io/integrations/weather/">Weather states and condition meanings</a></li>
+<li><a href="https://www.home-assistant.io/integrations/met/">Met.no setup and internet dependency</a></li>
+<li><a href="https://contributors.home-assistant.io/core/entities/weather/">Weather entity timestamps and forecast updates</a></li>
+</ul></div><div><h3>Automation setup</h3><ul>
+<li><a href="https://www.home-assistant.io/docs/templating/">Working with templates</a></li>
+<li><a href="https://www.home-assistant.io/docs/templating/dates-and-times/">Date and time calculations</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/building-blocks/">Automation building blocks and error handling</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/trigger/">Triggers and scheduled execution</a></li>
+<li><a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create a persistent notification</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday reminders easier to live with</h2><p>Plan the rooms, devices and routines your household needs, including what each should do when information is missing.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>

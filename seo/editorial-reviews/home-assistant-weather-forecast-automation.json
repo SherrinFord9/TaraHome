@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-weather-forecast-automation",
+  "action": "new",
+  "publicationDate": "2026-10-18",
+  "verdict": "PASS",
+  "readerQuestion": "How can I use a Home Assistant weather forecast in an automation and check the next twelve hours for rain without confusing current weather or missing data with a forecast?",
+  "directAnswer": "Call weather.get_forecasts with an hourly-capable entity, keep its response in the same run, select periods by timestamp and inspect a persistent notification. Missing fields and empty responses are not dry weather. The worked morning rain check is a planning reminder, requires provider data, and does not operate physical devices.",
+  "originalContribution": "Sections 3-5 contain a complete single-entity morning automation, a six-row worked forecast table with an inclusive start/exclusive end boundary, positive rain evidence despite a missing condition, a returned-period count that does not imply continuous hourly coverage, and a reversible notification-only rehearsal. The troubleshooting table separates provider, response-key, template, scheduling and delivery failures.",
+  "limitations": "Documentation research, not a live Home Assistant installation or physical-device test. Thirteen offline YAML/Jinja scenarios used synthetic data and documented substitutes for Home Assistant time helpers; they do not verify a real integration or forecast accuracy. No provider accuracy, latency or hardware-performance measurements. Future forecast timestamps cannot establish issue-time freshness; gaps and duplicates prevent treating counts as hours. The message remains in Home Assistant and is not a phone push alert. No missed-trigger catch-up. Direct Google access was blocked; exact-query web results and independent community discussions were reviewed, with the limitation recorded in the topic brief.",
+  "proofreadFixes": "Final pass added the required ordering warning: forecast checks belong after retrieval, since top-level automation conditions run earlier. Clarified that period counts are neither rainfall hours nor rainfall amounts. Changed the trace instruction to inspect returned variables at the forecast step. Added direct date/time and trigger documentation for timestamp comparisons and missed-run behavior. Reviewed and retained explicit caveats for missing data, partial coverage, other weather hazards, cached predictions, in-app versus phone notifications and check-time versus forecast-issue-time. Corrected the internal brief to the actual existing window-guide URL. The required layout synchronizer removed blank lines from eight old articles; all eight were restored byte-for-byte, and the layout gate still passed. Desktop/mobile visual inspection found no layout defects requiring a change.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A weather entity state reports current conditions; forecasts are separately requested. This prevents treating sunny now as a dry forecast.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/weather/"
+    },
+    {
+      "claim": "weather.get_forecasts is plural, stores data in a response variable, returns a forecast list keyed by the exact weather entity, and supports only types provided by that entity.",
+      "sourceUrl": "https://www.home-assistant.io/actions/weather.get_forecasts/"
+    },
+    {
+      "claim": "Met.no supports hourly forecasts without an API key, but its integration uses an online data service. Local automation execution does not make forecast acquisition offline.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/met/"
+    },
+    {
+      "claim": "Forecast entries have timestamps and optional conditions. Rain codes are checked separately from other hazards; cached data and future valid times do not prove a newly issued forecast.",
+      "sourceUrl": "https://contributors.home-assistant.io/core/entities/weather/"
+    },
+    {
+      "claim": "The original twelve-hour calculation converts timestamps to numbers, anchors at the local hour and formats the result in the configured time zone. Offline cases verified start inclusion, end exclusion and equivalent UTC offsets.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/dates-and-times/"
+    },
+    {
+      "claim": "Jinja namespace variables keep counts outside the loop; absent conditions and invalid times lead to cautious output. Offline fixtures verified 13 scenarios including empty/null lists and missing entity keys.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/loops-and-conditions/"
+    },
+    {
+      "claim": "continue_on_error permits later steps after recoverable action failures; it does not repair malformed configuration or broken templates. The response is initialized empty for fallback reporting.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/building-blocks/"
+    },
+    {
+      "claim": "A persistent notification appears in Home Assistant, and reusing notification_id overwrites the existing message. This is not mobile push delivery.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "Automation conditions are evaluated before actions. The example fetches the forecast before checking it in later actions; a time-only trigger does not automatically replay a missed 7 a.m. event.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "The harmless test runs only a forecast request and notification, then checks trace data and the resulting message. Manual Run actions does not verify the scheduled trigger; the guide asks readers to inspect the next scheduled run separately.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-irrigation-rain-delay/",
+      "section": "Can I skip because rain is forecast instead?",
+      "readerReason": "Readers who need to retrieve and inspect a forecast can follow the new notification-only walkthrough before applying the irrigation guide\u2019s separate controller and missing-data policies."
+    },
+    {
+      "sourcePath": "/blog/best-weather-station-home-assistant-2026/",
+      "section": "Use this five-point checklist before ordering",
+      "readerReason": "After distinguishing local observations from online forecasts, readers can learn how to use an existing forecast for a morning reminder without buying a station merely to obtain predictions."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440\u00d71000 Chromium: centered article and two-column hero, fully readable title and byline, loaded 1200px WebP, Tara Avenir font, no horizontal document overflow. Library first card points to the new article with a loaded image. Legacy .html redirects to the trailing-slash canonical. Full-page and hero screenshots saved outside the repository.",
+    "mobile": "390\u00d7844 Chromium: readable wrapping title, byline and four-bullet TLDR; loaded 480px WebP. Document width equals 390px with no text/image overflow. Wide code and tables scroll within 344px containers, with swipe hints and keyboard-focusable regions. New library card renders cleanly. Screenshots saved in TARAHOME_BLOG_ARTIFACTS."
+  }
+}
