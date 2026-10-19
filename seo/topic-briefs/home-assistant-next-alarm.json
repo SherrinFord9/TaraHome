@@ -1,0 +1,102 @@
+{
+  "version": 2,
+  "slug": "home-assistant-next-alarm",
+  "researchedAt": "2026-10-19",
+  "primaryQuery": "Home Assistant next alarm",
+  "readerQuestion": "How can I start a Home Assistant routine from my phone’s alarm, and what works differently on Android and iPhone?",
+  "selectedBecause": "The exact-query review found an active Android blueprint updated October 8, 2026, a July Android allow-list problem and a 2026 iPhone migration discussion. Together they show recurring practical confusion about scheduled time versus a ringing/stopped event, without establishing search volume. A native time-trigger rehearsal, platform decision table and reschedule/cancel test add value beyond older template examples. Existing Tara wake-up lighting owns the brightness ramp and a manually set schedule, not phone-alarm input. This candidate has a clearer bounded, cross-platform answer than the regional price-planning alternative and a fresher directly relevant discussion than proximity.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant next alarm",
+      "evidenceSummary": "Exact query searched October 19, 2026. https://community.home-assistant.io/t/adjustable-wake-up-to-android-alarm/599838 is an older continuing thread with an October 8, 2026 blueprint update. https://www.reddit.com/r/homeassistant/comments/1v21x9i/android_next_alarm_issue/ (July 20, 2026) asks why a calendar alarm appears despite an allow list. https://www.reddit.com/r/homeassistant/comments/1qst29z/alarm_into_home_assistant_ios_26/ (February 2026, later replies) discusses the missing iOS Next Alarm entity. Primary Companion sensor docs, current Time trigger docs and Apple event-trigger docs establish the different supported paths.",
+      "decision": "selected",
+      "reason": "Distinct phone-to-routine input question; current recurring evidence and a straightforward harmless test. Does not recreate the existing wake-up lamp ramp or holiday-date guide."
+    },
+    {
+      "query": "Home Assistant proximity arriving home automation",
+      "evidenceSummary": "Exact query reviewed October 19. https://community.home-assistant.io/t/simple-proximity-automation-not-triggering/862677 (March 2025) confuses numeric distance with direction; https://www.reddit.com/r/homeassistant/comments/1v4gv18/leave_arrive_home/ (2026) discusses unreliable arrivals. Results include https://www.home-assistant.io/integrations/proximity/ and https://netguide.io/smart-home/en/home-assistant-integrations/proximity-en/. Current official Proximity and Companion location docs distinguish geographic distance/direction from network presence.",
+      "decision": "rejected",
+      "reason": "Viable separate future walkthrough, but strongest specific troubleshooting discussion is older, with considerable handoff to the existing Person-stuck and presence owners. Phone alarm has more recent directly relevant maintenance evidence and a less privacy-sensitive initial exercise."
+    },
+    {
+      "query": "Home Assistant cheapest hours automation",
+      "evidenceSummary": "Exact query reviewed October 19. https://www.reddit.com/r/homeassistant/comments/1wrj7vh/template_sensor_that_finds_the_cheapest_3hour/ (September 27, 2026) asks for consecutive 15-minute price windows; https://community.home-assistant.io/t/nordpool-cheapest-hours-actions/940421 is an October 2025 blueprint. Results include https://www.creatingsmarthome.com/index.php/2022/11/06/home-assistant-nord-pool-cheapest-hours-package/ and https://github.com/kotope/aio_energy_management. Current https://www.home-assistant.io/integrations/nordpool/ documents regional spot-price support and available prices.",
+      "decision": "rejected",
+      "reason": "Useful and distinct from Energy Dashboard measurement, but a sound procedure needs an explicit region/tariff, total-price basis and appliance control decision. Broad treatment would hide important constraints. Better as a separately scoped regional guide."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/adjustable-wake-up-to-android-alarm/599838",
+      "observedAt": "2026-10-19",
+      "evidence": "Continuing blueprint thread, originally August 2023, explicitly updated October 8, 2026. Questions concern offsets, disabled alarms, snoozes and custom morning actions. Recurrence evidence, not volume or tested compatibility."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1v21x9i/android_next_alarm_issue/",
+      "observedAt": "2026-10-19",
+      "evidence": "July 20, 2026 question about a next-alarm entity reporting a calendar package despite an allow list. Use as pain-language evidence only; do not adopt commenters’ unverified Samsung diagnosis."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1qst29z/alarm_into_home_assistant_ios_26/",
+      "observedAt": "2026-10-19",
+      "evidence": "2026 Android-to-iPhone migration discussion asks for an absent Next Alarm entity and explores shortcut-based approaches. Shows the distinction matters; does not prove Shortcuts work identically on every phone."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant next alarm",
+    "reviewedAt": "2026-10-19",
+    "intent": "Connect a changing phone alarm to a morning routine, with a clear answer for Android and iPhone and a way to verify the scheduled trigger.",
+    "resultGap": "Reviewed results divide setup, platform differences and failure behavior across documentation, templates and blueprints. Add a compact decision table, native timestamp offset example, a 07:00/06:45 worked schedule and safe cancellation/rescheduling verification. Explicitly separate the earliest alarm reported by Android from all alarms in an allowed app; do not promise iOS pre-alarm synchronization. Exact-query results were reviewed using the web search tool. Direct Google access was attempted separately and returned an automated-traffic challenge (HTTP 429); do not represent this as a complete Google SERP or ranking audit.",
+    "resultsReviewed": [
+      "https://thehomeassistantblog.com/2024/01/02/use-your-phones-next-alarm-to-trigger-automations-in-home-assistant/",
+      "https://community.home-assistant.io/t/adjustable-wake-up-to-android-alarm/599838",
+      "https://companion.home-assistant.io/docs/core/sensors/"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Companion sensors",
+      "url": "https://companion.home-assistant.io/docs/core/sensors/",
+      "supports": "Android-only Next Alarm sensor, UTC timestamp, unavailable state, package and local-time attributes, allow-list limit."
+    },
+    {
+      "name": "Native Time trigger",
+      "url": "https://www.home-assistant.io/triggers/time/",
+      "supports": "Timestamp entity IDs and signed offset; warning about a next-alarm timestamp changing before a positive offset."
+    },
+    {
+      "name": "Android AlarmManager",
+      "url": "https://developer.android.com/reference/android/app/AlarmManager#getNextAlarmClock()",
+      "supports": "The API returns only the next alarm clock across applications; an app filter cannot enumerate later alarms."
+    },
+    {
+      "name": "Apple Shortcuts event triggers",
+      "url": "https://support.apple.com/guide/shortcuts/event-triggers-apd932ff833f/ios",
+      "supports": "Alarm stopped/snoozed triggers, selected existing alarm, and Sleep/Waking Up distinction."
+    },
+    {
+      "name": "Companion Apple App Intents",
+      "url": "https://companion.home-assistant.io/docs/integrations/siri-shortcuts/",
+      "supports": "Perform action with server/action/JSON data; current documentation marks new App Intents beta, iOS prerequisites and deprecated Call Service naming."
+    },
+    {
+      "name": "Persistent notifications",
+      "url": "https://www.home-assistant.io/actions/persistent_notification.create/",
+      "supports": "Harmless frontend notification with a stable ID, title and message; no phone push requirement."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-wake-up-light/",
+      "/blog/home-assistant-workday-sensor-holidays/",
+      "/blog/home-assistant-scenes-vs-scripts/",
+      "/blog/home-assistant-automation-not-firing/",
+      "/blog/home-assistant-phone-charging-automation/"
+    ],
+    "decision": "Read all canonical titles and all available topic-brief questions, closest article bodies, schedule and ownership maps. Wake-up light owns gradual brightening and a manually edited time; its section Should it follow your phone alarm instead? mentions Next Alarm as a later separate automation, but provides no phone-driven trigger or iPhone event procedure; Workday owns date eligibility; scenes/scripts owns reusable actions; phone charging owns charger cutoff. This page owns phone-alarm inputs and their platform/trigger semantics. Pre-draft intent gate passed. Link /home-automation-kit/ for the local routines commercial owner. Historical constraints from JSON-parsed seo/search-performance-2026-09-21.json and recent seo/search-comparison-2026-09-21.json: cutoff September 19. Completed September 13-19 totals 3 clicks/212 property impressions versus September 6-12 2/205. All three latest clicks are tarahome/homepage, blog zero; US impressions 111 to 72. Device counts desktop 176 to 185, mobile 28 to 27, tablet 1 to 0. Page rows sum to 375 under a different aggregation; query rows omit anonymized searches. No alarm/proximity-specific visible recent query row, and Energy Dashboard 11 versus 15 page impressions/zero clicks do not establish demand or a strategy shift. September 20-21 absent, not zero. Fresh dated September 21 inspections show IKEA, laundry and Spokane indexed; trash/vacation discovered not indexed. Preserve owners regardless. Indexed low visibility, absent crawl and low CTR are different observations. No meaningful recovery, ranking inference for October, platform cause or title rollback cure follows; causal limits are in seo/search-change-review-2026-09-15.md. Read seo/analytics-measurement-contract.md; no GA4/private inquiry evidence used. Separate refresh suggestions: review wake-up light’s phone-alarm handoff and retain the September recovery review’s IKEA/Bluetooth/leak/doorbell evidence-led priorities. No existing article, strategy, homepage or protected page edits; publication/indexing requests do not prove recovery."
+  }
+}

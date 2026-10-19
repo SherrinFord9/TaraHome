@@ -1,0 +1,67 @@
+{
+  "slug": "home-assistant-next-alarm",
+  "action": "new",
+  "publicationDate": "2026-10-19",
+  "verdict": "PASS",
+  "readerQuestion": "How can I start a Home Assistant routine from my phone’s alarm, and what works differently on Android and iPhone?",
+  "directAnswer": "On Android, enable the Companion Next Alarm sensor, verify its reported app/time, then use a native Time trigger with a negative offset. On iPhone, use a selected stopped-alarm Shortcuts event for an after-dismissal routine; it does not provide pre-alarm synchronization. Rehearse with an in-app message and keep the independent phone alarm.",
+  "originalContribution": "Sections 3–4 provide a complete message-only Android automation, a 07:00 to 07:30 reschedule worked example, and separate scheduled-start, reschedule, cancellation and disabled-helper checks. Section 5 supplies a distinct iPhone message rehearsal. The platform and troubleshooting tables separate timestamp, event, connectivity and repetition failures without operating devices.",
+  "limitations": "No phone, alarm app, physical lamp or live Home Assistant testing. YAML/JSON parsing and timing arithmetic were checked locally, not as an integration test. iPhone App Intents are documented as beta, with version-dependent availability and iOS 17+ for Perform action. No measured latency or compatibility claim. The example does not catch up missed starts, cancel a separate running script or enforce once-per-day execution.",
+  "proofreadFixes": "Clarified that the toggle blocks new starts and cannot stop a separate running routine. Moved the iPhone beta/version prerequisite ahead of the procedure and supplied a supported-version/manual-time fallback without requiring a beta install. Added one-off alarm cleanup between test cases to avoid the preceding alarm taking priority. Added focusable labeled code regions and verified keyboard scrolling, alongside focusable tables and swipe hints. Checked that an allow list filters only the next system alarm rather than enumerating later alarms; kept UTC display separate from local time; distinguished negative scheduling offsets from positive-offset misses; distinguished cancellation before a target from undoing executed actions; explicitly stated that single mode is not a daily lockout. Retained visible documentation research disclosure and AI illustration label. Final automated plain-English review: PASS.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Android Next Alarm supplies a UTC timestamp, exposes Local Time and Package attributes, and can be unavailable when there is no next alarm; the equivalent Android-only sensor is not supplied on iOS.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/core/sensors/#next-alarm-sensor"
+    },
+    {
+      "claim": "Android returns the earliest next alarm across applications. Filtering the returned app does not give access to every later alarm.",
+      "sourceUrl": "https://developer.android.com/reference/android/app/AlarmManager#getNextAlarmClock()"
+    },
+    {
+      "claim": "A native Time trigger accepts a timestamp entity and signed offset; negative values run earlier, unknown/unavailable sources have no valid schedule, and a positive offset may fail when the source advances first.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/time/"
+    },
+    {
+      "claim": "Apple Shortcuts distinguishes Is Stopped from Is Snoozed and allows selecting an existing alarm. A stopped event is not advance publication of tomorrow’s alarm time.",
+      "sourceUrl": "https://support.apple.com/guide/shortcuts/event-triggers-apd932ff833f/ios"
+    },
+    {
+      "claim": "Current Companion App Intents documentation marks the new actions beta, requires iOS 17+ for Perform action, uses server/action/JSON action data, and deprecates legacy Call Service.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/integrations/siri-shortcuts/"
+    },
+    {
+      "claim": "persistent_notification.create creates a Home Assistant frontend message; reusing notification_id overwrites the same message. It is not a phone push-delivery test.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "Single mode prevents overlapping runs only. It does not enforce once per morning or preserve an interrupted run across a restart.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "Traces distinguish a missing trigger from a blocked condition or action failure; running actions manually does not verify the real scheduled trigger.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    },
+    {
+      "claim": "The UI Toggle helper supplies the on/off state checked before the rehearsal action. That start condition is not a command to stop a separate running script.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-wake-up-light/",
+      "section": "Should it follow your phone alarm instead?",
+      "readerReason": "That section mentions Next Alarm as a separate future automation but gives no timing configuration. This guide provides the concrete Android/iPhone input procedure without replacing the existing brightness ramp."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-workday-sensor-holidays/",
+      "section": "4. Build a notification-only morning rehearsal",
+      "readerReason": "A reader whose start time changes daily may want the phone alarm as the time source while keeping Workday as a separate eligibility condition."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440×1000 in Chromium: readable two-line title, visible Tara Home credit, working responsive cover-1200.webp, four-bullet TLDR, centered 780px article body and Tara Avenir computed font. Inspected full article and viewport screenshots. Both library copies list the new card first with image/date/title; card navigation and .html redirect resolve correctly. No page overflow. Analytics requests were intentionally blocked in the test browser.",
+    "mobile": "390×844 in Chromium: title fits across three lines, cover-480.webp loads, text and byline remain readable. Both 344px table containers scroll internally across 760px content; keyboard scrolling verified. Labeled code blocks scroll with keyboard and retain visible focus. Article/library have no horizontal page overflow. Inspected top, table, code, iPhone prerequisite and full-page screenshots. All artifacts saved outside the website under TARAHOME_BLOG_ARTIFACTS."
+  }
+}

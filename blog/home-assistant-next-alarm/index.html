@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Next Alarm: Android and iPhone Options</title>
+    <meta name="description" content="Use Home Assistant Next Alarm on Android or an iPhone alarm shortcut. Check offsets, cancellation and timing with a harmless message before controlling devices." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-next-alarm/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-next-alarm/" />
+    <meta property="og:title" content="Home Assistant Next Alarm: Android and iPhone Options" />
+    <meta property="og:description" content="Use Home Assistant Next Alarm on Android or an iPhone alarm shortcut. Check offsets, cancellation and timing with a harmless message before controlling devices." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-next-alarm/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Next Alarm: Android and iPhone Options" />
+    <meta name="twitter:description" content="Use Home Assistant Next Alarm on Android or an iPhone alarm shortcut. Check offsets, cancellation and timing with a harmless message before controlling devices." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-next-alarm/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+
+      .article-body pre { background: #e9e5d7; border: 1px solid var(--line); border-radius: 14px; padding: 20px; overflow-x: auto; max-width: 100%; font-size: .94rem; line-height: 1.6; }
+      .article-body code { overflow-wrap: anywhere; }
+      .article-body pre code { overflow-wrap: normal; }
+      .article-body pre:focus-visible, .article-body .comparison-table:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+      .article-body .table-hint { display: none; }
+      @media (max-width: 820px) { .article-body .table-hint { display: block; font-size: .92rem; margin-bottom: 8px; } }
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-next-alarm/#blogposting",
+      "headline": "Home Assistant Next Alarm: Android and iPhone Options",
+      "description": "Use Home Assistant Next Alarm on Android or an iPhone alarm shortcut. Check offsets, cancellation and timing with a harmless message before controlling devices.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-next-alarm/cover.png",
+      "datePublished": "2026-10-19",
+      "dateModified": "2026-10-19",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-next-alarm/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Next Alarm: Android and iPhone Options",
+          "item": "https://tarahome.ai/blog/home-assistant-next-alarm/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Next Alarm tell Home Assistant that I woke up?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It reports a scheduled time. It does not establish that the alarm sounded, that you heard it, or that you got out of bed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will canceling an alarm stop an already running light routine?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, not in this example. Cancellation received before the target can remove that pending start. A routine that has begun needs its own stop control."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need HACS or a blueprint for this example?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The Android rehearsal uses the Companion sensor, a built-in helper, a Time trigger and a persistent notification. The iPhone rehearsal uses Apple Shortcuts and the installed Companion app’s action support."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+  </head>
+  <body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<div class="article-meta"><span>Everyday automations</span><span>October 19, 2026</span><span>9 min read</span></div>
+<h1>Home Assistant Next Alarm: Android and iPhone Options</h1>
+<p class="lede">Start a routine from your phone’s alarm, check the timing safely, and know when a scheduled time differs from stopping an alarm.</p>
+<p class="article-byline">By <a href="/#about">Tara Home</a></p>
+</div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-next-alarm/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-next-alarm/cover-480.webp 480w, /assets/generated/blog/home-assistant-next-alarm/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="A face-down phone and alarm clock beside a glowing bedside lamp in a bedroom at dawn" fetchpriority="high" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Android: enable Next Alarm in the Companion app.</strong> Use its timestamp in a Time trigger with a negative offset to start before the alarm.</li>
+<li><strong>iPhone: use a Shortcuts alarm event for a routine after dismissal.</strong> The Companion app does not provide the same Android Next Alarm sensor. A stopped-alarm event cannot start something beforehand.</li>
+<li><strong>Check which app supplied the alarm.</strong> Android reports the next system alarm; an allow list does not give Home Assistant a complete list of later alarms.</li>
+<li><strong>Test with an in-app message first, and keep your normal alarm.</strong> A stale phone update or Home Assistant downtime can miss the routine. Changing an alarm after a routine has started does not undo it.</li>
+</ul></aside>
+<h2 id="answer">Choose the alarm signal before choosing the action</h2>
+<p>For a <strong>Home Assistant next alarm</strong> automation on Android, use the Companion app’s Next Alarm sensor as the time source. A negative offset starts the routine early: a 07:00 alarm with a fifteen-minute lead means a 06:45 start. First prove that schedule with a message inside Home Assistant, then connect it to a routine you already trust.</p>
+<p>On iPhone, the simplest documented route is different: let Apple Shortcuts react when you stop a selected alarm and call Home Assistant. That suits a “start my morning” action after you wake up. For a light that must begin <em>before</em> an iPhone alarm, start with an editable Home Assistant time helper; it will not automatically follow changes in Clock.</p>
+<p>This guide supplies the timing connection. Our <a href="/blog/home-assistant-wake-up-light/">wake-up-light walkthrough</a> covers gradually brightening an existing lamp and providing a stop control. Keep those as separate decisions: when the routine starts, and what it does.</p>
+<p class="research-method">Researched from Home Assistant, Companion app, Android and Apple documentation on October 19, 2026. The examples are documentation-based and were checked locally for configuration syntax and timing arithmetic; they were not run on phones or a live Home Assistant installation. Menu labels and available iOS actions vary by installed version. The cover is an AI-generated bedroom illustration.</p>
+
+<h2 id="choose">1. Match the method to the moment you want</h2>
+<p class="table-hint">Swipe sideways to read all columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Phone alarm automation choices"><table><thead><tr><th>You want…</th><th>Start with…</th><th>Main limit</th></tr></thead><tbody>
+<tr><td>A routine before an Android alarm</td><td>Next Alarm timestamp plus a negative Time offset</td><td>The phone must report the intended alarm before the calculated start.</td></tr>
+<tr><td>A routine when you stop an iPhone alarm</td><td>Shortcuts → Alarm → Is Stopped, selecting one existing alarm</td><td>The phone must reach Home Assistant when the shortcut runs.</td></tr>
+<tr><td>A pre-alarm routine with a predictable time on either phone</td><td>An editable Home Assistant date/time helper</td><td>You maintain the schedule separately from the phone’s alarm.</td></tr>
+<tr><td>Proof that an alarm rang or was dismissed</td><td>An actual alarm-event integration or supported phone automation</td><td>A future timestamp alone does not report what happened afterward.</td></tr>
+</tbody></table></div>
+<p>The platform distinction follows the <a href="https://companion.home-assistant.io/docs/core/sensors/#next-alarm-sensor">Companion sensor documentation</a> and <a href="https://support.apple.com/guide/shortcuts/event-triggers-apd932ff833f/ios">Apple’s alarm-event options</a>. Avoid starting with a long delay that merely guesses when the next alarm will happen.</p>
+
+<h2 id="android">2. Check the Android sensor before writing a routine</h2>
+<ol>
+<li>Install and sign in to the Home Assistant Companion app on the Android phone. In its settings, open <strong>Companion app → Manage sensors → Next Alarm</strong> and enable the sensor.</li>
+<li>Set a temporary alarm in your chosen clock app. In Home Assistant, find that phone’s Next Alarm entity under its Mobile App device. An <strong>entity</strong> is a named reading or control; copy its entity ID, such as <code>sensor.my_phone_next_alarm</code>.</li>
+<li>Inspect the <strong>Local Time</strong> and <strong>Package</strong> attributes. Package identifies the app that supplied the alarm. The sensor’s main timestamp uses UTC; that alone does not mean the alarm is in the wrong time zone.</li>
+<li>If necessary, enable the sensor’s <strong>Allow list</strong> and select your clock app. Change the test alarm, then check the reported value again. Do not build the routine until the displayed local date and time are right.</li>
+</ol>
+<p><strong>The allow list filters; it cannot search all your alarms.</strong> Android’s <a href="https://developer.android.com/reference/android/app/AlarmManager#getNextAlarmClock()">getNextAlarmClock API</a> returns the next alarm across applications. If another app owns that next entry, filtering it out does not reveal every later alarm from your preferred clock. The Companion documentation also notes that no next alarm produces <code>unavailable</code>.</p>
+
+<h2 id="example">3. Create a message-only Android rehearsal</h2>
+<p>Create a <strong>Toggle</strong> helper under <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Name it “Phone alarm routine,” check its ID, and turn it on for this test. A <a href="https://www.home-assistant.io/integrations/input_boolean/">toggle helper</a> is a software switch. Turn it off to block new starts. It does not stop a separate routine that is already running; that routine needs its own stop control.</p>
+<p>Under <strong>Settings → Automations &amp; scenes</strong>, create a new empty automation. Choose <strong>Edit in YAML</strong> from its menu. Replace the empty contents with the following, substituting your sensor and helper IDs. YAML is Home Assistant’s text configuration format; do not add an outer <code>automation:</code> line in this editor.</p>
+<pre tabindex="0" role="region" aria-label="Android alarm rehearsal YAML"><code>alias: "Phone alarm - timing rehearsal"
+mode: single
+triggers:
+  - trigger: time
+    at:
+      entity_id: sensor.my_phone_next_alarm
+      offset: "-00:15:00"
+conditions:
+  - condition: state
+    entity_id: input_boolean.phone_alarm_routine
+    state: "on"
+actions:
+  - action: persistent_notification.create
+    data:
+      notification_id: phone_alarm_rehearsal
+      title: "Phone alarm timing check"
+      message: &gt;-
+        The pre-alarm routine ran at
+        {{ now().strftime('%H:%M:%S') }}.
+        No device was operated.</code></pre>
+<p>The <a href="https://www.home-assistant.io/triggers/time/">Time trigger</a> accepts a timestamp sensor directly. This avoids manually cutting the hour and minute out of a date string. An unknown or unavailable source supplies no valid time to schedule. A positive offset can fail if the phone changes its “next alarm” before that later time arrives.</p>
+<p>The action creates a <a href="https://www.home-assistant.io/actions/persistent_notification.create/">persistent notification inside Home Assistant</a>, not a phone push alert. Reusing the notification ID updates the same message. Its displayed execution time helps you spot another run without filling the notification panel.</p>
+<h3>A worked schedule: changing tomorrow’s start</h3>
+<p>Suppose your alarm is 07:00 and this routine has a fifteen-minute lead. At 22:00 you change the alarm to 07:30, and Home Assistant receives that new timestamp. The planned start becomes 07:15. If the sensor instead still shows 07:00, stop here and investigate the phone update; changing the automation’s offset will not repair stale input.</p>
+<p>If you cancel at 06:30 and the sensor reports no alarm before 06:45, that old start should not occur. If you cancel at 06:50, the 06:45 action has already happened. A lamp routine needs its own stop behavior; removing the source alarm is not an undo command.</p>
+
+<h2 id="test">4. Verify timing, changes and cancellation while awake</h2>
+<p>Use one-off test alarms and remove each before the next test, so an earlier alarm cannot take its place in the sensor.</p>
+<ol>
+<li>For a short test, change the example’s offset to <code>"-00:01:00"</code> and save. Set a temporary phone alarm about five minutes ahead. Confirm its date and local time in Home Assistant.</li>
+<li>Leave the helper on and wait. Expect the in-app message about one minute before that alarm. Check the automation’s <strong>trace</strong>, its record of a run, to confirm that the Time trigger started it. Pressing Run actions checks the action only, not this timing path.</li>
+<li>Dismiss the test message. Set another test alarm sufficiently far ahead, then move it later before its original pre-alarm time. Once the sensor shows the new time, expect no message at the old target and a message at the new target.</li>
+<li>Repeat with a new test alarm, but cancel it before the target. Confirm the sensor no longer carries that timestamp. Expect no message for the canceled target; a different remaining alarm may create a different target.</li>
+<li>Repeat with the helper off. The trigger may appear in the trace, but the condition should prevent the message. Restore your chosen offset afterward and remove temporary phone alarms.</li>
+</ol>
+<p>Use <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Home Assistant’s trace guidance</a> to distinguish “did not trigger” from “triggered but a condition blocked it.” If you miss the target while Home Assistant is off, this small recipe has no catch-up step. Keep the phone’s independent alarm enabled.</p>
+
+<h2 id="iphone">5. On iPhone, rehearse an alarm-stopped shortcut</h2>
+<p>Use this path when an action <em>after dismissal</em> is enough. Sign in to the Companion app and check that it can reach your Home Assistant server. Apple documents separate stopped and snoozed events; choose the one you actually intend.</p>
+<p><strong>Version check:</strong> the current <a href="https://companion.home-assistant.io/docs/integrations/siri-shortcuts/">Companion App Intents documentation</a> marks these newer actions as beta and lists iOS 17 or later for Perform action. An older app may show <strong>Call Service</strong> instead; the documentation marks that legacy action deprecated. Check your installed app’s available actions rather than assuming the new name is present. If Perform action is absent, use the supported action offered by your installed app or keep the separate time-helper schedule; this guide does not require installing a beta release. Both the server selection and supplied data matter.</p>
+<ol>
+<li>In <strong>Shortcuts → Automation</strong>, create a personal automation using <strong>Alarm → Is Stopped</strong>. Select one existing test alarm, rather than every alarm.</li>
+<li>Add Home Assistant’s <strong>Perform action</strong>. Select your server and <code>persistent_notification.create</code>. Enter the JSON below in <strong>Action data</strong>.</li>
+<li>Choose automatic execution if your installed Shortcuts version offers it, and resolve any permission prompt during this rehearsal. Let the selected test alarm sound, then stop it.</li>
+<li>Open Home Assistant’s notifications. Expect “iPhone alarm stopped.” Snoozing is a different event and should not satisfy this stopped-only test.</li>
+</ol>
+<pre tabindex="0" role="region" aria-label="iPhone alarm action JSON"><code>{
+  "notification_id": "iphone_alarm_rehearsal",
+  "title": "iPhone alarm stopped",
+  "message": "The selected alarm was stopped. No device was operated."
+}</code></pre>
+<p>This shortcut sends an event-time request. It does not publish tomorrow’s next alarm to Home Assistant, and cannot provide a fifteen-minute advance warning. A shortcut that exports a schedule beforehand is a separate synchronization project: it must handle disabled alarms, repeat days, changes and time zones.</p>
+
+<h2 id="troubleshooting">When the result is wrong</h2>
+<p class="table-hint">Swipe sideways to read all columns.</p>
+<div class="comparison-table" tabindex="0" role="region" aria-label="Phone alarm troubleshooting"><table><thead><tr><th>Symptom</th><th>Check</th><th>Next step</th></tr></thead><tbody>
+<tr><td>Android shows the wrong alarm</td><td>Local Time, Package and the next alarm reported by Android</td><td>Change one test alarm and observe the sensor. A filter cannot manufacture a later timestamp.</td></tr>
+<tr><td>Message appears when you press Run, but never on schedule</td><td>Whether the pre-alarm target was still in the future when saved; sensor availability; helper state</td><td>Use a fresh five-minute test and inspect its trace.</td></tr>
+<tr><td>An after-alarm offset never runs</td><td>Whether the Next Alarm sensor advanced first</td><td>Use a supported actual alarm event when the intent is dismissal, rather than adding time to a moving timestamp.</td></tr>
+<tr><td>A later alarm runs the routine again</td><td>Additional alarms or a snooze that exposes another future target</td><td>Decide whether repeats are acceptable before attaching devices. Single mode is not a once-per-day limit.</td></tr>
+<tr><td>iPhone shortcut does nothing</td><td>Selected alarm/event, execution permissions, action availability and server connection</td><td>Run the same message action manually, then repeat with the selected alarm while the phone is locked.</td></tr>
+</tbody></table></div>
+<p>As the <a href="https://www.home-assistant.io/docs/automation/modes/">automation-mode documentation</a> explains, <code>single</code> blocks overlapping runs only. Once a run finishes, another trigger can start it again. For a real routine, prefer explicit “turn on” actions over “toggle,” and decide whether to add a once-per-morning record or other condition before using multiple alarms.</p>
+
+<h2 id="next">Connect one routine after the rehearsal passes</h2>
+<p>Start with a non-critical lamp or an informational message. Keep the visible pause control and add an appropriate at-home check before operating a bedroom while you are away. Phone updates still need a working path to the server; being able to use Home Assistant on home Wi-Fi does not establish that it is reachable elsewhere.</p>
+<p>If several triggers should share the same morning actions, use a <a href="/blog/home-assistant-scenes-vs-scripts/">reusable script</a> instead of duplicating device commands. For a routine that should skip public holidays or personal leave, follow the <a href="/blog/home-assistant-workday-sensor-holidays/">Workday and days-off guide</a>. Decide whether the phone’s deliberately set alarm or that calendar should take priority.</p>
+<p>Tara’s <a href="/home-automation-kit/">local home automation kit</a> explains how coordinated routines and household controls fit into a planned setup. The useful result is a morning routine whose timing and pause behavior everyone understands.</p>
+<h2 id="faq">Common questions</h2>
+<h3>Does Next Alarm tell Home Assistant that I woke up?</h3>
+<p>No. It reports a scheduled time. It does not establish that the alarm sounded, that you heard it, or that you got out of bed.</p>
+<h3>Will canceling an alarm stop an already running light routine?</h3>
+<p>No, not in this example. Cancellation received before the target can remove that pending start. A routine that has begun needs its own stop control.</p>
+<h3>Do I need HACS or a blueprint for this example?</h3>
+<p>No. The Android rehearsal uses the Companion sensor, a built-in helper, a Time trigger and a persistent notification. The iPhone rehearsal uses Apple Shortcuts and the installed Companion app’s action support.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Phone alarm inputs</h3><ul>
+<li><a href="https://companion.home-assistant.io/docs/core/sensors/#next-alarm-sensor">Companion app: Next Alarm sensor</a></li>
+<li><a href="https://developer.android.com/reference/android/app/AlarmManager#getNextAlarmClock()">Android: next alarm API</a></li>
+<li><a href="https://support.apple.com/guide/shortcuts/event-triggers-apd932ff833f/ios">Apple: alarm and sleep event triggers</a></li>
+<li><a href="https://companion.home-assistant.io/docs/integrations/siri-shortcuts/">Companion app: Apple App Intents and version requirements</a></li>
+</ul></div><div><h3>Home Assistant setup</h3><ul>
+<li><a href="https://www.home-assistant.io/triggers/time/">Time triggers and offsets</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li>
+<li><a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create an in-app notification</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Automation traces and troubleshooting</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/modes/">Automation modes and repeated runs</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday routines easier to use</h2><p>Plan the rooms, devices and manual controls your household needs.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>
