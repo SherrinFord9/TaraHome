@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Phone Widgets: Android and iPhone Setup</title>
+    <meta name="description" content="Set up Home Assistant phone widgets on Android or iPhone. Test a routine button safely, add a temperature reading, and diagnose stale displays." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-phone-widgets/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-phone-widgets/" />
+    <meta property="og:title" content="Home Assistant Phone Widgets: Android and iPhone Setup" />
+    <meta property="og:description" content="Set up Home Assistant phone widgets on Android or iPhone. Test a routine button safely, add a temperature reading, and diagnose stale displays." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-phone-widgets/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Phone Widgets: Android and iPhone Setup" />
+    <meta name="twitter:description" content="Set up Home Assistant phone widgets on Android or iPhone. Test a routine button safely, add a temperature reading, and diagnose stale displays." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-phone-widgets/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-phone-widgets/#blogposting",
+      "headline": "Home Assistant Phone Widgets: Android and iPhone Setup",
+      "description": "Set up Home Assistant phone widgets on Android or iPhone. Test a routine button safely, add a temperature reading, and diagnose stale displays.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-phone-widgets/cover.png",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-20",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-phone-widgets/"
+      },
+      "citation": [
+        "https://companion.home-assistant.io/docs/integrations/android-widgets/",
+        "https://companion.home-assistant.io/docs/integrations/ios-widgets/",
+        "https://support.apple.com/en-us/118610",
+        "https://www.home-assistant.io/dashboards/views/",
+        "https://www.home-assistant.io/docs/configuration/remote/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://www.home-assistant.io/integrations/light/",
+        "https://www.home-assistant.io/integrations/script/",
+        "https://www.home-assistant.io/security/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Phone Widgets: Android and iPhone Setup",
+          "item": "https://tarahome.ai/blog/home-assistant-phone-widgets/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I need a new temperature sensor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No new sensor is needed if the room reading already exists in Home Assistant. Choose that sensor entity, not an unrelated thermostat target temperature. The practice button needs no sensor at all."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use a widget or a notification?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use a widget for something you choose to check or start. Use a notification when the system needs to get your attention. If the message should ask a question, our actionable-notification guide adds Yes/No buttons."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+<main class="article"><article>
+<header class="hero article-hero"><div><p class="article-meta"><span>Everyday controls</span><span><time datetime="2026-10-20">October 20, 2026</time></span><span>8 min read</span></p><h1>Home Assistant Phone Widgets: Android and iPhone Setup</h1><p class="lede">Put one useful routine and a room temperature on your phone, then check commands and display freshness separately.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-phone-widgets/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-phone-widgets/cover-480.webp 480w, /assets/generated/blog/home-assistant-phone-widgets/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" loading="eager" alt="A face-down phone in a green case beside a book and a warm reading lamp" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Start with the official Companion app:</strong> Android has an Action button; iPhone has a Scripts widget. Point either at one saved routine.</li>
+<li><strong>Test a software switch first:</strong> the walkthrough below changes no physical device. Confirm the result inside Home Assistant before adding a lamp.</li>
+<li><strong>Treat readings as a glance:</strong> a phone widget can show an older value. Do not use it as your only warning for a leak, freezer fault or open door.</li>
+<li><strong>Check access separately:</strong> away-from-home control needs a working remote connection. Choosing a few widget controls does not restrict the signed-in account to those devices.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant, Companion app and Apple documentation on October 20, 2026. This is an illustrative configuration walkthrough, not a test on physical phones or smart-home hardware. Menus vary by app and operating-system version. The cover is an AI-generated editorial illustration.</p>
+
+<h2 id="answer">Start with one button and one reading</h2>
+<p><strong>Home Assistant phone widgets</strong> are useful for a small everyday job: start reading-time lighting, or glance at the living-room temperature. Begin with the official Companion app already signed into your Home Assistant server. Keep the first button separate from the temperature display so you know whether a tap should change something or only show information.</p>
+<p>Our suggested first layout is two clearly named items: <strong>Reading light on</strong> and <strong>Living-room temperature</strong>. An explicit “on” command avoids a second tap turning the lamp back off. Before connecting that button to a real light, build the practice routine below. It gives both phones the same harmless result to check.</p>
+<p>An <strong>entity</strong> is one named control or reading, such as a lamp or temperature sensor. A <strong>script</strong> is a saved set of actions. Keeping the behavior in a script lets a phone button and dashboard button call the same routine; see <a href="/blog/home-assistant-scenes-vs-scripts/">when to use scenes and scripts</a> for a larger lighting preset.</p>
+
+<h2 id="practice">1. Create a harmless practice routine</h2>
+<ol>
+<li>Open the Companion app and confirm it reaches your usual dashboard on home Wi-Fi. Update the app through its normal app store if needed; updating the server does not update the phone app.</li>
+<li>Using an administrator account, go to <strong>Settings → Devices &amp; services → Helpers → Create helper → Toggle</strong>. Name it <strong>Widget practice</strong>. This is a software switch with no hardware attached. Keep it out of existing automations.</li>
+<li>Check its entity ID. The example uses <code>input_boolean.widget_practice</code>; substitute your actual ID if different. Leave the helper off and keep its control open in a second browser window.</li>
+<li>Go to <strong>Settings → Automations &amp; scenes → Scripts</strong>, create a new script, and choose <strong>Edit in YAML</strong> from its menu. Replace the new script’s contents with this block, then save.</li>
+</ol>
+<pre><code>alias: Widget practice on
+mode: single
+sequence:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.widget_practice</code></pre>
+<p>YAML is the indented text format used by the editor. Paste this into <strong>one script’s editor</strong>, without a surrounding <code>script:</code> heading. Run the saved script once: the helper should become <strong>on</strong>. Turn the helper off again using its control. The <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper reference</a> documents the software switch; the <a href="https://www.home-assistant.io/integrations/script/">Scripts reference</a> explains saved sequences.</p>
+<p>Record the script’s actual entity ID too; the following steps assume <code>script.widget_practice_on</code>. A script’s own on/off state indicates whether it is running, so use the <em>helper</em> to check this short routine’s lasting result.</p>
+
+<h2 id="android">2. Add the Android button</h2>
+<ol>
+<li>Long-press an empty Home Screen area, open <strong>Widgets</strong>, find <strong>Home Assistant</strong>, and place an <strong>Action button</strong>.</li>
+<li>Select the saved script’s action, <strong>Widget practice on</strong> (<code>script.widget_practice_on</code>). This script needs no extra action data. Give the button a clear label and save.</li>
+<li>Tap it and inspect the helper in the second window. Android’s green check means the action call succeeded; it does not prove a physical device moved.</li>
+</ol>
+<p>For temperature, add an <strong>Entity State</strong> widget and select your temperature sensor. Choose refresh rather than toggle where the tap option is offered. The Action button also offers <strong>Require authentication</strong> for a phone credential check. See the <a href="https://companion.home-assistant.io/docs/integrations/android-widgets/">Android widget instructions</a>.</p>
+
+<h2 id="iphone">3. Add the iPhone button</h2>
+<ol>
+<li>Touch and hold an empty Home Screen area, choose <strong>Edit → Add Widget</strong>, and find <strong>Home Assistant</strong>. Add its <strong>Scripts</strong> widget, then edit it to select <strong>Widget practice on</strong>.</li>
+<li>Tap the script and inspect the helper in the second window. If your installed app offers a different widget picker, check its available types against the current reference below.</li>
+<li>Add a <strong>Sensors</strong> widget for your temperature sensor. Its documented refresh interval is approximately 15 minutes, not a guaranteed live feed.</li>
+</ol>
+<p>If using <strong>Custom Widget (BETA)</strong>, create it under <strong>Companion App Settings → Widgets → Create</strong>, explicitly choose <strong>Run script</strong>, then select that custom configuration in the Home Screen widget. Enable <strong>Show last update time</strong> to make display age visible. See <a href="https://companion.home-assistant.io/docs/integrations/ios-widgets/">Home Assistant’s iOS widget options</a> and <a href="https://support.apple.com/en-us/118610">Apple’s add/edit instructions</a>.</p>
+
+<h2 id="verify">4. Check commands and displays separately</h2>
+<p>This rehearsal deliberately uses a persistent software value. It avoids guessing from a brief animation or changing real devices. The outcomes below follow the example’s logic; they are expected results, not measured phone performance.</p>
+<p class="table-hint">On a narrow screen, scroll the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Widget practice checks" tabindex="0"><table><thead><tr><th scope="col">Try this</th><th scope="col">Expected result</th><th scope="col">What it tells you</th></tr></thead><tbody>
+<tr><td>Helper off; tap the practice button once</td><td>Helper becomes on in the open Home Assistant window</td><td>The button reached the intended script and helper.</td></tr>
+<tr><td>Helper on; tap again</td><td>Helper stays on</td><td>This command sets a value; it does not reverse it.</td></tr>
+<tr><td>Turn helper off in Home Assistant; tap again</td><td>Helper returns to on</td><td>A fresh command works, rather than merely showing the previous result.</td></tr>
+<tr><td>Compare a temperature widget with its entity inside the app</td><td>The widget may show an older reading</td><td>Display freshness needs its own check. The practice button test does not establish it.</td></tr>
+</tbody></table></div>
+<p>A recent widget refresh time does not prove that the sensor itself supplied a new measurement. If both the widget and the app show an old or unavailable reading, check the sensor’s own update history before changing the widget.</p>
+<p>Once this works, create a <em>separate</em> script for the reading lamp and point the phone button at it. In the visual script editor, add <strong>Light: Turn on</strong> and select only the intended light. Check the lamp from its normal control first, then run the script while watching it. Keep locks, garage doors, alarms and essential lighting out of the first experiment. Home Assistant’s <a href="https://www.home-assistant.io/integrations/light/">light actions</a> describe the available commands.</p>
+<p>Keep an ordinary way to turn the lamp off. A script is a command, not a permanent override of other automations. For lighting that should stay under manual control afterward, use the separate <a href="/blog/home-assistant-automation-manual-override/">manual-override walkthrough</a>.</p>
+
+<h2 id="troubleshooting">5. Fix the failing part</h2>
+<div class="comparison-table" role="region" aria-label="Widget troubleshooting decisions" tabindex="0"><table><thead><tr><th scope="col">What you observe</th><th scope="col">Check next</th><th scope="col">Keep the test small</th></tr></thead><tbody>
+<tr><td>The practice script fails even inside Home Assistant</td><td>Check its target helper ID and saved action.</td><td>Fix the script before changing phone settings.</td></tr>
+<tr><td>The app cannot open Home Assistant either</td><td>Check the selected server and connection.</td><td>Restore app access before rebuilding the widget.</td></tr>
+<tr><td>The app works, but Android’s widget fails</td><td>Turn Data Saver off for the test and allow Home Assistant’s background data.</td><td>Then recreate just the practice widget if needed.</td></tr>
+<tr><td>A tap opens a page without changing the helper</td><td>Check whether the widget is set to navigate or run the practice script.</td><td>If the correct action still fails, record the app version and reproduce with the helper before reporting it.</td></tr>
+<tr><td>The helper changes but a displayed reading looks stale</td><td>Open the entity in the app and compare values.</td><td>Investigate refresh behavior rather than repeatedly sending commands.</td></tr>
+<tr><td>Home Wi-Fi works; mobile data does not</td><td>Check remote access and, if used, the phone’s VPN connection.</td><td>Repeat with the practice helper, not a door lock.</td></tr>
+</tbody></table></div>
+<p>Android’s current documentation describes a default 30-minute refresh while the screen is on; newer releases can need additional notification access for faster updates. Permission labels vary by Android release. Read the <a href="https://companion.home-assistant.io/docs/integrations/android-widgets/">refresh prerequisites</a> before changing them. On iPhone, background refresh requests remain subject to the operating system’s budget, as the <a href="https://companion.home-assistant.io/docs/integrations/ios-widgets/">iOS documentation</a> explains.</p>
+<p>A home-network address alone is insufficient when the phone is away. <strong>Home Assistant Cloud requires a subscription</strong>; a properly configured VPN is another route. A VPN is a private connection back to the home network and must actually be connected when needed. Follow the <a href="https://www.home-assistant.io/docs/configuration/remote/">official remote-access options</a> or our <a href="/blog/home-assistant-remote-access-without-port-forwarding/">remote access without port forwarding guide</a>. A widget does not supply that connection itself.</p>
+
+<h2 id="sharing">A simple widget is not a restricted account</h2>
+<p>For a trusted family member, showing only a few useful controls makes the phone easier to use. It does not prove that their Home Assistant login can access only those controls. Non-admin status, hidden dashboard tabs and a widget’s confirmation prompt do not establish room-only authorization.</p>
+<p>The <a href="https://www.home-assistant.io/security/">Home Assistant security policy</a> treats logged-in users as trusted, and its <a href="https://www.home-assistant.io/dashboards/views/">view documentation</a> says hidden tabs remain reachable by direct URL. If someone must be prevented from reaching cameras, locks or other entities, read <a href="/blog/limit-home-assistant-users-to-certain-devices/">the guide to limiting user access</a> before providing a login.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Do I need a new temperature sensor?</h3>
+<p>No new sensor is needed if the room reading already exists in Home Assistant. Choose that sensor entity, not an unrelated thermostat target temperature. The practice button needs no sensor at all.</p>
+<h3>Should I use a widget or a notification?</h3>
+<p>Use a widget for something you choose to check or start. Use a notification when the system needs to get your attention. If the message should ask a question, our <a href="/blog/home-assistant-actionable-notifications/">actionable-notification guide</a> adds Yes/No buttons.</p>
+<p>When planning <a href="/home-automation-kit/">local routines and shared household controls</a>, agree on a few plain labels before adding more buttons. “Reading light on” tells another person what a tap will do.</p>
+
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Phone setup</h3><ul><li><a href="https://companion.home-assistant.io/docs/integrations/android-widgets/">Android widgets</a></li><li><a href="https://companion.home-assistant.io/docs/integrations/ios-widgets/">iOS widgets</a></li><li><a href="https://support.apple.com/en-us/118610">Add and edit iPhone widgets</a></li></ul></div><div><h3>Home Assistant configuration</h3><ul><li><a href="https://www.home-assistant.io/dashboards/views/">Dashboard view visibility</a></li><li><a href="https://www.home-assistant.io/docs/configuration/remote/">Remote access</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li><li><a href="https://www.home-assistant.io/integrations/light/">Light controls</a></li><li><a href="https://www.home-assistant.io/integrations/script/">Scripts</a></li><li><a href="https://www.home-assistant.io/security/">Security policy</a></li></ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday controls easy to find</h2><p>Choose the rooms and routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>
