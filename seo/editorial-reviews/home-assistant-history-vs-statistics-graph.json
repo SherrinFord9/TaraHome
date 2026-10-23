@@ -1,0 +1,71 @@
+{
+  "slug": "home-assistant-history-vs-statistics-graph",
+  "action": "new",
+  "publicationDate": "2026-10-23",
+  "verdict": "PASS",
+  "readerQuestion": "Which built-in Home Assistant graph should I use for recent room events and monthly temperature trends, and why can graphs of the same sensor differ?",
+  "directAnswer": "Use History graph for detailed recent changes and a window-state timeline; use Statistics graph with daily min/max/mean for monthly temperature patterns. Older History can also use hourly statistics, and missing or unrecorded data cannot be recovered by changing a card. Start with one existing recorded temperature sensor and two display-only cards.",
+  "originalContribution": "Sections 3-5 provide two complete native dashboard-card configurations for the same room, a 20 C for 50 minutes / 24 C for 10 minutes worked example yielding 20.67 C, and a comparison table showing what detailed history, hourly mean and extremes can establish. A separate symptom table and read-only verification sequence distinguish missing statistics, expired detail and a separate Statistics helper.",
+  "limitations": "Documentation research, not physical hardware testing or execution inside a live Home Assistant instance. Both YAML snippets were parsed and the arithmetic checked locally; browser screenshots show the Tara article, not a Home Assistant product test. Actual sensor cadence, classification, saved history and installed UI version vary. The generated interior is labeled illustrative. No rank, traffic, indexing or product-performance claim follows from these checks.",
+  "proofreadFixes": "Automated final proofreading PASS after corrections: replaced a stiff exact-query opening with a natural direct comparison; changed setup wording from views to cards to avoid confusing dashboard tabs; explicitly separated hourly example values from the daily chart, incomplete days and missing readings; clarified that unchanged values are not freshness evidence; kept the optional window entity removal instruction and card-editor placement explicit; corrected the sensor-documentation fragment to #state-classes; made YAML blocks independently scrollable and focusable with a mobile scroll hint; added current Settings > Tools labels with older Developer tools wording. Cover inspection found inconsistent generated numeric markings; a built-in image edit removed those markings before publication. Link checking initially overlooked named HTML anchors; the external checker was corrected and all article source fragments resolved. Final reading found no unsupported testing, internal topic-selection copy, deletion-first advice or changes to control automations.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "History graph shows recent state history and can fill older sections with hourly long-term statistics; it is incorrect to describe it as permanently limited to ten days. The draft explicitly preserves this distinction.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/history-graph/"
+    },
+    {
+      "claim": "The Statistics graph options days_to_show: 30, period: day, chart_type: line and stat_types min/max/mean are documented native configuration. Both copyable card snippets parse as YAML; no custom component or live execution is claimed.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/statistics-graph/"
+    },
+    {
+      "claim": "Automatic sensor statistics require a numeric state, a suitable state class and Recorder inclusion. An entity ID beginning sensor. is insufficient, and a current numeric display does not prove saved statistics.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/long-term-statistics/"
+    },
+    {
+      "claim": "Ordinary current room temperature uses measurement state class; measurements have minimum, maximum and mean summaries. The guide does not relabel counters or confuse temperature with electrical energy.",
+      "sourceUrl": "https://contributors.home-assistant.io/core/entities/sensor/"
+    },
+    {
+      "claim": "A measurement mean is time weighted. For a complete hypothetical hour at 20 C for 50 minutes and 24 C for 10 minutes, the calculated mean is 20.67 C, with min 20 and max 24. These values are clearly marked calculated, not measured.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/long-term-statistics/#what-the-statistics-contain"
+    },
+    {
+      "claim": "Older History temperature data can be hourly averages; the detailed line is darker. Current History supports time-range selection and CSV download. Exporting summarized data cannot recover the original minute sequence.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/history/"
+    },
+    {
+      "claim": "Recorder default detailed retention is ten days; inclusion filters control saved data. Chart selection is not a storage-retention setting and is not a reason to purge or delete history.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/recorder/"
+    },
+    {
+      "claim": "The Statistics helper creates a separate buffered calculation with sample-count and age settings. It is different from the automatic statistics used by the chart and is not a prerequisite for these cards.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/statistics/"
+    },
+    {
+      "claim": "Card setup uses an editable dashboard and Add card, with layout-dependent placement. The instructions avoid taking over an automatically managed dashboard without explaining the consequence and distinguish card YAML from configuration.yaml.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/cards/"
+    },
+    {
+      "claim": "The suggested verification is display-only: compare the same entity and recorded period, then check a completed hour. It requires no device operation, state injection, deletion, or safety-control change. Expected results are explicitly stated.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/history/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-filter-sensor/",
+      "section": "1. Choose the smallest change that solves the problem — calmer chart option",
+      "readerReason": "A reader who only wants a calmer display can follow the paired native-card setup without creating or changing a sensor used by automations. Suggestion for a separate navigation review only."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-database-too-large-recorder-purge/",
+      "section": "Do Not Confuse Raw History With Long-Term Statistics",
+      "readerReason": "A reader keeping excessive detailed history for temperature trends can learn how to display saved summaries. This is a contextual next step, not a promise of indexing; no existing article was edited."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440x1000 on the local static server. Visually inspected article hero/TLDR and worked table: regular-weight Tara Avenir, centered 780px body, readable title, loaded post-local WebP cover and complete 918px tables. Document width equals viewport. New card is first in /blog/, with the correct October 23 date and image; .html redirect reaches the canonical trailing-slash path. Screenshots are in TARAHOME_BLOG_ARTIFACTS. Analytics was blocked during browsing; the only local-page console error was the intentionally blocked Google tag.",
+    "mobile": "PASS at 390x844. Visually inspected title, byline, image, YAML block, worked table and /blog.html card. Document width remains 390px; 760px tables scroll inside 344px regions, and long YAML lines scroll within their blocks. A horizontal table scroll of 416px exposed the remaining columns. Four TLDR bullets follow the hero, with no page-level horizontal overflow. Mobile screenshots remain outside the website worktree."
+  }
+}
