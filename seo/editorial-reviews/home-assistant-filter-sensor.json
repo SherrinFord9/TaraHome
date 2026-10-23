@@ -1,0 +1,62 @@
+{
+  "slug": "home-assistant-filter-sensor",
+  "action": "new",
+  "publicationDate": "2026-10-22",
+  "verdict": "PASS",
+  "readerQuestion": "How can I smooth one noisy Home Assistant sensor without hiding important changes, and how can I check the result before using it in an automation?",
+  "directAnswer": "Use the built-in Filter helper with a modest Lowpass setting for frequent small fluctuations, keep the raw sensor visible, and compare normal updates before changing any automation. Use display averages for a chart-only need and hysteresis for repeated threshold switching; filtering adds lag and does not establish accuracy or fresh data.",
+  "originalContribution": "Section 3 calculates successive results for raw inputs 20, 24, 20 and 21 with a low-pass constant of 4 and precision of 2: 20, 21, 20.75 and 20.81. It also shows why no new event leaves the last output unchanged. Sections 1 and 4 add a problem-to-tool decision table and a reversible display-only verification sequence. The isolated 2026.10.2 LowPassFilter class and its shared rounding code were executed externally to check the arithmetic.",
+  "limitations": "Documentation and source research only; no live Home Assistant installation, physical sensor, equipment control, latency or household performance was tested. The isolated algorithm check does not test event delivery, entity setup, Recorder replay or source availability. Starting history and extra attribute updates can affect real outputs. Older releases may show different helper labels. Cover art is a generated illustration. Research discovery limitations and historical demand evidence remain in the topic brief; no indexing or traffic outcome is claimed.",
+  "proofreadFixes": "Automated plain-English and technical pass: clarified that Time constant 4 is a per-input weighting, not four seconds; distinguished a quieter dashboard graph from changing an automation input; explicitly retained the raw sensor and equipment protections. Final review added the newly created helper caveat that history or a source update may be needed before a value appears, stated that the worked example assumes settled starting values and no intervening events, and linked Recorder beside the database claim. Refined the cover to remove an inconsistent second temperature scale. Rephrased the meta description around software setup and Lowpass settings after a keyword heuristic incorrectly treated compare plus sensor as a buying guide. Final reread found the answer, caveat and next step clear; no hardware-testing or human-review claim remains.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Filter is a built-in helper created under Settings, Devices & services, Helpers. The UI configures one filter; YAML supports ordered chains. The article begins with one filter, not a copied chain.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/filter/"
+    },
+    {
+      "claim": "Core 2026.10.2 UI accepts sensor-domain entities and exposes time constant, precision and window size for Lowpass. The demonstration specifies 4, 2 and 1 respectively without calling them universal control settings.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/components/filter/config_flow.py"
+    },
+    {
+      "claim": "Lowpass weights the previous processed state by 1 minus 1/time_constant and the new state by 1/time_constant. Per-step rounding was verified by executing the versioned class in isolation; the worked values are 20, 21, 20.75, 20.81.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/components/filter/sensor.py"
+    },
+    {
+      "claim": "Filter listens to source state-change events rather than a continuous elapsed-time clock. Initial Recorder history, unit initialization and subsequent source updates affect starting behavior. A no-event interval cannot be assumed to converge. Unknown/unavailable handling does not establish freshness for a frozen numeric input.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/components/filter/sensor.py"
+    },
+    {
+      "claim": "Statistics graph is a display using recorded statistics; it does not substitute its plotted mean for the entity an automation references. Suitable sensor statistics are a prerequisite.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/statistics-graph/"
+    },
+    {
+      "claim": "Threshold hysteresis changes switching boundaries. It is not itself minimum equipment runtime or compressor protection. The article recommends checking switching logic separately from smoothing.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/threshold/"
+    },
+    {
+      "claim": "The Statistics helper aggregates recent source history; sample capacity and time coverage matter. Combining several current room readings is separately owned by the existing average-temperature guide.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/statistics/"
+    },
+    {
+      "claim": "Creating a new filtered sensor does not exclude the original from Recorder. Storage policy is separate; the article never instructs deletion of history.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/recorder/"
+    },
+    {
+      "claim": "Outlier replaces a sample outside its median band only after its previous-sample buffer is full; it can also suppress real abrupt changes. The first verification is display-only observation of normal updates, with no real sensor-state editing or equipment operation.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.2/homeassistant/components/filter/sensor.py"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-average-temperature/",
+      "section": "Which averaging tool should you choose?",
+      "readerReason": "Readers who want to smooth successive readings from one room, rather than combine different rooms, can continue to the Filter setup and calculated lag example. Suggestion for a separate navigation review only."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440\u00d71000 Chromium: title and byline readable, centered article body, Tara Avenir loaded, unique responsive cover loaded, all three tables fit their 918px containers. Document width equals viewport width. Blog.html displays the new card first in its two-column library grid. Legacy .html redirect reaches the canonical local route. Full article and library screenshots saved to TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390\u00d7844 Chromium: title wraps cleanly at 35.1px, body paragraphs render at 16.96px, cover loads, and document scroll width remains 390px. Table containers are 344px with 760px content; horizontal scroll was exercised to 416px without page overflow. Library card image, title and date are readable in one column. Screenshots saved externally."
+  }
+}
