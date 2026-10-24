@@ -1,0 +1,79 @@
+{
+  "slug": "home-assistant-automation-modes",
+  "action": "new",
+  "publicationDate": "2026-10-24",
+  "verdict": "PASS",
+  "readerQuestion": "Which Home Assistant automation mode should I choose when a second request arrives before the first run finishes, and how can I verify it without controlling physical devices?",
+  "directAnswer": "Keep Single when skipping requests during an active run is acceptable. Use Restart when the newest request should replace unfinished work, Queued when valid requests must wait their turn, and Parallel only when copies can coexist. First rehearse with the isolated Button helper and in-app notifications; then check cancellation, device completion, conditions, limits and restart behavior in the actual routine.",
+  "originalContribution": "Sections 2 and 3 provide a complete software-only automation and two-press procedure. The calculated 0/5-second timeline distinguishes completion at 20 seconds, 25 seconds, 20/40 seconds and 20/25 seconds across the four modes. Section 4 applies those results to interrupted lamp restoration, a hypothetical physical-job queue, direct versus detached script calls, and a quiet-hours condition that must be checked again at execution time. A final troubleshooting table gives observable checks and corrections.",
+  "limitations": "No physical hardware or live Home Assistant runtime was tested. YAML parsing, official documentation and inspected Core 2026.10.3 source support the example; timeline values are calculated and exclude execution overhead. The vacuum scenario is conditional reasoning, not a tested product integration or a complete room-cleaning scheduler. Browser checks cover the local static article and library, not Home Assistant UI screenshots or deployment. Cover art is generated illustration. Proofreading was automated, not human or expert review.",
+  "proofreadFixes": "Replaced the unexplained HACS reference with custom integrations; replaced protected-lane wording with the precise lack of separate per-trigger/per-room limits; specified that max: 2 belongs on a new line at the same indentation as mode; explained the stored button timestamp versus the local finish clock. Added the verified wait-template caveats: an already-true idle state can pass before a new device job begins, and timeout continuation is enabled by default. Updated the direct/script.turn_on citation to the dedicated official action page and added inspected Core source links. Confirmed the exercise uses trigger.to_state.state rather than the helper’s latest state, omits notification_id so results remain distinct, and requires pressing the helper rather than Run actions. Confirmed four actionable TLDR bullets, clear prerequisites, no physical commands, author credit, accurate research disclosure and professional source labels. Final local checks resolved 840 internal references and all 14 unique external article source links with no missing targets. The layout sync’s incidental edits to older articles were restored; existing article content and protected pages are unchanged.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Single refuses another active run, Restart cancels prior runs, Queued waits on a per-script lock, and Parallel permits overlapping runs within its limit. Core source was read, not executed as a live installation.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.3/homeassistant/helpers/script.py"
+    },
+    {
+      "claim": "Automation top-level conditions are checked before action_script.async_run, so a failed new condition does not reach restart cancellation or queue admission.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.3/homeassistant/components/automation/__init__.py"
+    },
+    {
+      "claim": "Queued and Parallel default to ten runs; Queued max includes the active run plus waiting runs, and changing max_exceeded logging does not admit a refused request.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "The current automation editor offers Menu > Change mode and limit controls; blueprint-based automations do not offer the mode option.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/editor/"
+    },
+    {
+      "claim": "A Button helper is built in, records a timestamp on each press, and supports the state trigger used in the software-only exercise.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_button/"
+    },
+    {
+      "claim": "The notification template reads the initiating state trigger’s to_state value, preserving the original press identity instead of looking up the helper’s latest value.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger-data/"
+    },
+    {
+      "claim": "persistent_notification.create displays an in-app notice; reusing notification_id overwrites an earlier notice, so the exercise omits it.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "Manually running automation actions does not supply real trigger data; the example must be initiated by the Button helper.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/testing/"
+    },
+    {
+      "claim": "script.turn_on starts a script separately, whereas a direct script action call waits for that script to finish. This does not itself establish completion of a physical appliance job.",
+      "sourceUrl": "https://www.home-assistant.io/actions/script.turn_on/"
+    },
+    {
+      "claim": "Stopping a script skips its remaining steps and does not undo changes already made, such as a lamp already switched on.",
+      "sourceUrl": "https://www.home-assistant.io/actions/script.turn_off/"
+    },
+    {
+      "claim": "A condition in the action sequence checks when execution reaches that step; a false result stops that sequence rather than waiting for permission later.",
+      "sourceUrl": "https://www.home-assistant.io/building-blocks/condition/"
+    },
+    {
+      "claim": "Wait for a template passes immediately if already true, continues on timeout by default, and does not resume its wait after Home Assistant restarts.",
+      "sourceUrl": "https://www.home-assistant.io/building-blocks/wait_template/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-automation-runs-twice/",
+      "section": "Automation Mode Is Not the Same as Debounce",
+      "readerReason": "After confirming that repeated requests are legitimate, readers can use the new four-mode rehearsal to choose deliberately whether to skip, replace, queue or overlap them."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-scenes-vs-scripts/",
+      "section": "3. Put the check inside the reusable script",
+      "readerReason": "The existing single-mode note naturally leads to what happens when several callers use the shared routine before its current run finishes."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440×1000: visually inspected title, hero, four-bullet TLDR, code, two-press table and library card. Tara Avenir loaded; H1 weight 400. Article and body widths remained 1440 with no page overflow; table viewport 918px displayed all columns. Post-local WebP loaded. Both library indexes place the new card first; legacy .html redirect reaches the canonical path; no page JavaScript errors. Screenshots and browser report saved externally in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "Chromium at 390×844: visually inspected readable wrapped title, byline, cover, TLDR, code, timeline table and library card. Document/body widths stayed 390px. Tables retain readable 760px contents inside a 344px scrollable region, with a visible swipe hint; horizontal table scrolling was exercised. Code scrolls within its own panel. The 480px WebP is selected and loads; both index cards render without page overflow. No page JavaScript errors."
+  }
+}
