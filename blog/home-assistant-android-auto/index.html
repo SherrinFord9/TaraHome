@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Android Auto: Setup and Useful Controls</title>
+    <meta name="description" content="Set up Home Assistant Android Auto favorites, test commands safely, and troubleshoot missing controls or failed taps before adding an arrival routine." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-android-auto/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-android-auto/" />
+    <meta property="og:title" content="Home Assistant Android Auto: Setup and Useful Controls" />
+    <meta property="og:description" content="Set up Home Assistant Android Auto favorites, test commands safely, and troubleshoot missing controls or failed taps before adding an arrival routine." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-android-auto/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Android Auto: Setup and Useful Controls" />
+    <meta name="twitter:description" content="Set up Home Assistant Android Auto favorites, test commands safely, and troubleshoot missing controls or failed taps before adding an arrival routine." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-android-auto/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .article-body .comparison-table th:first-child, .article-body .comparison-table td:first-child { min-width: 150px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-android-auto/#blogposting",
+      "headline": "Home Assistant Android Auto: Setup and Useful Controls",
+      "description": "Set up Home Assistant Android Auto favorites, test commands safely, and troubleshoot missing controls or failed taps before adding an arrival routine.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-android-auto/cover.png",
+      "datePublished": "2026-10-25",
+      "dateModified": "2026-10-25",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-android-auto/"
+      },
+      "citation": [
+        "https://companion.home-assistant.io/docs/android-auto/",
+        "https://support.google.com/androidauto/answer/6348019?hl=en",
+        "https://companion.home-assistant.io/docs/getting_started/",
+        "https://companion.home-assistant.io/docs/core/android-flavors/",
+        "https://support.google.com/androidauto/answer/10007685?hl=en",
+        "https://www.home-assistant.io/docs/configuration/remote/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://www.home-assistant.io/docs/script/",
+        "https://www.home-assistant.io/integrations/script/",
+        "https://www.home-assistant.io/integrations/light/",
+        "https://www.home-assistant.io/dashboards/views/",
+        "https://contributors.home-assistant.io/core/internals/permissions/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Android Auto: Setup and Useful Controls",
+          "item": "https://tarahome.ai/blog/home-assistant-android-auto/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does this work without internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Android Auto interface does not make a remote Home Assistant server available offline. Away from home, your chosen connection needs to work. The lamp’s integration may also have a cloud dependency."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will this show my whole dashboard?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The official car interface presents supported entities and favorites; it is not the phone’s full dashboard. Third-party dashboard apps are separate projects with their own compatibility and safety limits."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+<main class="article"><article>
+<header class="hero article-hero"><div><p class="article-meta"><span>Everyday controls</span><span><time datetime="2026-10-25">October 25, 2026</time></span><span>9 min read</span></p><h1>Home Assistant Android Auto: Setup and Useful Controls</h1><p class="lede">Put useful home controls on your car display, then check the connection and the command before relying on them.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-android-auto/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-android-auto/cover-480.webp 480w, /assets/generated/blog/home-assistant-android-auto/cover-1200.webp 1199w" sizes="(max-width: 720px) 100vw, 1120px" width="1672" height="941" decoding="async" loading="eager" alt="A phone rests in a parked car beside a house with a warmly lit entrance and green front door" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use the official Companion app:</strong> Home Assistant has native Android Auto controls. Sign in on your phone, then choose a few favorites for the car.</li>
+<li><strong>Start with a harmless test:</strong> create a software toggle, check it from the phone, then try it on the car display while parked.</li>
+<li><strong>Check remote access before leaving:</strong> a working home dashboard on Wi-Fi does not prove commands will work over cellular data.</li>
+<li><strong>Keep controls simple:</strong> an explicit “Entrance lights on” routine is a useful first choice. Leave locks, garage doors and alarm disarming out of the practice exercise.</li>
+</ul></aside>
+<p class="research-method">Researched from Home Assistant, Companion app and Google documentation on October 25, 2026. This is an illustrative configuration walkthrough, not a test of a particular phone, car or smart-home device. Menu names vary with installed versions. The cover is an AI-generated editorial illustration.</p>
+<h2>Start with the native car controls</h2>
+<p><strong>Home Assistant Android Auto works through the official Companion app.</strong> You do not need to send commands through Google Home just to use its on-screen controls. Home Assistant introduced this interface in its <a href="https://www.home-assistant.io/blog/2023/01/20/android-auto/">Android Auto announcement</a>; the <a href="https://companion.home-assistant.io/docs/android-auto/">current car documentation</a> describes setup and favorites.</p>
+<p>Begin with one control that has an obvious result. An <strong>entity</strong> is a named control or reading inside Home Assistant. The practice entity below is only an on/off value in software. Once that works, use a <strong>script</strong>—a saved routine—to turn on selected entrance lights.</p>
+<p>The order matters: first prove that the phone reaches your server, then prove that the car can send a command, and finally check the real lamp. A visible button or changing status alone does not prove that a tap reached its destination. Do all setup and troubleshooting while safely parked.</p>
+<h2>1. Check the phone, car and connection</h2>
+<ol>
+<li><strong>Confirm Android Auto compatibility.</strong> Google currently lists Android 11 or later, an active data plan and a compatible car or stereo. Wired use needs a suitable USB cable; wireless use also needs compatible wireless hardware. Check <a href="https://support.google.com/androidauto/answer/6348019?hl=en">Google’s requirements</a> for your exact combination.</li>
+<li><strong>Install and sign in to Home Assistant on the phone.</strong> Use the official Play Store app, which supplies the <a href="https://companion.home-assistant.io/docs/core/android-flavors/">full Android build</a>. Follow the <a href="https://companion.home-assistant.io/docs/getting_started/">Companion setup instructions</a> and confirm the correct server opens.</li>
+<li><strong>Choose how the phone reaches home when away.</strong> Home Assistant Cloud remote access requires a paid subscription. A VPN, a private connection back to your home, is another option and must be connected when needed. The car interface does not supply that connection. See the <a href="https://www.home-assistant.io/docs/configuration/remote/">official remote-access options</a> and our <a href="/blog/home-assistant-remote-access-without-port-forwarding/">remote-access setup guide</a>.</li>
+</ol>
+<div class="callout"><p><strong>Android Auto and Android Automotive are different.</strong> Android Auto uses your phone. Android Automotive OS runs apps in the vehicle itself. This walkthrough uses phone-based Android Auto. The current Companion docs note a favorites limitation for the app installed from Google Play directly on an Automotive vehicle; do not assume the phone’s favorite settings configure that separate installation.</p></div>
+<h2>2. Create the practice control</h2>
+<p>Using an administrator account, open <strong>Settings → Devices &amp; services → Helpers → Create helper → Toggle</strong>. Name it <strong>Car practice</strong>. A helper stores a value without requiring hardware. Keep this new helper out of existing automations so changing it has no household effect. The <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper reference</a> explains its behavior.</p>
+<p>Open its control in a second browser window and leave it off. On your phone, turn Car practice on and confirm the browser shows on. Turn it off again using the helper’s control in the browser. That gives you a known starting state for each test; no door, appliance or safety system needs to move.</p>
+<h2>3. Add a small favorites list</h2>
+<p>On the phone, open <strong>Settings → Companion app → Android Auto favorites</strong>, also called <strong>Driving favorites</strong> in some versions. Select Car practice. Reopen Home Assistant on the car display to see the updated list.</p>
+<p>With Home Assistant 2025.12 or newer, the entity’s more-info menu also offers <strong>Add to → automotive favorite</strong>. Do that on the phone whose favorites you want to change. Vehicle-imposed list limits can affect how many entries appear. These paths are documented under <a href="https://companion.home-assistant.io/docs/android-auto/#favorites">Favorites</a>.</p>
+<h2>4. Run the three-stage check</h2>
+<p>This is a proposed diagnostic exercise, not a measured vehicle test. Use the same Car practice helper throughout. Start it off before each attempt and look for an actual change to on in the second browser window.</p>
+<p class="table-hint">On a phone, scroll the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Three-stage control check" tabindex="0"><table><thead><tr><th scope="col">Test</th><th scope="col">What to do</th><th scope="col">What a pass establishes</th></tr></thead><tbody>
+<tr><td>Phone on home Wi-Fi</td><td>Turn Car practice on in the phone app.</td><td>The signed-in phone can change this helper on this server.</td></tr>
+<tr><td>Phone on cellular data</td><td>Before connecting Android Auto, disconnect from home Wi-Fi. Keep your chosen remote connection active. Repeat the tap.</td><td>The remote path works under these conditions. If it fails here, fix it before investigating the car.</td></tr>
+<tr><td>Parked car display</td><td>Connect Android Auto, open Home Assistant and tap Car practice once.</td><td>The car interface can send this particular command. It does not certify every vehicle function or physical device.</td></tr>
+</tbody></table></div>
+<p>Wireless Android Auto itself uses Wi-Fi, so do not switch the phone’s Wi-Fi off during that connection. Perform the cellular-only check first. For a later away-from-home check, park somewhere outside your home network’s range and confirm your remote connection is available.</p>
+<p>If the car displays a change made on the phone but its own tap does nothing, record those as two separate observations. Reading state and issuing a command are different parts of the check. Repeatedly tapping a real garage-door control would make the result harder to interpret.</p>
+<h2>5. Make an “Entrance lights on” routine</h2>
+<p>After the practice control works, choose one or two nonessential lights already controllable in Home Assistant. Confirm they respond normally while someone can observe them. This example deliberately leaves door locks and garage doors alone.</p>
+<ol>
+<li>Open <strong>Settings → Automations &amp; scenes → Scripts → Create script → Create new script</strong>.</li>
+<li>Under Sequence, add <strong>Turn on light</strong>. Target only the chosen light entities, rather than an entire area that may include other lamps.</li>
+<li>Save as <strong>Entrance lights on</strong>. Run it from the phone and observe both lights.</li>
+<li>Add the saved script to your car favorites. With the vehicle parked, run it there and observe the same result.</li>
+</ol>
+<p>The <a href="https://www.home-assistant.io/docs/script/">script editor instructions</a> cover creating and running the routine. If you prefer the YAML text editor, use this as the contents of <em>one new script</em>, replacing both example entity IDs with your actual lights. Do not paste it into the main configuration file.</p>
+<details class="configuration"><summary>Example script: Entrance lights on</summary><pre tabindex="0"><code>alias: Entrance lights on
+mode: single
+sequence:
+  - action: light.turn_on
+    target:
+      entity_id:
+        - light.porch
+        - light.hall_lamp</code></pre></details>
+<p><strong>Use Turn on, not Toggle, for this routine.</strong> A second completed request should leave the lights on rather than reverse the first request. The <a href="https://www.home-assistant.io/integrations/light/">Light reference</a> documents the actions. This script does not turn the lamps off later; retain their ordinary manual control or existing bedtime routine. It also does not prevent another automation changing them.</p>
+<p>A short script may show off again immediately after it finishes. That is its <a href="https://www.home-assistant.io/integrations/script/">running status</a>, not the lamp’s status. Check the light itself and its entity. Our <a href="/blog/home-assistant-scenes-vs-scripts/">scenes versus scripts guide</a> explains how to share a routine with other controls. For a shortcut outside the car, see <a href="/blog/home-assistant-phone-widgets/">Home Assistant phone widgets</a>.</p>
+<h2>Troubleshoot the part that failed</h2>
+<div class="comparison-table" role="region" aria-label="Android Auto troubleshooting decisions" tabindex="0"><table><thead><tr><th scope="col">What you see</th><th scope="col">Next check</th><th scope="col">Useful expected result</th></tr></thead><tbody>
+<tr><td>Home Assistant is absent from the car launcher.</td><td>Open it on the phone, confirm sign-in, and confirm it is enabled in Android Auto’s app launcher settings. Check whether the phone has disabled the unused app.</td><td>If unused-app disabling was the cause, the app should reappear. Google specifically documents this behavior on Samsung phones.</td></tr>
+<tr><td>The app opens, but your chosen control is absent.</td><td>Confirm the favorite on the connected phone and the selected Home Assistant server. Reopen the car app.</td><td>Car practice appears. If it does, compare the missing item’s entity type with the official supported list.</td></tr>
+<tr><td>Commands fail on both cellular and the car.</td><td>Return to the phone’s remote URL or VPN connection.</td><td>Car practice changes from the phone over cellular before you retry the car.</td></tr>
+<tr><td>The phone works, but a car tap fails.</td><td>Repeat with Car practice, confirm the same server, and note phone, app, Android Auto and car software versions.</td><td>You have a reproducible car-only symptom to report, without guessing that device pairing is broken.</td></tr>
+<tr><td>Car practice works, but a real light does not.</td><td>Try the light directly on the phone, then run the script there and check its targets.</td><td>You can separate a light/integration problem from a wrong script target. The successful helper test alone cannot choose between them.</td></tr>
+</tbody></table></div>
+<p>Google’s <a href="https://support.google.com/androidauto/answer/10007685?hl=en">missing-launcher-app guidance</a> supports reopening a disabled app as an early check. Avoid deleting the Companion app’s data or re-pairing home devices as the first response to a car-interface problem.</p>
+<h2>Keep convenience separate from access permissions</h2>
+<p>A short favorites list makes controls easier to find; it does not limit the signed-in account to those devices. Home Assistant’s <a href="https://www.home-assistant.io/dashboards/views/">view visibility settings</a> and <a href="https://contributors.home-assistant.io/core/internals/permissions/">server permission model</a> address different layers. A non-admin account plus hidden controls does not establish room-only authorization. See <a href="/blog/limit-home-assistant-users-to-certain-devices/">what restricted Home Assistant access can and cannot do</a> before sharing an account or permanent car login.</p>
+<p>For everyday use, start with a few unmistakable names and keep setup work parked. When planning <a href="/home-automation-kit/">local routines and shared household controls</a>, “Entrance lights on” tells another person more than “Arrival scene 2.”</p>
+<h2>Does this work without internet?</h2>
+<p>The Android Auto interface does not make a remote Home Assistant server available offline. Away from home, your chosen connection needs to work. The lamp’s own integration may also have a cloud dependency. Keeping local automations on the home server and reaching that server from a car are separate questions.</p>
+<h2>Will this show my whole dashboard?</h2>
+<p>The official car interface presents supported entities and favorites; it is not the phone’s full dashboard. Start with those built-in controls. Treat third-party dashboard apps as separate projects with their own compatibility and safety limits.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Car and phone documentation</h3><ul><li><a href="https://companion.home-assistant.io/docs/android-auto/">Native Android Auto and Automotive controls</a></li><li><a href="https://support.google.com/androidauto/answer/6348019?hl=en">Android Auto requirements</a></li><li><a href="https://companion.home-assistant.io/docs/getting_started/">Companion app setup</a></li><li><a href="https://companion.home-assistant.io/docs/core/android-flavors/">Android app builds</a></li><li><a href="https://support.google.com/androidauto/answer/10007685?hl=en">Missing launcher apps</a></li></ul></div><div><h3>Home Assistant configuration</h3><ul><li><a href="https://www.home-assistant.io/docs/configuration/remote/">Remote access</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li><li><a href="https://www.home-assistant.io/docs/script/">Create and run scripts</a></li><li><a href="https://www.home-assistant.io/integrations/script/">Script entities and YAML</a></li><li><a href="https://www.home-assistant.io/integrations/light/">Light actions</a></li><li><a href="https://www.home-assistant.io/dashboards/views/">View visibility</a></li><li><a href="https://contributors.home-assistant.io/core/internals/permissions/">Permission enforcement</a></li></ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday routines easy to use</h2><p>Choose the rooms and controls you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>
