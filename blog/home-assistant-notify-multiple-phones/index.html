@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant: Notify Multiple Phones With One Group</title>
+    <meta name="description" content="Make Home Assistant notify multiple phones with one group. Choose the right method, test each recipient, and keep reminders working after a phone replacement." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-notify-multiple-phones/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-notify-multiple-phones/" />
+    <meta property="og:title" content="Home Assistant: Notify Multiple Phones With One Group" />
+    <meta property="og:description" content="Make Home Assistant notify multiple phones with one group. Choose the right method, test each recipient, and keep reminders working after a phone replacement." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-notify-multiple-phones/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant: Notify Multiple Phones With One Group" />
+    <meta name="twitter:description" content="Make Home Assistant notify multiple phones with one group. Choose the right method, test each recipient, and keep reminders working after a phone replacement." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-notify-multiple-phones/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }.article-body pre { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.6; }
+.article-body pre code { overflow-wrap: normal; }
+
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-notify-multiple-phones/#blogposting",
+      "headline": "Home Assistant: Notify Multiple Phones With One Group",
+      "description": "Make Home Assistant notify multiple phones with one group. Choose the right method, test each recipient, and keep reminders working after a phone replacement.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-notify-multiple-phones/cover.png",
+      "datePublished": "2026-10-26",
+      "dateModified": "2026-10-26",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-notify-multiple-phones/"
+      },
+      "citation": [
+        "https://www.home-assistant.io/integrations/notify/",
+        "https://www.home-assistant.io/integrations/group/",
+        "https://www.home-assistant.io/actions/notify.send_message/",
+        "https://www.home-assistant.io/blog/2026/05/06/release-20265/",
+        "https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/mobile_app/notify.py",
+        "https://companion.home-assistant.io/docs/notifications/notifications-basic/",
+        "https://companion.home-assistant.io/docs/troubleshooting/faqs/",
+        "https://www.home-assistant.io/integrations/input_boolean/",
+        "https://www.home-assistant.io/triggers/state/",
+        "https://www.home-assistant.io/docs/tools/dev-tools/",
+        "https://companion.home-assistant.io/docs/notifications/notification-local/",
+        "https://www.home-assistant.io/docs/configuration/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant: Notify Multiple Phones With One Group",
+          "item": "https://tarahome.ai/blog/home-assistant-notify-multiple-phones/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does notify.notify send to every phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Home Assistant describes notify.notify as a shortcut to the first notification action it finds. Choose a named group or explicit phone targets."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Android and iPhone be in the same group?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, for the basic text message in this guide. Test both phones individually first. Advanced options such as sounds and critical alerts can need different settings for each platform."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will a new phone join automatically?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Add its actual notify entity to the helper, remove the replaced recipient from that group, and repeat the test. Other automations that target the old phone directly still need separate attention."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+</head>
+<body>
+<nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+<main class="article"><article>
+<header class="hero article-hero"><div><p class="article-meta"><span>Household notifications</span><span><time datetime="2026-10-26">October 26, 2026</time></span><span>9 min read</span></p><h1>Home Assistant: Notify Multiple Phones With One Group</h1><p class="lede">Send everyday reminders to the right phones, then check the whole routine before relying on it.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-notify-multiple-phones/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-notify-multiple-phones/cover-480.webp 480w, /assets/generated/blog/home-assistant-notify-multiple-phones/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" loading="eager" alt="Two face-down phones in green and terracotta cases beside two breakfast settings on a warm kitchen table" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>For ordinary messages, create a Notify group helper.</strong> Add the two phone destinations, then send to the group with <code>notify.send_message</code>.</li>
+<li><strong>Test each phone before testing the group.</strong> Both need the Companion app registered with your server and permission to show notifications.</li>
+<li><strong>For buttons, images or special sounds, use the phone’s own notification action.</strong> The basic group method carries a message and optional title; those extras need the advanced method below.</li>
+<li><strong>Maintain the recipient list.</strong> Replacing a phone means updating the group. A successful send or group timestamp does not prove that everyone saw the message.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant and Companion app documentation, with relevant Core 2026.10.4 source code checked on October 26, 2026. The walkthrough and expected results are illustrative; they were not tested on physical phones or a running household installation. The cover is an AI-generated editorial illustration.</p>
+
+<h2 id="answer">Use one named destination for household messages</h2>
+<p>To make <strong>Home Assistant notify multiple phones</strong>, first confirm that each phone can receive a plain message. Then create a <strong>Notify group</strong> named <strong>Household phones</strong> and send your routine’s message to that group. When someone changes phones, you can maintain that one recipient list instead of editing every routine that uses it.</p>
+<p>An <strong>entity</strong> is a named Home Assistant control, reading or destination. A phone’s notify entity is its message destination. An <strong>action</strong> is the instruction to send the message. Keeping those two things separate makes the similar-looking names easier to understand.</p>
+<p>Home Assistant added mobile-app notify entities in <a href="https://www.home-assistant.io/blog/2026/05/06/release-20265/">2026.5</a>, alongside the existing phone-specific actions. On an older installation, or for advanced phone features, use the action-group option below. You do not need to replace a working advanced notification just to adopt the newer basic method.</p>
+
+<h2 id="choose">1. Choose the method your message needs</h2>
+<p class="table-hint">On a small screen, scroll the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Choose a notification method" tabindex="0"><table><thead><tr><th scope="col">Your need</th><th scope="col">Use</th><th scope="col">Where recipients live</th></tr></thead><tbody>
+<tr><td>The same plain text reminder for two phones, repeatedly</td><td><code>notify.send_message</code> targeting a Notify group helper</td><td>The helper’s selected notify entities</td></tr>
+<tr><td>A one-off message to two destinations</td><td><code>notify.send_message</code> with both notify entities selected</td><td>That action’s target list</td></tr>
+<tr><td>Phone buttons, images, sounds or an older setup with only phone-specific actions</td><td>Explicit <code>notify.mobile_app_…</code> actions, optionally combined in a YAML action group</td><td>The individual actions or YAML group configuration</td></tr>
+</tbody></table></div>
+<p>The <a href="https://www.home-assistant.io/actions/notify.send_message/">basic send-message action</a> takes a message and, where supported, a title. The current <a href="https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/mobile_app/notify.py">Mobile App implementation</a> keeps additional phone options on the phone-specific action path. A group combines recipients; it does not make every Android option work on iPhone.</p>
+
+<h2 id="individual">2. Prove each phone can receive one message</h2>
+<ol>
+<li>On each phone, open the official Home Assistant Companion app and confirm it is connected to the intended server. Allow notifications in the phone’s operating-system settings.</li>
+<li>Using an administrator account in Home Assistant, open <strong>Settings → Devices &amp; services → Entities</strong>. Find the notify entity belonging to each phone’s <strong>Mobile App</strong> device. Record the actual IDs; the examples below use <code>notify.alex_phone</code> and <code>notify.sam_phone</code>.</li>
+<li>Open <strong>Settings → Tools → Actions</strong>. Older versions label this <strong>Developer tools</strong>. Choose <strong>Send a notification message</strong> (<code>notify.send_message</code>), select only the first phone, and enter <strong>Practice A: first phone only</strong>.</li>
+<li>Select <strong>Perform action</strong> and check that phone’s notification list. Repeat with the second phone and <strong>Practice B: second phone only</strong>.</li>
+</ol>
+<p>These are real messages, so tell the recipients you are testing. The expected result is the matching text on the selected phone. Do not add images, critical alerts or action buttons yet. The <a href="https://www.home-assistant.io/docs/tools/dev-tools/">Tools reference</a> explains this administrator-only test area.</p>
+<p>If a phone has no notify entity, check its app registration and push permission before creating a group. If it only offers a working <code>notify.mobile_app_…</code> action, use the older method below. When a plain individual message fails, follow our <a href="/blog/home-assistant-notifications-delayed-not-arriving/">phone notification delivery checks</a>; grouping the phone will not fix its delivery path.</p>
+
+<h2 id="group">3. Create and test Household phones</h2>
+<ol>
+<li>Go to <strong>Settings → Devices &amp; services → Helpers → Create helper → Group</strong>, then choose <strong>Notify group</strong>.</li>
+<li>Name it <strong>Household phones</strong>. Select only the two verified phone notify entities. Save it and check the resulting entity ID; this guide assumes <code>notify.household_phones</code>.</li>
+<li>Back in <strong>Tools → Actions</strong>, choose <code>notify.send_message</code>, target only that group, and send <strong>Practice C: household group</strong>.</li>
+<li>Check both phones. Each should receive Practice C. Leave shared tablets and retired phones out unless they are intentional recipients.</li>
+</ol>
+<p>The <a href="https://www.home-assistant.io/integrations/group/">Group documentation</a> distinguishes these UI-created entity groups from YAML-created action groups. A person record such as <code>person.alex</code> is not a notify entity. Group membership also does not mean “only send while this person is home.”</p>
+
+<h2 id="worked-example">4. Rehearse a complete two-phone routine</h2>
+<p>Here is a small worked example: a software switch sends a practice dinner message to both phones. It controls no appliance. This checks the trigger, destination and actual recipients together before you connect a real reminder.</p>
+<ol>
+<li>Create another helper under <strong>Helpers → Create helper → Toggle</strong>. Name it <strong>Household notice practice</strong>. Keep it out of other automations and leave it off.</li>
+<li>Check its ID. The example uses <code>input_boolean.household_notice_practice</code>. A <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper</a> is a software on/off value, with no physical device attached.</li>
+<li>Go to <strong>Settings → Automations &amp; scenes → Create automation → Create new automation</strong>. Open its menu, choose <strong>Edit in YAML</strong>, and replace the new automation’s contents with the block below.</li>
+<li>Substitute your two actual helper IDs, save the automation and ensure it is enabled. Turn the practice helper from off to on using its normal control.</li>
+</ol>
+<pre tabindex="0" aria-label="Complete practice automation"><code>alias: Household notification practice
+triggers:
+  - trigger: state
+    entity_id: input_boolean.household_notice_practice
+    from: "off"
+    to: "on"
+conditions: []
+actions:
+  - action: notify.send_message
+    target:
+      entity_id: notify.household_phones
+    data:
+      message: "Practice only: dinner notification for both phones."
+mode: single</code></pre>
+<p>Paste this into <strong>one automation’s editor</strong>, not <code>configuration.yaml</code>. YAML is the indented text format shown above. The <a href="https://www.home-assistant.io/triggers/state/">state trigger</a> waits for off to become on. For another trial, turn the helper off, then on again. Leaving it on does not send repeated messages.</p>
+<p>The following are expected outcomes from the example, not measured delivery results:</p>
+<p class="table-hint">On a small screen, scroll sideways to compare both recipients.</p>
+<div class="comparison-table" role="region" aria-label="Two-phone notification acceptance checks" tabindex="0"><table><thead><tr><th scope="col">Trial</th><th scope="col">Alex’s phone</th><th scope="col">Sam’s phone</th><th scope="col">What to conclude</th></tr></thead><tbody>
+<tr><td>Practice A, direct to Alex</td><td>Practice A</td><td>No Practice A</td><td>The first destination is correctly identified.</td></tr>
+<tr><td>Practice B, direct to Sam</td><td>No Practice B</td><td>Practice B</td><td>The second destination is correctly identified.</td></tr>
+<tr><td>Practice C, group target</td><td>Practice C</td><td>Practice C</td><td>Both intended members receive the group message.</td></tr>
+<tr><td>Toggle off → on</td><td>Practice dinner message</td><td>Practice dinner message</td><td>The saved trigger reaches the group.</td></tr>
+<tr><td>Leave the toggle on</td><td>No additional message</td><td>No additional message</td><td>This example has no repeating timer.</td></tr>
+</tbody></table></div>
+<p>If the group test works but the toggle does not, inspect that automation’s <strong>Trace</strong>, its record of the run. Confirm the helper ID, enabled state and off-to-on transition. <strong>Run actions</strong> tests the actions without proving the trigger works; see <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Home Assistant’s automation troubleshooting</a>.</p>
+<p>Once the rehearsal passes, use the same group in an ordinary text reminder. Our <a href="/blog/home-assistant-calendar-notifications/">calendar notification walkthrough</a> supplies the appointment timing; replace only its sending action when its message needs no advanced phone options. Disable the practice automation after the exercise.</p>
+
+<h2 id="advanced">5. Use an action group when you need phone extras</h2>
+<p>If you need notification buttons or images, keep the phone-specific actions. You can list them in a reusable action group. This optional route involves the configuration file; the UI helper above cannot contain those action names.</p>
+<p>First test each exact action under <strong>Tools → Actions</strong>. Then add this to <code>configuration.yaml</code>, substituting your registered action names. Under <code>services:</code>, omit the leading <code>notify.</code>:</p>
+<pre tabindex="0" aria-label="Optional notification action group"><code>notify:
+  - platform: group
+    name: household_phone_actions
+    services:
+      - action: mobile_app_alex_phone
+      - action: mobile_app_sam_phone</code></pre>
+<p>If a <code>notify:</code> section already exists, append the group to its list; do not create a duplicate heading. If that section uses an included file, put the list entry in that file. Keep a copy of your previous configuration, <a href="https://www.home-assistant.io/docs/configuration/">validate it before applying changes</a>, and restart Home Assistant at a suitable time for the household to register the group. Do not paste this configuration into an automation.</p>
+<p>Test the resulting <strong>action</strong> with a plain message:</p>
+<pre tabindex="0" aria-label="Test the optional action group"><code>action: notify.household_phone_actions
+data:
+  message: "Practice D: phone action group."</code></pre>
+<p>Only after both recipients pass should you add advanced settings from the <a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion notification reference</a>. For options that differ by operating system, use separate phone actions or separate platform groups. The <a href="/blog/home-assistant-actionable-notifications/">Yes/No notification guide</a> explains response handling; sending a button to two phones does not by itself coordinate their replies.</p>
+
+<h2 id="replace">6. Replace a phone without losing a recipient</h2>
+<ol>
+<li>Register the new phone and send it a uniquely labeled direct test. Do not assume its notify ID matches the old phone’s name.</li>
+<li>Edit <strong>Household phones</strong> under Helpers. Replace the old recipient with the verified new notify entity, keeping the group’s own ID unchanged. For the YAML option, update the member action name and apply that configuration change.</li>
+<li>Send a freshly labeled group test, then briefly enable and repeat the toggle trial. Confirm the other household phone and the new phone both receive it; disable the practice automation afterward. If the old phone is still registered and in your possession, check that it receives no new group test. Earlier messages may remain on it.</li>
+<li>Review any routines that still target the old phone directly. Updating this group only updates routines that use this group.</li>
+</ol>
+<p>For example, replacing Sam’s phone changes the members from <code>notify.alex_phone</code> + <code>notify.sam_phone</code> to <code>notify.alex_phone</code> + <code>notify.sam_new_phone</code>. The automation continues to target <code>notify.household_phones</code>. This is a configuration example, not an automatic migration feature.</p>
+
+<h2 id="delivery">Check receipt, not just the group timestamp</h2>
+<p>A notify entity’s timestamp records <a href="https://www.home-assistant.io/integrations/notify/">when a message was sent</a>. It is not a read receipt. The group can also remain available when only some members are available. Inspect each phone during the rehearsal; a successful action does not establish identical arrival times or prove someone noticed the alert.</p>
+<p>Grouping happens in Home Assistant, but delivery may still use Apple or Google push services. <a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Local Push</a> is a separate connection with platform-specific requirements. A working group does not prove delivery will work without internet. Avoid private details in a shared group or on lock screens, and keep smoke alarms and other essential warnings independent of this convenience routine.</p>
+<p>Our recommendation is a short, intentional list of recipients and ordinary messages first. If you are planning coordinated household routines, Tara’s <a href="/home-automation-kit/">home automation kit overview</a> describes that broader setup.</p>
+<h2 id="faq">Other practical questions</h2>
+<h3>Does notify.notify send to every phone?</h3><p>No. Home Assistant describes notify.notify as a shortcut to the first notification action it finds. Choose a named group or explicit phone targets.</p>
+<h3>Can Android and iPhone be in the same group?</h3><p>Yes, for the basic text message in this guide. Test both phones individually first. Advanced options such as sounds and critical alerts can need different settings for each platform.</p>
+<h3>Will a new phone join automatically?</h3><p>No. Add its actual notify entity to the helper, remove the replaced recipient from that group, and repeat the test. Other automations that target the old phone directly still need separate attention.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Notification destinations</h3><ul><li><a href="https://www.home-assistant.io/integrations/notify/">Home Assistant Notifications</a></li><li><a href="https://www.home-assistant.io/integrations/group/">Group integration</a></li><li><a href="https://www.home-assistant.io/actions/notify.send_message/">Send a notification message</a></li><li><a href="https://www.home-assistant.io/blog/2026/05/06/release-20265/">2026.5 release</a></li><li><a href="https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/mobile_app/notify.py">Mobile App notify implementation, Core 2026.10.4</a></li><li><a href="https://companion.home-assistant.io/docs/notifications/notifications-basic/">Companion basic notifications</a></li><li><a href="https://companion.home-assistant.io/docs/troubleshooting/faqs/">Companion troubleshooting</a></li></ul></div><div><h3>Setup and verification</h3><ul><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Input Boolean</a></li><li><a href="https://www.home-assistant.io/triggers/state/">State trigger</a></li><li><a href="https://www.home-assistant.io/docs/tools/dev-tools/">Tools</a></li><li><a href="https://companion.home-assistant.io/docs/notifications/notification-local/">Local Push</a></li><li><a href="https://www.home-assistant.io/docs/configuration/">Configuration file</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Keep household routines understandable</h2><p>Choose the rooms and everyday tasks you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body></html>

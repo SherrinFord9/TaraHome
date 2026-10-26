@@ -1,0 +1,83 @@
+{
+  "slug": "home-assistant-notify-multiple-phones",
+  "action": "new",
+  "publicationDate": "2026-10-26",
+  "verdict": "PASS",
+  "readerQuestion": "How can I send one Home Assistant notification to both household phones and keep it working when a phone is replaced?",
+  "directAnswer": "Verify a plain message on each registered phone, create a Notify group helper containing those phone notify entities, and call notify.send_message on that group. Basic entity notifications carry message/title; use phone-specific actions or a YAML action group for advanced options or older installations. Rehearse with the inert toggle before using the group for everyday reminders and update membership when replacing a phone.",
+  "originalContribution": "Section 4 provides a complete off-to-on practice-toggle automation and a five-trial recipient matrix that separates single-phone delivery, group membership and trigger behavior. Section 6 gives a phone-replacement acceptance procedure, including a freshly labeled message, checking the unchanged second phone and checking that a still-registered retired phone receives no new group message.",
+  "limitations": "Documentation and tagged-source research, not physical-phone or Home Assistant runtime testing. Three YAML examples were parsed with duplicate-key rejection, but no real push messages were sent. Delivery time, receipt, read status and advanced Android/iOS payload compatibility were not measured. App menus vary by version. The conceptual cover does not depict a tested Tara installation.",
+  "proofreadFixes": "Replaced undefined 'phone notification entities' in the first TLDR bullet with 'phone destinations', then defined entity and action in the opening answer. Rewrote the advanced-feature bullet to clearly separate the basic message/title path from phone-specific extras. Added a sideways-scroll hint immediately before the second table. Strengthened replacement verification with a fresh message label and an explicit old-phone negative check while explaining that old notifications can remain. Verified the 2026.5 prerequisite, push-registration requirement, current Tools route, required action/group syntax, off-to-on trigger, and send-versus-receipt boundary against primary documentation and Core 2026.10.4 source. Re-read the final article after these edits; automated editorial review PASS, with no human/expert review claim.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Mobile App gained notify entities in Home Assistant 2026.5 alongside existing phone-specific actions, allowing UI group helpers; the guide gives an older-installation fallback rather than assuming every installation has entities.",
+      "sourceUrl": "https://www.home-assistant.io/blog/2026/05/06/release-20265/"
+    },
+    {
+      "claim": "The Mobile App notify entity is created only when its registration supports push. Its entity method accepts message and optional title; advanced phone payloads stay on phone-specific actions. Verified in the tagged 2026.10.4 implementation.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/mobile_app/notify.py"
+    },
+    {
+      "claim": "Notify entity groups are created in the UI; notify action groups are configured in YAML. Action-group members use services entries with action names omitting notify.; the optional example follows the current documented shape.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/group/"
+    },
+    {
+      "claim": "notify.send_message targets one or more notify entities, with message required and title optional where supported. The guide targets one explicit group rather than assuming a household broadcast.",
+      "sourceUrl": "https://www.home-assistant.io/actions/notify.send_message/"
+    },
+    {
+      "claim": "notify.notify selects the first notification action Home Assistant finds. A notify entity timestamp records last sent, not recipient acknowledgement or a read receipt.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/notify/"
+    },
+    {
+      "claim": "A notify group remains available when any member is available; title support requires all members to support it. This is why group availability alone is not used as evidence of all-phone delivery.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/group/notify.py"
+    },
+    {
+      "claim": "The practice Toggle helper is a software on/off value with no attached hardware. Its explicit off-to-on trigger sends one practice message per qualifying transition; it has no repeating timer.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "The complete example uses the documented trigger: state with from off/to on. Leaving the helper on is not a second state transition; manual Run actions does not verify that trigger.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "Current Settings > Tools is available to administrators. Earlier releases use Developer tools; the article makes the menu/version difference and prerequisite explicit.",
+      "sourceUrl": "https://www.home-assistant.io/docs/tools/dev-tools/"
+    },
+    {
+      "claim": "Plain tests must work on each phone before group diagnosis. Companion notification permission and registration are prerequisites; group creation does not repair a failed recipient path.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/troubleshooting/faqs/"
+    },
+    {
+      "claim": "The optional YAML group belongs in configuration.yaml or its included notify list, not the automation editor. Validate changes before applying them, preserve a previous configuration copy and schedule a suitable restart.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/"
+    },
+    {
+      "claim": "Recipient grouping does not make delivery local-only. Local Push uses a separate WebSocket connection with platform-specific requirements instead of Apple/Google push infrastructure.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/notification-local/"
+    },
+    {
+      "claim": "A notification button needs response handling. Sending an advanced payload to two phones does not by itself resolve conflicting replies; the article links to the established actionable-notification owner.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/notifications/actionable-notifications/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-calendar-notifications/",
+      "section": "2. Send a plain test notification",
+      "readerReason": "After proving one appointment reminder reaches a phone, a reader may want the same ordinary message on both household phones. A contextual link can supply recipient-group setup without duplicating calendar timing."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-washing-machine-finished-notification/",
+      "section": "Set it up in this order",
+      "readerReason": "Once laundry completion is detected reliably, the next household task may be sending its message to two people and maintaining that list when phones change. This suggestion does not authorize editing the existing article."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440×1000 Chromium: visually inspected final hero, TLDR, body, acceptance table and library card. Title/date/byline readable, Tara Avenir regular weight retained, unique responsive WebP loaded. Document scroll width 1440; both tables fit at 918px inner width. Canonical metadata checked, legacy .html URL redirects, and library card opens the canonical article. Screenshots saved under TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390×844 Chromium: visually inspected hero/card crop, body text, replacement procedure and both ends of the acceptance table. Document scroll width 390, no page overflow. Tables scroll from 344px visible width across 760px content; the second table was scrolled 416px to verify its final column. Code blocks scroll inside their boxes; added the local table hint. Both library copies have the new card and its link works. Analytics requests were deliberately blocked; their blocked-request console entry was expected."
+  }
+}
