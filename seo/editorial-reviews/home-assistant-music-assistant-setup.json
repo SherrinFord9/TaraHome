@@ -1,0 +1,90 @@
+{
+  "slug": "home-assistant-music-assistant-setup",
+  "action": "new",
+  "publicationDate": "2026-10-27",
+  "verdict": "PASS",
+  "readerQuestion": "How do I set up Music Assistant with Home Assistant, get one existing speaker playing, and choose the right player for a household routine?",
+  "directAnswer": "Install the Music Assistant server using the HAOS app or supported standalone Docker route, configure one source and native player provider, and verify quiet one-room playback before adding the built-in Home Assistant integration. Use that integration's player in the kitchen radio script. Online sources still need internet and paid services retain their account requirements; synchronized groups require specific supported paths.",
+  "originalContribution": "Section 5 provides a kitchen radio script walkthrough with an exact entity target, explicit queue replacement, account selection, a read-only station identifier lookup and a low-volume play/stop check. The six-row troubleshooting table separates source, discovery, audio-stream, integration, duplicate-control and grouping failures so the reader changes one layer at a time.",
+  "limitations": "Documentation research only; no Home Assistant instance, speaker hardware, streaming account, audio delay, playback quality or synchronization was tested. The kitchen example is hypothetical and labeled accordingly. UI labels, authentication fields and provider support vary by installed version. Cast Sendspin bridging remains documented as experimental. The generated cover is an illustrative music-library scene, not hardware or installation evidence.",
+  "proofreadFixes": "Automated editorial review, not human or expert review. Expanded the initial vague use-a-URI fallback into a concrete read-only Get library items procedure, including the correct instance, Radio type, same user and library membership check. Replaced entity jargon in the TLDR with player, defined queue at first use, linked the current app-install steps, and added the exact Home Assistant library-action reference. Verified server/integration direction, native-provider preference, admin-login prerequisite, Spotify Premium requirement, group ownership and stop behavior against primary documentation. Browser review found no layout correction needed: title and text remained readable, images loaded, and the table scrolled within its own container. Checked 1,640 local link/asset targets and fragments with no missing targets; all 19 final unique documentation links returned HTTP 200, including the final Get library items URL.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "The built-in Home Assistant integration requires an already running Music Assistant server and exposes MA players for controls and routines. HACS is not required.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/music_assistant/"
+    },
+    {
+      "claim": "The HA integration, reverse Home Assistant plugin in MA, and Home Assistant Media Players provider are different components. Most basic native-player setups only need the integration after the server is configured.",
+      "sourceUrl": "https://www.music-assistant.io/integration/"
+    },
+    {
+      "claim": "The documented installation routes are a HAOS app and a standalone Docker server; the latter needs persistent /data and appropriate direct network access. A supported 64-bit host and at least 2 GB RAM are required, with 4 GB+ recommended when sharing the host.",
+      "sourceUrl": "https://www.music-assistant.io/installation/"
+    },
+    {
+      "claim": "The current HAOS install path is Settings → Apps → App store; server start and opening its interface precede source and player setup.",
+      "sourceUrl": "https://www.music-assistant.io/get-started/"
+    },
+    {
+      "claim": "HAOS sidebar ingress can initialize the administrator automatically; standalone first access has authentication setup. The guide does not prescribe deleting authentication data.",
+      "sourceUrl": "https://www.music-assistant.io/first-run/"
+    },
+    {
+      "claim": "Home Assistant, MA and players must use the supported same-segment topology. Discovery announcements, Home Assistant control and player audio-stream access are distinct; an mDNS reflector or one open port does not establish all three. The guide notes same-segment exposure and offers a reversible test with one non-critical speaker.",
+      "sourceUrl": "https://www.music-assistant.io/faq/networking/"
+    },
+    {
+      "claim": "The web interface normally uses TCP 8095; streaming starts on TCP 8097 and can move to a subsequent port if occupied. Other protocols retain their own requirements; the article does not present those two ports as a complete firewall rule set.",
+      "sourceUrl": "https://www.music-assistant.io/installation/"
+    },
+    {
+      "claim": "Prefer a native MA player provider when available. The generic HA Media Players fallback requires the Home Assistant plugin, filters for supported playback entities and does not promise synchronization with other types.",
+      "sourceUrl": "https://www.music-assistant.io/player-support/home-assistant/"
+    },
+    {
+      "claim": "Radio Browser needs no login or subscription, and adding the provider alone does not populate the Radio view; select a station through Browse and add it to the library. This remains internet radio.",
+      "sourceUrl": "https://www.music-assistant.io/music-providers/radio-browser/"
+    },
+    {
+      "claim": "Spotify playback requires Premium. Playback-engine account restrictions and setup differences must be checked; the guide promises neither free-account playback nor offline streaming.",
+      "sourceUrl": "https://www.music-assistant.io/music-providers/spotify/"
+    },
+    {
+      "claim": "Local Files requires storage readable by MA; a laptop folder or an HA media path alone does not prove the MA container can access it.",
+      "sourceUrl": "https://www.music-assistant.io/music-providers/local-files/"
+    },
+    {
+      "claim": "When the integration requests MA login, the current project instructions require an admin account. Automations should target player entities belonging to the Music Assistant integration.",
+      "sourceUrl": "https://www.music-assistant.io/integration/installation/"
+    },
+    {
+      "claim": "Play media supports the radio media type, enqueue choices including replace, precise media identifiers and explicit Username for scripts. Broad room/floor targets can include multiple media players, so the example selects one entity.",
+      "sourceUrl": "https://www.home-assistant.io/actions/music_assistant.play_media/"
+    },
+    {
+      "claim": "Get library items is read-only, selects the MA instance separately from entity targets, accepts radio/search/username options and returns item URIs. The station-name fallback is therefore a harmless lookup rather than a destructive repair.",
+      "sourceUrl": "https://www.home-assistant.io/actions/music_assistant.get_library/"
+    },
+    {
+      "claim": "Universal Groups play shared audio without synchronization; provider-supported sync groups differ. Sendspin bridges depend on devices/providers and Cast bridging is experimental. Active group ownership affects individual playback; members should not be deleted during playback.",
+      "sourceUrl": "https://www.music-assistant.io/faq/groups/"
+    },
+    {
+      "claim": "Change one source or player at a time to narrow a fault; a working interface or moving progress display alone is not an audible playback verification.",
+      "sourceUrl": "https://www.music-assistant.io/faq/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-tts-announcements/",
+      "section": "Music Assistant: keep the playback path consistent",
+      "readerReason": "A reader choosing the Music Assistant announcement route may first need a running server, one working source and the correct MA player entity. The new setup guide supplies that prerequisite without duplicating the announcement behavior. Suggestion only for a separate reviewed navigation task."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440 × 1000 Chromium: title fits in two readable lines, visible Tara Home byline and correct October 27 date, unique cover loads, four TLDR bullets precede the body, centered Tara Avenir typography retained, full troubleshooting table readable. Document scroll width equals 1440. Library first card inspected at the same size; title, date and responsive cover work. Canonical and .html redirect checked. Screenshots saved under TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390 × 844 Chromium: title, byline, image, TLDR, worked-example instructions and source labels visually inspected; document scroll width equals 390. The 760px table stays inside a 344px container and reaches its full 416px horizontal scroll range. Library first card fits with a working responsive image. Mobile top, full-page, example, table and sources screenshots saved outside the site under TARAHOME_BLOG_ARTIFACTS."
+  }
+}

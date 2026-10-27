@@ -1,0 +1,176 @@
+{
+  "version": 2,
+  "slug": "home-assistant-music-assistant-setup",
+  "researchedAt": "2026-10-27",
+  "primaryQuery": "Home Assistant Music Assistant setup",
+  "readerQuestion": "How do I set up Music Assistant with Home Assistant, get one existing speaker playing, and choose the right player for a household routine?",
+  "selectedBecause": "Current October music discussions and independent earlier setup questions show recurring confusion about the separate server, integration, music sources and duplicate media players. This is a distinct library gap beyond TTS announcements. A staged one-room playback check and reversible failure table can help a homeowner locate the failing layer without buying speakers or rebuilding the network. Current exact-query results were reviewed; community interest is not measured search volume. No hardware performance is inferred from anecdotes.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant Music Assistant setup",
+      "evidenceSummary": "October 24, 2026 Reddit discussion https://www.reddit.com/r/homeassistant/comments/1xe8o0v/music_assistant_devs_i_owe_you_a_pint_or_several/ includes uncertainty about whether MA is separate from HA. March 27 discussion https://www.reddit.com/r/homeassistant/comments/1s4xrd3/media_player_managements_with_music_assistant/ asks which duplicate player to use. Exact query reviewed October 27 surfaced official HA integration docs, https://www.itechguides.com/how-to-connect-home-assistant-to-a-music-library-and-browse-albums-by-artwork/ (October 26), and https://www.youtube.com/watch?v=wk88Ii1N1pU (March 15). Current MA installation and integration docs checked.",
+      "decision": "selected",
+      "reason": "Broad reusable local-automation setup value, recent independent discussion, and no existing server/library/first-playback owner. Adds a clear success check at each stage and an exact-entity routine walkthrough instead of a broad feature list."
+    },
+    {
+      "query": "Home Assistant schedule helper",
+      "evidenceSummary": "Exact query reviewed October 27 returned https://www.home-assistant.io/integrations/schedule/ and https://community.home-assistant.io/t/schedule-helper-overnight/507377. Current October 16 discussion https://community.home-assistant.io/t/my-google-nest-was-broke-so-i-built-a-multi-zone-presence-based-heating-with-wall-screens-instead/1029161 uses weekly helpers for heating. Read current official Schedule documentation; older overnight thread is historical recurrence, not a new fault report.",
+      "decision": "rejected",
+      "reason": "Weekly timing has useful demand, but heating-schedule already provides a helper walkthrough and restart behavior, while house-modes and workday-sensor-holidays own exceptions. Flag additional overnight examples as a separate refresh opportunity, not a competing new URL."
+    },
+    {
+      "query": "Home Assistant temperature sensor calibration",
+      "evidenceSummary": "Exact query reviewed October 27 returned https://community.home-assistant.io/t/calibrating-temperature-sensors-i-have-a-complicated-solution-is-there-an-easy-one/524423 and current Home Assistant Compensation docs https://www.home-assistant.io/integrations/compensation/. October 13 discussion https://www.reddit.com/r/homeautomation/comments/1x4uwrb/tuya_devices_discrepancy_i_temperature_measurement/ asks for corrected readings after comparing Tuya sensors. Read the current Compensation reference; old calibration threads are historical recurrence.",
+      "decision": "rejected",
+      "reason": "Potentially useful but adjacent to the recent average-temperature and filter-sensor guides. Responsible accuracy advice would require more reference-instrument and exact-device evidence; Music Assistant has a cleaner broad setup gap today. Do not equate sensor agreement with calibrated accuracy."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1xe8o0v/music_assistant_devs_i_owe_you_a_pint_or_several/",
+      "observedAt": "2026-10-27",
+      "evidence": "October 24 discussion surfaced in current search; questions include whether Music Assistant is separate from Home Assistant. Personal success claims and comment counts are not treated as tested reliability or search volume."
+    },
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1s4xrd3/media_player_managements_with_music_assistant/",
+      "observedAt": "2026-10-27",
+      "evidence": "March 27, 2026 discussion asks which MA or Google Cast player to choose in scripts and reports losing other functions after disabling an integration. Historical independent recurrence reviewed now; supports explaining entity ownership, not promising a universal de-duplication fix."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/homeii-flow-a-full-music-app-experience-for-music-assistant-inside-home-assistant/1008729?page=2",
+      "observedAt": "2026-10-27",
+      "evidence": "May 2026 thread distinguishes a working music server from a missing Home Assistant integration when playlists fail in a custom dashboard. Used for pain language only; no custom-card requirement or technical fix is copied."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant Music Assistant setup",
+    "reviewedAt": "2026-10-27",
+    "intent": "Install the correct components, play music through an existing supported speaker, and use that same player from a Home Assistant routine.",
+    "resultGap": "Current official documentation is detailed but spread across server, integration, providers and grouping pages. A recent competing guide focuses on files and album artwork, while an older video includes a HACS installation step. The new guide will distinguish the current built-in integration from optional dashboard components, verify music playback before automation, and explain which duplicate entity to select. Direct Google exact-query browser review was attempted and returned HTTP 429/challenge; available web exact-query search results were inspected instead. No Google result order, keyword volume or missing-result claim is asserted.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/integrations/music_assistant/",
+      "https://www.itechguides.com/how-to-connect-home-assistant-to-a-music-library-and-browse-albums-by-artwork/",
+      "https://www.youtube.com/watch?v=wk88Ii1N1pU"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Music Assistant server installation",
+      "url": "https://www.music-assistant.io/installation/",
+      "supports": "HAOS app and standalone Docker support, 64-bit host and RAM requirements, same network requirement, persistence and separate stream access."
+    },
+    {
+      "name": "Home Assistant Music Assistant integration",
+      "url": "https://www.home-assistant.io/integrations/music_assistant/",
+      "supports": "Running MA server prerequisite, built-in discovery/setup and player entities."
+    },
+    {
+      "name": "How the Home Assistant pieces fit together",
+      "url": "https://www.music-assistant.io/integration/",
+      "supports": "Integration direction versus reverse HA plugin and optional HA Media Players fallback; no HACS requirement."
+    },
+    {
+      "name": "Installing the HA integration",
+      "url": "https://www.music-assistant.io/integration/installation/",
+      "supports": "Configure server and providers first; target entities from MA integration; use an admin MA account when login is requested."
+    },
+    {
+      "name": "Music sources",
+      "url": "https://www.music-assistant.io/music-providers/",
+      "supports": "Add a music source explicitly; a source is different from a player provider."
+    },
+    {
+      "name": "Player providers",
+      "url": "https://www.music-assistant.io/player-support/",
+      "supports": "Prefer native MA provider for supported speakers; discovery and manual setup vary by provider."
+    },
+    {
+      "name": "Radio Browser",
+      "url": "https://www.music-assistant.io/music-providers/radio-browser/",
+      "supports": "Radio station source for a first playback check; stream availability is station-dependent and internet-based."
+    },
+    {
+      "name": "Local files",
+      "url": "https://www.music-assistant.io/music-providers/local-files/",
+      "supports": "Local or mounted storage must be readable from MA; existing HA media visibility alone is insufficient."
+    },
+    {
+      "name": "Spotify source",
+      "url": "https://www.music-assistant.io/music-providers/spotify/",
+      "supports": "Premium account required; current playback engines have different authentication and account-age limitations."
+    },
+    {
+      "name": "Home Assistant Play media action",
+      "url": "https://www.home-assistant.io/actions/music_assistant.play_media/",
+      "supports": "Target one MA media player, specify media URI/type and explicit MA username for scripts; enqueue options."
+    },
+    {
+      "name": "Music Assistant groups",
+      "url": "https://www.music-assistant.io/faq/groups/",
+      "supports": "Sync groups and Universal Groups differ; Sendspin bridging is provider/device dependent and Cast support is experimental."
+    },
+    {
+      "name": "Home Assistant media players fallback",
+      "url": "https://www.music-assistant.io/player-support/home-assistant/",
+      "supports": "Requires the HA plugin and supports eligible play_media entities; prefer native provider and do not assume synchronization."
+    },
+    {
+      "name": "Music Assistant first run",
+      "url": "https://www.music-assistant.io/first-run/",
+      "supports": "Authentication setup differs for HAOS ingress and standalone access."
+    },
+    {
+      "name": "Music Assistant troubleshooting",
+      "url": "https://www.music-assistant.io/faq/troubleshooting/",
+      "supports": "Separate music source, player and network checks; logs and minimal reproduction."
+    },
+    {
+      "name": "Home Assistant scripts",
+      "url": "https://www.home-assistant.io/docs/scripts/",
+      "supports": "Reusable manually run routine structure."
+    },
+    {
+      "name": "Home Assistant media-player controls",
+      "url": "https://www.home-assistant.io/integrations/media_player/",
+      "supports": "Volume and stop controls; supported features vary by target."
+    },
+    {
+      "name": "Music Assistant networking basics",
+      "url": "https://www.music-assistant.io/faq/networking/",
+      "supports": "Same local segment requirement, multicast discovery versus reachability and client isolation."
+    },
+    {
+      "name": "Music Assistant getting started",
+      "url": "https://www.music-assistant.io/get-started/",
+      "supports": "Current HAOS App store path, server start and first source/player steps."
+    },
+    {
+      "name": "Music Assistant Get library action",
+      "url": "https://www.music-assistant.io/faq/get_library/",
+      "supports": "Read-only library item response includes URI; configuration entry selected from own integration."
+    },
+    {
+      "name": "Music Assistant how-to examples",
+      "url": "https://www.music-assistant.io/faq/how-to/",
+      "supports": "Radio can be started by station name; item identifiers avoid name ambiguity."
+    },
+    {
+      "name": "Home Assistant Get library items action",
+      "url": "https://www.home-assistant.io/actions/music_assistant.get_library/",
+      "supports": "Read-only lookup, instance selection, radio type, search, optional username and returned URI."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-tts-announcements/",
+      "/blog/home-assistant-scenes-vs-scripts/",
+      "/blog/home-assistant-hacs-vs-apps/",
+      "/home-automation-kit/"
+    ],
+    "decision": "All canonical article titles and existing brief primary questions inventoried; relevant TTS, heating schedule, house modes, average and filter briefs read. This page owns music server/library/player setup and first playback. TTS owns spoken announcements and music interruptions; local voice owns command recognition; scripts owns reusable routine architecture. Link those next steps only where needed. Historical strategy context: parsed seo/search-performance-2026-09-21.json summaries and seo/search-comparison-2026-09-21.json recent page/query/device/country rows, cutoff September 19. September 13-19: 3 clicks/212 property impressions; September 6-12: 2/205. All three current clicks are tarahome/homepage; blog zero; US impressions 111 to 72. September 20-21 absent, not zero. Recent page rows sum to 375 due to different aggregation from property 212, not an importer error or growth; visible query rows omit anonymized searches and tiny samples do not measure demand. Bluetooth page 8 to 19 and leak-sensor page 6 to 14 impressions, both zero clicks, are weak visibility observations only. Read seo/search-console-review-2026-09-21.json: IKEA direct pairing, laundry and Spokane indexed on that dated inspection; trash and vacation discovered-not-indexed. Those are not October live inspections. Read seo/recovery-review-2026-09-21.md and seo/search-change-review-2026-09-15.md: no meaningful acquisition recovery and no proven platform-specific cause or title rollback remedy. Preserve all owners regardless of indexing. Read analytics measurement contract; no GA4 or private inquiry evidence used. Separate refresh opportunities: established IKEA, Bluetooth, leak-sensor and doorbell owners need real exact-device evidence where available; heating-schedule could gain overnight examples; review trash/vacation navigation without creating duplicates. This daily draft edits no existing article, homepage, strategy or protected commercial page."
+  }
+}

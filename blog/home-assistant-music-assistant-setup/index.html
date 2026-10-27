@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Music Assistant: Setup and First Playback</title>
+    <meta name="description" content="Home Assistant Music Assistant setup: install the server, connect one speaker, choose the right player, and build a simple kitchen radio routine." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-music-assistant-setup/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-music-assistant-setup/" />
+    <meta property="og:title" content="Home Assistant Music Assistant: Setup and First Playback" />
+    <meta property="og:description" content="Home Assistant Music Assistant setup: install the server, connect one speaker, choose the right player, and build a simple kitchen radio routine." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-music-assistant-setup/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Music Assistant: Setup and First Playback" />
+    <meta name="twitter:description" content="Home Assistant Music Assistant setup: install the server, connect one speaker, choose the right player, and build a simple kitchen radio routine." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-music-assistant-setup/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-music-assistant-setup/#blogposting",
+      "headline": "Home Assistant Music Assistant: Setup and First Playback",
+      "description": "Home Assistant Music Assistant setup: install the server, connect one speaker, choose the right player, and build a simple kitchen radio routine.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-music-assistant-setup/cover.png",
+      "datePublished": "2026-10-27",
+      "dateModified": "2026-10-27",
+      "author": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://tarahome.ai/blog/home-assistant-music-assistant-setup/"
+      },
+      "citation": [
+        "https://www.music-assistant.io/integration/",
+        "https://www.music-assistant.io/installation/",
+        "https://www.music-assistant.io/faq/networking/",
+        "https://www.music-assistant.io/get-started/",
+        "https://www.music-assistant.io/installation/#docker-image",
+        "https://www.music-assistant.io/first-run/",
+        "https://www.music-assistant.io/music-providers/radio-browser/",
+        "https://www.music-assistant.io/player-support/",
+        "https://www.music-assistant.io/music-providers/local-files/",
+        "https://www.music-assistant.io/music-providers/spotify/",
+        "https://www.home-assistant.io/integrations/music_assistant/",
+        "https://www.music-assistant.io/integration/installation/",
+        "https://www.music-assistant.io/player-support/home-assistant/",
+        "https://www.home-assistant.io/actions/music_assistant.play_media/",
+        "https://www.music-assistant.io/faq/how-to/",
+        "https://www.home-assistant.io/actions/music_assistant.get_library/",
+        "https://www.music-assistant.io/faq/troubleshooting/",
+        "https://www.music-assistant.io/faq/groups/",
+        "https://www.music-assistant.io/music-providers/"
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Music Assistant: Setup and First Playback",
+          "item": "https://tarahome.ai/blog/home-assistant-music-assistant-setup/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does a local Music Assistant server make all music offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Online stations and streaming accounts still depend on their services. Local files remove that particular music-source dependency, but the server, storage, player and their network must remain available. Check the player's own requirements too."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need HACS or a custom music card?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The Music Assistant server and built-in Home Assistant integration provide the basic path here. A custom card can change how the controls look after playback works."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Will this automatically restore music after a spoken announcement?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not assume it will. Announcement playback, interruption and recovery need their own supported path and test. Follow our Home Assistant TTS announcement guide before adding spoken messages to a room used for music."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+<main class="article"><article>
+<header class="hero article-hero"><div><p class="article-meta"><span>Home music</span><span><time datetime="2026-10-27">October 27, 2026</time></span><span>9 min read</span></p><h1>Home Assistant Music Assistant: Setup and First Playback</h1><p class="lede">Connect your music library and an existing speaker, then give your household a simple radio routine with a clear stop control.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-music-assistant-setup/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-music-assistant-setup/cover-480.webp 480w, /assets/generated/blog/home-assistant-music-assistant-setup/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Illustrative home music library with records on an oak shelf and a forest-green listening chair" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Install the server first:</strong> on Home Assistant OS, use the Music Assistant app. Then add the built-in Music Assistant integration to bring its players into Home Assistant. HACS is not required.</li>
+<li><strong>Prove one room works:</strong> add one music source and the appropriate player provider, lower the volume, and play a station inside Music Assistant before building a routine.</li>
+<li><strong>Choose the Music Assistant player:</strong> use the player listed under that integration for your music script. Another control with the same room name may belong to a different integration.</li>
+<li><strong>Keep the limits clear:</strong> the server is local, but online radio and streaming services need internet access. Mixing speakers in a group does not automatically give synchronized sound.</li>
+</ul></aside>
+<h2>Start with the server, then connect Home Assistant</h2>
+<p>For a <strong>Home Assistant Music Assistant setup</strong>, get music playing in Music Assistant first, then add its Home Assistant integration. Music Assistant is a separate music server: it combines your sources, manages the queue (the waiting list of songs), and sends audio to supported players. Home Assistant can then provide buttons and routines for those players.</p>
+<p>Choose this route when you want one library for several sources or want household routines to start music. If your existing speaker controls already do everything you need, there is no need to add another server. This guide assumes you already have Home Assistant and a speaker supported by a Music Assistant player provider; it is not a speaker buying guide.</p>
+<p>The <a href="https://www.music-assistant.io/integration/">official Home Assistant integration</a> is built in. You do not need a custom dashboard or HACS to establish playback. The similarly named Home Assistant plugin inside Music Assistant serves the reverse connection and is optional for the basic setup below. Our <a href="/blog/home-assistant-hacs-vs-apps/">HACS versus apps guide</a> explains where these different kinds of components belong.</p>
+<p class="research-method">Research basis: Home Assistant and Music Assistant documentation checked October 27, 2026. This is a documentation-based walkthrough, not a tested Tara speaker installation. Menu names and available features can differ with installed versions. The cover is an illustrative music-library scene.</p>
+
+<h2>1. Check the host and local network</h2>
+<p>Music Assistant needs an always-on, supported 64-bit host and at least 2 GB of RAM; its project recommends 4 GB or more when other software shares the machine. Check the current <a href="https://www.music-assistant.io/installation/">CPU and installation requirements</a> before installing. These minimums are not a promise about large libraries, audio processing or the number of rooms you can run.</p>
+<p>The supported arrangement puts Home Assistant, Music Assistant and the players on the <strong>same local network segment</strong>: devices can discover and communicate with each other directly. Ethernet for the server and Wi-Fi for a speaker can still be the same segment. Guest Wi-Fi and separate virtual networks, or VLANs, may prevent that.</p>
+<p><a href="https://www.music-assistant.io/faq/networking/">Music Assistant's networking guide</a> explains discovery announcements and client isolation. Forwarding discovery announcements alone does not establish a supported audio path. Devices sharing this segment are not isolated from one another; choose the arrangement deliberately. Do not disable your internet firewall or move security devices to troubleshoot music.</p>
+
+<h2>2. Install and open Music Assistant</h2>
+<ol>
+<li><strong>With Home Assistant OS:</strong> follow the <a href="https://www.music-assistant.io/get-started/">app setup steps</a>: open <strong>Settings → Apps → App store</strong>, find Music Assistant, install the stable release and start it. Open its web interface. Older Home Assistant versions call apps “add-ons.”</li>
+<li><strong>With Home Assistant Container:</strong> run the separate Music Assistant Docker server using the project's <a href="https://www.music-assistant.io/installation/#docker-image">current installation instructions</a>. Keep its <code>/data</code> directory persistent. The documented host-network setup gives the container direct access to the host's network; it does not bridge separate household networks.</li>
+<li><strong>Complete the first-run screen:</strong> opening the HAOS app through Home Assistant's sidebar can set up the administrator automatically. Standalone access presents an account setup. Store those credentials securely. See <a href="https://www.music-assistant.io/first-run/">first-run authentication</a>.</li>
+</ol>
+<p><strong>Checkpoint:</strong> Music Assistant's own interface opens and its settings are accessible. An empty library at this stage is normal. Keep the service on your private network; this walkthrough needs no router port forwarding.</p>
+
+<h2>3. Add one source and one player</h2>
+<p>A <strong>music source</strong> supplies the songs or stations. A <strong>player provider</strong> is the connector that lets Music Assistant talk to a family of speakers. Adding one does not replace the other.</p>
+<ol>
+<li>In Music Assistant, open <strong>Settings → Music Sources</strong> and add <strong>Radio Browser</strong> for a simple internet-radio check. It needs no subscription or account. Open <strong>Browse → Radio Browser</strong>, find a familiar station and add it to your library. Stations are not automatically added to the Radio view just by installing the source. Follow the <a href="https://www.music-assistant.io/music-providers/radio-browser/">Radio Browser instructions</a> if labels differ.</li>
+<li>Open <strong>Settings → Player Providers</strong>. Check whether the connector for your speaker is already present; add the appropriate one if needed. Prefer Music Assistant's own provider for the device, such as its Sonos or Google Cast provider, after checking that provider's exact support. Some providers discover players; others require an address. See <a href="https://www.music-assistant.io/player-support/">player-provider setup</a>.</li>
+<li>Select one available, ungrouped room player. Make sure nobody is using it, lower its volume with a known working control, then play the station. Listen briefly and stop it.</li>
+</ol>
+<p><strong>Checkpoint:</strong> the intended room produces the intended audio, and stop works. A moving progress display alone is insufficient. If this fails, use the table below before adding Home Assistant actions.</p>
+<p>For your own collection, add <a href="https://www.music-assistant.io/music-providers/local-files/">Local Files</a> and select storage the Music Assistant server can actually read. A folder visible on your laptop, or in Home Assistant's media browser, is not automatically visible inside the Music Assistant container. Start with a small folder of files you have permission to play.</p>
+<p><strong>Spotify is optional and requires Spotify Premium.</strong> A free account will not work. Its current provider offers different playback engines with different account and authentication limits; read the <a href="https://www.music-assistant.io/music-providers/spotify/">Spotify provider's setup and cautions</a> before choosing one. Music Assistant does not replace the streaming service's subscription or internet connection.</p>
+
+<h2>4. Bring the working player into Home Assistant</h2>
+<ol>
+<li>In Home Assistant, go to <strong>Settings → Devices &amp; services</strong>. Configure the discovered Music Assistant server, or select <strong>Add integration → Music Assistant</strong>.</li>
+<li>If prompted for an address, use the Music Assistant server's local URL, normally <code>http://SERVER-IP:8095</code>, replacing <code>SERVER-IP</code> with its real LAN address. This is the music server's address, not Home Assistant's usual port 8123. When a Music Assistant login is requested, its documentation requires an administrator account for the integration.</li>
+<li>Open the new integration's entities and identify your room's <code>media_player</code>. An entity is the individual control Home Assistant uses in dashboards and routines. Note its actual entity ID; do not guess from an example name.</li>
+</ol>
+<p>The <a href="https://www.home-assistant.io/integrations/music_assistant/">Home Assistant integration reference</a> confirms the running-server prerequisite. Music Assistant's <a href="https://www.music-assistant.io/integration/installation/">connection instructions</a> explain the address, account and player selection.</p>
+<p>If two controls have similar room names, inspect their integration before changing anything. Use the Music Assistant entity for this music routine. Keep an existing Cast or manufacturer integration if other household features use it; deleting it is not a necessary cleanup step.</p>
+<p>Only if a speaker has no native Music Assistant provider should you investigate the <a href="https://www.music-assistant.io/player-support/home-assistant/">Home Assistant Media Players fallback</a>. That reverse route needs the Home Assistant plugin inside Music Assistant and a compatible playback entity. It is not an automatic way to make every Home Assistant device a synchronized music player.</p>
+
+<h2>5. Worked example: a kitchen radio button</h2>
+<p>This example connects the successful checks above into a small, manually started routine. The household wants a familiar station in the kitchen, with no scheduled surprise and no change to other rooms. It is a configuration example, not a measured installation.</p>
+<ol>
+<li>In <strong>Settings → Automations &amp; scenes → Scripts</strong>, create a script named <strong>Kitchen radio</strong>. A script is a saved sequence you run when you choose.</li>
+<li>Add a <strong>Music Assistant: Play media</strong> action. Target only the kitchen entity from the Music Assistant integration. Avoid a room, floor or label target for this first check because it can include several players.</li>
+<li>Set <strong>Media ID(s)</strong> to the station name you just played and saved. Set <strong>Media type</strong> to <strong>Radio</strong> and <strong>Enqueue</strong> to <strong>Replace</strong>. This deliberately replaces the selected player's queue. Leave the separate similar-track “radio mode” option off.</li>
+<li>If your installed version offers <strong>Username</strong>, select the intended Music Assistant user explicitly, as the current action documentation recommends for scripts. Save the script.</li>
+<li>With the kitchen player idle, ungrouped and at low volume, run the script once. Confirm the correct station plays only in the kitchen. Stop it from that player's control. If the station name resolves incorrectly, stop playback and use the item identifier check below.</li>
+</ol>
+<p>Field meanings are documented in <a href="https://www.home-assistant.io/actions/music_assistant.play_media/">Music Assistant: Play media</a>; the project also documents <a href="https://www.music-assistant.io/faq/how-to/">starting radio by station name</a> and <a href="https://www.home-assistant.io/actions/music_assistant.get_library/">getting library item identifiers</a>. A URI is the item's precise identifier, rather than its display name.</p>
+<p><strong>If two stations share a name:</strong> open <strong>Developer tools → Actions → Music Assistant: Get library items</strong>. Choose your Music Assistant integration, set the media type to <strong>Radio</strong>, use the same <strong>Username</strong> as the script when offered, and search for the saved station. Run this read-only action, inspect the returned items, and copy the correct item's <code>uri</code> into the script's Media ID field. If no item appears, return to Music Assistant and confirm the station was added to its library.</p>
+<div class="callout"><p><strong>Expected result:</strong> one deliberate run starts the chosen station in one room, and the player control stops it. If a group is active, stop and turn off that group first, then select the individual player. Do not delete group members during playback.</p></div>
+<p>Once this works, add the script as a dashboard control and keep the player's stop control nearby. If you later add a schedule, decide whether it may interrupt existing music. Our <a href="/blog/home-assistant-scenes-vs-scripts/">scenes versus scripts guide</a> explains how a button and an automation can share the same routine.</p>
+
+<h2>Find the failing stage before changing the setup</h2>
+<p>Keep the same source and player while checking a failure, then change one of them at a time. This follows the project's <a href="https://www.music-assistant.io/faq/troubleshooting/">troubleshooting approach</a>. The table gives checks to narrow the problem, not diagnoses based on one symptom.</p>
+<p class="table-hint">On a small screen, swipe the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Music Assistant troubleshooting checks" tabindex="0"><table><thead><tr><th>What you see</th><th>First reversible check</th><th>What the result tells you</th></tr></thead><tbody>
+<tr><td>The interface opens, but no music appears.</td><td>Inspect the music-source settings for a sign-in or scan error; browse one Radio Browser station.</td><td>A working station separates basic playback from a paid source's login or a local folder's permissions.</td></tr>
+<tr><td>A speaker is missing.</td><td>Confirm the correct player provider, its supported-device details and the speaker's network segment.</td><td>A missing discovery entry alone does not prove broken hardware. A successful ping alone does not prove provider support.</td></tr>
+<tr><td>The player appears, but stays silent.</td><td>Check mute, volume and active groups. Try the same source on another player, then another source on this player.</td><td>This separates a source failure from a player path. Music Assistant's web interface and the audio stream use different connections.</td></tr>
+<tr><td>Music works in Music Assistant but the script fails.</td><td>Check the script target's integration, media name or URI, and the Music Assistant account permissions.</td><td>The working manual playback narrows attention to the Home Assistant connection or action fields.</td></tr>
+<tr><td>One physical speaker has several Home Assistant controls.</td><td>Read each entity's integration and use the Music Assistant one in this script.</td><td>Several control paths can represent the same hardware. Removing a different integration can remove unrelated features.</td></tr>
+<tr><td>Two rooms sound like an echo.</td><td>Stop the group; test each speaker alone and check the documented grouping method.</td><td>Playing the same content is different from synchronized playback. Do not keep adjusting volume to fix timing.</td></tr>
+</tbody></table></div>
+<p>For silent network players, check the server's reported LAN address and stream access in the installation documentation. The web interface normally uses TCP 8095; the audio stream starts at TCP 8097 and may use a later port if occupied. Other player protocols have their own requirements. Opening one port or adding a discovery reflector is not a complete remedy.</p>
+<p>If a guest network is suspected, a reversible test is to put one non-critical speaker on the same trusted segment as the server, with household permission, and repeat low-volume playback. Record its previous network so you can restore it. Do not factory-reset the speaker or weaken isolation for the whole home.</p>
+
+<h2>Expand to more rooms only after one works</h2>
+<p>Use a documented native or sync group when the speakers support it. <strong>Universal Groups can play the same audio without keeping it in sync</strong>, so they are unsuitable when you can hear both rooms together. Newer Sendspin bridging can link some different player types, but support depends on the device and provider; Cast bridging is documented as experimental and disabled by default. Check the current <a href="https://www.music-assistant.io/faq/groups/">grouping documentation</a> for your exact setup.</p>
+<p>Test two rooms at ordinary listening volume before adding more. Listen from the doorway and verify stop behavior as well as playback. This guide makes no promise about delay, sound quality or whole-home synchronization on hardware we have not tested.</p>
+
+<h2>Common questions</h2>
+<h3>Does a local Music Assistant server make all music offline?</h3>
+<p>No. Online stations and streaming accounts still depend on their services. Local files remove that particular music-source dependency, but the server, storage, player and their network must remain available. Check the player's own requirements too.</p>
+<h3>Do I need HACS or a custom music card?</h3>
+<p>No. The Music Assistant server and built-in Home Assistant integration provide the basic path here. A custom card can change how the controls look after playback works.</p>
+<h3>Will this automatically restore music after a spoken announcement?</h3>
+<p>Do not assume it will. Announcement playback, interruption and recovery need their own supported path and test. Follow our <a href="/blog/home-assistant-tts-announcements/">Home Assistant TTS announcement guide</a> before adding spoken messages to a room used for music.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Installation and playback</h3><ul>
+<li><a href="https://www.music-assistant.io/installation/">Music Assistant server requirements and installation</a></li>
+<li><a href="https://www.music-assistant.io/first-run/">First-run authentication</a></li>
+<li><a href="https://www.music-assistant.io/integration/">Home Assistant connection overview</a></li>
+<li><a href="https://www.music-assistant.io/player-support/">Player providers and support</a></li>
+<li><a href="https://www.music-assistant.io/music-providers/">Music sources</a></li>
+<li><a href="https://www.music-assistant.io/faq/groups/">Speaker groups and synchronization limits</a></li>
+</ul></div><div><h3>Home Assistant and troubleshooting</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/music_assistant/">Built-in Music Assistant integration</a></li>
+<li><a href="https://www.home-assistant.io/actions/music_assistant.play_media/">Play media action fields</a></li>
+<li><a href="https://www.music-assistant.io/faq/networking/">Music Assistant network requirements</a></li>
+<li><a href="https://www.music-assistant.io/faq/troubleshooting/">Source and player troubleshooting</a></li>
+<li><a href="https://www.music-assistant.io/player-support/home-assistant/">Home Assistant Media Players fallback</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Tara Home</p><h2>Make everyday routines easier to use</h2><p>For a coordinated household setup, explore Tara's <a href="/home-automation-kit/">home automation kit for local routines</a>. Start with the rooms and controls your household needs.</p><a class="cta" href="/configurator/">Plan your home setup</a></section>
+
+</article></main>
+<footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer>
+</body>
+</html>
