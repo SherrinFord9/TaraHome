@@ -1,0 +1,66 @@
+{
+  "slug": "home-assistant-threshold-helper",
+  "action": "new",
+  "publicationDate": "2026-10-28",
+  "verdict": "PASS",
+  "readerQuestion": "How can I set up Home Assistant's Threshold helper so a sensor produces a steady on/off status, and check the switching points without operating real equipment?",
+  "directAnswer": "Use a single upper limit for a high status or a single lower limit for a low status, with hysteresis as the distance on each side. Do not fill both limit fields to request on-high/off-low behavior. Rehearse with Number → Template sensor → Threshold, keeping the input visible; missing values and helper recreation do not preserve a trustworthy previous status.",
+  "originalContribution": "Sections 2–4 derive upper 60/hysteresis 5 for above-65 activation and below-55 clearing, provide a complete UI-compatible harmless test setup, and walk through seven ordered inputs including exact equality and the same value with different prior states. The troubleshooting table distinguishes a missing slider, accidental range mode, retained state, template input failure and an unrelated downstream automation. The exact upstream update method was executed in isolation for the seven rows plus unknown input, recovery within the band and initial state within the band.",
+  "limitations": "Documentation and Core 2026.10.4 source research, with an isolated calculation check only. No physical humidity sensor, appliance control, full Home Assistant integration, or Home Assistant UI session was tested. The numerical boundaries are illustrative rather than universal indoor-humidity targets. UI labels can differ in other installed releases. Helper calculation being local does not establish a local source device. Generated cover is identified as an illustration.",
+  "proofreadFixes": "During preparation, checked the actual selector and included the required Template sensor between the Number helper and Threshold; made comparisons strictly above 65/below 55, left Lower blank, and documented unknown/recreation resetting an in-band single-limit status. The final proofreading pass found and corrected the troubleshooting table's reference from rehearsal step 3 to step 2. Mobile inspection prompted an explicit instruction to scroll code boxes and copy the whole expression. Kept normal body and heading text at Avenir weight 400, with compact labels/emphasis at 600. Final reread confirmed four actionable TLDR bullets, direct answer before setup, defined terminology, source-backed prerequisites, a harmless expected-results check, visible Tara Home credit and accurate testing limitations. This is automated editorial proofreading, not a human or expert review.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Threshold offers upper-only, lower-only and range behavior. A high status with different activation and clearing points uses a single upper limit with hysteresis, not both limits.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/threshold/"
+    },
+    {
+      "claim": "Upper 60 and hysteresis 5 uses value >65 to turn on and value <55 to turn off. Ordered inputs 54,60,65,66,60,55,54 produce off,off,off,on,on,on,off. Exact equality retains the preceding status. Verified by executing the tagged upstream _update_state method in isolation.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/threshold/binary_sensor.py"
+    },
+    {
+      "claim": "The Core 2026.10.4 UI selector accepts sensor-domain sources, so the Number helper cannot be selected directly. Numeric lower/upper fields do not accept templates or entity IDs. The article supplies a Template sensor bridge and leaves the unused lower field empty.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/threshold/config_flow.py"
+    },
+    {
+      "claim": "A missing numeric source value sets is_on to None, producing unknown rather than off. Recreated single-limit helpers initialize off inside the hysteresis band, and recovery from unknown at 60 likewise initializes off. The helper is not a persistent memory mechanism.",
+      "sourceUrl": "https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/threshold/binary_sensor.py"
+    },
+    {
+      "claim": "A Number helper stores a user-controlled value and supports minimum, maximum, step and box/slider display. The rehearsal changes newly created helpers only, with no device disconnection, appliance command or historical data deletion.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_number/"
+    },
+    {
+      "claim": "UI Template sensors expose State, unit and Availability under Additional options. The example references its exact Number helper ID, returns a number or none, and uses is_number for availability; state-based templates track the referenced entity.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/template/"
+    },
+    {
+      "claim": "float(default) returns the chosen fallback when numeric conversion fails. float(none) avoids turning a missing source into zero; the independent availability check prevents presenting it as a valid reading.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/float/"
+    },
+    {
+      "claim": "Unknown and unavailable are separate nonmeasurement states, not off or healthy. A Threshold result must not be read as an all-clear when its source is missing.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/state_object/"
+    },
+    {
+      "claim": "Triggers react at a specific change; saving an automation while a condition already holds does not recreate the transition. Creating a new helper does not change an existing automation's input or control an appliance.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "Filter produces a processed numeric reading; Threshold produces an on/off decision. The article links the existing Filter guide for smoothing rather than duplicating that setup.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/filter/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-filter-sensor/",
+      "section": "Start with a second reading you can compare",
+      "readerReason": "The paragraph directing repeated threshold switching toward hysteresis could offer this complete Threshold setup and safe boundary rehearsal as the next step. This is a suggestion for a separate reviewed navigation task; the source page was not edited."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440×1000 Chromium: title, byline and four-bullet TLDR readable; centered body and all three tables fit, with 918px table content inside 918px containers. Unique responsive cover loaded, Tara Avenir loaded, H1 and normal paragraphs use weight 400. Document width equals 1440px. Both library routes contain the new first card, its image loads, and the .html redirect reaches the canonical local route. Desktop article, example and library screenshots saved under TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390×844 Chromium: title wraps cleanly, body paragraphs render at 16.96px with weight 400, and cover loads. Document width stays 390px. Tables have 344px containers and 760px content; horizontal scrolling exercised to 150px. Template code boxes are independently scrollable (312px container, 535px first-expression content, exercised to 223px) with explicit reading guidance and no page overflow. One-column first library card, sources and CTA are readable. Mobile article, example, final code and source screenshots saved externally."
+  }
+}

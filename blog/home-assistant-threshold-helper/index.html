@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Threshold Helper: Set Hysteresis Correctly</title>
+    <meta name="description" content="Set up a Home Assistant Threshold helper with clear on/off limits, calculate hysteresis, and verify the result safely with a test slider." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-threshold-helper/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-threshold-helper/" />
+    <meta property="og:title" content="Home Assistant Threshold Helper: Set Hysteresis Correctly" />
+    <meta property="og:description" content="Set up a Home Assistant Threshold helper with clear on/off limits, calculate hysteresis, and verify the result safely with a test slider." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-threshold-helper/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Threshold Helper: Set Hysteresis Correctly" />
+    <meta name="twitter:description" content="Set up a Home Assistant Threshold helper with clear on/off limits, calculate hysteresis, and verify the result safely with a test slider." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-threshold-helper/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; padding: 0; border: 0; background: transparent; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-threshold-helper/#blogposting",
+      "headline": "Home Assistant Threshold Helper: Set Hysteresis Correctly",
+      "description": "Set up a Home Assistant Threshold helper with clear on/off limits, calculate hysteresis, and verify the result safely with a test slider.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-threshold-helper/cover.png",
+      "datePublished": "2026-10-28",
+      "dateModified": "2026-10-28",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-threshold-helper/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Threshold Helper: Set Hysteresis Correctly",
+          "item": "https://tarahome.ai/blog/home-assistant-threshold-helper/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I use a template or another helper as the limit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The checked Threshold UI expects numeric limit values, not a template expression or another entity ID. Use it for fixed boundaries. An adjustable target needs a different design."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this work locally?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The helper’s calculation runs in Home Assistant. Its usefulness during an internet outage still depends on where the input reading comes from. A locally calculated status cannot replace updates that a cloud-dependent sensor stops delivering."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div><p class="article-meta"><span>Home Assistant helpers</span><span><time datetime="2026-10-28">October 28, 2026</time></span><span>8 min read</span></p><h1>Home Assistant Threshold Helper: Set Hysteresis Correctly</h1><p class="lede">Turn a changing number into a steady yes/no status, understand the switching points, and rehearse them without controlling a real appliance.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-threshold-helper/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-threshold-helper/cover-480.webp 480w, /assets/generated/blog/home-assistant-threshold-helper/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Condensation on a forest-green window beside a plant, oak sill and cream linen curtain" loading="eager" /></figure></header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use Threshold for a steady on/off status from a numeric sensor.</strong> Choose an upper limit for “high,” or a lower limit for “low.” The helper does not operate equipment by itself.</li>
+<li><strong>For separate on and off points, use one limit plus hysteresis.</strong> Filling both limit fields creates an in-range status instead.</li>
+<li><strong>Example: upper limit 60, hysteresis 5.</strong> The status turns on above 65 and off below 55; between those boundaries it keeps its previous state.</li>
+<li><strong>Try the test-slider walkthrough first.</strong> Missing readings and restarts need separate attention, and hysteresis does not provide an appliance’s minimum run-time protection.</li>
+</ul></aside>
+
+<h2 id="answer">Start with the status you want to see</h2>
+<p>A <strong>Home Assistant Threshold helper</strong> is a good choice when a reading hovers near one boundary and your yes/no decision keeps flipping. Instead of changing a “high humidity” status every time the reading moves from 59 to 61 and back, give it different points for entering and leaving that status.</p>
+<p>That gap is called <strong>hysteresis</strong>. The output is a <strong>binary sensor</strong>: an entity, or named reading in Home Assistant, whose normal states are on and off. “On” means your chosen condition is active. It does not mean a fan, heater or plug has turned on.</p>
+<p>First choose whether you mean <strong>high, low or inside a range</strong>. Then calculate the limits, create the helper, and verify its behavior using the harmless example below. Keep the original reading visible beside the new status.</p>
+<p class="research-method">Researched from Home Assistant documentation and Core 2026.10.4 source on October 28, 2026. We checked the example’s boundary calculations by executing the upstream update method in isolation. We did not test the Home Assistant UI, a physical sensor or appliance control. The cover is an AI-generated residential illustration.</p>
+
+<h2 id="choose">1. Choose high, low or in-range behavior</h2>
+<p class="table-hint">On a narrow screen, scroll sideways to read every column.</p>
+<div class="comparison-table" role="region" aria-label="Choose the Threshold helper mode" tabindex="0"><table><thead><tr><th scope="col">Desired status</th><th scope="col">Fields to use</th><th scope="col">Meaning of on</th></tr></thead><tbody>
+<tr><td>A reading is high</td><td>Upper limit and hysteresis; leave Lower limit empty.</td><td>The reading has crossed the high-side switching point.</td></tr>
+<tr><td>A reading is low</td><td>Lower limit and hysteresis; leave Upper limit empty.</td><td>The reading has crossed the low-side switching point.</td></tr>
+<tr><td>A reading is inside an acceptable range</td><td>Both limits, with hysteresis around the edges.</td><td>The reading is in the selected range, with retained state near its edges.</td></tr>
+</tbody></table></div>
+<p>The <a href="https://www.home-assistant.io/integrations/threshold/">official Threshold matrix</a> describes all three modes. For a high-humidity status that turns on high and clears low, choose the <strong>first row</strong>. Entering 55 as Lower and 65 as Upper would answer a different question: whether the reading is in a range.</p>
+<p>If you want a smoother <em>number</em> instead, use our <a href="/blog/home-assistant-filter-sensor/">Filter sensor walkthrough</a>. Filtering changes the reading; hysteresis changes the decision made from it. Neither makes a faulty sensor accurate.</p>
+
+<h2 id="settings">2. Calculate the two switching points</h2>
+<p>For this learning example, the status should become active <strong>above 65%</strong> and clear <strong>below 55%</strong>. These are demonstration values, not a recommended humidity target for every home.</p>
+<div class="callout"><p><strong>Limit = (65 + 55) ÷ 2 = 60</strong><br /><strong>Hysteresis = (65 − 55) ÷ 2 = 5</strong></p></div>
+<p>Use <strong>Upper limit 60</strong>, <strong>Hysteresis 5</strong>, and leave <strong>Lower limit blank</strong>. Hysteresis is the distance on <em>each</em> side of the limit, so the full gap is 10 percentage points. It is not five seconds or five percent of the current reading. Use the source sensor’s numeric scale: a sensor reporting 0–1 would need different numbers.</p>
+<p>With these settings, equality alone does not switch the status: 65 is not above 65, and 55 is not below 55. The <a href="https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/threshold/binary_sensor.py">checked 2026.10.4 implementation</a> uses strict comparisons. The sequence below makes that difference visible.</p>
+<p>For a real sensor, open <strong>Settings → Devices &amp; services → Helpers → Create helper → Threshold</strong>. Give the status an unambiguous name, select its numeric sensor, enter the settings, and save. The built-in helper needs no paid license or extra app; your source device still has its own connection requirements. Rehearse with test helpers first if these settings are new to you.</p>
+
+<h2 id="rehearsal">3. Build a harmless test slider</h2>
+<p>This rehearsal changes only newly created helpers. Do not attach them to an appliance automation or add them to a label or group that existing routines control. An account allowed to create helpers is required.</p>
+<ol>
+<li><strong>Create a Number helper.</strong> Under <strong>Settings → Devices &amp; services → Helpers → Create helper → Number</strong>, name it <strong>Threshold demo input</strong>. Set minimum 0, maximum 100 and step 1. A numeric input box is convenient for exact values. Save, note its actual entity ID, and set its value to <strong>54</strong>.</li>
+<li><strong>Create a Template sensor helper.</strong> Choose <strong>Create helper → Template → Sensor</strong> (some releases say “Template a sensor”). Name it <strong>Threshold demo reading</strong>. In State, paste the first expression below, replacing the example ID if yours differs. Set Unit of measurement to <strong>%</strong>. Under Additional options, set Availability to the second expression. Leave Device class and State class unset for this rehearsal.</li>
+<li><strong>Create the Threshold helper.</strong> Choose <strong>Create helper → Threshold</strong>. Name it <strong>Threshold demo high</strong>, select the new <strong>sensor.threshold_demo_reading</strong> or its actual ID, and enter <strong>Upper 60</strong> and <strong>Hysteresis 5</strong>. Leave Lower empty.</li>
+<li><strong>Show all three helpers together.</strong> Put the number control, template reading and binary status on a dashboard. Confirm the template reading follows the number control and initially shows 54, while the Threshold status is off.</li>
+</ol>
+<p class="table-hint">On a phone, scroll sideways inside each code box and copy the whole expression.</p>
+<div class="configuration"><p><strong>Template sensor: State</strong></p><pre tabindex="0" aria-label="State template"><code>{{ states('input_number.threshold_demo_input') | float(none) }}</code></pre><p><strong>Template sensor: Availability</strong></p><pre tabindex="0" aria-label="Availability template"><code>{{ is_number(states('input_number.threshold_demo_input')) }}</code></pre></div>
+<p>The middle helper is necessary because the current Threshold UI selects <strong>sensor</strong> entities, not <strong>input_number</strong> entities. This is confirmed by the <a href="https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/threshold/config_flow.py">2026.10.4 configuration flow</a>. The <a href="https://www.home-assistant.io/integrations/input_number/">Number helper</a> supplies a value you control; the <a href="https://www.home-assistant.io/integrations/template/">Template helper</a> exposes it as a sensor.</p>
+<p><code>float(none)</code> converts numeric text without inventing zero when conversion fails. Availability checks whether the input is numeric. Keep both expressions: a missing test input should not become a believable 0% reading. The <a href="https://www.home-assistant.io/docs/templating/types/">type-conversion guide</a> explains these fallbacks.</p>
+
+<h2 id="example">4. Walk through the values in this order</h2>
+<p>Enter each number and wait until the template reading shows it before moving to the next row. The earlier rows matter: the same value can legitimately produce different states depending on which boundary was crossed last.</p>
+<p class="table-hint">Expected results from the checked calculation, not measurements from physical hardware. Scroll sideways on a narrow screen.</p>
+<div class="comparison-table" role="region" aria-label="Threshold rehearsal expected results" tabindex="0"><table><thead><tr><th scope="col">Step</th><th scope="col">Input</th><th scope="col">Expected status</th><th scope="col">Why</th></tr></thead><tbody>
+<tr><td>1</td><td>54</td><td>Off</td><td>Below the clearing point.</td></tr>
+<tr><td>2</td><td>60</td><td>Off</td><td>Inside the gap; retains off.</td></tr>
+<tr><td>3</td><td>65</td><td>Off</td><td>Exactly at the upper switching boundary.</td></tr>
+<tr><td>4</td><td>66</td><td>On</td><td>Above 65; activates the status.</td></tr>
+<tr><td>5</td><td>60</td><td>On</td><td>Inside the gap; now retains on.</td></tr>
+<tr><td>6</td><td>55</td><td>On</td><td>Exactly at the lower switching boundary.</td></tr>
+<tr><td>7</td><td>54</td><td>Off</td><td>Below 55; clears the status.</td></tr>
+</tbody></table></div>
+<p>A pass means the template follows every entered value and the status matches every row. If it does not, stop before connecting a real routine and use the checks below. You can remove the three demo helpers afterward, once you have removed their dashboard cards and confirmed nothing else uses them. No history deletion, sensor disconnection or household restart is needed.</p>
+
+<h2 id="troubleshooting">When the result looks wrong</h2>
+<p class="table-hint">Scroll sideways to read every column.</p>
+<div class="comparison-table" role="region" aria-label="Threshold helper troubleshooting" tabindex="0"><table><thead><tr><th scope="col">Observation</th><th scope="col">Likely check</th><th scope="col">Next step</th></tr></thead><tbody>
+<tr><td>The test slider is missing from Input sensor</td><td>It is an input_number, not a sensor.</td><td>Select the Template sensor created in step 2 of the rehearsal.</td></tr>
+<tr><td>On means “inside the band”</td><td>Both limit fields are filled.</td><td>For the high-status example, keep only Upper 60 and Hysteresis 5.</td></tr>
+<tr><td>60 gives different answers on different passes</td><td>The last crossed boundary differs.</td><td>Repeat the sequence from 54. Retaining state inside the gap is intentional.</td></tr>
+<tr><td>The template does not follow the input</td><td>Actual entity ID and both expressions.</td><td>Check the Number helper’s ID against the pasted text; then inspect the template preview.</td></tr>
+<tr><td>The original sensor is unknown or unavailable</td><td>No usable source reading.</td><td>Check the device connection. Do not treat the derived status as “all clear.”</td></tr>
+<tr><td>A fan still switches even though the helper is steady</td><td>The automation may use the original sensor or another controller.</td><td>Read its trace and targets. Creating a helper does not change existing routines.</td></tr>
+</tbody></table></div>
+<p>In the checked version, a nonnumeric or unavailable source makes Threshold <strong>unknown</strong>, rather than off. See Home Assistant’s <a href="https://www.home-assistant.io/docs/configuration/state_object/">state definitions</a>. For a reading that stays wrong, our <a href="/blog/home-assistant-template-sensor-not-updating/">template troubleshooting guide</a> follows the input and update path.</p>
+
+<h2 id="limits">Keep restart and appliance behavior separate</h2>
+<p><strong>Do not rely on the helper remembering its old side of the gap after a restart or reload.</strong> In Core 2026.10.4, a newly initialized single-limit helper starts off when its input is inside the hysteresis band. The same reset occurs after an unknown input: if this example returns at 60, it becomes off even if it was on before the interruption. That is source-checked behavior, not a promise of persistent memory.</p>
+<p>Start by using the helper as a dashboard status. To act on it, an automation must explicitly watch its changes. <a href="https://www.home-assistant.io/docs/automation/trigger/">Triggers react at a moment</a>; saving an automation while the status is already on is not equivalent to a new off-to-on transition.</p>
+<p>Hysteresis is also different from requiring a condition to remain true for a duration. Neither alone validates a heater or compressor controller. Preserve equipment protections and manual controls. If your next step is controlling a dehumidifier, use the separate <a href="/blog/home-assistant-dehumidifier-automation/">dehumidifier guide for quiet hours, power-switching limits and recovery checks</a>.</p>
+
+<h2 id="faq">Common questions</h2>
+<h3>Can I use a template or another helper as the limit?</h3>
+<p>The checked Threshold UI expects numeric limit values, not a template expression or another entity ID. Use it for fixed boundaries. An adjustable target needs a different design; do not paste template text into the limit box and assume it will update.</p>
+<h3>Does this work locally?</h3>
+<p>The helper’s calculation runs in Home Assistant. Its usefulness during an internet outage still depends on where the input reading comes from. A locally calculated status cannot replace updates that a cloud-dependent sensor stops delivering.</p>
+<p>For a household plan that documents sensor inputs, normal behavior and exceptions together, see Tara’s <a href="/home-automation-kit/">home automation kit for coordinated local routines</a>.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Helper setup</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/threshold/">Threshold helper and state-change matrix</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_number/">Number helper</a></li>
+<li><a href="https://www.home-assistant.io/integrations/template/">Template sensors and availability</a></li>
+<li><a href="https://www.home-assistant.io/docs/templating/types/">Template types and conversion</a></li>
+</ul></div><div><h3>Behavior and limits</h3><ul>
+<li><a href="https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/threshold/binary_sensor.py">Threshold calculation in Core 2026.10.4</a></li>
+<li><a href="https://github.com/home-assistant/core/blob/2026.10.4/homeassistant/components/threshold/config_flow.py">Threshold input selector and settings</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/state_object/">Unknown and unavailable states</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/trigger/">Automation triggers</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday routines understandable</h2><p>Plan the rooms, readings and manual controls your household needs.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section>
+</article></main>
+<footer><p>© 2026 Tara Home</p><p>Local-first smart home systems, configured for real households.</p></footer>
+</body></html>
