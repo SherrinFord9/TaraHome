@@ -1,0 +1,79 @@
+{
+  "slug": "home-assistant-proximity-automation",
+  "action": "new",
+  "publicationDate": "2026-10-30",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant run a useful routine before I arrive home, using distance and direction without repeatedly firing during the same approach?",
+  "directAnswer": "Use the built-in Proximity integration with one person's GPS distance and direction, trigger on changes to either, and remember eligibility with a toggle. The worked example arms beyond 2,000 meters, notifies once between zero and 1,000 meters while towards, and clears unused eligibility on arrived. First rehearse with number/dropdown helpers and a persistent notification. Late or inaccurate GPS and passing nearby remain limitations, so this is for low-impact convenience, not automatic unlocking.",
+  "originalContribution": "Sections 2-5 (#rule, #helpers, #rehearsal, #connect) provide one complete notification-only YAML configuration, three helper definitions, an eight-row expected-outcome journey, and conversion to the reader's real sensors. The example explicitly catches a direction change after crossing the distance boundary, prevents repeated approaches until rearmed, clears an unused flag on arrival, and explains deliberately excluded short trips. The expected results are derived from documented semantics, not presented as measured hardware results.",
+  "limitations": "No phone, GPS journey, home installation, lamp, or Home Assistant runtime was tested. YAML was parsed locally and reviewed against current primary documentation; this does not prove installed-release or real-device behavior. Background updates can be delayed, large GPS errors can defeat the guard, and passing nearby can correctly match the rule without intent to return home. The toggle can restore but interrupted actions do not resume; no guaranteed pre-arrival timing, missed-event catch-up, retry, or security authorization is promised. Generated art is identified as illustrative.",
+  "proofreadFixes": "Replaced abstract eligibility/consumption wording in the TLDR with a plain on/off helper and the concrete 2 km example; shortened the nearest-sensor and GPS caveat bullets. Reworded both library summaries to avoid 'eligible trip'. Added explicit sideways-scroll and collapse guidance above the YAML after inspecting mobile rendering. Checked the actual branch order, all occurrences required when replacing test inputs, strict threshold boundaries and unit conversions, arrived cleanup, unknown direction, action-failure behavior, restore limits, and the distinction between frontend notifications and phone push. The first generated cover showed the person leaving; the edited and visually inspected final cover shows an approach. Automated editorial proofreading only; no human or expert review claimed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Proximity requires coordinates, exposes per-person distance and direction, measures distance from the zone edge and returns zero inside it. The nearest tracked person can mask another person's approach. Tolerance is in meters and affects direction calculation, not this automation's rearm policy.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/proximity/"
+    },
+    {
+      "claim": "Phone location updates depend on permissions/background reporting and a usable connection to Home Assistant; the chosen connection may be direct or through Home Assistant Cloud. Local Proximity calculation does not imply wholly offline phone reporting.",
+      "sourceUrl": "https://companion.home-assistant.io/docs/core/location/"
+    },
+    {
+      "claim": "The state trigger can watch both named inputs. to:null reacts to state changes while ignoring attribute-only changes, allowing a later direction change to reevaluate the routine.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "A numeric-state trigger requires a threshold crossing and does not continuously retry a failed direction condition; watching direction too resolves that particular missed reevaluation.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/numeric_state/"
+    },
+    {
+      "claim": "Generic numeric-state conditions use strict above/below comparisons. The sample is in meters; kilometer, mile and foot thresholds must preserve distance scaling. No missing reading is converted to zero.",
+      "sourceUrl": "https://www.home-assistant.io/conditions/numeric_state/"
+    },
+    {
+      "claim": "Choose executes only the first matching branch. Arrival cleanup precedes the distant rearm branch and the approach branch; the flag is switched off before notification, deliberately favoring no repeats over an automatic retry.",
+      "sourceUrl": "https://www.home-assistant.io/building-blocks/choose/"
+    },
+    {
+      "claim": "A Toggle helper stores on/off state and restores its previous value by default; current documentation also exposes startup choices, which the article treats as release-dependent.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Number and Dropdown helpers provide changeable test inputs without modifying the real phone tracker. The walkthrough specifies units, range, step and exact direction option strings.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_number/"
+    },
+    {
+      "claim": "Dropdown helpers record option changes as entity state changes, making them suitable for the harmless direction rehearsal.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_select/"
+    },
+    {
+      "claim": "Queued mode orders overlapping runs; it does not remember a trip. Pending runs stop on restart, so restored helper state is not an interrupted-action resume guarantee.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/modes/"
+    },
+    {
+      "claim": "persistent_notification.create writes to the Home Assistant frontend, not phone push. A fixed notification_id replaces the existing notification; dismissing it and moving from 900 to 700 in the rehearsal should not create a new one because the flag is off.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "Run actions does not demonstrate that a real trigger fired; changing harmless helper inputs and inspecting the actual automation trace is the verification procedure supplied to readers.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/troubleshooting/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-person-not-updating/",
+      "section": "7. Make Your Automations Resilient",
+      "readerReason": "After repairing phone location, a reader wanting a convenience routine before the Home transition can use the per-person proximity rehearsal and understand why distance alone is insufficient."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-house-modes/",
+      "section": "Build only three mode-changing rules",
+      "readerReason": "A reader defining arrival policy may want a separate pre-arrival convenience action without declaring the household Home merely because someone is nearby."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440×1000: visually inspected readable title, visible October 30 date and Tara Home credit, loaded post-local 1200px WebP, centered 780px body and 920px table, and four-bullet TLDR immediately after the hero. Document width equals viewport. Tara Avenir is the computed font. Source and internal links checked; both library schema lists have 200 unique entries with the new article first. Screenshots in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "PASS at 390×844: inspected title wrapping, hero, revised TLDR, body and library card; body text is 16.96px with 28.832px line height. Document width remains 390px. The table's 344px container scrolls its 760px contents, and the code's 312px container scrolls its 656px contents. Details heading collapses/reopens the code. Both /blog/ and /blog.html load the new 480px card WebP without page overflow. The legacy .html URL navigates to the canonical article. Screenshots saved outside the worktree."
+  }
+}

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Proximity Automation: Act Before You Arrive</title>
+    <meta name="description" content="Build a Home Assistant proximity automation with distance, direction and a repeat guard. Test it with helpers before connecting your phone location." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-proximity-automation/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-proximity-automation/" />
+    <meta property="og:title" content="Home Assistant Proximity Automation: Act Before You Arrive" />
+    <meta property="og:description" content="Build a Home Assistant proximity automation with distance, direction and a repeat guard. Test it with helpers before connecting your phone location." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-proximity-automation/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Proximity Automation: Act Before You Arrive" />
+    <meta name="twitter:description" content="Build a Home Assistant proximity automation with distance, direction and a repeat guard. Test it with helpers before connecting your phone location." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-proximity-automation/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-proximity-automation/#blogposting",
+      "headline": "Home Assistant Proximity Automation: Act Before You Arrive",
+      "description": "Build a Home Assistant proximity automation with distance, direction and a repeat guard. Test it with helpers before connecting your phone location.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-proximity-automation/cover.png",
+      "datePublished": "2026-10-30",
+      "dateModified": "2026-10-30",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-proximity-automation/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Proximity Automation: Act Before You Arrive",
+          "item": "https://tarahome.ai/blog/home-assistant-proximity-automation/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://tarahome.ai/blog/home-assistant-proximity-automation/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is tolerance the same as the rearm distance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Proximity tolerance filters GPS changes for the direction calculation. The ready helper and separate outer boundary are choices in this automation for limiting repeated actions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it to unlock a door?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Do not treat this example as an access-control decision. It does not verify identity, intent or fresh accurate position. Keep unlocking deliberate and use proximity only for low-impact convenience."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can two people share this automation?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Give each person their own sensor pair and ready helper if each approach should qualify independently. Decide separately whether the final household action should run again when the second person arrives."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+  </head>
+<body>
+    <nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+<main class="article"><article><header class="hero article-hero"><div><p class="article-meta"><span>Everyday automation</span><span><time datetime="2026-10-30">October 30, 2026</time></span><span>10 min read</span></p><h1>Home Assistant Proximity Automation: Act Before You Arrive</h1><p class="lede">Combine distance and direction, rehearse a journey with helpers, and make the next approach create one useful result.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-proximity-automation/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-proximity-automation/cover-480.webp 480w, /assets/generated/blog/home-assistant-proximity-automation/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" loading="eager" fetchpriority="high" alt="A person carrying groceries approaches a warmly lit porch and dark-green front door at dusk" /></figure></header><div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Add Proximity to act before you arrive.</strong> Use one person’s GPS distance and direction sensors.</li>
+<li><strong>Watch both distance and direction.</strong> Use your own readings; a household “nearest” sensor can stay at zero while somebody else is home.</li>
+<li><strong>Prevent repeated alerts with an on/off helper.</strong> In this example, a trip must go more than 2 km away before another approach alert is allowed. GPS tolerance is a different setting.</li>
+<li><strong>Test with a notification first.</strong> GPS can be late or wrong. Passing nearby is not proof you are coming home, so keep unlocking deliberate.</li>
+</ul></aside>
+<h2 id="answer">Start with one person and a harmless result</h2>
+<p>A <strong>Home Assistant proximity automation</strong> can prepare a convenience routine before you enter the home zone. Add the built-in Proximity integration, watch one person’s distance and direction together, and keep a small on/off memory of whether the routine is allowed to fire again. Start by creating a notification inside Home Assistant; connect a real household action only after you understand the observed behavior.</p>
+<p>If you only want something to happen <em>after arrival</em>, a Person or zone-entry trigger is simpler. Proximity helps when the distinction between “nearby” and “approaching” matters. Its result describes movement relative to a zone; it cannot know that you are driving home rather than passing a nearby shop. See the <a href="https://www.home-assistant.io/integrations/proximity/">Proximity documentation</a> and <a href="https://www.home-assistant.io/integrations/person/">Person and zone triggers</a>.</p>
+<p class="research-method"><strong>Research method:</strong> researched from current Home Assistant and Companion App documentation on October 30, 2026. The distances and journey below are teaching examples, not measured GPS performance. This configuration has not been tested on a Tara household installation. The cover is an AI-generated illustration.</p>
+
+<h2 id="setup">1. Check the location input and add Proximity</h2>
+<ol>
+<li>Use an existing Home Assistant installation and a consenting household member’s phone with the Companion App. Confirm that its location updates while away from home. The phone needs the appropriate location permissions and a working connection back to Home Assistant.</li>
+<li>Open <strong>Settings → Devices &amp; services → Add integration</strong> and choose <strong>Proximity</strong>. Select your Home zone and one GPS-equipped tracker or Person. A router’s home/away reading alone does not supply coordinates.</li>
+<li>Find that tracked person’s <strong>Distance</strong> and <strong>Direction of travel</strong> entities. An entity is a named reading or control. Record their actual IDs and the distance unit from <strong>Developer tools → States</strong>; names vary between installations.</li>
+</ol>
+<p>Distance is measured from the <strong>edge of the zone</strong> and becomes zero inside it. Direction states include <code>towards</code>, <code>away_from</code>, <code>stationary</code>, <code>arrived</code> and <code>unknown</code>. The configured <strong>tolerance distance is always in meters</strong>; it filters small GPS changes when calculating direction. It does not create the two arrival/rearm boundaries used below.</p>
+<p>Use the <strong>same person’s</strong> two readings. A nearest-person distance can remain zero because a partner is home, masking your approach. If the underlying phone or Person is stuck, follow the existing <a href="/blog/home-assistant-person-not-updating/">Person tracking troubleshooting guide</a> before changing this routine.</p>
+<p>Agree who will be tracked and who can view their location. Proximity calculates inside Home Assistant, but the phone sends location through your configured connection, directly or through Home Assistant Cloud. It still needs to reach the server while away. The <a href="https://companion.home-assistant.io/docs/core/location/">Companion location documentation</a> explains that path and background updates; this is not a promise of a wholly offline location system.</p>
+
+<h2 id="rule">2. Choose an approach distance and a rearm distance</h2>
+<p>For the worked example, use an inner boundary of <strong>1,000 meters</strong> and an outer boundary of <strong>2,000 meters</strong>. These are deliberately separated teaching values. Choose distances that fit your journeys after observing your phone; no particular radius guarantees timely or accurate reporting.</p>
+<ul>
+<li><strong>Beyond 2,000 m:</strong> set a helper called <strong>Approach ready</strong> on. A helper is a value stored inside Home Assistant; here it remembers eligibility.</li>
+<li><strong>Between 0 and 1,000 m, travelling towards home:</strong> if that helper is on, turn it off and create one notification.</li>
+<li><strong>Arrived:</strong> turn the helper off even if no approach notification occurred. This clears unused eligibility after a missed approach.</li>
+</ul>
+<p>A short trip that never exceeds the outer boundary deliberately does not become eligible. A large GPS error can still cross both boundaries, so this is a repeat guard, not proof of a real journey. For explicit “I am coming home” intent, use a deliberate <a href="/blog/home-assistant-phone-widgets/">phone widget button</a> instead.</p>
+<p>The example checks current conditions whenever either input changes. That avoids relying solely on a <a href="https://www.home-assistant.io/triggers/numeric_state/">numeric threshold crossing</a>: if distance crosses first while direction still says stationary, a later direction change needs its own trigger.</p>
+
+<h2 id="helpers">3. Build the rehearsal with three helpers</h2>
+<p>Before attaching a real phone, go to <strong>Settings → Devices &amp; services → Helpers → Create helper</strong>. Create these controls and check their entity IDs:</p>
+<ul>
+<li><strong>Number:</strong> Approach test distance; minimum <strong>0</strong>, maximum <strong>5000</strong>, step <strong>100</strong>, unit <strong>m</strong>. Use <code>input_number.approach_test_distance</code>.</li>
+<li><strong>Dropdown:</strong> Approach test direction; options <code>stationary</code>, <code>away_from</code>, <code>towards</code>, <code>arrived</code> and <code>unknown</code>. Use <code>input_select.approach_test_direction</code>.</li>
+<li><strong>Toggle:</strong> Approach ready; use <code>input_boolean.approach_ready</code>. Set it <strong>off</strong> now and retain its default restore-previous-state behavior. In releases with a startup option, check that it still says to restore the previous state.</li>
+</ul>
+<p>If Home Assistant adds a suffix to an ID, substitute your actual ID throughout the example. These <a href="https://www.home-assistant.io/integrations/input_number/">number</a>, <a href="https://www.home-assistant.io/integrations/input_select/">dropdown</a> and <a href="https://www.home-assistant.io/integrations/input_boolean/">toggle</a> helpers need no physical sensor or custom integration. Open their controls from the Helpers list or add them to an editable dashboard.</p>
+<p>Create a new empty automation in <strong>Settings → Automations &amp; scenes</strong>. Open its menu, choose <strong>Edit in YAML</strong>, replace the empty automation with the following, and save. YAML is the text form of the automation editor. Paste this as one automation, not into the main configuration file. Menu wording can vary by release.</p>
+<p class="table-hint">On a phone, scroll the code sideways to read long lines. You can collapse the example with its heading.</p>
+<details class="configuration" open><summary>Notification-only rehearsal automation</summary><pre tabindex="0" aria-label="Proximity rehearsal YAML"><code>alias: Approach home - notification rehearsal
+triggers:
+  - trigger: state
+    entity_id:
+      - input_number.approach_test_distance
+      - input_select.approach_test_direction
+    to: null
+conditions: []
+actions:
+  - choose:
+      - alias: Clear eligibility after arrival
+        conditions:
+          - condition: state
+            entity_id: input_select.approach_test_direction
+            state: &quot;arrived&quot;
+        sequence:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.approach_ready
+      - alias: Remember a trip beyond the outer distance
+        conditions:
+          - condition: numeric_state
+            entity_id: input_number.approach_test_distance
+            above: 2000
+        sequence:
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.approach_ready
+      - alias: Notify once on the approach
+        conditions:
+          - condition: state
+            entity_id: input_boolean.approach_ready
+            state: &quot;on&quot;
+          - condition: numeric_state
+            entity_id: input_number.approach_test_distance
+            above: 0
+            below: 1000
+          - condition: state
+            entity_id: input_select.approach_test_direction
+            state: &quot;towards&quot;
+        sequence:
+          - action: input_boolean.turn_off
+            target:
+              entity_id: input_boolean.approach_ready
+          - action: persistent_notification.create
+            data:
+              notification_id: approach_home_rehearsal
+              title: Approach detected
+              message: &gt;-
+                The approach rule matched at {{ now().strftime(&#x27;%H:%M:%S&#x27;) }}.
+                This rehearsal did not operate any device.
+mode: queued
+max: 10
+</code></pre></details>
+<p>The <a href="https://www.home-assistant.io/triggers/state/">state trigger</a> watches both inputs; <code>to: null</code> ignores attribute-only changes. <a href="https://www.home-assistant.io/building-blocks/choose/">Choose</a> runs the first matching branch. The ready helper prevents another qualifying approach until it is rearmed; <a href="/blog/home-assistant-automation-modes/">Queued mode</a> just keeps overlapping runs in order.</p>
+<p>The fixed notification ID updates one notification inside Home Assistant. It is <strong>not a phone push alert</strong>. Turning the helper off before the action prioritizes avoiding repeats; if the action fails, the example does not retry automatically. Read its trace before rearming manually.</p>
+
+<h2 id="rehearsal">4. Walk through a journey without leaving the house</h2>
+<p>Set distance to <strong>0</strong>, direction to <strong>stationary</strong> and Approach ready <strong>off</strong>. Enable the automation. Change the helper controls in the order below, letting each run finish. Do not edit your real tracker’s state or use <strong>Run actions</strong> as proof that the trigger works.</p>
+<p class="table-hint">Expected outcomes for this example. On a phone, scroll the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Proximity rehearsal expected outcomes" tabindex="0"><table><thead><tr><th scope="col">Change the test controls</th><th scope="col">Approach ready afterward</th><th scope="col">Expected result</th></tr></thead><tbody>
+<tr><td>Set direction away_from, then distance 2500</td><td>On</td><td>Trip becomes eligible; no notification.</td></tr>
+<tr><td>Set distance 900 while still away_from</td><td>On</td><td>No notification: distance alone is insufficient.</td></tr>
+<tr><td>Keep 900; change direction to towards</td><td>Off</td><td>One “Approach detected” notification appears.</td></tr>
+<tr><td>Dismiss it; change distance to 700</td><td>Off</td><td>No new notification.</td></tr>
+<tr><td>Set away_from, then 1500; set towards, then 900</td><td>Off</td><td>No notification: this loop never reached the outer boundary.</td></tr>
+<tr><td>Set away_from, then 2500; set stationary, then 900</td><td>On</td><td>Eligible again, but no notification while stationary.</td></tr>
+<tr><td>Keep 900; select unknown, then towards</td><td>Off after towards</td><td>Unknown does not match; towards creates the next notification.</td></tr>
+<tr><td>Set away_from, then 2500; set distance 0, then arrived</td><td>Off</td><td>Arrival clears eligibility without a pre-arrival notification.</td></tr>
+</tbody></table></div>
+<p>Open the automation’s <strong>Traces</strong> to check which branch ran. The notification timestamp should change only on qualifying approaches. The <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">automation troubleshooting documentation</a> explains why running actions manually does not test the trigger.</p>
+
+<h2 id="connect">5. Connect the real sensors, keeping the harmless action</h2>
+<ol>
+<li>Disable the rehearsal automation. Replace <strong>every occurrence</strong> of the test number ID with your person’s Proximity Distance ID, and every occurrence of the test dropdown ID with that person’s Direction of travel ID. Keep the ready toggle.</li>
+<li><strong>Match the distance unit.</strong> The generic numeric conditions compare numbers, not converted lengths. For kilometers use <strong>1</strong> and <strong>2</strong>; for miles use approximately <strong>0.62</strong> and <strong>1.24</strong>; for feet use approximately <strong>3281</strong> and <strong>6562</strong>. Retain <code>above: 0</code>. Recheck thresholds if you change the sensor’s display unit later.</li>
+<li>Set Approach ready off, rename the automation, enable it and observe an ordinary trip. It first needs to receive a qualifying update beyond the outer boundary. Review readings and traces after parking or after the trip; do not watch your phone while driving.</li>
+</ol>
+<p><a href="https://www.home-assistant.io/conditions/numeric_state/">Numeric conditions</a> use strict boundaries: exactly 1000 is not below 1000, and exactly 2000 is not above 2000. Missing or nonnumeric distance cannot satisfy these checks; the example never replaces a missing reading with zero.</p>
+<p>After a restart, the toggle can restore its previous state, but an interrupted action does not resume. This example waits for input state changes and has no catch-up promise. A phone that jumps from far away straight to <code>arrived</code> will clear the flag without a pre-arrival alert. If you need an arrival fallback, design that separately.</p>
+<p>Once notification behavior is acceptable, a nonessential lamp is a reasonable next experiment. Add a darkness check inside the approach branch so rearming and arrival cleanup still work by day. Keep an ordinary control and decide how the lamp will turn off. For a multi-room setup, Tara’s <a href="/home-automation-kit/">home automation kit planning</a> covers the broader routine and handoff decisions.</p>
+
+<h2 id="troubleshooting">If the result differs</h2>
+<ul>
+<li><strong>Distance never changes:</strong> check phone reporting, coordinates and remote connectivity first. Proximity cannot repair a missing location update.</li>
+<li><strong>It misses you while someone else is home:</strong> check that you selected per-person sensors, not the household nearest sensors.</li>
+<li><strong>It alerts on short local loops:</strong> inspect whether the outer boundary was crossed, the toggle was manually enabled, or another automation changes it. Larger GPS jumps can defeat the guard.</li>
+<li><strong>It never alerts after setup:</strong> check the actual unit, entity IDs, exact <code>towards</code> state and whether a far-enough update ever armed the flag.</li>
+<li><strong>It alerts while you pass nearby:</strong> that can satisfy the rule correctly. Use explicit intent or a manual button when a false activation would matter.</li>
+</ul>
+<h2 id="faq">Frequently asked questions</h2>
+<h3>Is tolerance the same as the rearm distance?</h3><p>No. Proximity tolerance filters GPS changes for the direction calculation. The ready helper and separate outer boundary are choices in this automation for limiting repeated actions.</p>
+<h3>Can I use it to unlock a door?</h3><p>Do not treat this example as an access-control decision. It does not verify identity, intent or fresh accurate position. Keep unlocking deliberate and use proximity only for low-impact convenience.</p>
+<h3>Can two people share this automation?</h3><p>Give each person their own sensor pair and ready helper if each approach should qualify independently. Decide separately whether the final household action should run again when the second person arrives.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Location and inputs</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/proximity/">Proximity sensors and tolerance</a></li><li><a href="https://companion.home-assistant.io/docs/core/location/">Companion App location reporting</a></li><li><a href="https://www.home-assistant.io/integrations/person/">Person tracking and zones</a></li><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers and restored state</a></li><li><a href="https://www.home-assistant.io/integrations/input_number/">Number helpers</a> and <a href="https://www.home-assistant.io/integrations/input_select/">dropdown helpers</a></li></ul></div><div><h3>Automation behavior</h3><ul><li><a href="https://www.home-assistant.io/triggers/state/">State changes</a> and <a href="https://www.home-assistant.io/triggers/numeric_state/">numeric threshold crossings</a></li><li><a href="https://www.home-assistant.io/conditions/numeric_state/">Numeric conditions and boundaries</a></li><li><a href="https://www.home-assistant.io/building-blocks/choose/">Choose branches</a> and <a href="https://www.home-assistant.io/docs/automation/modes/">automation modes</a></li><li><a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create a persistent notification</a></li><li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Troubleshooting and traces</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make arrivals easier to live with</h2><p>Plan useful household routines, clear manual controls and a sensible fallback when a phone does not report.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>

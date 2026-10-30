@@ -1,0 +1,122 @@
+{
+  "version": 2,
+  "slug": "home-assistant-proximity-automation",
+  "researchedAt": "2026-10-30",
+  "primaryQuery": "Home Assistant proximity automation",
+  "readerQuestion": "How can Home Assistant run a useful routine before I arrive home, using distance and direction without repeatedly firing during the same approach?",
+  "selectedBecause": "The recurring pre-arrival question has current primary documentation, a March 2026 Reddit example of approach lighting, and an October 14, 2026 Home Assistant GitHub request about repeated home/away transitions. Exact-query results mix current sensor documentation with obsolete proximity entity examples and fragmented distance-trigger advice. A per-person, notification-only rehearsal with a deliberate rearm distance supplies a practical missing procedure. The approach is materially distinct from repairing Person tracking or defining shared house modes, works with existing phones, and fits local household routines. Community discussion establishes interest, not search volume; no ranking or traffic forecast is made.",
+  "candidatesConsidered": [
+    {
+      "query": "Home Assistant proximity automation",
+      "evidenceSummary": "Reviewed on October 30: https://www.reddit.com/r/homeassistant/comments/1s1xye1/what_are_the_best_automations_youve_set_up/ includes a March 24, 2026 distance-plus-direction lighting example; https://github.com/orgs/home-assistant/discussions/5161 (October 14, 2026) asks for hysteresis to avoid short departures and repeat behavior. Exact-query and natural-query searches return https://www.home-assistant.io/integrations/proximity/ and https://community.home-assistant.io/t/simple-proximity-automation-not-triggering/862677, with older proximity.home syntax in other results. Current primary docs separate per-person distance/direction sensors and describe tolerance. Direct Google result access was attempted and returned HTTP 429; the accessible web-search result set was reviewed instead, without claiming verified Google positions.",
+      "decision": "selected",
+      "reason": "Useful recurring household setup with a small built-in configuration and a measurable notification-only rehearsal. The new contribution distinguishes direction, distance units, nearest-person masking, condition timing and a remembered rearm flag. Existing Person and house-mode owners remain intact."
+    },
+    {
+      "query": "Home Assistant electricity price automation",
+      "evidenceSummary": "Exact-query search reviewed October 30 alongside https://www.reddit.com/r/homeassistant/comments/1wrj7vh/template_sensor_that_finds_the_cheapest_3hour/ (September 27, 2026) and https://community.home-assistant.io/t/nordpool-cheapest-hours-actions/940421 (October 14, 2025). Results include https://grid-hub.app/blog/cheapest-electricity-hours-tomorrow and https://stroomprijzenapi.nl/docs/home-assistant. Current https://www.home-assistant.io/integrations/nordpool/ documents spot prices and hourly/quarter-hour resolution considerations. Direct Google access returned HTTP 429; accessible exact-query web results were used.",
+      "decision": "rejected",
+      "reason": "A distinct and potentially useful future question, but it needs a narrower supported tariff/region and careful treatment of published price intervals, all-in tariffs, load deadlines and safe appliance scheduling. Current results already include detailed cheapest-window walkthroughs. Proximity offers a more broadly usable first procedure without tariff assumptions; no popularity or volume claim is inferred."
+    },
+    {
+      "query": "Home Assistant plant watering reminder",
+      "evidenceSummary": "Exact-query search reviewed October 30. https://www.reddit.com/r/homeassistant/comments/1tykubh/adaptive_plant_v121_local_plant_care_tracking/ (June 6, 2026) and https://community.home-assistant.io/t/homegrow-track-your-plants-and-feeding-schedules-natively-in-home-assistant/1012751 (June 4, 2026) discuss local plant reminders. Results include https://raspberry.tips/en/smart-home/zigbee-soil-moisture-sensor-home-assistant (October 19, 2026) and https://www.home-assistant.io/integrations/plant/. Primary Plant Monitor docs describe aggregation and min/max readings, not universal watering thresholds. Direct Google access returned HTTP 429; accessible exact-query web results were used.",
+      "decision": "rejected",
+      "reason": "A calendar-only reminder would overlap /blog/home-assistant-recurring-chores/. A distinct sensor-led article would need model-specific measurement and plant/soil calibration evidence; copying a universal moisture threshold would be weak. The new October walkthrough already addresses much of that setup. Preserve the chore and irrigation-rain-delay owners."
+    }
+  ],
+  "demandSignals": [
+    {
+      "source": "reddit",
+      "url": "https://www.reddit.com/r/homeassistant/comments/1s1xye1/what_are_the_best_automations_youve_set_up/",
+      "observedAt": "2026-10-30",
+      "evidence": "March 24, 2026 discussion gives a concrete approach-lighting use case using distance and travel direction. Rechecked as a live accessible discussion today; its age is explicit. This is qualitative interest, not a measurement of search volume or tested reliability."
+    },
+    {
+      "source": "github",
+      "url": "https://github.com/orgs/home-assistant/discussions/5161",
+      "observedAt": "2026-10-30",
+      "evidence": "October 14, 2026 enhancement request asks for different away/arrival boundaries or minimum-away logic because short driveway trips and larger zones can trigger unwanted behavior. This corroborates the need for deliberate rearming; it does not establish volume or promise the example fixes inaccurate GPS."
+    },
+    {
+      "source": "home-assistant-community",
+      "url": "https://community.home-assistant.io/t/simple-proximity-automation-not-triggering/862677",
+      "observedAt": "2026-10-30",
+      "evidence": "Historical March 12, 2025 setup question confuses the textual direction sensor with the numeric distance sensor. It remains an accessible exact-query result. Used to identify a concrete explanation gap, not presented as a new October discussion."
+    }
+  ],
+  "searchReview": {
+    "query": "Home Assistant proximity automation",
+    "reviewedAt": "2026-10-30",
+    "intent": "Set up a pre-arrival routine from a phone's distance and direction, then understand why it misses or repeats.",
+    "resultGap": "Accessible exact-query and natural-query search results contain useful current integration reference material, older proximity.home examples, a forum post comparing text direction with a numeric threshold, and long video walkthroughs. This article adds one complete current sensor-based rehearsal, exact expected branch outcomes, per-person selection, a unit conversion warning, a rearm policy and explicit missed-arrival limits. Google itself returned HTTP 429 for all three candidate queries in the browser; this is an alternative web-search review, not a verified Google ranking report.",
+    "resultsReviewed": [
+      "https://www.home-assistant.io/integrations/proximity/",
+      "https://community.home-assistant.io/t/simple-proximity-automation-not-triggering/862677",
+      "https://community.home-assistant.io/t/how-to-proper-setup-proximity-with-different-distance-triggers/502691",
+      "https://www.youtube.com/watch?v=takaUbSx6Q8"
+    ]
+  },
+  "officialSources": [
+    {
+      "name": "Home Assistant Proximity",
+      "url": "https://www.home-assistant.io/integrations/proximity/",
+      "supports": "UI setup, coordinates required, distance from zone edge, zero inside the zone, per-person and nearest sensors, direction states, and tolerance in meters for direction calculation."
+    },
+    {
+      "name": "Home Assistant Companion location",
+      "url": "https://companion.home-assistant.io/docs/core/location/",
+      "supports": "Phone location reporting, permissions, connection path and background-update limitations; high accuracy can increase battery drain."
+    },
+    {
+      "name": "Home Assistant state trigger",
+      "url": "https://www.home-assistant.io/triggers/state/",
+      "supports": "Watch both sensor states; to:null ignores attribute-only changes, and state changes can include recovery from unknown."
+    },
+    {
+      "name": "Home Assistant numeric conditions",
+      "url": "https://www.home-assistant.io/conditions/numeric_state/",
+      "supports": "Current numeric value checks with exclusive above/below boundaries; generic values need thresholds in the entity's unit."
+    },
+    {
+      "name": "Home Assistant Choose",
+      "url": "https://www.home-assistant.io/building-blocks/choose/",
+      "supports": "Only the first matching branch executes; action-time conditions support a rearm branch and approach branch."
+    },
+    {
+      "name": "Home Assistant toggle helper",
+      "url": "https://www.home-assistant.io/integrations/input_boolean/",
+      "supports": "A helper can remember eligibility across runs; restore previous state is default. Release-specific startup UI is optional."
+    },
+    {
+      "name": "Home Assistant number and dropdown helpers",
+      "url": "https://www.home-assistant.io/integrations/input_number/",
+      "supports": "Number helper can simulate distance without editing a live tracker; paired with the documented input_select integration for direction."
+    },
+    {
+      "name": "Home Assistant input select",
+      "url": "https://www.home-assistant.io/integrations/input_select/",
+      "supports": "Explicit dropdown values for harmless direction rehearsal."
+    },
+    {
+      "name": "Home Assistant automation modes",
+      "url": "https://www.home-assistant.io/docs/automation/modes/",
+      "supports": "Queued runs execute in order; mode alone is not once-per-trip memory and in-progress runs stop on restart."
+    },
+    {
+      "name": "Home Assistant persistent notification action",
+      "url": "https://www.home-assistant.io/actions/persistent_notification.create/",
+      "supports": "Notification appears in Home Assistant frontend, not as phone push; fixed notification_id updates the same notification."
+    }
+  ],
+  "existingCoverage": {
+    "checked": true,
+    "closestUrls": [
+      "/blog/home-assistant-person-not-updating/",
+      "/blog/home-assistant-house-modes/",
+      "/blog/home-assistant-automation-modes/",
+      "/blog/home-assistant-phone-widgets/"
+    ],
+    "decision": "Read every canonical article title and every topic brief's query/question, the closest articles' sections and related briefs, keyword strategy/map, search opportunities, and the measurement contract. Person owns repairing location inputs; house modes owns household policy; automation modes owns overlapping execution; widgets owns deliberate phone shortcuts. This page owns a pre-arrival proximity procedure and rearm example. Link to those owners only for relevant next steps; /home-automation-kit/ retains commercial routine planning. Historical context: parsed schedule-selected search-performance-2026-09-21.json and recent search-comparison-2026-09-21.json. Completed September 13-19 had 3 clicks/212 property impressions versus 2/205 September 6-12, all three clicks accounted for by tarahome/homepage, zero blog clicks; US impressions 111 to 72. September 20-21 absent, not zero. Page rows sum 375 impressions versus 212 property aggregation; visible query rows omit anonymized searches. Recent Bluetooth 19 vs 8, leak sensor 14 vs 6 and doorbell 11 vs 6 page impressions each have zero clicks; these tiny samples are not topic demand. No cumulative three-month dimension sums used for recent trends. September 21 inspection evidence found IKEA direct-pairing, laundry and Spokane indexed; trash/vacation discovered without a recorded crawl. This is dated evidence, not an October indexing report; crawling, indexed low visibility and CTR are separate observations. Read recovery-review-2026-09-21.md and search-change-review-2026-09-15.md: broad July losses across devices, countries and changed/unchanged HTML do not prove a single cause or a title-rollback remedy. Separate refresh opportunities remain the established IKEA, Bluetooth, leak-sensor and doorbell owners, ideally with real model-specific testing; preserve corrected Zigbee classifications for PARASOLL/VALLHORN. Navigation review of the trash/vacation owners is a separate task. No existing pages, strategy or private analytics/customer records are changed or copied. New library links make the article reachable, without an indexing promise."
+  }
+}
