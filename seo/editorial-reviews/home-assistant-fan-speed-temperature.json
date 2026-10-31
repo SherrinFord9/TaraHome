@@ -1,0 +1,67 @@
+{
+  "slug": "home-assistant-fan-speed-temperature",
+  "action": "new",
+  "publicationDate": "2026-10-31",
+  "verdict": "PASS",
+  "readerQuestion": "How can Home Assistant adjust my existing room fan between two speeds as the temperature changes, while leaving start, stop, and manual speed choices under household control?",
+  "directAnswer": "Use percentage speed control on an already integrated fan with reliable on/off feedback, a room-temperature sensor, and an explicit Auto speed toggle. Adjust only while the fan reports on; pause Auto before choosing a manual speed. Start with the helper-only rehearsal, then connect one real fan using two accepted speeds and separate warmer/cooler boundaries. Unknown readings block new commands, but stale state is not a safety guarantee.",
+  "originalContribution": "Sections 2\u20134 provide a two-speed policy with exact equality boundaries, a complete four-helper rehearsal and seven-step expected-results sequence, plus a separately targeted live automation. A capability decision table distinguishes percentage fans, switches, presets, HVAC modes and optimistic remote bridges. The troubleshooting table explains manual handoff, rounding, missing readings and conflicting controllers. Both published YAML blocks were parsed and their actual Jinja decision/action templates evaluated against 48 synthetic cases, including manual Run actions bypass of top-level conditions; this is offline verification, not a Home Assistant or hardware test.",
+  "limitations": "Documentation research only; no fan model, integration transport, airflow, noise, energy use, command latency or physical installation was tested. A remote with stale or optimistic state can defeat reported-on assumptions; an in-flight command can overlap a physical stop. The routine is for ordinary comfort, not required ventilation or equipment safety. Helper startup option wording depends on installed version. Source pages were checked using web access; browser checks are of the static article and library, not a running Home Assistant system.",
+  "proofreadFixes": "Replaced the draft\u2019s vague separate-startup-policy advice with the current Toggle helper More options / Each time Home Assistant starts / Turn off setting, retaining an older-version caveat and the requirement to turn the current helper state off separately. After confirming that Run actions bypasses top-level conditions, added an action-level check of Auto and running state to both examples and verified eight additional guarded cases. Replaced a 404 Energy Saver article URL with its working official PDF. Linked the exact is_number reference for invalid-value behavior and the testing reference for Run actions. Added an explicit mobile code-scroll/copy instruction. Final review confirms four direct TLDR bullets, an immediate answer, explained entity/helper/integration terminology, visible Tara Home credit, honest research method, professional Sources labels and no fabricated testing.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "fan.set_percentage accepts a percentage target and is available only for fans supporting speed control; the live example targets one named fan entity.",
+      "sourceUrl": "https://www.home-assistant.io/actions/fan.set_percentage/"
+    },
+    {
+      "claim": "Discrete physical speeds map to percentage steps; presets are separate capabilities, and an HVAC fan mode belongs to climate rather than a standalone fan entity.",
+      "sourceUrl": "https://contributors.home-assistant.io/core/entities/fan/"
+    },
+    {
+      "claim": "to: null on the temperature trigger ignores attribute-only changes; specifying to: on on the fan trigger also avoids triggering on its own percentage update.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "Triggers are moments, not continuous conditions. Startup, enabling Auto, a fan on-state transition and a periodic check cover reevaluation without claiming a forced fresh sensor poll.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/trigger/"
+    },
+    {
+      "claim": "Toggle helpers default to previous-state restoration; the current documented UI offers Turn off at startup, and changing that option does not change the current state.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "Number helpers can supply numeric virtual inputs; the rehearsal output is input_number.set_value on a new speed helper, not a device action.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_number/"
+    },
+    {
+      "claim": "is_number rejects unknown/unavailable, None, infinity and NaN. Both readings are checked before float conversion; invalid readings are not replaced with zero. Numeric freshness is not established by this check.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/is_number/"
+    },
+    {
+      "claim": "Run actions skips triggers and top-level conditions, but condition steps inside actions still apply. Both examples recheck Auto and running state in the action sequence.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/testing/"
+    },
+    {
+      "claim": "Room circulation improves occupant comfort rather than refrigerating the room; the example does not promise a falling room temperature or quantified savings.",
+      "sourceUrl": "https://www.energy.gov/sites/prod/files/HomeCooling101-final.pdf"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-threshold-helper/",
+      "section": "Keep restart and appliance behavior separate",
+      "readerReason": "Readers who understand a stable high/low status can continue to a complete room-fan speed example with a harmless rehearsal and explicit control ownership."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-automation-manual-override/",
+      "section": "Use the same pattern, with a different reset",
+      "readerReason": "Readers applying a general pause pattern to a room fan can see a concrete routine where pausing speed selection leaves the motor alone."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "Chromium at 1440\u00d71000: title and byline readable, unique 1200px WebP loaded, centered 780px body and regular Tara Avenir headings verified. All three comparison tables fit, both expanded code blocks fit, and document width remained 1440px. Both library URLs show the new card first with a loaded image; the legacy article redirect reaches the canonical path. No page JavaScript errors. Screenshots saved outside the repository in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "Chromium at 390\u00d7844: title wraps cleanly, byline and hero readable, 480px WebP loads, and document width stays 390px. Tables scroll within 344px regions and expanded code within 312px boxes; no page-level overflow. Both library cards and the article redirect verified. Screenshots reviewed visually, including article top, code and library."
+  }
+}
