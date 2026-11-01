@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant CarPlay: Setup, Buttons, and Confirmations</title>
+    <meta name="description" content="Set up Home Assistant CarPlay, choose predictable buttons, test confirmation prompts safely, and check what happened before retrying a timed-out action." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-carplay/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-carplay/" />
+    <meta property="og:title" content="Home Assistant CarPlay: Setup, Buttons, and Confirmations" />
+    <meta property="og:description" content="Set up Home Assistant CarPlay, choose predictable buttons, test confirmation prompts safely, and check what happened before retrying a timed-out action." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-carplay/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant CarPlay: Setup, Buttons, and Confirmations" />
+    <meta name="twitter:description" content="Set up Home Assistant CarPlay, choose predictable buttons, test confirmation prompts safely, and check what happened before retrying a timed-out action." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-carplay/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-carplay/#blogposting",
+      "headline": "Home Assistant CarPlay: Setup, Buttons, and Confirmations",
+      "description": "Set up Home Assistant CarPlay, choose predictable buttons, test confirmation prompts safely, and check what happened before retrying a timed-out action.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-carplay/cover.png",
+      "datePublished": "2026-11-01",
+      "dateModified": "2026-11-01",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-carplay/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant CarPlay: Setup, Buttons, and Confirmations",
+          "item": "https://tarahome.ai/blog/home-assistant-carplay/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I use Assist from CarPlay?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The current documentation requires iOS 26.4 or later and a configured Assist pipeline. Verify speech recognition, the conversation agent and reply playback, with a working connection from the phone to Home Assistant."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does CarPlay make my home work offline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Away from home the iPhone needs a working route to Home Assistant. The controlled device may also have its own cloud dependency."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body>
+<nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav><main class="article"><article><header class="hero article-hero"><div><p class="article-meta"><span>Car controls</span><span><time datetime="2026-11-01">November 1, 2026</time></span><span>9 min read</span></p><h1>Home Assistant CarPlay: Setup, Buttons, and Confirmations</h1><p class="lede">Build a short car-screen list that does what its labels promise, with a harmless rehearsal before you add real controls.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-carplay/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-carplay/cover-480.webp 480w, /assets/generated/blog/home-assistant-carplay/cover-1200.webp 1199w" sizes="(max-width: 720px) 100vw, 1120px" width="1672" height="941" decoding="async" loading="eager" alt="A phone, car key and cable on a parked car seat beside a warmly lit home with a green front door" /></figure></header><div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use the official iPhone app:</strong> sign in to Home Assistant, then build your list under Settings → Companion app → CarPlay.</li>
+<li><strong>Choose predictable buttons:</strong> use a scene for a fixed result such as “Entrance lights on.” A direct light button toggles its current state.</li>
+<li><strong>Rehearse while parked:</strong> use a new, unconnected Toggle helper to check Cancel and Confirm before adding household devices.</li>
+<li><strong>Check before retrying:</strong> a connection timeout does not cancel the command. Look at the device’s current state before tapping again.</li>
+</ul></aside>
+<p class="research-method">Researched from current Home Assistant documentation on November 1, 2026. The walkthrough and example below are documentation-based; Tara has not tested them in a vehicle. The cover is an illustration, not a product-test photograph.</p>
+<h2>Start with the official app and a short list</h2>
+<p>Home Assistant CarPlay lets an iPhone put selected home controls on a compatible car display. Start with Quick access and two or three clearly named items. You do not need to move your devices into Apple Home to follow this setup.</p>
+<p>You need a CarPlay-compatible vehicle or head unit, an iPhone, and the official Home Assistant app signed in to your server. The <a href="https://companion.home-assistant.io/docs/carplay/">current requirements</a> specify iOS 16.4 or later; Grid layouts need iOS 26, and in-car Assist needs iOS 26.4. This guide follows the current documented interface. If your installed app has older menus, compare its version with the documentation before following newer settings.</p>
+<p>The phone supplies the connection to Home Assistant. An app icon on the car screen therefore does not prove that commands can reach your house. Set up and verify the following while safely parked. Android users should follow the separate <a href="/blog/home-assistant-android-auto/">Home Assistant Android Auto guide</a>.</p>
+<h2>1. Prove the phone can reach home</h2>
+<p>Open Home Assistant on the iPhone and confirm you are using the intended server. For access away from home, use your existing secure remote connection. <a href="https://www.home-assistant.io/docs/configuration/remote/">Home Assistant Cloud requires a paid subscription</a>; a VPN (an encrypted private connection into your home network) is another route, but it must be connected before the phone can reach the server.</p>
+
+<h2>2. Make a harmless confirmation rehearsal</h2>
+<p>A helper is a software control inside Home Assistant. Create a fresh one that no automation uses; changing it will then operate no household equipment. An entity is one individual control or reading, such as that helper or a lamp.</p>
+<ol>
+<li>In Home Assistant, open <strong>Settings → Devices &amp; services → Helpers → Create helper → Toggle</strong>. Name it <strong>Car rehearsal</strong>. Leave it disconnected from scripts and automations. Confirm it changes on and off from the phone. The <a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helper documentation</a> explains this software-only state.</li>
+<li>Before connecting to wireless CarPlay, briefly turn off the phone’s Wi-Fi and operate Car rehearsal over cellular. It should change state remotely. Restore Wi-Fi afterwards: <a href="https://support.apple.com/en-gb/105109">wireless CarPlay needs Wi-Fi and Bluetooth enabled</a>. If cellular access fails, use our <a href="/blog/home-assistant-remote-access-without-port-forwarding/">remote-access walkthrough</a> before continuing.</li>
+<li>On the iPhone, open <strong>Settings → Companion app → CarPlay</strong>. Under Quick access, select <strong>Add item</strong>, choose the entity option, then Car rehearsal and the correct server if asked.</li>
+<li>Open that item’s settings, enable <strong>Require confirmation</strong>, and save. Connect the iPhone to the car and open Home Assistant. These controls are described in the <a href="https://companion.home-assistant.io/docs/carplay/configuration/">CarPlay configuration guide</a>.</li>
+<li>With the helper off, select Car rehearsal and cancel the prompt. Expected result: it stays off. Select it again and confirm. Expected result: it becomes on. Check the helper from the phone too.</li>
+</ol>
+<p>If either result differs, stop at this harmless control and use the troubleshooting table below. Do not substitute a door lock or garage opener to see whether the app works.</p>
+<h2>3. Decide what each button means</h2>
+<p>For a household button, name the intended result before choosing its type. “Entrance lights on” is easier to understand than “Arrival 2.” The distinction matters when someone taps twice or returns to a list showing an old state.</p>
+<p class="table-hint">On a narrow screen, swipe the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Choosing a CarPlay control" tabindex="0"><table><thead><tr><th>What you want</th><th>Use</th><th>What to expect</th></tr></thead><tbody>
+<tr><td>Reverse a lamp’s present state</td><td>The light entity</td><td>CarPlay toggles it: on becomes off.</td></tr>
+<tr><td>Set the same lighting every time</td><td>A scene</td><td>The saved target states are applied again.</td></tr>
+<tr><td>Check a condition or run steps</td><td>A script</td><td>The script runs; put the required checks inside it.</td></tr>
+</tbody></table></div>
+<p>A scene is a saved set of target states. It has no lasting “active” mode to turn off; use another scene or the normal controls for a different result. A script is a sequence of actions and can include checks. Our <a href="/blog/home-assistant-scenes-vs-scripts/">scene-versus-script guide</a> explains when to choose each. The <a href="https://companion.home-assistant.io/docs/carplay/controls/">CarPlay controls reference</a> confirms which items toggle and which activate.</p>
+<h2>Worked example: an arrival list with clear outcomes</h2>
+<p>Imagine you want the porch and hallway lit when you arrive with groceries, while leaving the bedrooms alone. Use the following plan as a starting point, not as a claim about a tested Tara home.</p>
+<div class="comparison-table" role="region" aria-label="Example arrival button plan" tabindex="0"><table><thead><tr><th>Button label</th><th>Targets</th><th>Repeat-tap result</th></tr></thead><tbody>
+<tr><td>Entrance lights on</td><td>A scene containing only the porch and hallway lights, both on</td><td>Requests those same on states again</td></tr>
+<tr><td>Porch light off</td><td>A second scene containing only the porch light, off</td><td>Requests off again; leaves the hallway alone</td></tr>
+<tr><td>Car rehearsal</td><td>The unconnected Toggle helper</td><td>Reverses the helper after confirmation; keep it for diagnosis or remove it later</td></tr>
+</tbody></table></div>
+<p><strong>Build the first scene at home:</strong> go to Settings → Automations &amp; scenes → Scenes → Create scene. Add only the two individual light entities and set them on. Save as Entrance lights on. Create Porch light off separately with only the porch light set off. Review each target list before adding the scenes to Quick access.</p>
+<p><strong>The editor changes real lights:</strong> a new scene opens in Live Edit, which applies changes immediately. Choose a time when those lights can be operated safely and tell anyone using the rooms. The <a href="https://www.home-assistant.io/docs/scene/">scene editor documentation</a> explains that saving switches to Review Mode and restores the earlier device states. Do not include locks, alarm controls, heaters or garage doors in this exercise.</p>
+<p>Verify each scene from the phone while you can see the lamps. Entrance lights on should light only those two targets; a second activation should leave them on. Porch light off should leave the hallway unchanged. These are intended results to verify, not measured results from Tara. Another automation can still change a lamp afterwards: a scene does not reserve the device or pause other routines. See the <a href="https://www.home-assistant.io/integrations/scene/">scene behavior reference</a>.</p>
+<p>If you want lights only after dark, use a script with that check, rather than assuming an “arrival” label adds it. If you want automatic arrival instead of a deliberate button press, the next step is our <a href="/blog/home-assistant-proximity-automation/">distance-and-direction arrival guide</a>.</p>
+<h2>4. Put confirmation in the right place</h2>
+<p><strong>Require confirmation applies to Quick access and custom-tab items.</strong> Selecting a device through Areas or Control generally runs it immediately. Locks always request confirmation. For a cover such as a garage door, do not assume the same lock rule applies. These distinctions come from the <a href="https://companion.home-assistant.io/docs/carplay/controls/">official confirmation rules</a>.</p>
+<p>Keep the rehearsal and household buttons in the route you actually intend to use. You can hide the built-in Areas or Control tabs to reduce clutter. Hiding them is not a security boundary: a shorter menu does not restrict the account to those devices. Home Assistant separates <a href="https://www.home-assistant.io/dashboards/views/">view visibility</a> from <a href="https://contributors.home-assistant.io/core/internals/permissions/">server permission checks</a>. A non-admin login with hidden controls does not establish device-only authorization.</p>
+<p>Keep physical door and garage controls available. A confirmation prompt does not check for a person, pet or obstruction, and does not replace the equipment’s safety features.</p>
+<h2>5. Diagnose the failed layer before changing anything</h2>
+<p>After a connection error or timeout, check the current device state before retrying. The original request may still execute later; repeating a toggle can reverse it. A fixed-target lighting scene avoids that particular reversal, but it does not guarantee delivery.</p>
+<div class="comparison-table" role="region" aria-label="CarPlay troubleshooting decisions" tabindex="0"><table><thead><tr><th>What you see</th><th>First check</th><th>Useful result</th></tr></thead><tbody>
+<tr><td>No Home Assistant icon</td><td>Confirm the app is installed on the connected iPhone. Check iOS Settings → General → CarPlay → your car and its app list.</td><td>The app is available to open; no home devices need re-pairing.</td></tr>
+<tr><td>Quick access is empty</td><td>Add Car rehearsal on the phone; verify the server. If already listed there, close and reopen the app.</td><td>The same practice item appears in the car.</td></tr>
+<tr><td>One entity is missing</td><td>Check its supported type and whether it is hidden or categorized as diagnostic/configuration. Confirm the selected server.</td><td>You can distinguish a list-filter issue from a failed device.</td></tr>
+<tr><td>The practice button fails on cellular too</td><td>Check remote access or the VPN from the phone.</td><td>The helper changes remotely before you repeat the parked-car test.</td></tr>
+<tr><td>Practice works, but a light does not</td><td>Operate that light directly from the phone, then activate its scene.</td><td>You can separate the device connection from the scene’s target list.</td></tr>
+</tbody></table></div>
+<p>The <a href="https://companion.home-assistant.io/docs/carplay/troubleshooting/">official troubleshooting guide</a> also provides a Force close app option that keeps the configuration. Reset configuration deletes your CarPlay setup; it is not the first diagnostic step.</p>
+<h2>Can I use Assist from CarPlay?</h2>
+<p>Yes, on supported versions. The <a href="https://companion.home-assistant.io/docs/carplay/assist/">current Assist instructions</a> require iOS 26.4 or later and an Assist pipeline: speech recognition, a conversation agent, and spoken replies. Start by verifying a simple request on the phone. A local conversation setup does not remove the car’s need to reach your server, and cloud components remain cloud components.</p>
+<h2>Does CarPlay make my home work offline?</h2>
+<p>No. Away from home, the iPhone still needs a working route to the server. Whether a lamp itself depends on the cloud is a separate property of its connection to Home Assistant. For a useful handoff, plan <a href="/home-automation-kit/">local household routines and shared controls</a> around clear names and ordinary physical controls as well as the app.</p>
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>CarPlay documentation</h3><ul><li><a href="https://companion.home-assistant.io/docs/carplay/">Overview and requirements</a></li><li><a href="https://companion.home-assistant.io/docs/carplay/configuration/">Quick access configuration</a></li><li><a href="https://companion.home-assistant.io/docs/carplay/controls/">Controls and confirmations</a></li><li><a href="https://companion.home-assistant.io/docs/carplay/troubleshooting/">Troubleshooting</a></li><li><a href="https://companion.home-assistant.io/docs/carplay/assist/">Assist requirements</a></li><li><a href="https://support.apple.com/en-gb/105109">Apple CarPlay connection checks</a></li></ul></div><div><h3>Home Assistant configuration</h3><ul><li><a href="https://www.home-assistant.io/integrations/input_boolean/">Toggle helpers</a></li><li><a href="https://www.home-assistant.io/docs/scene/">Scene editor and Live Edit</a></li><li><a href="https://www.home-assistant.io/integrations/scene/">Scene behavior</a></li><li><a href="https://www.home-assistant.io/docs/configuration/remote/">Remote access</a></li><li><a href="https://www.home-assistant.io/dashboards/views/">View visibility</a></li><li><a href="https://contributors.home-assistant.io/core/internals/permissions/">Server permissions</a></li></ul></div></div></section><section class="block article-cta"><p class="kicker">Plan your home</p><h2>Make everyday controls easy to understand</h2><p>Choose the rooms and routines you want to bring together.</p><a class="cta" href="/configurator/">Plan your smart home kit</a></section></article></main><footer><span>&copy; 2026 Tara Home</span><span>Local-first smart home systems, configured for real households.</span></footer></body></html>
