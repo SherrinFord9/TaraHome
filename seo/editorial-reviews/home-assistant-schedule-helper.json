@@ -1,0 +1,62 @@
+{
+  "slug": "home-assistant-schedule-helper",
+  "action": "new",
+  "publicationDate": "2026-11-03",
+  "verdict": "PASS",
+  "readerQuestion": "How can I use Home Assistant's built-in Schedule helper for several daily settings, including touching blocks that stay on, and verify the routine before it controls a lamp?",
+  "directAnswer": "Use a UI-created weekly Schedule helper with brightness_pct in each active block and an automation that watches both state and attribute changes. Preview with a persistent notification, then replace only its final action to control an already working dimmable lamp. Keep the enabled toggle accessible; this example applies fixed weekly settings and turns the lamp off in gaps, without automatic sunset, holiday or occupancy rules.",
+  "originalContribution": "Sections 1 and 4 connect a two-block 70%/25% reading-lamp plan to a six-row expected-outcome rehearsal, including the on-to-on boundary, gap, pause, resume and missing-data case. Section 3 provides a complete notification-only automation with numeric and range guards; section 5 shows the precise action replacement to connect one lamp. The troubleshooting table separates timing, invalid settings, lamp capability and competing-control faults.",
+  "limitations": "Documentation research and static YAML/Jinja checks only; no live Home Assistant instance, physical lamp, brightness measurements or response-time tests were used. The example does not retry unavailable lamps, enforce settings continuously or provide equipment safety controls. Menu wording can vary by release. The generated cover is an illustration, not a product or installation photograph. Publication, deployment and any subsequent indexing or traffic checks remain the runner's responsibility.",
+  "proofreadFixes": "Automated plain-English and technical review PASS after corrections. Tightened the active-block guard to reject boolean, fractional, missing, nonnumeric and out-of-range brightness values, and pass an integer percentage to the light action. Made the lingering old preview explicit when a pause or invalid-data check stops a run. Kept the schedule trigger free of even null from/to filters so attribute-only changes are included. Added exact insertion and indentation instructions for the replacement action, confirmed both lamp IDs must change, and stated that gaps send off while pause sends nothing. Explained that startup reads the current plan, and lamp reconnection or an automation reload may require toggling off/on. Rechecked the final four-bullet TLDR, visible authorship, honest research note, professional source labels and equipment prerequisites. Extracted YAML parsed successfully; 18 simulated literal-template cases passed. All nine external source links returned HTTP 200 and 1,689 local references across the article, redirect and two indexes had no missing paths or fragments. Layout synchronization made whitespace-only edits to nine old articles; those were restored before final gates.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Schedule can be created in Helpers through the UI. Active block Additional data becomes attributes; touching blocks stay on while data changes, and overlapping blocks are rejected. This guide keeps the existing heating guide's thermostat intent separate.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/schedule/"
+    },
+    {
+      "claim": "A state trigger with no from, to, not_from or not_to includes attribute-only changes. Adding an empty/null from or to excludes those changes; the article deliberately omits both.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "A Home Assistant start trigger can run a new evaluation after startup. The example reads the current plan and does not replay earlier block transitions.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/homeassistant/"
+    },
+    {
+      "claim": "A Toggle helper can supply an explicit pause choice and normally restores its previous state. Pausing this example stops future commands rather than turning the lamp off.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_boolean/"
+    },
+    {
+      "claim": "A failed condition inside the action sequence stops subsequent actions. The two guards therefore also apply when the action sequence is run manually.",
+      "sourceUrl": "https://www.home-assistant.io/building-blocks/condition/"
+    },
+    {
+      "claim": "state_attr returns None when the entity or requested attribute is missing. Missing active-block brightness must not become a zero/off command.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/state_attr/"
+    },
+    {
+      "claim": "is_number checks conversion to a finite numeric value; the example adds explicit boolean, whole-number and 1-100 range checks. Static template cases include None, unknown, unavailable, empty text, NaN, infinity, booleans, fractions and range boundaries.",
+      "sourceUrl": "https://www.home-assistant.io/template-functions/is_number/"
+    },
+    {
+      "claim": "The persistent notification is shown in the Home Assistant frontend; reusing notification_id overwrites that message. It is not a phone push alert or a continuing health indicator.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "brightness_pct uses percentage values while brightness uses 0-255. The optional action requires an already working dimmable light entity; an on/off smart plug does not establish dimming capability. A turn_on action can update an already-on light.",
+      "sourceUrl": "https://www.home-assistant.io/actions/light.turn_on/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-heating-schedule/",
+      "section": "Frequently asked questions → Can I use three or more temperatures?",
+      "readerReason": "Readers who want to understand active block data and on-to-on transitions can rehearse the helper mechanism with this notification-only example. Keep thermostat-specific limits in the heating owner; the lamp action is not a replacement thermostat design. Suggestion for a separate reviewed navigation task only."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440×1000 in a browser. Title fits cleanly, By Tara Home links to /#about, unique 1200-named WebP loads, Tara Avenir is the computed stack, centered article and 918px table contents fit the viewport, and document width equals 1440. Both library schema lists include the new entry first; desktop card is legible with a loaded image. The .html URL redirects to the canonical local path. Screenshots saved in TARAHOME_BLOG_ARTIFACTS. Google analytics requests were intentionally blocked during browser verification; no page-code errors were observed.",
+    "mobile": "PASS at 390×844. Title wraps within 346px; image loads the 480px derivative; body width stays 390px. Tables scroll within 344px containers for 760px content, and both YAML blocks scroll within their own containers. Byline, research note and TLDR remain readable. /blog.html shows the new card first with a working image and no page overflow. Mobile top, example, full-page and library screenshots were saved externally and visually inspected."
+  }
+}
