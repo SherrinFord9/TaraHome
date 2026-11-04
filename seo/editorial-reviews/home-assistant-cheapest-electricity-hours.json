@@ -1,0 +1,59 @@
+{
+  "slug": "home-assistant-cheapest-electricity-hours",
+  "action": "new",
+  "publicationDate": "2026-11-04",
+  "verdict": "PASS",
+  "readerQuestion": "How can I find the cheapest continuous two-hour electricity window in Home Assistant, check that it matches my tariff, and preview a plan before controlling an appliance?",
+  "directAnswer": "Match the source to the household tariff, then compare complete contiguous intervals over the allowed operating window. The built-in Nord Pool example previews tomorrow's lowest average two-hour spot-price block between 08:00 and 22:00 in a dated in-app notification. It excludes changing retail charges and appliance load-profile optimization; verify the result before considering supported appliance controls.",
+  "originalContribution": "Section 2 works through 4/30/5/6-cent prices to show why two cheapest isolated hours differ from the best continuous block. Section 4 supplies an original notification-only planner that validates full allowed-window coverage, compares elapsed durations, converts EUR/MWh once and replaces stale plans before fetching. Section 5 gives concrete harmless verification, including an impossible 25-hour run. The troubleshooting table distinguishes data, time-zone, scaling, tariff and control issues.",
+  "limitations": "Documentation research and 18 offline Jinja/YAML checks with synthetic fixtures only. No live Home Assistant, Nord Pool account, appliance or savings measurements. The script targets built-in Nord Pool, EUR/MWh responses, 15-minute/hourly slots and a suitable European spot tariff. Time-varying retail charges, solar export, batteries, demand charges and actual appliance load shapes need a different cost model. The example does not control appliances, cache outage plans, retry automatically or replay a missed daily trigger. AI-generated editorial kitchen illustration is not a product test or installation photograph.",
+  "proofreadFixes": "Automated grandma-proofread PASS after corrections: changed the tax example from saying every candidate cost changes equally to the precise statement that uniform positive adjustments preserve ordering; changed the no-plan message so an oversized requested duration is not misdiagnosed solely as missing data; made the research note explicitly distinguish offline synthetic checks from live Home Assistant and appliance testing. Verified that response_variable is at action level, the config entry is not an entity ID, source prices are per MWh, negative rates are retained, complete-window gaps and overlaps reject the plan, and the initial notification prevents an old result surviving a failed fetch. Confirmed no smart-plug restart assumption, no phone-push claim, no automatic catch-up claim, local/UTC distinction and date-stamped output. Restored unrelated whitespace changes made by the mandatory layout synchronizer; existing articles remain byte-identical to HEAD. Initial desktop capture preceded image decoding; repeated after decode and visually confirmed the cover. All 877 local references and seven primary source URLs passed.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "Nord Pool provides market prices rather than complete retail tariffs; its price source needs internet access. Existing sensors and the date-specific action have different scopes and units.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/nordpool/"
+    },
+    {
+      "claim": "nordpool.get_prices_for_date takes a configuration entry, date, area and currency; each area returns UTC start/end intervals and prices per MWh. The script converts to EUR/kWh once and uses tomorrow only after data is published.",
+      "sourceUrl": "https://www.home-assistant.io/actions/nordpool.get_prices_for_date/"
+    },
+    {
+      "claim": "An action response is stored using response_variable at the action level for later steps; the planner uses that response rather than assuming sensor attributes contain tomorrow's full price list.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/action/"
+    },
+    {
+      "claim": "Script steps stop on error by default. Placing an invalidating notification before the price request prevents a previously successful plan remaining displayed as a fresh result if fetching fails.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/building-blocks/"
+    },
+    {
+      "claim": "Template loops need a namespace to retain accumulated values. The original algorithm was checked offline for complete and missing coverage, negative prices, interval ordering, ties, unsupported periods and mixed hourly/quarter-hour weights.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/loops-and-conditions/"
+    },
+    {
+      "claim": "Timestamps represent actual instants; local time is applied for display. The example calculates tomorrow's local allowed window and compares elapsed seconds, without a fixed UTC offset or 24-row day assumption.",
+      "sourceUrl": "https://www.home-assistant.io/docs/templating/dates-and-times/"
+    },
+    {
+      "claim": "A repeated persistent notification ID replaces the previous frontend notification. It is an in-app message, not a phone push, and the script contains no appliance-control actions.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-energy-dashboard-vs-utility-bill/",
+      "section": "5. If kWh matches but cost does not, inspect the bill rules (#cost)",
+      "readerReason": "After establishing the correct time-varying retail rate, a reader may want to choose a cheaper continuous operating window. Add only as a separate reviewed navigation task."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-schedule-helper/",
+      "section": "1. Write down the settings and the gaps (#plan)",
+      "readerReason": "Readers whose preferred times change with day-ahead electricity prices need dynamic price planning rather than a repeating weekly timetable. This is a contextual alternative, not permission to edit this page today."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "1440\u00d71000 article: readable two-line title, visible By Tara Home credit, decoded post-local WebP hero, four TLDR bullets directly after hero, regular Tara Avenir headings and centered 780px prose/920px tables. No page overflow. Both library URLs checked at 1440\u00d7900: new first card, working image/link/date and aligned two-column layout. Legacy .html redirected locally to the canonical article. Screenshots stored only in TARAHOME_BLOG_ARTIFACTS.",
+    "mobile": "390\u00d7844 and 320\u00d7844 article: title and prose fit without page-level horizontal overflow (scroll widths equal viewport widths). Post-local WebP image loaded; tables scroll inside 344px/274px containers to expose all columns, and the code block scrolls within its container. Script disclosure closed and reopened correctly. Both indexes checked at 390\u00d7900 with readable single-column first card. Cover, example, code and library screenshots visually inspected; temporary browser captures moved outside the website."
+  }
+}
