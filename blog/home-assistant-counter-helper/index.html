@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Counter Helper: Track Household Supplies</title>
+    <meta name="description" content="Use a Home Assistant counter helper to track supplies, subtract each use, correct refills, and keep one low-stock reminder. Includes a safe test." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-counter-helper/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-counter-helper/" />
+    <meta property="og:title" content="Home Assistant Counter Helper: Track Household Supplies" />
+    <meta property="og:description" content="Use a Home Assistant counter helper to track supplies, subtract each use, correct refills, and keep one low-stock reminder. Includes a safe test." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-counter-helper/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Counter Helper: Track Household Supplies" />
+    <meta name="twitter:description" content="Use a Home Assistant counter helper to track supplies, subtract each use, correct refills, and keep one low-stock reminder. Includes a safe test." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-counter-helper/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-counter-helper/#blogposting",
+      "headline": "Home Assistant Counter Helper: Track Household Supplies",
+      "description": "Use a Home Assistant counter helper to track supplies, subtract each use, correct refills, and keep one low-stock reminder. Includes a safe test.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-counter-helper/cover.png",
+      "datePublished": "2026-11-05",
+      "dateModified": "2026-11-05",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-counter-helper/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Counter Helper: Track Household Supplies",
+          "item": "https://tarahome.ai/blog/home-assistant-counter-helper/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I use Counter or Number?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Choose Counter when most changes are fixed steps, such as one item used or one event counted. Choose Number in Box mode when people mainly type a new total. This guide\u2019s card and automation target a Counter; changing to Number requires changing the entity IDs and actions as well."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the counter know what happened while Home Assistant was off?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Restoring its previous value does not replay unrecorded uses. Reconcile the quantity after missed inputs. A counter is a household record, not an independent inventory sensor."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can this replace my shopping list or chore schedule?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It serves a different purpose. A count answers \u201chow many remain?\u201d The shared shopping list records what to buy, and the recurring-chore guide tracks when work is next due. Keep each control labelled for its actual job."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body>
+<nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article><header class="hero article-hero"><div><p class="article-meta"><span>Home Assistant helpers</span><span><time datetime="2026-11-05">November 5, 2026</time></span><span>10 min read</span></p><h1>Home Assistant Counter Helper: Track Household Supplies</h1><p class="lede">Keep a useful supply balance, correct a refill in one action, and check a low-stock reminder before the household relies on it.</p><p class="article-byline"><a href="/#about">By Tara Home</a></p></div><figure class="article-cover"><img src="/assets/generated/blog/home-assistant-counter-helper/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-counter-helper/cover-480.webp 480w, /assets/generated/blog/home-assistant-counter-helper/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Wrapped household supplies, folded towels and a green notebook in an oak kitchen cupboard" loading="eager" /></figure></header><div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>Use a Counter helper for a whole-number running balance.</strong> Start with the quantity you actually have, then subtract one when you use one.</li>
+<li><strong>Correct a refill with Set counter value.</strong> Enter the new total, including leftovers. Reset returns to the configured initial value; it does not add a pack.</li>
+<li><strong>Keep restoration enabled.</strong> Home Assistant can restore the last counter value after a restart, but it cannot reconstruct uses that nobody recorded.</li>
+<li><strong>Test with pretend stock first.</strong> This guide uses a dashboard button and one local low-stock reminder. For frequent typed corrections, a Number helper in box mode may be simpler.</li>
+</ul></aside>
+
+<h2>Choose a counter when each use changes the balance</h2>
+<p>A <strong>Home Assistant counter helper</strong> stores a whole number that you can increase, decrease or set directly. A helper is a value you create inside Home Assistant, without buying a sensor. For dishwasher tablets, a useful starting point is one visible balance and a button labelled “Used one tablet.” Create the helper, enter your current stock, then add the button and reminder below.</p>
+<p>The number is only as accurate as its inputs. A recorded wash cycle does not prove that someone used exactly one tablet. Start with manual entries until the household agrees when to press the button. If your main task is typing a fresh stock count each week, choose a <a href="https://www.home-assistant.io/integrations/input_number/">Number helper</a> with its display mode set to <strong>Box</strong> instead. Add it to an <a href="https://www.home-assistant.io/dashboards/entities/">Entities card</a> to enter the quantity as a number.</p>
+<p>This example needs a working Home Assistant installation and administrator access for setup and direct corrections. It adds no device, app or paid service. It changes a stored quantity and a Home Assistant reminder; it never starts the dishwasher.</p>
+<p class="research-method">Researched from Home Assistant documentation checked November 5, 2026. The quantities and walkthrough are illustrative, not results from a tested Tara installation. The cover is a generated illustration of household supplies.</p>
+
+<h2>1. Create a counter with an unambiguous meaning</h2>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Helpers → Create helper → Counter</strong>. Name it <strong>Dishwasher tablets</strong>.</li>
+<li>Set <strong>Initial value: 0</strong>, <strong>Step: 1</strong>, and <strong>Minimum: 0</strong>. Leave Maximum unset unless you want a deliberate ceiling that accommodates every refill.</li>
+<li>Keep <strong>Restore the last known value when Home Assistant starts</strong> enabled. Some settings appear under <strong>More options</strong> when editing the helper.</li>
+<li>Find its <strong>entity ID</strong>, the internal name used in actions. The examples use <code>counter.dishwasher_tablets</code>. Substitute your actual ID everywhere if Home Assistant gave it a different one.</li>
+</ol>
+<p>Here, the number means <strong>tablets remaining</strong>, not tablets used, wash cycles completed or days since a refill. Put that meaning in the dashboard where everyone can see it. Home Assistant’s <a href="https://www.home-assistant.io/docs/configuration/helpers/">helper guide</a> explains the setup controls.</p>
+<p>With restoration enabled, the saved value takes priority at startup. The initial value applies when no saved state is available and when you call Reset. Therefore, a restart should not replenish your stock. See the <a href="https://www.home-assistant.io/integrations/counter/">Counter reference</a> for the distinction.</p>
+
+<h2>2. Enter the real total, including leftovers</h2>
+<p>Open <strong>Settings → Tools → Actions</strong>. Older versions call this <strong>Developer tools → Actions</strong>. Search for <strong>Set counter value</strong>, select just your new counter, enter the total and choose <strong>Perform action</strong>. The Tools page is available to administrators.</p>
+<p>For a practice balance of twelve, switch that Actions form to YAML mode and use:</p>
+<details class="configuration"><summary>Action: set the practice quantity to 12</summary><pre tabindex="0"><code>action: counter.set_value
+target:
+  entity_id: counter.dishwasher_tablets
+data:
+  value: 12</code></pre></details>
+<p><strong>Set counter value replaces the balance.</strong> If four tablets remain and you add a 48-pack, the new total is <strong>52</strong>. Set the value to 52, not 48. If you are correcting a mistake, count what is actually there and enter that total. These are example quantities, not a recommended package size.</p>
+<p>Use the <a href="https://www.home-assistant.io/actions/counter.set_value/">counter action</a> for this correction. The <a href="https://www.home-assistant.io/docs/tools/dev-tools/">Tools States tab</a> can temporarily change what Home Assistant displays for testing; it is not the proper way to update the helper’s stored balance. Changing the initial-value setting is also not a refill action.</p>
+
+<h2>3. Add one clear consumption button</h2>
+<p>On an editable dashboard, add a <strong>Manual card</strong> and paste the card configuration below. It displays the quantity and subtracts one per tap. Use it only for this practice counter until you finish the checks.</p>
+<details class="configuration"><summary>Dashboard card: Used one tablet</summary><pre tabindex="0"><code>type: button
+entity: counter.dishwasher_tablets
+name: Used one tablet
+icon: mdi:minus-circle-outline
+show_state: true
+tap_action:
+  action: perform-action
+  perform_action: counter.decrement
+  target:
+    entity_id: counter.dishwasher_tablets
+hold_action:
+  action: more-info</code></pre></details>
+<p>The built-in <a href="https://www.home-assistant.io/dashboards/button/">Button card</a> displays the counter. Its <a href="https://www.home-assistant.io/dashboards/actions/">tap action</a> calls <a href="https://www.home-assistant.io/actions/counter.decrement/">Decrement counter</a>, which subtracts the configured step. With Step set to 1, twelve becomes eleven. Minimum 0 prevents a negative balance.</p>
+<p>A second tap represents another use, so it can subtract again. If you tap by mistake, run <strong>Increment counter</strong> once in Tools → Actions or correct the total with Set counter value. Keep Reset out of the everyday workflow: in this example it would mean zero remaining.</p>
+<p>For a dashboard that must fit both a kitchen tablet and a phone, the <a href="/blog/home-assistant-sections-dashboard/">Sections dashboard guide</a> explains the layout. No custom card is needed for this button.</p>
+
+<h2>4. Keep one reminder below five</h2>
+<p>Create an empty automation under <strong>Settings → Automations &amp; scenes</strong>, open its menu and choose <strong>Edit in YAML</strong>. Replace the editor contents with this complete automation, check the counter ID and save. An automation is simply a rule that runs when something changes.</p>
+<p>This rule checks after each quantity change and when Home Assistant starts. At <strong>0–4</strong>, it creates or updates one message in Home Assistant’s Notifications panel. At <strong>5 or more</strong>, it removes that message. Five is a convenience threshold for this example, not a prediction of how many days the stock will last.</p>
+<details class="configuration"><summary>Complete automation: one low-stock reminder</summary><pre tabindex="0"><code>alias: Dishwasher tablets - stock reminder
+description: Keep one local reminder while the recorded quantity is below five.
+triggers:
+  - trigger: state
+    entity_id: counter.dishwasher_tablets
+    to: null
+  - trigger: homeassistant
+    event: start
+conditions: []
+actions:
+  - condition: numeric_state
+    entity_id: counter.dishwasher_tablets
+    above: -1
+  - choose:
+      - conditions:
+          - condition: numeric_state
+            entity_id: counter.dishwasher_tablets
+            below: 5
+        sequence:
+          - action: persistent_notification.create
+            data:
+              notification_id: dishwasher_tablets_low
+              title: Check dishwasher tablets
+              message: &gt;-
+                Recorded quantity:
+                {{ states(&#x27;counter.dishwasher_tablets&#x27;) }}.
+                Check the pack and add tablets to the shopping list if needed.
+    default:
+      - action: persistent_notification.dismiss
+        data:
+          notification_id: dishwasher_tablets_low
+mode: restart</code></pre></details>
+<p><strong>This is an in-app Home Assistant reminder, not a phone push alert.</strong> The stable <code>notification_id</code> makes subsequent updates replace the same message. You can dismiss it yourself; if stock is still low, it returns on the next quantity change or Home Assistant startup. A refill to at least five clears it automatically. The <a href="https://www.home-assistant.io/actions/persistent_notification.create/">persistent-notification action</a> documents this message behavior.</p>
+<p>The first action is a numeric check: it stops the sequence for missing or nonnumeric states instead of treating them as zero. It also runs when you test the actions manually. The lower check is strictly <code>below: 5</code>, so five itself does not qualify. A <a href="https://www.home-assistant.io/triggers/state/">state-change trigger</a> with <code>to: null</code> ignores changes to descriptive attributes. This checks a corrected balance as well as a normal decrement; it does not depend on catching one particular threshold crossing.</p>
+<p>After saving, use the automation’s <a href="https://www.home-assistant.io/docs/automation/testing/"><strong>Run actions</strong></a> control once to bring the message up to date. Saving alone is not a stock-change event. This manual run is suitable for this exact example because its actions only update the reminder; do not use it as a general test of automations that control appliances.</p>
+
+<h2>5. Rehearse use, correction and refill</h2>
+<p>Use the new practice counter before attaching any other automation. No detergent needs to be consumed. Follow this sequence, checking both the dashboard quantity and Home Assistant’s Notifications panel:</p>
+<p class="table-hint">On a narrow screen, swipe the table sideways.</p>
+<div class="comparison-table" role="region" aria-label="Supply counter worked example" tabindex="0"><table><thead><tr><th scope="col">Your action</th><th scope="col">Expected balance</th><th scope="col">Expected reminder</th></tr></thead><tbody>
+<tr><td>Set the value to 12, then tap Used one tablet.</td><td>11</td><td>No low-stock message.</td></tr>
+<tr><td>Set the value to 5.</td><td>5</td><td>No message: five is not below five.</td></tr>
+<tr><td>Tap Used one tablet.</td><td>4</td><td>One message showing four.</td></tr>
+<tr><td>Tap again, then correct the accidental extra tap with Increment counter.</td><td>3, then 4</td><td>The same message updates; no second copy.</td></tr>
+<tr><td>Model a refill: four left plus a 48-pack. Set the new total to 52.</td><td>52</td><td>The low-stock message disappears.</td></tr>
+<tr><td>Set the value to 0, then tap Used one tablet.</td><td>0</td><td>The balance stays at its minimum.</td></tr>
+</tbody></table></div>
+<p>When these checks pass, set the helper to your real quantity. On your next planned Home Assistant restart, check that the balance returns. You do not need to interrupt household controls just to test this guide.</p>
+<p>For automatic deductions later, add exactly one decrement at a reliably identified use. Avoid combining the manual button with an automatic deduction for the same item. For a washer, first follow the <a href="/blog/home-assistant-washing-machine-finished-notification/">guide to recognizing a completed wash without counting pauses</a>. Even then, treat “one cycle uses one dose” as an assumption to check, not something the counter measures.</p>
+
+<h2>If the balance or reminder looks wrong</h2>
+<div class="comparison-table" role="region" aria-label="Counter troubleshooting" tabindex="0"><table><thead><tr><th scope="col">What you see</th><th scope="col">Check first</th><th scope="col">Next step</th></tr></thead><tbody>
+<tr><td>A refill loses the leftovers.</td><td>Was the pack size entered as the whole balance?</td><td>Count the actual stock and use Set counter value.</td></tr>
+<tr><td>Each tap changes the count by more than one.</td><td>The configured Step and any second deduction automation.</td><td>Use Step 1 here; keep one deduction path per use.</td></tr>
+<tr><td>The total returns to zero after a restart.</td><td>Restore setting, reset actions and whether this is the same helper.</td><td>Enable restoration and correct the quantity. Investigate a repeated loss before relying on it.</td></tr>
+<tr><td>The stock is low but no message appeared after saving.</td><td>No quantity change has happened yet, or the automation is disabled.</td><td>Enable it, run this example’s reminder actions once, then test 5 → 4.</td></tr>
+<tr><td>The counter is unavailable or the card shows no value.</td><td>The entity ID in the card, automation and action.</td><td>Fix the reference. Do not substitute zero for missing stock information; an earlier reminder may remain unchanged.</td></tr>
+<tr><td>Set counter value fails.</td><td>The selected entity, whole-number value and configured limits.</td><td>Use a valid total within the intended range; inspect the action error before changing limits.</td></tr>
+</tbody></table></div>
+
+<h2>Common questions</h2>
+<h3>Should I use Counter or Number?</h3>
+<p>Choose Counter when most changes are fixed steps, such as one item used or one event counted. Choose Number in Box mode when people mainly type a new total. This guide’s card and automation target a Counter; changing to Number requires changing the entity IDs and actions as well.</p>
+<h3>Does the counter know what happened while Home Assistant was off?</h3>
+<p>No. Restoring its previous value does not replay unrecorded uses. Reconcile the quantity after missed inputs. A counter is a household record, not an independent inventory sensor.</p>
+<h3>Can this replace my shopping list or chore schedule?</h3>
+<p>It serves a different purpose. A count answers “how many remain?” The <a href="/blog/home-assistant-shopping-list/">shared shopping list</a> records what to buy, and the <a href="/blog/home-assistant-recurring-chores/">recurring-chore guide</a> tracks when work is next due. Keep each control labelled for its actual job.</p>
+
+</div><section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Helpers and corrections</h3><ul>
+<li><a href="https://www.home-assistant.io/integrations/counter/">Counter: setup, limits and restoration</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/helpers/">Create and edit helpers</a></li>
+<li><a href="https://www.home-assistant.io/actions/counter.set_value/">Set counter value</a></li>
+<li><a href="https://www.home-assistant.io/actions/counter.decrement/">Decrement counter</a></li>
+<li><a href="https://www.home-assistant.io/integrations/input_number/">Number helper and box mode</a></li>
+<li><a href="https://www.home-assistant.io/docs/tools/dev-tools/">Tools: actions and state testing</a></li>
+</ul></div><div><h3>Dashboard and reminder behavior</h3><ul>
+<li><a href="https://www.home-assistant.io/dashboards/button/">Button card</a></li>
+<li><a href="https://www.home-assistant.io/dashboards/actions/">Dashboard tap actions</a></li>
+<li><a href="https://www.home-assistant.io/triggers/state/">State-change triggers</a></li>
+<li><a href="https://www.home-assistant.io/conditions/numeric_state/">Numeric state conditions</a></li>
+<li><a href="https://www.home-assistant.io/actions/persistent_notification.create/">Create or update a persistent notification</a></li>
+<li><a href="https://www.home-assistant.io/integrations/persistent_notification/">Persistent notifications and dismissal</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/testing/">Manual action tests and traces</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Tara Home</p><h2>Make small household routines easy to maintain</h2><p>Clear labels and an obvious correction step help a household keep a routine useful. For a coordinated setup, explore Tara’s <a href="/home-automation-kit/">local home automation kit</a> and describe the routines you want in the planner.</p><a class="cta" href="/configurator/">Plan your home setup</a></section></article></main><footer><p>© 2026 Tara Home</p><p>Local-first smart home systems, configured for real households.</p></footer>
+</body></html>

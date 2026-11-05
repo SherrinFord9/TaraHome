@@ -1,0 +1,79 @@
+{
+  "slug": "home-assistant-counter-helper",
+  "action": "new",
+  "publicationDate": "2026-11-05",
+  "verdict": "PASS",
+  "readerQuestion": "How can I use a Home Assistant counter to track household supplies, correct the quantity after a refill, and show a low-stock reminder without pretending the count is a physical measurement?",
+  "directAnswer": "Use a built-in Counter with step one, minimum zero and restoration enabled. Enter actual stock with counter.set_value, subtract once per recorded use, and reconcile refills using the total including leftovers. The worked automation keeps one Home Assistant frontend reminder below five and clears it at five or more. A Number helper in Box mode is the simpler choice when people mainly type corrections. First verify the sequence on a practice counter; it does not measure physical inventory or operate the appliance.",
+  "originalContribution": "Sections 2–5 combine a usable dashboard decrement button with exact-total correction, an action-level missing-value guard and a stable-ID reminder. The worked table traces 12 to 11, the exact 5-to-4 boundary, an accidental extra tap corrected by increment, four leftovers plus a 48-pack set to 52, and the zero floor. The troubleshooting table separates input mistakes, duplicate deductions, restoration, initial evaluation and invalid entity references. These are illustrative calculations and expected behaviors, not observed hardware measurements.",
+  "limitations": "Documentation research and static YAML validation only; the recipe was not executed on a live Home Assistant instance or tested with an appliance. Automatic supply deductions still require a trustworthy once-per-use input and an independently checked consumption assumption. Restoring saved state cannot reconstruct missed uses. Current UI labels can differ on older releases; the guide gives both Settings > Tools and older Developer tools wording. The frontend reminder does not establish mobile push delivery. A generated household illustration is disclosed and is not product or installation evidence.",
+  "proofreadFixes": "Automated tarahome-grandma-proofread pass completed after inspecting the written page. Moved the numeric validity condition from top-level conditions into the first action because Run actions skips top-level conditions; its guard now also applies during the proposed manual test. Replaced vague suitable-card wording with an Entities card for Number Box mode. Clarified that set_value replaces the full balance, reset returns to initial zero, five itself does not qualify for below-five, a stable notification ID updates one frontend message, dismissal can be followed by a new reminder on the next quantity change/startup, and saving an automation alone does not evaluate the current stock. Defined helper, entity ID and automation on first use. Confirmed four actionable TLDR bullets, immediate answer, visible linked Tara Home credit, honest documentation basis, source headings and a harmless expected-result test. All three embedded examples parse as YAML; this was not presented as runtime validation. Desktop/mobile article and library screenshots were visually inspected. Layout sync made incidental formatting changes to eleven existing articles; those changes were removed by restoring their exact clean baseline bytes. No prior article remains modified.",
+  "noInventedTesting": true,
+  "intentComparedAgainstExistingPages": true,
+  "claimChecks": [
+    {
+      "claim": "A Counter is a whole-number helper with initial value, step, optional bounds and restore behavior. With restore enabled, the saved value is used at startup; initial applies when no saved state exists or the counter is reset. The example uses initial zero, step one, minimum zero and restoration enabled.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/counter/"
+    },
+    {
+      "claim": "Counter helpers can be created in Settings > Devices & services > Helpers; editing some counter-specific settings requires More options. A helper does not require a physical device.",
+      "sourceUrl": "https://www.home-assistant.io/docs/configuration/helpers/"
+    },
+    {
+      "claim": "counter.set_value accepts an integer data.value and replaces the target balance. The new total must account for leftovers; four plus forty-eight is fifty-two, not forty-eight. The guide uses a value within its configured bounds.",
+      "sourceUrl": "https://www.home-assistant.io/actions/counter.set_value/"
+    },
+    {
+      "claim": "counter.decrement subtracts the configured step and stops at the configured minimum. Thus a step-one, minimum-zero practice counter changes twelve to eleven and cannot be decremented below zero.",
+      "sourceUrl": "https://www.home-assistant.io/actions/counter.decrement/"
+    },
+    {
+      "claim": "A Number helper supports box or slider mode; the box alternative is explicitly identified for frequent typed quantities. It uses different entity IDs and actions from Counter, so it is not a drop-in replacement for this YAML.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/input_number/"
+    },
+    {
+      "claim": "A Button card can perform a named action on a specific entity using tap_action action: perform-action, perform_action and target. The example targets only the practice counter and uses more-info on hold.",
+      "sourceUrl": "https://www.home-assistant.io/dashboards/actions/"
+    },
+    {
+      "claim": "The state trigger supports to: null for actual state changes while ignoring attribute-only updates. A quantity correction therefore also starts the reminder, without requiring a fresh downward threshold crossing.",
+      "sourceUrl": "https://www.home-assistant.io/triggers/state/"
+    },
+    {
+      "claim": "Numeric conditions use strict inequalities; below five excludes five. Unknown/unavailable does not pass, and other nonnumeric values fail rather than becoming zero. The first action checks above minus one before either notification branch.",
+      "sourceUrl": "https://www.home-assistant.io/conditions/numeric_state/"
+    },
+    {
+      "claim": "Run actions skips an automation's triggers and top-level conditions, but condition steps inside actions still apply. The published numeric guard is in the action sequence and the example does not depend on trigger variables.",
+      "sourceUrl": "https://www.home-assistant.io/docs/automation/testing/"
+    },
+    {
+      "claim": "A stable notification_id overwrites an existing persistent notification instead of adding copies. This is a Home Assistant frontend message, not proof that a mobile push alert was delivered.",
+      "sourceUrl": "https://www.home-assistant.io/actions/persistent_notification.create/"
+    },
+    {
+      "claim": "persistent_notification.dismiss removes the specified frontend notification; the healthy-stock branch targets only dishwasher_tablets_low and does not dismiss unrelated messages.",
+      "sourceUrl": "https://www.home-assistant.io/integrations/persistent_notification/"
+    },
+    {
+      "claim": "Tools is an administrator facility. Invoking an action is different from changing the displayed state on the States tab; quantity corrections use counter.set_value. Current documentation labels the path Settings > Tools.",
+      "sourceUrl": "https://www.home-assistant.io/docs/tools/dev-tools/"
+    }
+  ],
+  "incomingLinkOpportunities": [
+    {
+      "sourcePath": "/blog/home-assistant-shopping-list/",
+      "section": "Use one list, then check how each phone reaches it",
+      "readerReason": "Readers who already share what to buy may next want to track how many consumables remain. A short contextual link could distinguish the stock balance from the shopping entry; the new page already links back for list sharing. This is a suggestion for a separate reviewed navigation task."
+    },
+    {
+      "sourcePath": "/blog/home-assistant-washing-machine-finished-notification/",
+      "section": "5. Check one idle period and several real loads",
+      "readerReason": "After validating one completion signal per actual wash, readers may want to maintain a detergent count. The new guide explains reconciliation and the one-dose-per-cycle assumption without repeating cycle detection. This is a separate navigation suggestion, not permission to modify the existing guide."
+    }
+  ],
+  "browserChecks": {
+    "desktop": "PASS at 1440x1000 in Chromium. Visually inspected the title/hero/TLDR and worked-example table; title wraps cleanly, linked byline is visible, body stays centered and the post-local WebP loads. Computed font is Tara Avenir and H1 weight is 400. Document scrollWidth equals the 1440px viewport. Both library indexes put the new card first; the desktop card title, image, date and description are readable. Canonical and rendered H1 agree; the .html URL redirects locally to the canonical route. The only console error was the intentionally blocked Google tag request during local verification. Screenshots are in TARAHOME_BLOG_ARTIFACTS outside the worktree.",
+    "mobile": "PASS at 390x844 in Chromium. Visually inspected title/byline, loaded cover, all four TLDR bullets, expanded automation code, scrolled example table and first library card. Text wraps within the centered single column. Document scrollWidth is 390px even with code open. Tables use a 344px viewport with a 760px internal scroll area; sideways scrolling was exercised and the final column is reachable. Code scrolls inside its own container. The mobile library card loads the 480px post-local WebP, displays the correct November 5 date and links to the new article. Screenshots are external artifacts, not repository files."
+  }
+}
