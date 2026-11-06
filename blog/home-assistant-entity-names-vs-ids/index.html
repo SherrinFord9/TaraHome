@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3NPM15GXKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3NPM15GXKZ');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home Assistant Entity Names vs IDs: Rename Safely</title>
+    <meta name="description" content="Understand Home Assistant entity names vs IDs, rename devices and dashboard cards safely, and repair references if an entity ID changes." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://tarahome.ai/blog/home-assistant-entity-names-vs-ids/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://tarahome.ai/blog/home-assistant-entity-names-vs-ids/" />
+    <meta property="og:title" content="Home Assistant Entity Names vs IDs: Rename Safely" />
+    <meta property="og:description" content="Understand Home Assistant entity names vs IDs, rename devices and dashboard cards safely, and repair references if an entity ID changes." />
+    <meta property="og:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-entity-names-vs-ids/cover.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Home Assistant Entity Names vs IDs: Rename Safely" />
+    <meta name="twitter:description" content="Understand Home Assistant entity names vs IDs, rename devices and dashboard cards safely, and repair references if an entity ID changes." />
+    <meta name="twitter:image" content="https://tarahome.ai/assets/generated/blog/home-assistant-entity-names-vs-ids/cover.png" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo/tara-star.svg" />
+    <link rel="preload" as="font" href="/fonts/Avenir_Book.woff2" type="font/woff2" crossorigin />
+    <style>
+      @font-face {
+        font-family: 'Tara Avenir';
+        src: url('/fonts/Avenir_Book.woff2') format('woff2'), url('/fonts/Avenir_Book.ttf') format('truetype');
+        font-display: optional;
+        font-style: normal;
+        font-weight: 400;
+      }
+
+      :root { color-scheme: light; --ink: #062820; --muted: #4d6258; --paper: #f5eddb; --line: #d7cfb9; --accent: #41a867; --surface: #fffaf0; }
+      * { box-sizing: border-box; }
+      body { background: radial-gradient(circle at 78% 8%, rgba(65, 168, 103, 0.16), transparent 28rem), linear-gradient(180deg, #f8f0de, var(--paper)); color: var(--ink); font-family: 'Tara Avenir', 'Avenir Next', ui-sans-serif, system-ui, sans-serif; font-weight: 400; line-height: 1.5; margin: 0; }
+      a { color: inherit; text-decoration-color: rgba(65, 168, 103, 0.42); text-underline-offset: 0.2em; }
+      nav, main, footer { margin: 0 auto; max-width: 1280px; padding-left: 32px; padding-right: 32px; }
+      nav { align-items: center; border-bottom: 1px solid var(--line); display: flex; gap: 18px; justify-content: space-between; min-height: 76px; }
+      nav div { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-end; }
+      nav strong { font-size: 1.15rem; font-weight: 600; }
+      main { padding-bottom: 56px; padding-top: clamp(32px, 4.8vw, 56px); }
+      .hero { align-items: center; display: grid; gap: clamp(28px, 4.5vw, 64px); grid-template-columns: minmax(0, 0.58fr) minmax(320px, 0.42fr); min-height: clamp(300px, 42vh, 420px); padding-bottom: clamp(28px, 4vw, 44px); }
+      .kicker { color: var(--accent); font-size: 0.88rem; font-weight: 600; letter-spacing: 0.02em; margin: 0 0 14px; text-transform: uppercase; }
+      h1, h2, h3 { font-weight: 400; }
+      h1 { font-size: clamp(2.8rem, 4.2vw, 4.55rem); letter-spacing: 0; line-height: 1.02; margin: 0; max-width: 16ch; text-wrap: balance; }
+      h2 { font-size: clamp(1.8rem, 2.8vw, 3rem); line-height: 1; margin: 0 0 16px; text-wrap: balance; }
+      h3 { font-size: 1.35rem; line-height: 1.08; margin: 0 0 8px; }
+      p { color: var(--muted); font-size: 1.08rem; font-weight: 400; margin: 0; max-width: 66ch; }
+      .lede { color: var(--ink); font-size: clamp(1rem, 1.12vw, 1.16rem); font-weight: 400; line-height: 1.38; margin-top: 18px; max-width: 760px; text-wrap: balance; }
+      section.block { border-top: 1px solid var(--line); padding: clamp(30px, 4vw, 48px) 0; }
+      .links { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .links a { align-items: center; background: rgba(255, 250, 240, 0.48); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42); display: inline-flex; font-size: 1rem; font-weight: 600; justify-content: center; line-height: 1.12; min-height: 64px; padding: 12px 14px; text-align: center; text-decoration: none; width: 100%; }
+      .links a:hover { background: rgba(65, 168, 103, 0.13); border-color: rgba(65, 168, 103, 0.52); }
+      .cta { align-items: center; background: var(--accent); border: 1px solid rgba(65, 168, 103, 0.32); border-radius: 999px; color: #061f18; display: inline-flex; font-weight: 600; margin-top: 24px; min-height: 44px; padding: 0 16px; text-decoration: none; }
+      .article { max-width: 1160px; padding-top: clamp(28px, 3vw, 42px); }
+      .article > article, .article-hero, .article-hero > *, .article-cover, .article-body { min-width: 0; }
+      .article .hero { min-height: 0; padding-bottom: clamp(22px, 3vw, 34px); }
+      .article-hero { align-items: end; grid-template-columns: minmax(0, 0.62fr) minmax(300px, 0.38fr); }
+      .article h1 { font-size: clamp(2rem, 2.7vw, 3.2rem); line-height: 1.04; max-width: 1100px; }
+      .article-meta { color: var(--accent); display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; font-weight: 600; margin: 0 0 14px; text-transform: uppercase; }
+      .article-cover { aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 26px; margin: 0; overflow: hidden; }
+      .article-cover img { display: block; height: 100%; object-fit: cover; width: 100%; }
+      .article-body { border-top: 1px solid var(--line); max-width: 780px; padding-top: clamp(22px, 3vw, 36px); }
+      .article-body h2 { font-size: clamp(1.55rem, 2.1vw, 2.25rem); line-height: 1.08; margin: 44px 0 14px; max-width: 760px; text-wrap: balance; }
+      .article-body h2:first-of-type { margin-top: 0; }
+      .article-body h3 { font-size: clamp(1.2rem, 1.45vw, 1.5rem); line-height: 1.12; margin: 30px 0 10px; max-width: 760px; text-wrap: balance; }
+      .article-body p, .article-body li { color: var(--ink); font-size: clamp(1rem, 1.05vw, 1.1rem); font-weight: 400; line-height: 1.66; }
+      .article-body p { margin: 0 0 18px; max-width: 760px; }
+      .article-body ul, .article-body ol { margin: 0 0 22px; max-width: 760px; padding-left: 1.35rem; }
+      .article-body li { margin: 0 0 10px; }
+      .article-body strong { font-weight: 600; }
+      .article-body .callout { background: rgba(65, 168, 103, 0.08); border: 1px solid rgba(65, 168, 103, 0.25); border-radius: 20px; margin: 24px 0; max-width: 780px; padding: 18px 20px; }
+      .article-body .callout p:last-child { margin-bottom: 0; }
+      .article-body .tldr { background: rgba(255, 250, 240, 0.74); border: 1px solid rgba(65, 168, 103, 0.28); border-left: 5px solid var(--accent); border-radius: 18px; margin: 0 0 34px; max-width: 820px; overflow-wrap: break-word; padding: 20px 22px 18px; }
+      .article-body .tldr-label { color: var(--accent); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; line-height: 1; margin: 0 0 12px; text-transform: uppercase; }
+      .article-body .tldr ul { display: grid; gap: 10px; margin: 0; max-width: none; padding-left: 1.18rem; }
+      .article-body .tldr li { font-size: clamp(0.98rem, 1.02vw, 1.06rem); font-weight: 400; line-height: 1.45; margin: 0; }
+      .article-body .comparison-table { border: 1px solid var(--line); border-radius: 18px; margin: 24px 0 28px; max-width: 920px; overflow-x: auto; }
+      .article-body table { border-collapse: collapse; min-width: 760px; width: 100%; }
+      .article-body th, .article-body td { border-bottom: 1px solid var(--line); color: var(--ink); font-size: 0.98rem; line-height: 1.42; padding: 14px 16px; text-align: left; vertical-align: top; }
+      .article-body th { background: rgba(65, 168, 103, 0.1); font-weight: 600; }
+      .article-body tr:last-child td { border-bottom: 0; }
+      .article-cta { margin-top: clamp(34px, 5vw, 64px); }
+      .source-list h2 { max-width: 18ch; }
+      .source-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 26px; }
+      .source-grid > div { border-top: 1px solid var(--line); padding-top: 18px; }
+      .source-grid ul { display: grid; gap: 10px; list-style: none; margin: 14px 0 0; padding: 0; }
+      .source-grid li { color: var(--muted); font-size: 1.02rem; font-weight: 400; line-height: 1.25; }
+      footer { color: var(--muted); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; padding-bottom: 34px; padding-top: 24px; }
+      @media (max-width: 1080px) { .links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+      @media (max-width: 820px) { nav, main, footer { padding-left: 22px; padding-right: 22px; } .hero, .article-hero, .source-grid { grid-template-columns: 1fr; } .hero { min-height: 0; } .links { grid-template-columns: repeat(2, minmax(0, 1fr)); } main { padding-top: 44px; } nav { align-items: flex-start; flex-direction: column; padding-bottom: 18px; padding-top: 18px; } h1 { font-size: clamp(2.6rem, 13vw, 4.1rem); } }
+      @media (max-width: 520px) { nav div { gap: 10px; } nav a { font-size: 0.94rem; } .links { grid-template-columns: 1fr; } .links a { min-height: 56px; } .article h1 { font-size: clamp(1.95rem, 9vw, 2.35rem); max-width: 100%; overflow-wrap: break-word; text-wrap: wrap; } .article .lede { max-width: 100%; text-wrap: wrap; } .article-cover, .article-body, .article-body .tldr, .article-body h2, .article-body h3, .article-body p, .article-body ul, .article-body ol { max-width: 100%; width: 100%; } .article-body .tldr { padding: 18px 16px 16px; } .article-body .tldr li { font-size: 0.98rem; overflow-wrap: break-word; } }
+
+      /* tara-blog-layout-v2:start */ main:not(.article) > .hero{margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-list{gap:clamp(22px,2.2vw,32px);grid-template-columns:repeat(2,minmax(0,1fr));margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.blog-card{align-content:stretch;gap:0;grid-template-rows:auto 1fr auto;min-height:430px;}.blog-card > span{padding-bottom:24px;padding-top:28px;}.blog-card > p{padding-bottom:28px;padding-top:0;}.blog-card h2{font-size:clamp(1.55rem,2.1vw,2rem);line-height:1.12;margin-bottom:16px;text-wrap:pretty;}.blog-card p{font-size:1.04rem;line-height:1.55;}.article{max-width:1180px;}.article-hero{gap:clamp(36px,4.5vw,64px);margin-left:auto;margin-right:auto;max-width:1120px;width:100%;}.article-body{margin-left:auto;margin-right:auto;max-width:780px;padding-top:clamp(34px,4vw,50px);width:100%;}.article-body h2{line-height:1.14;margin-bottom:18px;margin-top:clamp(48px,5vw,62px);}.article-body h3{line-height:1.2;margin-bottom:14px;margin-top:38px;}.article-body p,.article-body li{font-size:clamp(1.06rem,1.12vw,1.16rem);line-height:1.75;}.article-body p{margin-bottom:24px;}.article-body li{margin-bottom:12px;}.article-body ul,.article-body ol{margin-bottom:28px;}.article-body .callout{margin-bottom:32px;margin-top:32px;padding:22px 24px;}.article-body .tldr{margin-bottom:44px;padding:24px 26px 22px;}.article-body .tldr li{font-size:1.04rem;line-height:1.58;}.article-cta,.source-list,.related{margin-left:auto;margin-right:auto;max-width:960px;width:100%;}.source-grid{gap:clamp(22px,3vw,36px);}@media (min-width:900px){.article-body .comparison-table{margin-left:50%;max-width:none;transform:translateX(-50%);width:min(920px,calc(100vw - 64px));}}@media (max-width:820px){main:not(.article) > .hero{max-width:38rem;}.blog-list{gap:22px;grid-template-columns:1fr;max-width:38rem;}.blog-card{min-height:0;}.article-hero{gap:28px;max-width:46rem;}.article-body p,.article-body li{font-size:1.06rem;line-height:1.7;}.article-cta,.source-list,.related{max-width:46rem;}}@media (max-width:520px){.blog-card > span{padding-bottom:20px;padding-top:22px;}.blog-card > p{padding-bottom:22px;}.blog-card h2{font-size:1.36rem;line-height:1.16;}.article-body{max-width:calc(100vw - 44px);padding-top:30px;}.article-body h2{margin-top:44px;}.article-body .tldr{margin-bottom:36px;padding:20px 18px 18px;}}/* tara-blog-layout-v2:end */.article-byline { font-size: 1rem; margin: 18px 0 0; }
+      .article-body .research-method { color: var(--muted); font-size: 0.98rem; }
+      .article-body code { overflow-wrap: anywhere; font-size: 0.92em; }
+      .configuration { border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 24px 0; min-width: 0; }
+      .configuration summary { cursor: pointer; font-weight: 600; }
+      .configuration pre { overflow-x: auto; max-width: 100%; font-size: 0.91rem; line-height: 1.55; padding: 14px; background: var(--surface); }
+      .configuration pre code { overflow-wrap: normal; }
+      .article-body .table-hint { font-size: 0.94rem; color: var(--muted); margin-bottom: 8px; }
+      .comparison-table:focus-visible, .configuration pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+      .article-body > pre { background: #e9e5d7; border: 1px solid var(--line); border-radius: 14px; padding: 18px; overflow-x: auto; max-width: 100%; font-size: 0.95rem; line-height: 1.6; }
+      .article-body > pre code { overflow-wrap: normal; }
+      /* tara-blog-typography-v3:start */ body{font-weight:400;}h1,h2,h3{font-weight:400;}p,.lede{font-weight:400;}.blog-card h2,.blog-card p{font-weight:400;}.article-body p,.article-body li{font-weight:400;}.article-body .inline-figure figcaption,.source-grid li,.legal p,.legal li{font-weight:400;}.kicker,nav strong,.list li,.steps li::before,.faq summary,.links a,.cta,.article-meta,.article-body th,.article-body strong{font-weight:600;}/* tara-blog-typography-v3:end */
+    </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://tarahome.ai/#organization",
+      "name": "Tara Home",
+      "url": "https://tarahome.ai/",
+      "logo": "https://tarahome.ai/assets/logo/logo.png"
+    },
+    {
+      "@type": "BlogPosting",
+      "@id": "https://tarahome.ai/blog/home-assistant-entity-names-vs-ids/#blogposting",
+      "headline": "Home Assistant Entity Names vs IDs: Rename Safely",
+      "description": "Understand Home Assistant entity names vs IDs, rename devices and dashboard cards safely, and repair references if an entity ID changes.",
+      "image": "https://tarahome.ai/assets/generated/blog/home-assistant-entity-names-vs-ids/cover.png",
+      "datePublished": "2026-11-06",
+      "dateModified": "2026-11-06",
+      "author": {
+        "@type": "Organization",
+        "name": "Tara Home",
+        "url": "https://tarahome.ai/#about"
+      },
+      "publisher": {
+        "@id": "https://tarahome.ai/#organization"
+      },
+      "mainEntityOfPage": "https://tarahome.ai/blog/home-assistant-entity-names-vs-ids/",
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://tarahome.ai/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Library",
+          "item": "https://tarahome.ai/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Home Assistant Entity Names vs IDs: Rename Safely",
+          "item": "https://tarahome.ai/blog/home-assistant-entity-names-vs-ids/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Will changing the entity ID format rename everything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It applies when Home Assistant generates new IDs. Existing IDs stay put unless you change or recreate them. Leave working IDs in place when your goal is only a tidier display."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I keep an inventory name and a different dashboard name?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Keep the device name you need for inventory and set a custom name on the relevant card. That card title is local to the card; it is not a universal name for notifications or other dashboards."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does renaming make a cloud device local?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Naming changes presentation and references. It does not change the integration or the device\u2019s network and account requirements."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script></head><body>
+<nav>
+      <a href="/"><strong>Tara</strong></a>
+      <div><a href="/">Home</a><a href="/configurator/">Configurator</a><a href="/blog/">Library</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+    </nav>
+    <main class="article"><article>
+<header class="hero article-hero"><div>
+<p class="article-meta"><span>Home Assistant setup</span><span><time datetime="2026-11-06">November 6, 2026</time></span><span>8 min read</span></p>
+<h1>Home Assistant Entity Names vs IDs: Rename Safely</h1>
+<p class="lede">Choose the right field for a clearer dashboard, keep working references intact, and check one harmless example before tidying the rest.</p>
+<p class="article-byline"><a href="/#about">By Tara Home</a></p></div>
+<figure class="article-cover"><img src="/assets/generated/blog/home-assistant-entity-names-vs-ids/cover-1200.webp" srcset="/assets/generated/blog/home-assistant-entity-names-vs-ids/cover-480.webp 480w, /assets/generated/blog/home-assistant-entity-names-vs-ids/cover-1200.webp 1200w" sizes="(max-width: 720px) 100vw, 1120px" width="1536" height="1024" decoding="async" alt="Hands attach a blank inventory tag to a table lamp cord beside a green notebook in a warm hallway" loading="eager" /></figure>
+</header>
+<div class="article-body">
+<aside class="tldr" aria-label="TLDR summary"><p class="tldr-label">TLDR</p><ul>
+<li><strong>For a clearer label on one dashboard, change the card name.</strong> Leave its selected entity and entity ID alone.</li>
+<li><strong>For a clearer device name throughout Home Assistant, rename the device.</strong> Name each entity for its function, such as Temperature. Existing ID-based references can stay as they are.</li>
+<li><strong>Do not use “Recreate entity IDs” just to tidy the screen.</strong> An ID change needs a review of automations, scripts, dashboards and external tools that refer to the old ID.</li>
+<li><strong>On 2026.11, longer names can be a display change.</strong> Check the ID before repairing anything. Start with the card-only exercise; name-based templates and automations watching attribute changes need review before renaming a device.</li>
+</ul></aside>
+
+<h2 id="short-answer">Change the name people see first</h2>
+<p><strong>Home Assistant entity names and IDs serve different jobs.</strong> A name helps somebody recognize a control or reading. An <strong>entity ID</strong>, such as <code>sensor.sensor_04_temperature</code>, is the reference used in configuration. An <strong>entity</strong> is one function: a temperature reading, battery level or on/off control. One physical device can provide several.</p>
+<p>If the complaint is “this dashboard label is too long,” edit that card’s name first. If the whole device has an unhelpful name, rename the device. Keep a working entity ID unless you have a specific reason to change it. The <a href="https://www.home-assistant.io/docs/configuration/customizing-entities/">entity settings documentation</a> treats the name and ID as separate fields.</p>
+<p>Home Assistant 2026.11 changed how it combines names with their context. A screen can include the device or room even when the entity name is simply Temperature. The <a href="https://www.home-assistant.io/blog/2026/11/03/naming-things-in-home-assistant/">November naming explanation</a> says existing entity IDs remain unchanged. A different-looking label alone does not mean the automation lost its target.</p>
+<p class="research-method">Researched from current Home Assistant documentation on November 6, 2026. The walkthrough is an illustrative configuration, not a tested Tara installation. Menu details and custom-card behavior depend on your installed version. The cover is an AI-generated illustration.</p>
+
+<h2 id="choose-field">Choose the field that matches the job</h2>
+<p class="table-hint">On a phone, swipe the table sideways to read every column.</p>
+<div class="comparison-table" role="region" aria-label="Which name to change" tabindex="0"><table><thead><tr><th>Your goal</th><th>Change this</th><th>Check afterward</th></tr></thead><tbody>
+<tr><td>Show “Desk temperature” on one card</td><td>That card’s name</td><td>Other cards keep their own naming settings.</td></tr>
+<tr><td>Identify the physical sensor as “Desk sensor”</td><td>Device name</td><td>Its readings may now display that device context.</td></tr>
+<tr><td>Call one reading “Temperature”</td><td>Entity name</td><td>Context may still be added by the screen displaying it.</td></tr>
+<tr><td>Replace <code>sensor.sensor_04_temperature</code> with another technical reference</td><td>Entity ID</td><td>Find and repair every old reference you use.</td></tr>
+<tr><td>Change the format assigned to future entities</td><td>System → Entity ID format</td><td>Existing IDs remain; some integrations suggest their own IDs.</td></tr>
+</tbody></table></div>
+<p>A <strong>unique ID</strong> is another identifier, supplied by the integration—the connection between Home Assistant and a device or service. It helps Home Assistant recognize the same entity internally. It is not a prettier display name and is not the field to edit for this job. The <a href="https://www.home-assistant.io/faq/unique_id/">unique ID FAQ</a> explains why some manually configured entities cannot be renamed through the interface.</p>
+
+<h2 id="card-test">1. Rehearse with two temperature cards</h2>
+<p>Use an existing room-temperature sensor and a dashboard you already manage manually. This exercise only changes presentation. If you need a practice dashboard, follow the <a href="/blog/home-assistant-sections-dashboard/">Sections dashboard setup</a>. Do not take control of an automatically managed dashboard just for this exercise: <a href="https://www.home-assistant.io/dashboards/tile/">the Tile documentation</a> explains that doing so stops its automatic updates.</p>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Entities</strong>. Select the temperature reading and open its settings. Copy its exact entity ID into a private note.</li>
+<li>On the practice dashboard, add two built-in Tile cards and select that same sensor for both. Leave the first card’s name at its default.</li>
+<li>For the second card, set a custom name of <strong>Desk temperature</strong>. Keep the same selected entity. Save the card and dashboard.</li>
+<li>Check that both cards show the same sensor reading after they update. Open each card’s information dialog and confirm the underlying entity is the same. The second card should have your custom title.</li>
+<li>Remove the second card’s custom name to return to its default, or remove the temporary cards. Neither step deletes the sensor.</li>
+</ol>
+<p>Here is the second card in YAML, the text form of its settings. Replace the example ID with yours. Both tap actions open information; they do not send a device command.</p>
+<pre tabindex="0" aria-label="Temperature tile with a custom name"><code>type: tile
+entity: sensor.sensor_04_temperature
+name: Desk temperature
+tap_action:
+  action: more-info
+icon_tap_action:
+  action: more-info</code></pre>
+<p>The <a href="https://www.home-assistant.io/dashboards/naming/">card naming reference</a> also supports composing a name from parts, such as device and entity. A fixed custom string is the easiest first check. It stays fixed even if the device is later renamed, so review it whenever the device changes purpose.</p>
+
+<h2 id="rename-plan">2. Write a rename plan for one device</h2>
+<p>Suppose a working study sensor has an inventory sticker S-04 and a device name of Sensor 04. You want the household to recognize it as the sensor on the desk. This is a proposed example, not a measurement or a device we tested.</p>
+<p class="table-hint">Swipe sideways to compare the current settings with the plan.</p>
+<div class="comparison-table" role="region" aria-label="Worked sensor rename plan" tabindex="0"><table><thead><tr><th>Item</th><th>Before</th><th>Planned result</th></tr></thead><tbody>
+<tr><td>Physical inventory note</td><td>S-04</td><td>Keep S-04; record its device page and existing entity ID privately.</td></tr>
+<tr><td>Area</td><td>Study</td><td>Keep Study; the sensor has not moved.</td></tr>
+<tr><td>Device name</td><td>Sensor 04</td><td>Desk sensor</td></tr>
+<tr><td>Temperature entity name</td><td>Temperature</td><td>Keep Temperature.</td></tr>
+<tr><td>Entity ID</td><td><code>sensor.sensor_04_temperature</code></td><td>Keep exactly the same ID.</td></tr>
+<tr><td>Optional card title</td><td>Default</td><td>Desk temperature on that card only.</td></tr>
+</tbody></table></div>
+<p>Keep physical identity and household wording in your inventory note so a future room move does not become a guessing exercise. For this example, there is no reason to standardize the technical ID. Do one device, inspect the result, and only then repeat.</p>
+
+<h2 id="device-rename">3. Apply the name change and verify it</h2>
+<div class="callout"><p><strong>Check what watches this device before renaming it.</strong> A name change can alter an attribute such as <code>friendly_name</code>. A <a href="https://www.home-assistant.io/triggers/state/">State changed trigger without From/To restrictions</a> can react to attribute-only changes. Keeping the ID does not prevent that run. Use a non-critical monitoring sensor for this exercise; if it feeds heating, security or another consequential routine, finish the dependency review first and keep the initial test card-only.</p></div>
+<ol>
+<li>Open <strong>Settings → Devices &amp; services → Devices</strong>, select the intended device and use its edit control to change the device name to Desk sensor.</li>
+<li>If an individual reading also needs a clearer name, open that entity’s settings and change its <strong>name</strong>. Leave the recorded <strong>entity ID</strong> unchanged. Select Update.</li>
+<li>Reopen the entity settings and compare the ID with your note character for character. Check the default Tile card and your custom-named card. The default can reflect the new device context; the custom title should remain Desk temperature.</li>
+<li>Inspect an existing automation that uses this sensor. Its entity reference should still match. Observe its next harmless normal run if appropriate; do not manually run heating, locks or other consequential actions just to test a rename.</li>
+</ol>
+<p>You can inspect the reported reading under <strong>Settings → Tools → States</strong>; older versions use Developer tools. Read the existing row without using Set state. The <a href="https://www.home-assistant.io/docs/configuration/state_object/">state documentation</a> explains the distinction between the reading and descriptive attributes.</p>
+<p><strong>Check name-dependent templates separately.</strong> A template is an expression that builds text or selects data. If yours compares or searches names, a display rename can change its result even when the ID stays intact. A notification using <code>friendly_name</code> can also show different wording. The November announcement says that attribute is retained for compatibility for now; it has not simply disappeared.</p>
+
+<h2 id="changed-id">4. If you already changed an entity ID</h2>
+<p>Treat this as repairing references, not fixing the physical device. Do not reset or re-pair it. Home Assistant’s <a href="https://www.home-assistant.io/docs/automation/troubleshooting/">automation troubleshooting guide</a> describes old entity references remaining after an ID change.</p>
+<ol>
+<li>Record the old and current IDs. Before further ID changes, make a backup using the <a href="/blog/how-to-back-up-home-assistant/">backup and restore guide</a>.</li>
+<li>Open affected automations and reselect the current entity in every relevant trigger, condition and action, then save. Also check scripts, scenes and manually configured dashboard cards.</li>
+<li>Search your own YAML, templates and external tools, such as Node-RED, for the exact old ID. A visual picker check does not audit those files or flows.</li>
+<li>For each repaired reference, use a harmless reading or informational preview first. Review the automation trace—the record of its run—when an appropriate normal trigger next occurs.</li>
+</ol>
+<p>Do not bulk-recreate IDs to repair one name. If you deliberately want a new ID scheme, migrate one non-critical entity at a time with a before/after list. If the hardware itself was replaced, use the separate <a href="/blog/replace-home-assistant-device-without-rebuilding-automations/">device replacement guide</a>; device-based references add another issue.</p>
+
+<h2 id="troubleshooting">If the screen still looks wrong</h2>
+<p class="table-hint">Swipe sideways to read the checks and next steps.</p>
+<div class="comparison-table" role="region" aria-label="Naming troubleshooting decisions" tabindex="0"><table><thead><tr><th>What you see</th><th>Check first</th><th>Next step</th></tr></thead><tbody>
+<tr><td>A duplicated or long name after 2026.11</td><td>Device name, entity name and card override</td><td>Use a short function name or a custom card title. Confirm the ID before editing references.</td></tr>
+<tr><td>A plug’s main switch has an extra name</td><td>Whether the device name already describes its job</td><td>On 2026.11, “Main entity of the device” can use the device name for that control. Do not apply this indiscriminately to its separate measurements.</td></tr>
+<tr><td>A custom card differs from a built-in Tile</td><td>Whether it reads the older friendly-name attribute</td><td>Use its supported name override or check the author’s update instructions; support varies.</td></tr>
+<tr><td>Entity settings say there is no unique ID</td><td>The integration that creates the entity</td><td>Check that integration’s configuration support. Do not edit registry files or invent a replacement unique ID.</td></tr>
+<tr><td>An automation reports a missing entity</td><td>Its stored reference versus the current ID</td><td>Repair the reference using step 4; a nicer display name cannot fix it.</td></tr>
+</tbody></table></div>
+
+<h2 id="questions">Common questions</h2>
+<h3>Will changing the entity ID format rename everything?</h3>
+<p>No. It applies when Home Assistant generates new IDs. Existing IDs stay put unless you change or recreate them. Leave working IDs in place when your goal is only a tidier display.</p>
+<h3>Can I keep an inventory name and a different dashboard name?</h3>
+<p>Yes. Keep the device name you need for inventory and set a custom name on the relevant card. That card title is local to the card; it is not a universal name for notifications or other dashboards.</p>
+<h3>Does renaming make a cloud device local?</h3>
+<p>No. Naming changes presentation and references. It does not change the integration or the device’s network and account requirements.</p>
+</div>
+<section class="block source-list"><p class="kicker">Sources</p><h2>Documentation and further reading</h2><div class="source-grid"><div><h3>Names and identifiers</h3><ul>
+<li><a href="https://www.home-assistant.io/docs/configuration/customizing-entities/">Entity names, IDs and settings</a></li>
+<li><a href="https://www.home-assistant.io/blog/2026/11/03/naming-things-in-home-assistant/">Naming changes in Home Assistant 2026.11</a></li>
+<li><a href="https://www.home-assistant.io/faq/unique_id/">What a unique ID does</a></li>
+</ul></div><div><h3>Display and verification</h3><ul>
+<li><a href="https://www.home-assistant.io/dashboards/naming/">Card names and contextual name parts</a></li>
+<li><a href="https://www.home-assistant.io/dashboards/tile/">Tile card configuration</a></li>
+<li><a href="https://www.home-assistant.io/docs/configuration/state_object/">Reading states and attributes</a></li>
+<li><a href="https://www.home-assistant.io/docs/automation/troubleshooting/">Repairing automation references</a></li>
+<li><a href="https://www.home-assistant.io/triggers/state/">State triggers and attribute-only changes</a></li>
+</ul></div></div></section>
+<section class="block article-cta"><p class="kicker">Tara Home</p><h2>Make the controls easy to recognize</h2><p>Agree on room names, device names and everyday controls before expanding a system. Tara’s <a href="/home-assistant-smart-home-kit/">configured Home Assistant setup</a> is the relevant starting point for planning that handoff.</p><a class="cta" href="/configurator/">Plan your home setup</a></section>
+</article></main>
+<footer><p>© 2026 Tara Home</p><p>Local-first smart home systems, configured for real households.</p></footer>
+</body></html>
